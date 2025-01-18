@@ -14,7 +14,9 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Changed**
 
--
+- Removed unnecessary log print in MacOS backend. *(Thanks will-tm!)*
+- Remove builders in favor of templated approach. *(Thanks jcarrano!)*
+- Refactor code to use abstract classes and PIMPL idiom. *(Thanks jcarrano!)*
 
 **Fixed**
 
