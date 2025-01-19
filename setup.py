@@ -64,10 +64,10 @@ def get_commits_since_version_bump():
 def is_current_commit_tagged():
     result = subprocess.run(
         ["git", "describe", "--exact-match", "--tags", "HEAD"],
-        capture_output=True,  
+        capture_output=True,
         text=True
     )
-    
+
     if result.returncode == 0:
         return True, result.stdout.strip()
     else:
@@ -85,7 +85,7 @@ root = pathlib.Path(__file__).parent.resolve()
 # Generate the version string
 def get_version():
     root = Path(__file__).parent
-    
+
     version_str = (root / "VERSION").read_text(encoding="utf-8").strip()
     if is_git_repo():
         is_tagged, tag = is_current_commit_tagged()
@@ -124,7 +124,7 @@ class CustomSdist(sdist):
         super().make_release_tree(base_dir, files)
 
         version = get_version()
-        
+
         if "dev" in version:
             # Dev versions are generated dynamically.
             # Update the VERSION file in the release tree
@@ -163,7 +163,7 @@ skbuild.setup(
     platforms="Windows, macOS, Linux",
     python_requires=">=3.7",
     classifiers=[
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "License :: Free for non-commercial use",
         "License :: Other/Proprietary License",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",

@@ -5,22 +5,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog`_, and this project adheres to `Semantic Versioning`_.
 
-[0.8.2] - XXXX-XX-XX
+[0.9.0] - 2025-01-20
 --------------------
 
-**Added**
-
--
+**Important: License has changed, please review the new license terms.**
 
 **Changed**
 
 - Removed unnecessary log print in MacOS backend. *(Thanks will-tm!)*
 - Remove builders in favor of templated approach. *(Thanks jcarrano!)*
 - Refactor code to use abstract classes and PIMPL idiom. *(Thanks jcarrano!)*
-
-**Fixed**
-
--
 
 
 [0.8.1] - 2024-11-05

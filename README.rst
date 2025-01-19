@@ -50,63 +50,71 @@ what you would like to change.
 License
 =======
 
-Since February 15th 2024, SimpleBLE is now available under the GNU General Public License
-version 3 (GPLv3), with the option for a commercial license without the GPLv3 restrictions
-available for a fee.
+Since January 20th 2025, SimpleBLE is now available under the Business Source License 1.1 (BUSL-1.1).
+This means that the project is now free to use for non-commercial purposes, but requires a commercial
+license for commercial use. Each version of SimpleBLE will convert to the GNU General Public License
+version 3 after four years of its initial release.
+
+**Why purchase a commercial license?**
+
+- Build and deploy unlimited commercial applications
+- Use across your entire development team
+- Zero revenue sharing or royalty payments
+- Choose features that match your needs and budget
+- Priority technical support included
+- Clear terms for integrating into MIT-licensed projects
 
 **You can find more information on pricing and commercial terms of service on our `website`_.**
 
 For further enquiries, please contact us at ``contact at simpleble dot org``.
 
-**We offer free commercial licenses for small projects and early-stage companies - reach out to discuss your use case.**
+**We also offer FREE commercial licenses for small projects and early-stage companies - reach out to discuss your use case!**
 
 Licensing FAQ
 -------------
 
-I'm already using SimpleBLE. What happens to my project?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+What does the Business Source License 1.1 allow and restrict?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The Business Source License allows non-production use, such as development and testing in isolated
+environments. However, any use that could be considered production (including internal tools,
+revenue-generating projects, or customer-facing deployments) requires purchasing a commercial license.
+
+After four years of the initial release of a given version of SimpleBLE, the license automatically
+converts to the GNU General Public License version 3.
+
+What do you consider "commercial use"?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Commercial use in the context of SimpleBLE refers to any usage of the library or its derivatives in
+a commercial setting where it contributes, either directly or indirectly, to financial gain. This
+includes, but is not limited to, incorporating SimpleBLE into commercial software products, using it
+in the development of services offered for a fee, or deploying it within internal tools or software
+in a for-profit organization where it adds business value.
+
+Why do I need to pay for commercial use?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Commercial licensing enables us to sustainably maintain and enhance SimpleBLE, particularly given
+its growing adoption in critical sectors like medical and industrial applications. The revenue
+from commercial licenses allows us to provide robust support, maintain compatibility with evolving
+underlying APIs, and invest in improvements that benefit all users. This includes expanded
+language support, better testing infrastructure, and more comprehensive documentation. While
+SimpleBLE remains freely available for non-commercial use, the Business Source License ensures we
+can continue providing the level of reliability and support that commercial applications require.
+
+I already have a commercial license. What happens with this latest license change?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Nothing changes. You can continue using SimpleBLE under the terms of your commercial license.
+
+I'm using SimpleBLE commercially, but don't have a commercial license. What should I do?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Please reach out at ``contact at simpleble dot org`` and we can discuss the specifics of your
-situation. It is my intention to make this transition as smooth as possible for existing users,
-and I'm open to finding a solution that works for everyone.
+situation. We have a free commercial license option for small projects and early-stage companies
+and very flexible commercial licensing options for larger projects.
 
-If you are using SimpleBLE in an open-source project and would like to request
-a free commercial license or if you have any other questions, do not hesitate to reach out.
-
-Why are you making this change?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-So far, SimpleBLE has been a labor of passion with over 4000 hours invested in multiple iterations.
-The decision to transition SimpleBLE to a dual-licensing model is mainly driven by the kind
-of products that have been built around it, in particular around notable names in the medical
-and industrial sectors, which has been both surprising and encouraging. Providing robust support for
-these diverse and critical use cases is a resource-intensive endeavor which can't be achieved on
-goodwill alone, especially so when the underlying APIs are also evolving and life having its own
-plans. By introducing a commercial license, we're opening a pathway to dedicate more resources to
-enhance SimpleBLE. Some of the things on the roadmap include:
-
-- Bindings into more languages and frameworks.
-- Hardware-in-the-loop test infrastructure.
-- Offering bounties and revenue sharing with other developers who contribute.
-- Providing more comprehensive documentation and tutorials.
-
-Despite this transition, We remain firmly committed to the open-source philosophy. SimpleBLE was grown
-a lot thanks to the feedback of the open-source community, and that foundation will always be a part
-of the project. The GPLv3 license option ensures continued accessibility for open-source projects,
-and we pledge to actively contribute to and collaborate with the community whenever possible.
-
-Ultimately, the success of SimpleBLE has been fueled by its open nature, and we believe this
-dual-licensing model strengthens that success by enabling both community-driven growth and
-targeted enhancements that benefit everyone.
-
-What does the GPLv3 license imply for my commercial project?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The GPLv3 license ensures that end users have the freedom to run, study, share, and modify the software.
-It requires that any modified versions of SimpleBLE, or any software incorporating it, also be
-distributed under the GPLv3. Essentially, if your project incorporates SimpleBLE and is distributed,
-the entire codebase must be open-source under the GPLv3.
-
-You can find the full text of the GPLv3 license at https://www.gnu.org/licenses/gpl-3.0.html.
 
 .. Links
 
