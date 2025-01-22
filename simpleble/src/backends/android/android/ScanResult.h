@@ -3,6 +3,7 @@
 #include "jni/Common.hpp"
 
 #include "BluetoothDevice.h"
+#include "ScanRecord.h"
 
 namespace SimpleBLE {
 namespace Android {
@@ -12,7 +13,12 @@ class ScanResult {
     ScanResult(jobject j_scan_result);
 
     BluetoothDevice getDevice();
+    int16_t getRssi();
+    int16_t getTxPower();
+    bool isConnectable();
+    ScanRecord getScanRecord();
     std::string toString();
+
 
   private:
     static JNI::Class _cls;

@@ -79,9 +79,13 @@ void AdapterAndroid::scan_for(int timeout_ms) {
 
 bool AdapterAndroid::scan_is_active() { return scanning_; }
 
-SharedPtrVector<PeripheralBase> AdapterAndroid::scan_get_results() { return {}; }
+SharedPtrVector<PeripheralBase> AdapterAndroid::scan_get_results() { return Util::values(seen_peripherals_); }
 
-SharedPtrVector<PeripheralBase> AdapterAndroid::get_paired_peripherals() { return {}; }
+SharedPtrVector<PeripheralBase> AdapterAndroid::get_paired_peripherals() {
+    // TODO: In order to implement this, we should implement a dedicated class for btAdapter, instead
+    // of making direct calls to the Java objects.
+    return {};
+}
 
 void AdapterAndroid::set_callback_on_scan_start(std::function<void()> on_scan_start) {
     if (on_scan_start) {

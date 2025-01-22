@@ -5,7 +5,9 @@ namespace Android {
 
 JNI::Class BluetoothDevice::_cls;
 jmethodID BluetoothDevice::_method_getAddress;
+jmethodID BluetoothDevice::_method_getAddressType;
 jmethodID BluetoothDevice::_method_getName;
+jmethodID BluetoothDevice::_method_getBondState;
 jmethodID BluetoothDevice::_method_connectGatt;
 
 void BluetoothDevice::initialize() {
@@ -19,8 +21,16 @@ void BluetoothDevice::initialize() {
         _method_getAddress = env->GetMethodID(_cls.get(), "getAddress", "()Ljava/lang/String;");
     }
 
+    if (!_method_getAddressType) {
+        _method_getAddressType = env->GetMethodID(_cls.get(), "getAddressType", "()I");
+    }
+
     if (!_method_getName) {
         _method_getName = env->GetMethodID(_cls.get(), "getName", "()Ljava/lang/String;");
+    }
+
+    if (!_method_getBondState) {
+        _method_getBondState = env->GetMethodID(_cls.get(), "getBondState", "()I");
     }
 
     if (!_method_connectGatt) {
@@ -43,9 +53,19 @@ std::string BluetoothDevice::getAddress() {
     return _obj.call_string_method(_method_getAddress);
 }
 
+int BluetoothDevice::getAddressType() {
+    check_initialized();
+    return _obj.call_int_method(_method_getAddressType);
+}
+
 std::string BluetoothDevice::getName() {
     check_initialized();
     return _obj.call_string_method(_method_getName);
+}
+
+int BluetoothDevice::getBondState() {
+    check_initialized();
+    return _obj.call_int_method(_method_getBondState);
 }
 
 BluetoothGatt BluetoothDevice::connectGatt(bool autoConnect, Bridge::BluetoothGattCallback& callback) {

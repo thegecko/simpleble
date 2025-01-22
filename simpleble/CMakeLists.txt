@@ -310,15 +310,11 @@ elseif(SIMPLEBLE_BACKEND_MACOS)
 elseif(SIMPLEBLE_BACKEND_ANDROID)
     message(STATUS "Configuring for Android")
 
-    # Set the include directories for the Android NDK headers and other necessary directories
     include_directories(${ANDROID_NDK}/sysroot/usr/include)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android)
 
-    # Add any necessary compile definitions or options for Android
     add_compile_options(-DANDROID -D__ANDROID_API__=${ANDROID_NATIVE_API_LEVEL})
 
-    # Specify the source files for the Android backend
-    # NOTE: These files have been commented out and replaced by the PLAIN version in order to develop the Android wrapper code.
     target_sources(simpleble PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/AdapterAndroid.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/PeripheralAndroid.cpp
@@ -329,6 +325,7 @@ elseif(SIMPLEBLE_BACKEND_ANDROID)
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/BluetoothGattCharacteristic.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/BluetoothGattDescriptor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/UUID.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/ScanRecord.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/ScanResult.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/bridge/BluetoothGattCallback.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/bridge/ScanCallback.cpp

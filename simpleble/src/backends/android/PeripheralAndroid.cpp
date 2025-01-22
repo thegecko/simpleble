@@ -37,7 +37,11 @@ PeripheralAndroid::PeripheralAndroid(Android::ScanResult scan_result) : _device(
 
 PeripheralAndroid::~PeripheralAndroid() {}
 
-void PeripheralAndroid::update_advertising_data(Android::ScanResult scan_result) {}
+void PeripheralAndroid::update_advertising_data(Android::ScanResult scan_result) {
+    rssi_ = scan_result.getRssi();
+    tx_power_ = scan_result.getTxPower();
+    connectable_ = scan_result.isConnectable();
+}
 
 void* PeripheralAndroid::underlying() const { return nullptr; }
 
@@ -45,11 +49,20 @@ std::string PeripheralAndroid::identifier() { return _device.getName(); }
 
 BluetoothAddress PeripheralAndroid::address() { return BluetoothAddress(_device.getAddress()); }
 
-BluetoothAddressType PeripheralAndroid::address_type() { return BluetoothAddressType::UNSPECIFIED; }
+BluetoothAddressType PeripheralAndroid::address_type() {
+    switch (_device.getAddressType()) {
+        case Android::BluetoothDevice::ADDRESS_TYPE_PUBLIC:
+            return BluetoothAddressType::PUBLIC;
+        case Android::BluetoothDevice::ADDRESS_TYPE_RANDOM:
+            return BluetoothAddressType::RANDOM;
+        default:
+            return BluetoothAddressType::UNSPECIFIED;
+    }
+}
 
-int16_t PeripheralAndroid::rssi() { return 0; }
+int16_t PeripheralAndroid::rssi() { return rssi_; }
 
-int16_t PeripheralAndroid::tx_power() { return 0; }
+int16_t PeripheralAndroid::tx_power() { return tx_power_; }
 
 uint16_t PeripheralAndroid::mtu() { return _btGattCallback.mtu; }
 
@@ -59,9 +72,9 @@ void PeripheralAndroid::disconnect() { _gatt.disconnect(); }
 
 bool PeripheralAndroid::is_connected() { return _btGattCallback.connected && _btGattCallback.services_discovered; }
 
-bool PeripheralAndroid::is_connectable() { return false; }
+bool PeripheralAndroid::is_connectable() { return connectable_; }
 
-bool PeripheralAndroid::is_paired() { return false; }
+bool PeripheralAndroid::is_paired() { return _device.getBondState() == Android::BluetoothDevice::BOND_BONDED; }
 
 void PeripheralAndroid::unpair() {}
 

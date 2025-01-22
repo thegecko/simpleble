@@ -23,6 +23,22 @@ BluetoothDevice ScanResult::getDevice() {
     return BluetoothDevice(_obj.call_object_method("getDevice", "()Landroid/bluetooth/BluetoothDevice;"));
 }
 
+int16_t ScanResult::getRssi() {
+    return _obj.call_int_method("getRssi", "()I");
+}
+
+int16_t ScanResult::getTxPower() {
+    return _obj.call_int_method("getTxPower", "()I");
+}
+
+bool ScanResult::isConnectable() {
+    return _obj.call_boolean_method("isConnectable", "()Z");
+}
+
+ScanRecord ScanResult::getScanRecord() {
+    return ScanRecord(_obj.call_object_method("getScanRecord", "()Landroid/bluetooth/le/ScanRecord;"));
+}
+
 std::string ScanResult::toString() { return _obj.call_string_method("toString", "()Ljava/lang/String;"); }
 
 }  // namespace Android

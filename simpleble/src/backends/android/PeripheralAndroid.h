@@ -62,6 +62,11 @@ class PeripheralAndroid : public PeripheralBase {
     Android::BluetoothGatt _gatt;
     std::vector<Android::BluetoothGattService> _services;
 
+    int16_t rssi_ = INT16_MIN;
+    int16_t tx_power_ = INT16_MIN;
+    uint16_t mtu_;
+    bool connectable_;
+
     kvn::safe_callback<void()> callback_on_connected_;
     kvn::safe_callback<void()> callback_on_disconnected_;
 

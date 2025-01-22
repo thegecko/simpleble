@@ -10,7 +10,13 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Added**
 
--
+- (Android) Implemented the following API functions:
+  - `Adapter::scan_get_results()`
+  - `Peripheral::address_type()`
+  - `Peripheral::rssi()`
+  - `Peripheral::tx_power()`
+  - `Peripheral::is_connectable()`
+  - `Peripheral::is_paired()`
 
 **Changed**
 
@@ -18,7 +24,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Fixed**
 
-- 
+-
 
 
 [0.9.0] - 2025-01-20
