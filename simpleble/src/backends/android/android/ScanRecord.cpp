@@ -13,9 +13,8 @@ void ScanRecord::initialize() {
     }
 }
 
-ScanRecord::ScanRecord(jobject j_scan_record) {
+ScanRecord::ScanRecord(JNI::Object obj) : _obj(obj) {
     initialize();
-    _obj = JNI::Object(j_scan_record, _cls.get());
 }
 
 std::string ScanRecord::toString() { return _obj.call_string_method("toString", "()Ljava/lang/String;"); }

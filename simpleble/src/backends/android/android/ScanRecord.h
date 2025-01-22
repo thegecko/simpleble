@@ -7,7 +7,7 @@ namespace Android {
 
 class ScanRecord {
   public:
-    ScanRecord(jobject j_scan_record);
+    ScanRecord(JNI::Object obj);
 
     std::string toString();
 
