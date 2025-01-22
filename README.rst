@@ -64,7 +64,7 @@ version 3 after four years of its initial release.
 - Priority technical support included
 - Clear terms for integrating into MIT-licensed projects
 
-**You can find more information on pricing and commercial terms of service on our `website`_.**
+**You can find more information on pricing and commercial terms of service on our `website`_ .**
 
 For further enquiries, please contact us at ``contact at simpleble dot org``.
 
