@@ -65,16 +65,13 @@ class BluetoothGattCallback {
     // clang-format on
 
   private:
-    struct FlagData {
-        bool flag = false;
-        std::condition_variable cv;
-        std::mutex mtx;
-        std::vector<uint8_t> value;
-    };
+
+    static void initialize();
 
     static JNI::Class _cls;
+
     static std::map<jobject, BluetoothGattCallback*, JNI::JObjectComparator> _map;
-    static void initialize();
+    static std::mutex _map_mutex;
 
     JNI::Object _obj;
 
@@ -88,6 +85,13 @@ class BluetoothGattCallback {
     std::map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_characteristicReadPending;
     std::map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_descriptorWritePending;
     std::map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_descriptorReadPending;
+
+    struct FlagData {
+        bool flag = false;
+        std::condition_variable cv;
+        std::mutex mtx;
+        std::vector<uint8_t> value;
+    };
 };
 
 }  // namespace Bridge

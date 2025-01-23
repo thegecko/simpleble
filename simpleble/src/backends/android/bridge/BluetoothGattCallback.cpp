@@ -12,14 +12,22 @@ namespace Bridge {
 JNI::Class BluetoothGattCallback::_cls;
 std::map<jobject, BluetoothGattCallback*, JNI::JObjectComparator> BluetoothGattCallback::_map;
 
-#define GET_CALLBACK_OBJECT_OR_RETURN(thiz)                                                                \
-    ({                                                                                                     \
-        auto it = BluetoothGattCallback::_map.find(thiz);                                                  \
-        if (it == BluetoothGattCallback::_map.end()) {                                                     \
-            SIMPLEBLE_LOG_FATAL("Failed to find BluetoothGattCallback object. This should never happen."); \
-            return;                                                                                        \
-        }                                                                                                  \
-        it->second;                                                                                        \
+// Add static mutex for map protection
+static std::mutex _map_mutex;
+
+#define GET_CALLBACK_OBJECT_OR_RETURN(thiz)                                                                    \
+    ({                                                                                                         \
+        BluetoothGattCallback* callback = nullptr;                                                             \
+        {                                                                                                      \
+            std::lock_guard<std::mutex> lock(_map_mutex);                                                      \
+            auto it = BluetoothGattCallback::_map.find(thiz);                                                  \
+            if (it == BluetoothGattCallback::_map.end()) {                                                     \
+                SIMPLEBLE_LOG_FATAL("Failed to find BluetoothGattCallback object. This should never happen."); \
+                return;                                                                                        \
+            }                                                                                                  \
+            callback = it->second;                                                                             \
+        }                                                                                                      \
+        callback;                                                                                              \
     })
 
 void BluetoothGattCallback::initialize() {
@@ -30,14 +38,21 @@ void BluetoothGattCallback::initialize() {
     }
 }
 
-BluetoothGattCallback::BluetoothGattCallback() : connected(false), mtu(UINT16_MAX) {
+BluetoothGattCallback::BluetoothGattCallback() : connected(false), services_discovered(false), mtu(UINT16_MAX) {
     initialize();
 
     _obj = _cls.call_constructor("()V");
-    _map[_obj.get()] = this;
+
+    {
+        std::lock_guard<std::mutex> lock(_map_mutex);
+        _map[_obj.get()] = this;
+    }
 }
 
-BluetoothGattCallback::~BluetoothGattCallback() { _map.erase(_obj.get()); }
+BluetoothGattCallback::~BluetoothGattCallback() {
+    std::lock_guard<std::mutex> lock(_map_mutex);
+    _map.erase(_obj.get());
+}
 
 void BluetoothGattCallback::set_callback_onConnectionStateChange(std::function<void(bool)> callback) {
     if (callback) {
