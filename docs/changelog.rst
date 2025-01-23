@@ -20,7 +20,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Changed**
 
--
+- `Adapter::identifier()` method is non-const, as underlying const conditions can't be guaranteed.
 
 **Fixed**
 
