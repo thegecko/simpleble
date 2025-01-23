@@ -154,14 +154,14 @@ void BluetoothGattCallback::wait_flag_descriptorWritePending(JNI::Object descrip
 }
 
 void BluetoothGattCallback::set_flag_descriptorReadPending(JNI::Object descriptor) {
-    auto& flag_data = _flag_descriptorWritePending[descriptor];
+    auto& flag_data = _flag_descriptorReadPending[descriptor];
 
     std::lock_guard<std::mutex> lock(flag_data.mtx);
     flag_data.flag = true;
 }
 
 void BluetoothGattCallback::clear_flag_descriptorReadPending(JNI::Object descriptor, std::vector<uint8_t> value) {
-    auto& flag_data = _flag_descriptorWritePending[descriptor];
+    auto& flag_data = _flag_descriptorReadPending[descriptor];
     {
         std::lock_guard<std::mutex> lock(flag_data.mtx);
         flag_data.flag = false;
@@ -171,7 +171,7 @@ void BluetoothGattCallback::clear_flag_descriptorReadPending(JNI::Object descrip
 }
 
 std::vector<uint8_t> BluetoothGattCallback::wait_flag_descriptorReadPending(JNI::Object descriptor) {
-    auto& flag_data = _flag_descriptorWritePending[descriptor];
+    auto& flag_data = _flag_descriptorReadPending[descriptor];
     std::unique_lock<std::mutex> lock(flag_data.mtx);
     flag_data.cv.wait_for(lock, std::chrono::seconds(5), [&flag_data] { return !flag_data.flag; });
 

@@ -226,9 +226,9 @@ void PeripheralAndroid::unsubscribe(BluetoothUUID const& service, BluetoothUUID 
     _btGattCallback.wait_flag_descriptorWritePending(descriptor_obj.getObject().get());
 
     _btGattCallback.clear_callback_onCharacteristicChanged(characteristic_obj.getObject());
-    bool success = _gatt.setCharacteristicNotification(characteristic_obj, true);
+    bool success = _gatt.setCharacteristicNotification(characteristic_obj, false);
     if (!success) {
-        throw SimpleBLE::Exception::OperationFailed("Failed to subscribe to characteristic " + characteristic);
+        throw SimpleBLE::Exception::OperationFailed("Failed to unsubscribe from characteristic " + characteristic);
     }
 }
 
@@ -288,11 +288,10 @@ Android::BluetoothGattCharacteristic PeripheralAndroid::_fetch_characteristic(
                 if (characteristic.getUuid() == characteristic_uuid) {
                     return characteristic;
                 }
-                throw SimpleBLE::Exception::CharacteristicNotFound(characteristic_uuid);
             }
+            throw SimpleBLE::Exception::CharacteristicNotFound(characteristic_uuid);
         }
     }
-
     throw SimpleBLE::Exception::ServiceNotFound(service_uuid);
 }
 
@@ -307,11 +306,11 @@ Android::BluetoothGattDescriptor PeripheralAndroid::_fetch_descriptor(const Blue
                         if (descriptor.getUuid() == descriptor_uuid) {
                             return descriptor;
                         }
-                        throw SimpleBLE::Exception::DescriptorNotFound(descriptor_uuid);
                     }
+                    throw SimpleBLE::Exception::DescriptorNotFound(descriptor_uuid);
                 }
-                throw SimpleBLE::Exception::CharacteristicNotFound(characteristic_uuid);
             }
+            throw SimpleBLE::Exception::CharacteristicNotFound(characteristic_uuid);
         }
     }
     throw SimpleBLE::Exception::ServiceNotFound(service_uuid);
