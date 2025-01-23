@@ -13,8 +13,10 @@ class ScanRecord {
 
   private:
     static JNI::Class _cls;
-    static void initialize();
+    static jmethodID _method_toString;
 
+    static void initialize();
+    void check_initialized() const;
     JNI::Object _obj;
 };
 

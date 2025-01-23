@@ -22,8 +22,15 @@ class ScanResult {
 
   private:
     static JNI::Class _cls;
-    static void initialize();
+    static jmethodID _method_getDevice;
+    static jmethodID _method_getRssi;
+    static jmethodID _method_getTxPower;
+    static jmethodID _method_isConnectable;
+    static jmethodID _method_getScanRecord;
+    static jmethodID _method_toString;
 
+    static void initialize();
+    void check_initialized() const;
     JNI::Object _obj;
 };
 

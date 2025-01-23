@@ -49,6 +49,7 @@ class BluetoothGatt {
     static jmethodID _method_connect;
     static jmethodID _method_disconnect;
     static jmethodID _method_discoverServices;
+    static jmethodID _method_getServices;
     static jmethodID _method_readCharacteristic;
     static jmethodID _method_readDescriptor;
     static jmethodID _method_setCharacteristicNotification;

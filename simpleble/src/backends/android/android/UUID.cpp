@@ -1,34 +1,35 @@
 #include "UUID.h"
 
 namespace SimpleBLE {
-    namespace Android {
+namespace Android {
 
-        JNI::Class UUID::_cls;
-        jmethodID UUID::_method_toString = nullptr;
+JNI::Class UUID::_cls;
+jmethodID UUID::_method_toString = nullptr;
 
-        void UUID::initialize() {
-            JNI::Env env;
+void UUID::initialize() {
+    JNI::Env env;
 
-            if (_cls.get() == nullptr) {
-                _cls = env.find_class("java/util/UUID");
-            }
+    if (_cls.get() == nullptr) {
+        _cls = env.find_class("java/util/UUID");
+    }
 
-            if (!_method_toString) {
-                _method_toString = env->GetMethodID(_cls.get(), "toString", "()Ljava/lang/String;");
-            }
-        }
+    if (!_method_toString) {
+        _method_toString = env->GetMethodID(_cls.get(), "toString", "()Ljava/lang/String;");
+    }
+}
 
-        UUID::UUID() { initialize(); }
+UUID::UUID() { initialize(); }
 
-        UUID::UUID(JNI::Object obj) : UUID() {
-            _obj = obj;
-        }
+UUID::UUID(JNI::Object obj) : _obj(obj) { initialize(); }
 
-        std::string UUID::toString() {
-            if (!_obj) return "";
+void UUID::check_initialized() const {
+    if (!_obj) throw std::runtime_error("UUID is not initialized");
+}
 
-            return _obj.call_string_method(_method_toString);
-        }
+std::string UUID::toString() {
+    check_initialized();
+    return _obj.call_string_method(_method_toString);
+}
 
-    } // Android
-} // SimpleBLE
+}  // namespace Android
+}  // namespace SimpleBLE

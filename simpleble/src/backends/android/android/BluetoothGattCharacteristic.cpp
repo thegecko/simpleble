@@ -5,7 +5,7 @@
 #include "BluetoothGattCharacteristic.h"
 #include "UUID.h"
 #include "jni/Types.h"
-
+#include "jni/List.h"
 namespace SimpleBLE {
 namespace Android {
 
@@ -99,13 +99,14 @@ BluetoothGattCharacteristic::BluetoothGattCharacteristic(JNI::Object obj) : Blue
 std::vector<BluetoothGattDescriptor> BluetoothGattCharacteristic::getDescriptors() {
     check_initialized();
 
-    JNI::Object descriptors = _obj.call_object_method(_method_getDescriptors);
-    if (!descriptors) throw std::runtime_error("Failed to get descriptors");
+    JNI::Object descriptors_obj = _obj.call_object_method(_method_getDescriptors);
+    if (!descriptors_obj) throw std::runtime_error("Failed to get descriptors");
 
     std::vector<BluetoothGattDescriptor> result;
-    JNI::Object iterator = descriptors.call_object_method("iterator", "()Ljava/util/Iterator;");
-    while (iterator.call_boolean_method("hasNext", "()Z")) {
-        JNI::Object descriptor = iterator.call_object_method("next", "()Ljava/lang/Object;");
+    JNI::Types::List list(descriptors_obj);
+    JNI::Types::Iterator iterator = list.iterator();
+    while (iterator.hasNext()) {
+        JNI::Object descriptor = iterator.next();
 
         if (!descriptor) continue;
         result.push_back(BluetoothGattDescriptor(descriptor));

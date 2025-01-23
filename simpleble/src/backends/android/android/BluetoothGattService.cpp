@@ -4,6 +4,7 @@
 
 #include "BluetoothGattService.h"
 #include "UUID.h"
+#include "jni/List.h"
 
 namespace SimpleBLE {
 namespace Android {
@@ -88,13 +89,14 @@ BluetoothGattService::BluetoothGattService(JNI::Object obj) : BluetoothGattServi
 std::vector<BluetoothGattCharacteristic> BluetoothGattService::getCharacteristics() {
     check_initialized();
 
-    JNI::Object characteristics = _obj.call_object_method(_method_getCharacteristics);
-    if (!characteristics) throw std::runtime_error("Failed to get characteristics");
+    JNI::Object characteristics_obj = _obj.call_object_method(_method_getCharacteristics);
+    if (!characteristics_obj) throw std::runtime_error("Failed to get characteristics");
 
     std::vector<BluetoothGattCharacteristic> result;
-    JNI::Object iterator = characteristics.call_object_method("iterator", "()Ljava/util/Iterator;");
-    while (iterator.call_boolean_method("hasNext", "()Z")) {
-        JNI::Object characteristic = iterator.call_object_method("next", "()Ljava/lang/Object;");
+    JNI::Types::List list(characteristics_obj);
+    JNI::Types::Iterator iterator = list.iterator();
+    while (iterator.hasNext()) {
+        JNI::Object characteristic = iterator.next();
 
         if (!characteristic) continue; // TODO: Should we throw an error here?
         result.push_back(BluetoothGattCharacteristic(characteristic));

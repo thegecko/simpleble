@@ -2,6 +2,8 @@
 #include <android/log.h>
 #include <fmt/core.h>
 
+#include "jni/List.h"
+
 namespace SimpleBLE {
 namespace Android {
 
@@ -10,6 +12,7 @@ jmethodID BluetoothGatt::_method_close = nullptr;
 jmethodID BluetoothGatt::_method_connect = nullptr;
 jmethodID BluetoothGatt::_method_disconnect = nullptr;
 jmethodID BluetoothGatt::_method_discoverServices = nullptr;
+jmethodID BluetoothGatt::_method_getServices = nullptr;
 jmethodID BluetoothGatt::_method_readCharacteristic = nullptr;
 jmethodID BluetoothGatt::_method_readDescriptor = nullptr;
 jmethodID BluetoothGatt::_method_setCharacteristicNotification = nullptr;
@@ -37,6 +40,10 @@ void BluetoothGatt::initialize() {
 
     if (!_method_discoverServices) {
         _method_discoverServices = env->GetMethodID(_cls.get(), "discoverServices", "()Z");
+    }
+
+    if (!_method_getServices) {
+        _method_getServices = env->GetMethodID(_cls.get(), "getServices", "()Ljava/util/List;");
     }
 
     if (!_method_readCharacteristic) {
@@ -101,14 +108,14 @@ bool BluetoothGatt::discoverServices() {
 std::vector<BluetoothGattService> BluetoothGatt::getServices() {
     check_initialized();
 
-    JNI::Object services = _obj.call_object_method("getServices", "()Ljava/util/List;");
-    if (!services) return std::vector<BluetoothGattService>();
+    JNI::Object services_obj = _obj.call_object_method(_method_getServices);
+    if (!services_obj) return std::vector<BluetoothGattService>();
 
-    // TODO: We should create a List class type and cache method IDs.
     std::vector<BluetoothGattService> result;
-    JNI::Object iterator = services.call_object_method("iterator", "()Ljava/util/Iterator;");
-    while (iterator.call_boolean_method("hasNext", "()Z")) {
-        JNI::Object service = iterator.call_object_method("next", "()Ljava/lang/Object;");
+    JNI::Types::List list(services_obj);
+    JNI::Types::Iterator iterator = list.iterator();
+    while (iterator.hasNext()) {
+        JNI::Object service = iterator.next();
 
         if (!service) continue;
         result.push_back(BluetoothGattService(service));
