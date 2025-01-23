@@ -30,8 +30,8 @@ class SIMPLEBLE_EXPORT Characteristic {
     bool can_indicate();
 
   protected:
-    CharacteristicBase *operator->();
-    const CharacteristicBase *operator->() const;
+    CharacteristicBase* operator->();
+    const CharacteristicBase* operator->() const;
 
     std::shared_ptr<CharacteristicBase> internal_;
 };

@@ -11,7 +11,7 @@ class BluetoothAdapter {
   public:
     BluetoothAdapter(JNI::Object obj);
 
-    std::string getName() ;
+    std::string getName();
     std::string getAddress();
     bool isEnabled();
     int getState();

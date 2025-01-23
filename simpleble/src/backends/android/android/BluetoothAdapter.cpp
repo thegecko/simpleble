@@ -35,17 +35,17 @@ void BluetoothAdapter::initialize() {
     }
 
     if (_method_getBluetoothLeScanner == nullptr) {
-        _method_getBluetoothLeScanner = env->GetMethodID(_cls.get(), "getBluetoothLeScanner", "()Landroid/bluetooth/le/BluetoothLeScanner;");
+        _method_getBluetoothLeScanner = env->GetMethodID(_cls.get(), "getBluetoothLeScanner",
+                                                         "()Landroid/bluetooth/le/BluetoothLeScanner;");
     }
 
     if (_method_getDefaultAdapter == nullptr) {
-        _method_getDefaultAdapter = env->GetStaticMethodID(_cls.get(), "getDefaultAdapter", "()Landroid/bluetooth/BluetoothAdapter;");
+        _method_getDefaultAdapter = env->GetStaticMethodID(_cls.get(), "getDefaultAdapter",
+                                                           "()Landroid/bluetooth/BluetoothAdapter;");
     }
 }
 
-BluetoothAdapter::BluetoothAdapter(JNI::Object obj) : _obj(obj) {
-    initialize();
-}
+BluetoothAdapter::BluetoothAdapter(JNI::Object obj) : _obj(obj) { initialize(); }
 
 void BluetoothAdapter::check_initialized() const {
     if (!_obj) throw std::runtime_error("BluetoothAdapter is not initialized");

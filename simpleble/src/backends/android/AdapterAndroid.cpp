@@ -48,13 +48,9 @@ AdapterAndroid::~AdapterAndroid() {}
 
 void* AdapterAndroid::underlying() const { return nullptr; }
 
-std::string AdapterAndroid::identifier() {
-    return _btAdapter.getName();
-}
+std::string AdapterAndroid::identifier() { return _btAdapter.getName(); }
 
-BluetoothAddress AdapterAndroid::address() {
-    return BluetoothAddress(_btAdapter.getAddress());
-}
+BluetoothAddress AdapterAndroid::address() { return BluetoothAddress(_btAdapter.getAddress()); }
 
 void AdapterAndroid::scan_start() {
     seen_peripherals_.clear();

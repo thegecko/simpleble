@@ -76,7 +76,6 @@ BluetoothGatt::BluetoothGatt() { initialize(); }
 
 BluetoothGatt::BluetoothGatt(JNI::Object obj) : BluetoothGatt() { _obj = obj; }
 
-
 void BluetoothGatt::check_initialized() const {
     if (!_obj) throw std::runtime_error("BluetoothGatt is not initialized");
 }

@@ -57,12 +57,12 @@ std::vector<uint8_t> BluetoothGattDescriptor::getValue() {
     return _obj.call_byte_array_method(_method_getValue);
 }
 
-bool BluetoothGattDescriptor::setValue(const std::vector<uint8_t> &value) {
+bool BluetoothGattDescriptor::setValue(const std::vector<uint8_t>& value) {
     check_initialized();
 
     JNI::Env env;
     jbyteArray jbyteArray_obj = env->NewByteArray(value.size());
-    env->SetByteArrayRegion(jbyteArray_obj, 0, value.size(), reinterpret_cast<const jbyte *>(value.data()));
+    env->SetByteArrayRegion(jbyteArray_obj, 0, value.size(), reinterpret_cast<const jbyte*>(value.data()));
 
     bool result = _obj.call_boolean_method(_method_setValue, jbyteArray_obj);
 

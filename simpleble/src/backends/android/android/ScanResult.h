@@ -19,7 +19,6 @@ class ScanResult {
     ScanRecord getScanRecord();
     std::string toString();
 
-
   private:
     static JNI::Class _cls;
     static jmethodID _method_getDevice;

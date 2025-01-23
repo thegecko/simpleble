@@ -33,7 +33,7 @@ class RustyAdapter : private SimpleBLE::Adapter {
     virtual ~RustyAdapter() { _internal.reset(); }
 
     RustyAdapter(SimpleBLE::Adapter adapter)
-        : _internal(new SimpleBLE::Adapter(adapter)), _adapter(std::make_unique<SimpleRsBLE::Adapter*>()){};
+        : _internal(new SimpleBLE::Adapter(adapter)), _adapter(std::make_unique<SimpleRsBLE::Adapter*>()) {};
 
     void link(SimpleRsBLE::Adapter& target) const;
     void unlink() const;

@@ -4,8 +4,8 @@
 
 #include "BluetoothGattCharacteristic.h"
 #include "UUID.h"
-#include "jni/Types.h"
 #include "jni/List.h"
+#include "jni/Types.h"
 namespace SimpleBLE {
 namespace Android {
 

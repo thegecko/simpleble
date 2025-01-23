@@ -11,8 +11,8 @@ class BluetoothScanner {
   public:
     BluetoothScanner(JNI::Object obj);
 
-    void startScan(Bridge::ScanCallback &callback);
-    void stopScan(Bridge::ScanCallback &callback);
+    void startScan(Bridge::ScanCallback& callback);
+    void stopScan(Bridge::ScanCallback& callback);
 
     std::string toString();
 

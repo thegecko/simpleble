@@ -34,12 +34,12 @@ void BluetoothScanner::check_initialized() const {
     if (!_obj) throw std::runtime_error("BluetoothScanner is not initialized");
 }
 
-void BluetoothScanner::startScan(Bridge::ScanCallback &callback) {
+void BluetoothScanner::startScan(Bridge::ScanCallback& callback) {
     check_initialized();
     _obj.call_void_method(_method_startScan, "(Landroid/bluetooth/le/ScanCallback;)V", callback.get());
 }
 
-void BluetoothScanner::stopScan(Bridge::ScanCallback &callback) {
+void BluetoothScanner::stopScan(Bridge::ScanCallback& callback) {
     check_initialized();
     _obj.call_void_method(_method_stopScan, "(Landroid/bluetooth/le/ScanCallback;)V", callback.get());
 }

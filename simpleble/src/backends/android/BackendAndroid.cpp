@@ -1,8 +1,8 @@
 #include "BackendAndroid.h"
 #include "AdapterAndroid.h"
-#include "android/BluetoothAdapter.h"
 #include "BuildVec.h"
 #include "CommonUtils.h"
+#include "android/BluetoothAdapter.h"
 
 #include <android/log.h>
 #include <fmt/core.h>
