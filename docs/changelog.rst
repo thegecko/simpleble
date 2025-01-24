@@ -12,6 +12,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 - (Android) Implemented the following API functions:
   - `Adapter::scan_get_results()`
+  - `Adapter::get_paired_peripherals()`
   - `Peripheral::address_type()`
   - `Peripheral::rssi()`
   - `Peripheral::tx_power()`

@@ -333,6 +333,7 @@ elseif(SIMPLEBLE_BACKEND_ANDROID)
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/bridge/ScanCallback.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/jni/Iterator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/jni/List.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/jni/Set.cpp
     )
 
     target_link_libraries(simpleble PUBLIC

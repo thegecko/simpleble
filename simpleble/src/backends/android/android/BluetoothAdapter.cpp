@@ -1,4 +1,5 @@
 #include "BluetoothAdapter.h"
+#include "jni/Set.h"
 
 namespace SimpleBLE {
 namespace Android {
@@ -9,6 +10,7 @@ jmethodID BluetoothAdapter::_method_getAddress;
 jmethodID BluetoothAdapter::_method_isEnabled;
 jmethodID BluetoothAdapter::_method_getState;
 jmethodID BluetoothAdapter::_method_getBluetoothLeScanner;
+jmethodID BluetoothAdapter::_method_getBondedDevices;
 jmethodID BluetoothAdapter::_method_getDefaultAdapter;
 
 void BluetoothAdapter::initialize() {
@@ -37,6 +39,10 @@ void BluetoothAdapter::initialize() {
     if (_method_getBluetoothLeScanner == nullptr) {
         _method_getBluetoothLeScanner = env->GetMethodID(_cls.get(), "getBluetoothLeScanner",
                                                          "()Landroid/bluetooth/le/BluetoothLeScanner;");
+    }
+
+    if (_method_getBondedDevices == nullptr) {
+        _method_getBondedDevices = env->GetMethodID(_cls.get(), "getBondedDevices", "()Ljava/util/Set;");
     }
 
     if (_method_getDefaultAdapter == nullptr) {
@@ -79,6 +85,24 @@ int BluetoothAdapter::getState() {
 BluetoothScanner BluetoothAdapter::getBluetoothLeScanner() {
     check_initialized();
     return BluetoothScanner(_obj.call_object_method(_method_getBluetoothLeScanner));
+}
+
+std::vector<BluetoothDevice> BluetoothAdapter::getBondedDevices() {
+    check_initialized();
+
+    JNI::Object devices_obj = _obj.call_object_method(_method_getBondedDevices);
+    if (!devices_obj) throw std::runtime_error("Failed to get bonded devices");
+
+    std::vector<BluetoothDevice> result;
+    JNI::Types::Set set(devices_obj);
+    JNI::Types::Iterator iterator = set.iterator();
+    while (iterator.hasNext()) {
+        JNI::Object device_obj = iterator.next();
+        if (!device_obj) continue;
+        result.push_back(BluetoothDevice(device_obj));
+    }
+
+    return result;
 }
 
 }  // namespace Android

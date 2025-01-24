@@ -22,7 +22,7 @@ AdapterAndroid::AdapterAndroid(std::shared_ptr<BackendAndroid> backend) : backen
 
         if (this->peripherals_.count(address) == 0) {
             // If the incoming peripheral has never been seen before, create and save a reference to it.
-            auto base_peripheral = std::make_shared<PeripheralAndroid>(scan_result);
+            auto base_peripheral = std::make_shared<PeripheralAndroid>(scan_result.getDevice());
             this->peripherals_.insert(std::make_pair(address, base_peripheral));
         }
 
@@ -76,9 +76,14 @@ bool AdapterAndroid::scan_is_active() { return scanning_; }
 SharedPtrVector<PeripheralBase> AdapterAndroid::scan_get_results() { return Util::values(seen_peripherals_); }
 
 SharedPtrVector<PeripheralBase> AdapterAndroid::get_paired_peripherals() {
-    // TODO: In order to implement this, we should implement a dedicated class for btAdapter, instead
-    // of making direct calls to the Java objects.
-    return {};
+    SharedPtrVector<PeripheralBase> peripherals;
+
+    auto paired_list = _btAdapter.getBondedDevices();
+    for (auto& device : paired_list) {
+        peripherals.push_back(std::make_shared<PeripheralAndroid>(device));
+    }
+
+    return peripherals;
 }
 
 void AdapterAndroid::set_callback_on_scan_start(std::function<void()> on_scan_start) {

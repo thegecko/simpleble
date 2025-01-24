@@ -16,7 +16,7 @@ namespace SimpleBLE {
 
 class PeripheralAndroid : public PeripheralBase {
   public:
-    PeripheralAndroid(Android::ScanResult scan_result);
+    PeripheralAndroid(Android::BluetoothDevice device);
     virtual ~PeripheralAndroid();
 
     virtual void* underlying() const override;

@@ -3,6 +3,7 @@
 #include "jni/Common.hpp"
 
 #include "BluetoothScanner.h"
+#include "BluetoothDevice.h"
 
 namespace SimpleBLE {
 namespace Android {
@@ -17,6 +18,8 @@ class BluetoothAdapter {
     int getState();
 
     BluetoothScanner getBluetoothLeScanner();
+    std::vector<BluetoothDevice> getBondedDevices();
+
 
     // NOTE: The correct way to request a BluetoothAdapter is to go though the BluetoothManager,
     // as described in https://developer.android.com/reference/android/bluetooth/BluetoothManager#getAdapter()
@@ -36,6 +39,7 @@ class BluetoothAdapter {
     static jmethodID _method_isEnabled;
     static jmethodID _method_getState;
     static jmethodID _method_getBluetoothLeScanner;
+    static jmethodID _method_getBondedDevices;
     static jmethodID _method_getDefaultAdapter;
     static void initialize();
     void check_initialized() const;

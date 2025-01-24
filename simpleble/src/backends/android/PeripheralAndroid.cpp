@@ -15,7 +15,7 @@
 using namespace SimpleBLE;
 using namespace std::chrono_literals;
 
-PeripheralAndroid::PeripheralAndroid(Android::ScanResult scan_result) : _device(scan_result.getDevice()) {
+PeripheralAndroid::PeripheralAndroid(Android::BluetoothDevice device) : _device(device) {
     _btGattCallback.set_callback_onConnectionStateChange([this](bool connected) {
         // If a connection has been established, request service discovery.
         if (connected) {
