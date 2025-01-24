@@ -3,6 +3,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <kvn_safe_callback.hpp>
+#include <kvn_safe_map.hpp>
 #include <map>
 #include <mutex>
 #include "jni/Common.hpp"
@@ -65,33 +66,31 @@ class BluetoothGattCallback {
     // clang-format on
 
   private:
-
-    static void initialize();
-
-    static JNI::Class _cls;
-
-    static std::map<jobject, BluetoothGattCallback*, JNI::JObjectComparator> _map;
-    static std::mutex _map_mutex;
-
-    JNI::Object _obj;
-
-    kvn::safe_callback<void(bool)> _callback_onConnectionStateChange;
-    kvn::safe_callback<void()> _callback_onServicesDiscovered;
-
-    std::map<JNI::Object, kvn::safe_callback<void(std::vector<uint8_t>)>, JNI::JniObjectComparator>
-        _callback_onCharacteristicChanged;
-
-    std::map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_characteristicWritePending;
-    std::map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_characteristicReadPending;
-    std::map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_descriptorWritePending;
-    std::map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_descriptorReadPending;
-
     struct FlagData {
         bool flag = false;
         std::condition_variable cv;
         std::mutex mtx;
         std::vector<uint8_t> value;
     };
+
+    static void initialize();
+
+    static JNI::Class _cls;
+
+    static kvn::safe_map<jobject, BluetoothGattCallback*, JNI::JObjectComparator> _map;
+
+    JNI::Object _obj;
+
+    kvn::safe_callback<void(bool)> _callback_onConnectionStateChange;
+    kvn::safe_callback<void()> _callback_onServicesDiscovered;
+
+    kvn::safe_map<JNI::Object, kvn::safe_callback<void(std::vector<uint8_t>)>, JNI::JniObjectComparator>
+        _callback_onCharacteristicChanged;
+
+    kvn::safe_map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_characteristicWritePending;
+    kvn::safe_map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_characteristicReadPending;
+    kvn::safe_map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_descriptorWritePending;
+    kvn::safe_map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_descriptorReadPending;
 };
 
 }  // namespace Bridge
