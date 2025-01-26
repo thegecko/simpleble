@@ -28,7 +28,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Fixed**
 
--
+- (Android) Some potential race conditions in the Android backend.
 
 
 [0.9.0] - 2025-01-20
