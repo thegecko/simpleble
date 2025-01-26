@@ -18,6 +18,9 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
   - `Peripheral::tx_power()`
   - `Peripheral::is_connectable()`
   - `Peripheral::is_paired()`
+  - `Peripheral::unpair()`
+  - `Peripheral::manufacturer_data()`
+  - `Peripheral::advertised_services()`
 
 **Changed**
 

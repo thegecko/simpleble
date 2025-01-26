@@ -16,6 +16,7 @@ class BluetoothDevice {
     int getAddressType();
     std::string getName();
     int getBondState();
+    void removeBond();
 
     BluetoothGatt connectGatt(bool autoConnect, Bridge::BluetoothGattCallback& callback);
 
@@ -33,6 +34,7 @@ class BluetoothDevice {
     static jmethodID _method_getAddressType;
     static jmethodID _method_getName;
     static jmethodID _method_getBondState;
+    static jmethodID _method_removeBond;
     static jmethodID _method_connectGatt;
 
     static void initialize();

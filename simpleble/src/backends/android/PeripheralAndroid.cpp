@@ -41,6 +41,17 @@ void PeripheralAndroid::update_advertising_data(Android::ScanResult scan_result)
     rssi_ = scan_result.getRssi();
     tx_power_ = scan_result.getTxPower();
     connectable_ = scan_result.isConnectable();
+
+    auto scan_record = scan_result.getScanRecord();
+    auto service_uuids = scan_record.getServiceUuids();
+    for (auto& service_uuid : service_uuids) {
+        if (std::find(advertised_services_.begin(), advertised_services_.end(), service_uuid) ==
+            advertised_services_.end()) {
+            advertised_services_.push_back(service_uuid);
+        }
+    }
+
+    manufacturer_data_ = scan_record.getManufacturerData();
 }
 
 void* PeripheralAndroid::underlying() const { return nullptr; }
@@ -76,7 +87,10 @@ bool PeripheralAndroid::is_connectable() { return connectable_; }
 
 bool PeripheralAndroid::is_paired() { return _device.getBondState() == Android::BluetoothDevice::BOND_BONDED; }
 
-void PeripheralAndroid::unpair() {}
+void PeripheralAndroid::unpair() {
+    // IMPORTANT: This is a non-public API call, which might be blacklisted by the Android OS in the future.
+    _device.removeBond();
+}
 
 SharedPtrVector<ServiceBase> PeripheralAndroid::available_services() {
     SharedPtrVector<ServiceBase> service_list;
@@ -109,9 +123,15 @@ SharedPtrVector<ServiceBase> PeripheralAndroid::available_services() {
     return service_list;
 }
 
-SharedPtrVector<ServiceBase> PeripheralAndroid::advertised_services() { return {}; }
+SharedPtrVector<ServiceBase> PeripheralAndroid::advertised_services() {
+    SharedPtrVector<ServiceBase> service_list;
+    for (auto& service_uuid : advertised_services_) {
+        service_list.push_back(std::make_shared<ServiceBase>(service_uuid));
+    }
+    return service_list;
+}
 
-std::map<uint16_t, ByteArray> PeripheralAndroid::manufacturer_data() { return std::map<uint16_t, ByteArray>(); }
+std::map<uint16_t, ByteArray> PeripheralAndroid::manufacturer_data() { return manufacturer_data_; }
 
 ByteArray PeripheralAndroid::read(BluetoothUUID const& service, BluetoothUUID const& characteristic) {
     SIMPLEBLE_LOG_INFO("Reading characteristic " + characteristic);

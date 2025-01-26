@@ -8,6 +8,7 @@ jmethodID BluetoothDevice::_method_getAddress;
 jmethodID BluetoothDevice::_method_getAddressType;
 jmethodID BluetoothDevice::_method_getName;
 jmethodID BluetoothDevice::_method_getBondState;
+jmethodID BluetoothDevice::_method_removeBond;
 jmethodID BluetoothDevice::_method_connectGatt;
 
 void BluetoothDevice::initialize() {
@@ -31,6 +32,10 @@ void BluetoothDevice::initialize() {
 
     if (!_method_getBondState) {
         _method_getBondState = env->GetMethodID(_cls.get(), "getBondState", "()I");
+    }
+
+    if (!_method_removeBond) {
+        _method_removeBond = env->GetMethodID(_cls.get(), "removeBond", "()V");
     }
 
     if (!_method_connectGatt) {
@@ -64,6 +69,11 @@ std::string BluetoothDevice::getName() {
 int BluetoothDevice::getBondState() {
     check_initialized();
     return _obj.call_int_method(_method_getBondState);
+}
+
+void BluetoothDevice::removeBond() {
+    check_initialized();
+    _obj.call_void_method(_method_removeBond);
 }
 
 BluetoothGatt BluetoothDevice::connectGatt(bool autoConnect, Bridge::BluetoothGattCallback& callback) {

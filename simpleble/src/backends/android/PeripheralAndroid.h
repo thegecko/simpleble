@@ -67,6 +67,9 @@ class PeripheralAndroid : public PeripheralBase {
     uint16_t mtu_;
     bool connectable_;
 
+    std::vector<std::string> advertised_services_;
+    std::map<uint16_t, kvn::bytearray> manufacturer_data_;
+
     kvn::safe_callback<void()> callback_on_connected_;
     kvn::safe_callback<void()> callback_on_disconnected_;
 

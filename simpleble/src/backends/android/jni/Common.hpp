@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "external/kvn_bytearray.h"
 #include "GlobalRef.hpp"
 #include "VM.hpp"
 
@@ -175,6 +176,43 @@ class Object {
   private:
     GlobalRef<jobject> _obj;
     GlobalRef<jclass> _cls;
+};
+
+class ByteArray : public Object {
+  public:
+    ByteArray(jbyteArray obj) : Object(obj) {}
+
+    ByteArray(const kvn::bytearray& data) : Object(nullptr) {
+        JNIEnv* env = VM::env();
+        jbyteArray jarr = env->NewByteArray(data.size());
+        env->SetByteArrayRegion(jarr, 0, data.size(), reinterpret_cast<const jbyte*>(data.data()));
+        *this = ByteArray(jarr);
+    }
+
+    ByteArray(const Object& obj) : Object(static_cast<jbyteArray>(obj.get())) {}
+
+    // Get the raw byte array data
+    kvn::bytearray bytes() {
+        JNIEnv* env = VM::env();
+        jbyteArray jarr = static_cast<jbyteArray>(get());
+
+        if (jarr == nullptr) {
+            return {};
+        }
+
+        jsize len = env->GetArrayLength(jarr);
+        kvn::bytearray result(len);
+
+        env->GetByteArrayRegion(jarr, 0, len, reinterpret_cast<jbyte*>(result.data()));
+
+        return result;
+    }
+
+    // Get the length of the byte array
+    size_t length() {
+        JNIEnv* env = VM::env();
+        return env->GetArrayLength(static_cast<jbyteArray>(get()));
+    }
 };
 
 class Class {

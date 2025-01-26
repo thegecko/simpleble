@@ -56,6 +56,12 @@ class bytearray {
     bytearray(const char* byteArr) : bytearray(std::string(byteArr)) {}
 
     /**
+     * @brief Constructs a byte array of specified size, initialized with zeros.
+     * @param size The number of bytes to allocate.
+     */
+    explicit bytearray(size_t size) : data_(size) {}
+
+    /**
      * @brief Creates a ByteArray from a hex string.
      *
      * Case is ignored and the string may have a '0x' hex prefix or not.
@@ -182,6 +188,7 @@ class bytearray {
     // Expose vector-like functionality
     size_t size() const { return data_.size(); }
     const uint8_t* data() const { return data_.data(); }
+    uint8_t* data() { return data_.data(); }
     bool empty() const { return data_.empty(); }
     void clear() { data_.clear(); }
     uint8_t& operator[](size_t index) { return data_[index]; }

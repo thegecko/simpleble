@@ -1,6 +1,11 @@
 #pragma once
 
 #include "jni/Common.hpp"
+#include "UUID.h"
+
+#include <map>
+#include <vector>
+#include "external/kvn_bytearray.h"
 
 namespace SimpleBLE {
 namespace Android {
@@ -9,10 +14,15 @@ class ScanRecord {
   public:
     ScanRecord(JNI::Object obj);
 
+    std::vector<std::string> getServiceUuids();
+    std::map<uint16_t, kvn::bytearray> getManufacturerData();
+
     std::string toString();
 
   private:
     static JNI::Class _cls;
+    static jmethodID _method_getServiceUuids;
+    static jmethodID _method_getManufacturerData;
     static jmethodID _method_toString;
 
     static void initialize();
