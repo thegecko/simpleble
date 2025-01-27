@@ -1,51 +1,52 @@
+|Latest Documentation Status|
+
 SimpleBLE
 ==========
 
-The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE).
+The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE), designed for simplicity and ease of use.
 
-|Latest Documentation Status|
+Key Features
+------------
 
-Overview
---------
+* **Cross-Platform**: Enterprise-grade support for Windows, macOS, Linux, iOS, and Android
+* **Easy Integration**: Clean, consistent API across all platforms
+* **Multiple Language Support**: Production-ready bindings for C, C++, and Python, more coming soon
+* **Commercial Ready**: Source-available commercial license for proprietary applications
 
-The SimpleBLE project aims to provide fully cross-platform BLE libraries and bindings
-for C++, Python, Rust and other languages, designed for simplicity and ease of use,
-with a consistent behavior and API across all platforms.
+Language Bindings
+-----------------
 
-SimpleBLE runs on Windows 10+, macOS 10.15+, Linux (Ubuntu 20.04+), iOS 15.0+, and Android (API 31+ - Still in Alpha).
+* **C/C++**: Core implementation with full platform support
+* **Python (SimplePyBLE)**: Python bindings. See the `SimplePyBLE`_ PyPI page for more details.
+* **Rust (SimpleRsBLE) - Alpha**: Rust bindings (under major refactor). See the `SimpleRsBLE`_ Crates.io page for more details.
+* **Android (SimpleDroidBLE) - Alpha**: Android-only bindings (alpha).
+* More languages coming soon!
 
-**Commercial licensing is available for projects requiring proprietary distribution.**
+Extension Libraries
+-------------------
 
-Below you'll find a list of frontends that are part of SimpleBLE:
+* **SimpleBluez**: BlueZ abstraction layer over DBus
+* **SimpleDBus**: DBus object hierarchy handler
 
-* **SimpleBLE:** C++ cross-platform BLE library.
-* **SimplePyBLE:** Python bindings for SimpleBLE. See the `SimplePyBLE`_ PyPI page for more details.
-* **SimpleDroidBLE:** Android-specific package following the SimpleBLE API. (Still in Alpha, more to come)
-* **SimpleRsBLE:** Rust bindings for SimpleBLE (LEGACY - Big refactor coming soon). See the `SimpleRsBLE`_ Crates.io page for more details.
+Support & Resources
+--------------------
 
-Additionally, we also provide a set of low-level libraries that can be used to interface with the underlying Bluetooth stack on Linux:
+We're here to help you succeed with SimpleBLE:
 
-* **SimpleBluez:** C++ abstraction layer for BlueZ over DBus.
-* **SimpleDBus:** C++ wrapper for libdbus-1 with convenience classes to handle DBus object hierarchies effectively.
+* **Documentation**: Visit our `ReadTheDocs`_ page for comprehensive guides
+* **Commercial Support**: Check our `website`_ or `email us <mailto:contact@simpleble.org>`_ for licensing and professional services
+* **Community**: Join our `Discord`_ server for discussions and help
 
-If you want to use SimpleBLE and need help. **Please do not hesitate to reach out!**
-
-* Visit our `ReadTheDocs`_ page for comprehensive documentation.
-* Visit our `website`_ or email us at `email us <mailto:contact@simpleble.org>`_ for commercial licensing and professional support services.
-* Join our `Discord`_ server for community discussions and help.
+Don't hesitate to reach out - we're happy to help!
 
 Projects using SimpleBLE
 ------------------------
+
 Don't forget to check out the following projects using SimpleBLE:
 
 * `BrainFlow`_
 * `InsideBlue`_
 * `NodeWebBluetooth`_
-
-Contributing
-------------
-Pull requests are welcome. For major changes, please open an issue first to discuss
-what you would like to change.
 
 License
 =======
@@ -64,7 +65,7 @@ version 3 after four years of its initial release.
 - Priority technical support included
 - Clear terms for integrating into MIT-licensed projects
 
-**You can find more information on pricing and commercial terms of service on our `website`_ .**
+**You can find more information on pricing and commercial terms of service at www.simpleble.org**
 
 For further enquiries, please contact us at ``contact at simpleble dot org``.
 
@@ -73,8 +74,7 @@ For further enquiries, please contact us at ``contact at simpleble dot org``.
 Licensing FAQ
 -------------
 
-What does the Business Source License 1.1 allow and restrict?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**What does the Business Source License 1.1 allow and restrict?**
 
 The Business Source License allows non-production use, such as development and testing in isolated
 environments. However, any use that could be considered production (including internal tools,
@@ -83,8 +83,7 @@ revenue-generating projects, or customer-facing deployments) requires purchasing
 After four years of the initial release of a given version of SimpleBLE, the license automatically
 converts to the GNU General Public License version 3.
 
-What do you consider "commercial use"?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**What do you consider "commercial use"?**
 
 Commercial use in the context of SimpleBLE refers to any usage of the library or its derivatives in
 a commercial setting where it contributes, either directly or indirectly, to financial gain. This
@@ -92,8 +91,7 @@ includes, but is not limited to, incorporating SimpleBLE into commercial softwar
 in the development of services offered for a fee, or deploying it within internal tools or software
 in a for-profit organization where it adds business value.
 
-Why do I need to pay for commercial use?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Why do I need to pay for commercial use?**
 
 Commercial licensing enables us to sustainably maintain and enhance SimpleBLE, particularly given
 its growing adoption in critical sectors like medical and industrial applications. The revenue
@@ -103,13 +101,11 @@ language support, better testing infrastructure, and more comprehensive document
 SimpleBLE remains freely available for non-commercial use, the Business Source License ensures we
 can continue providing the level of reliability and support that commercial applications require.
 
-I already have a commercial license. What happens with this latest license change?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**I already have a commercial license. What happens with this latest license change?**
 
 Nothing changes. You can continue using SimpleBLE under the terms of your commercial license.
 
-I'm using SimpleBLE commercially, but don't have a commercial license. What should I do?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**I'm using SimpleBLE commercially, but don't have a commercial license. What should I do?**
 
 Please reach out at ``contact at simpleble dot org`` and we can discuss the specifics of your
 situation. We have a free commercial license option for small projects and early-stage companies
