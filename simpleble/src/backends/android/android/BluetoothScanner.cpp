@@ -36,12 +36,12 @@ void BluetoothScanner::check_initialized() const {
 
 void BluetoothScanner::startScan(Bridge::ScanCallback& callback) {
     check_initialized();
-    _obj.call_void_method(_method_startScan, "(Landroid/bluetooth/le/ScanCallback;)V", callback.get());
+    _obj.call_void_method(_method_startScan, callback.get());
 }
 
 void BluetoothScanner::stopScan(Bridge::ScanCallback& callback) {
     check_initialized();
-    _obj.call_void_method(_method_stopScan, "(Landroid/bluetooth/le/ScanCallback;)V", callback.get());
+    _obj.call_void_method(_method_stopScan, callback.get());
 }
 
 std::string BluetoothScanner::toString() {
