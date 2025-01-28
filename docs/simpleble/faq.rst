@@ -13,8 +13,8 @@ Some platform-specific limitations to note:
 - Windows and MacOS only support a single Bluetooth adapter
 - WSL does not support Bluetooth
 - MacOS versions 12.0-12.2 have scanning issues
-- Android support is currently in Alpha stage
 - iOS support for versions below 15.0 is untested
+- Android support is currently in Release Candidate stage
 
 **Why do I get UUIDs for the peripheral address on MacOS?**
 

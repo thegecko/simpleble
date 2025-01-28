@@ -1,27 +1,48 @@
 Overview
 --------
 
-The SimpleBLE project aims to provide fully cross-platform BLE libraries and bindings
-for C++, Python, Rust and other languages, designed for simplicity and ease of use.
-All specific operating system quirks are handled internally to provide a consistent behavior
-and API across all platforms. The libraries also provide first-class support for vendorization
-of all third-party dependencies, allowing for easy integration into existing projects.
+The SimpleBLE project delivers enterprise-grade Bluetooth Low Energy (BLE) libraries
+with a consistent cross-platform API. By abstracting platform-specific complexities,
+developers can focus on building BLE applications rather than handling OS quirks. The
+library supports full Central role functionality and preview Peripheral features, with
+commercial licensing available for proprietary applications.
 
-**NOTICE: Since February 20, 2024 the license terms of SimpleBLE have changed. Please make sure to read and understand the new licensing scheme.**
+**NOTICE: Since January 20th 2025 the license terms of SimpleBLE have changed. Please make sure to read and understand the new licensing scheme.**
 
-This repository offers the source code for the following related libraries:
+Key Features
+^^^^^^^^^^^^
 
-* **SimpleBLE:** C++ cross-platform BLE library.
-* **SimplePyBLE:** Python bindings for SimpleBLE. See `SimplePyBLE`_ PyPI page for more details.
-* **SimpleBluez:** C++ abstraction layer for BlueZ over DBus. (Linux only)
-* **SimpleDBus:** C++ wrapper for libdbus-1 with convenience classes to handle DBus object hierarchies effectively. (Linux only)
+* **Cross-Platform**: Enterprise-grade support for Windows, macOS, Linux, iOS, and Android
+* **Device Roles**: Full Central support, with Peripheral functionality in early preview
+* **Easy Integration**: Clean, consistent API across all platforms
+* **Multiple Language Bindings**: Production-ready bindings for C, C++, and Python, more coming soon
+* **Commercial Ready**: Source-available commercial license for proprietary applications
 
-If you want to use SimpleBLE and need help. **Please do not hesitate to reach out!**
+Language Bindings
+^^^^^^^^^^^^^^^^^
 
-* Visit our `ReadTheDocs`_ page.
-* Join our `Discord`_ server.
-* Contact us: ``contact at simpleble dot org``
-* Visit our `website`_ for more information.
+* **C/C++**: Core implementation with full platform support
+* **Python (SimplePyBLE)**: Python bindings. See the `SimplePyBLE`_ PyPI page for more details.
+* **Rust (SimpleRsBLE) - Alpha**: Rust bindings (under major refactor). See the `SimpleRsBLE`_ Crates.io page for more details.
+* **Android (SimpleDroidBLE) - Alpha**: Android-only bindings (alpha).
+* More languages coming soon!
+
+Extension Libraries
+^^^^^^^^^^^^^^^^^^^
+
+* **SimpleBluez**: BlueZ abstraction layer over DBus
+* **SimpleDBus**: DBus object hierarchy handler
+
+Support & Resources
+^^^^^^^^^^^^^^^^^^^^
+
+We're here to help you succeed with SimpleBLE:
+
+* **Documentation**: Visit our `ReadTheDocs`_ page for comprehensive guides
+* **Commercial Support**: Check our `website`_ or `email us <mailto:contact@simpleble.org>`_ for licensing and professional services
+* **Community**: Join our `Discord`_ server for discussions and help
+
+Don't hesitate to reach out - we're happy to help!
 
 Supported platforms
 ^^^^^^^^^^^^^^^^^^^
@@ -61,7 +82,6 @@ Android
 * **Supported Versions:** API 31 and newer
 * **Notes:**
 
-  - Capabilities are still in an alpha stage, but should be good enough for initial testing.
   - Older APIs are missing certain features of the JVM API that are required by SimpleBLE
 
 .. Links

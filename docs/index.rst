@@ -1,9 +1,9 @@
+|Latest Documentation Status|
+
 SimpleBLE
 =========
 
-The ultimate fully-fledged cross-platform library and bindings for Bluetooth Low Energy (BLE).
-
-|Latest Documentation Status|
+The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE), designed for simplicity and ease of use.
 
 .. include:: overview.rst
 
