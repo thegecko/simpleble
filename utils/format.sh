@@ -25,8 +25,8 @@ if ! command -v colordiff &> /dev/null; then
 fi
 
 CLANG_FORMAT_VERSION=$($CLANG_FORMAT --version | sed 's/.*version \([1-9][0-9]*\)\..*/\1/')
-if [ "$CLANG_FORMAT_VERSION" != "14" ]; then
-    echo "CI/CD uses clang-format version 14. Local version is $CLANG_FORMAT_VERSION"
+if [ "$CLANG_FORMAT_VERSION" != "19" ]; then
+    echo "CI/CD uses clang-format version 19. Local version is $CLANG_FORMAT_VERSION"
 fi
 
 APPLY=false
