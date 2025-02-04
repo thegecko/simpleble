@@ -797,6 +797,8 @@ Java_org_simpleble_android_Peripheral_nativePeripheralDescriptorRead(JNIEnv *env
                                                                      jstring characteristic,
                                                                      jstring descriptor) {
     // TODO: implement nativePeripheralDescriptorRead()
+    jbyteArray j_data = env->NewByteArray(0);
+    return j_data;
 }
 extern "C"
 JNIEXPORT void JNICALL

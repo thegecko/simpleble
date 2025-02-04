@@ -1,8 +1,8 @@
 #include "ScanRecord.h"
 #include "ParcelUUID.h"
 #include "SparseArray.h"
-#include "jni/Types.h"
 #include "jni/List.h"
+#include "jni/Types.h"
 
 namespace SimpleBLE {
 namespace Android {
@@ -24,7 +24,8 @@ void ScanRecord::initialize() {
     }
 
     if (!_method_getManufacturerData) {
-        _method_getManufacturerData = env->GetMethodID(_cls.get(), "getManufacturerData", "()Landroid/util/SparseArray;");
+        _method_getManufacturerData = env->GetMethodID(_cls.get(), "getManufacturerData",
+                                                       "()Landroid/util/SparseArray;");
     }
 
     if (!_method_toString) {
@@ -76,8 +77,6 @@ std::string ScanRecord::toString() {
     check_initialized();
     return _obj.call_string_method(_method_toString);
 }
-
-
 
 }  // namespace Android
 }  // namespace SimpleBLE

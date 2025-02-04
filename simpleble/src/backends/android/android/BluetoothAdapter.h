@@ -2,8 +2,8 @@
 
 #include "jni/Common.hpp"
 
-#include "BluetoothScanner.h"
 #include "BluetoothDevice.h"
+#include "BluetoothScanner.h"
 
 namespace SimpleBLE {
 namespace Android {
@@ -19,7 +19,6 @@ class BluetoothAdapter {
 
     BluetoothScanner getBluetoothLeScanner();
     std::vector<BluetoothDevice> getBondedDevices();
-
 
     // NOTE: The correct way to request a BluetoothAdapter is to go though the BluetoothManager,
     // as described in https://developer.android.com/reference/android/bluetooth/BluetoothManager#getAdapter()

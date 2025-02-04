@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-#include "external/kvn_bytearray.h"
 #include "GlobalRef.hpp"
 #include "VM.hpp"
+#include "external/kvn_bytearray.h"
 
 namespace SimpleBLE {
 namespace JNI {
@@ -81,7 +81,7 @@ class Object {
     template <typename... Args>
     std::vector<uint8_t> call_byte_array_method(jmethodID method, Args&&... args) {
         JNIEnv* env = VM::env();
-        jbyteArray jarr = (jbyteArray)env->CallObjectMethod(_obj.get(), method, std::forward<Args>(args)...);
+        auto jarr = static_cast<jbyteArray>(env->CallObjectMethod(_obj.get(), method, std::forward<Args>(args)...));
 
         if (jarr == nullptr) {
             return {};
@@ -141,7 +141,7 @@ class Object {
         JNIEnv* env = VM::env();
 
         jmethodID method = env->GetMethodID(_cls.get(), name, signature);
-        jstring jstr = (jstring)env->CallObjectMethod(_obj.get(), method, std::forward<Args>(args)...);
+        auto jstr = static_cast<jstring>(env->CallObjectMethod(_obj.get(), method, std::forward<Args>(args)...));
 
         if (jstr == nullptr) {
             return "";
@@ -158,7 +158,7 @@ class Object {
         JNIEnv* env = VM::env();
 
         jmethodID method = env->GetMethodID(_cls.get(), name, signature);
-        jbyteArray jarr = (jbyteArray)env->CallObjectMethod(_obj.get(), method, std::forward<Args>(args)...);
+        auto jarr = static_cast<jbyteArray>(env->CallObjectMethod(_obj.get(), method, std::forward<Args>(args)...));
 
         if (jarr == nullptr) {
             return {};

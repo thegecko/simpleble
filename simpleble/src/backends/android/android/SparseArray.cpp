@@ -34,10 +34,14 @@ void SparseArray<T>::initialize() {
 }
 
 template <typename T>
-SparseArray<T>::SparseArray() { initialize(); }
+SparseArray<T>::SparseArray() {
+    initialize();
+}
 
 template <typename T>
-SparseArray<T>::SparseArray(JNI::Object obj) : _obj(obj) { initialize(); }
+SparseArray<T>::SparseArray(JNI::Object obj) : _obj(obj) {
+    initialize();
+}
 
 template <typename T>
 void SparseArray<T>::check_initialized() const {

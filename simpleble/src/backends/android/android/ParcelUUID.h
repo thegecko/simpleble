@@ -1,7 +1,7 @@
 #pragma once
 
-#include "jni/Common.hpp"
 #include "UUID.h"
+#include "jni/Common.hpp"
 
 namespace SimpleBLE {
 namespace Android {

@@ -12,14 +12,14 @@ namespace Bridge {
 JNI::Class BluetoothGattCallback::_cls;
 kvn::safe_map<jobject, BluetoothGattCallback*, JNI::JObjectComparator> BluetoothGattCallback::_map;
 
-#define GET_CALLBACK_OBJECT_OR_RETURN(thiz)                                                                    \
-    ({                                                                                                         \
-        auto callback_opt = BluetoothGattCallback::_map.get(thiz);                                            \
-        if (!callback_opt) {                                                                                   \
-            SIMPLEBLE_LOG_FATAL("Failed to find BluetoothGattCallback object. This should never happen.");    \
-            return;                                                                                           \
-        }                                                                                                     \
-        callback_opt.value();                                                                                 \
+#define GET_CALLBACK_OBJECT_OR_RETURN(thiz)                                                                \
+    ({                                                                                                     \
+        auto callback_opt = BluetoothGattCallback::_map.get(thiz);                                         \
+        if (!callback_opt) {                                                                               \
+            SIMPLEBLE_LOG_FATAL("Failed to find BluetoothGattCallback object. This should never happen."); \
+            return;                                                                                        \
+        }                                                                                                  \
+        callback_opt.value();                                                                              \
     })
 
 void BluetoothGattCallback::initialize() {
@@ -36,9 +36,7 @@ BluetoothGattCallback::BluetoothGattCallback() : connected(false), services_disc
     _map.insert(_obj.get(), this);
 }
 
-BluetoothGattCallback::~BluetoothGattCallback() {
-    _map.erase(_obj.get());
-}
+BluetoothGattCallback::~BluetoothGattCallback() { _map.erase(_obj.get()); }
 
 void BluetoothGattCallback::set_callback_onConnectionStateChange(std::function<void(bool)> callback) {
     if (callback) {
