@@ -194,14 +194,14 @@ jobs:
       - name: Build targets
         run: |
           echo "Required targets:"
-          echo "  lint: ${{ outputs.lint }}"
-          echo "  docs: ${{ outputs.docs }}"
-          echo "  windows: ${{ outputs.windows }}"
-          echo "  linux: ${{ outputs.linux }}"
-          echo "  macos: ${{ outputs.macos }}"
-          echo "  python: ${{ outputs.python }}"
-          echo "  android: ${{ outputs.android }}"
-          echo "  release-python: ${{ outputs.release-python }}"
+          echo "  lint: ${{ needs.targets.outputs.lint }}"
+          echo "  docs: ${{ needs.targets.outputs.docs }}"
+          echo "  windows: ${{ needs.targets.outputs.windows }}"
+          echo "  linux: ${{ needs.targets.outputs.linux }}"
+          echo "  macos: ${{ needs.targets.outputs.macos }}"
+          echo "  python: ${{ needs.targets.outputs.python }}"
+          echo "  android: ${{ needs.targets.outputs.android }}"
+          echo "  release-python: ${{ needs.targets.outputs.release-python }}"
 
   lint:
     needs: [targets]
