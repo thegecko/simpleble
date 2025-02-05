@@ -190,6 +190,8 @@ jobs:
           ) &&
           github.ref == 'refs/heads/main'
         }}
+    steps:
+      - run: echo "Generating list of required targets"
 
   lint:
     needs: [targets]
