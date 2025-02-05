@@ -191,7 +191,17 @@ jobs:
           github.ref == 'refs/heads/main'
         }}
     steps:
-      - run: echo "Computing required targets for build"
+      - name: Build targets
+        run: |
+          echo "Required targets:"
+          echo "  lint: ${{ outputs.lint }}"
+          echo "  docs: ${{ outputs.docs }}"
+          echo "  windows: ${{ outputs.windows }}"
+          echo "  linux: ${{ outputs.linux }}"
+          echo "  macos: ${{ outputs.macos }}"
+          echo "  python: ${{ outputs.python }}"
+          echo "  android: ${{ outputs.android }}"
+          echo "  release-python: ${{ outputs.release-python }}"
 
   lint:
     needs: [targets]

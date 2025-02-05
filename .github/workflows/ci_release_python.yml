@@ -80,7 +80,7 @@ jobs:
           CIBW_ARCHS_MACOS: x86_64 universal2 arm64
           CIBW_ARCHS_WINDOWS: AMD64 x86
           CIBW_SKIP: "*musllinux_* pp*"
-          MACOSX_DEPLOYMENT_TARGET: 10.15
+          MACOSX_DEPLOYMENT_TARGET: 11
 
       - name: Upload wheels to job
         uses: actions/upload-artifact@v4
