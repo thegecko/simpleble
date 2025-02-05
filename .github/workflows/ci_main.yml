@@ -148,46 +148,46 @@ jobs:
       lint: 'true'
       docs: >-
         ${{
-          needs.changes.outputs.docs == 'true' ||
+          needs.filter-changes.outputs.docs == 'true' ||
           github.ref == 'refs/heads/main'
         }}
       windows: >-
         ${{
-          needs.changes.outputs.windows == 'true' ||
-          needs.changes.outputs.miscs == 'true' ||
+          needs.filter-changes.outputs.windows == 'true' ||
+          needs.filter-changes.outputs.miscs == 'true' ||
           github.ref == 'refs/heads/main'
         }}
       linux: >-
         ${{
-          needs.changes.outputs.linux == 'true' ||
-          needs.changes.outputs.miscs == 'true' ||
+          needs.filter-changes.outputs.linux == 'true' ||
+          needs.filter-changes.outputs.miscs == 'true' ||
           github.ref == 'refs/heads/main'
         }}
       macos: >-
         ${{
-          needs.changes.outputs.macos == 'true' ||
-          needs.changes.outputs.miscs == 'true' ||
+          needs.filter-changes.outputs.macos == 'true' ||
+          needs.filter-changes.outputs.miscs == 'true' ||
           github.ref == 'refs/heads/main'
         }}
       python: >-
         ${{
-          needs.changes.outputs.python == 'true' ||
+          needs.filter-changes.outputs.python == 'true' ||
           github.ref == 'refs/heads/main'
         }}
       android: >-
         ${{
-          needs.changes.outputs.android == 'true' ||
-          needs.changes.outputs.miscs == 'true' ||
+          needs.filter-changes.outputs.android == 'true' ||
+          needs.filter-changes.outputs.miscs == 'true' ||
           github.ref == 'refs/heads/main'
         }}
       release-python: >-
         ${{
           (
-            needs.changes.outputs.python == 'true' ||
-            needs.changes.outputs.miscs == 'true' ||
-            needs.changes.outputs.windows == 'true' ||
-            needs.changes.outputs.linux == 'true' ||
-            needs.changes.outputs.macos == 'true'
+            needs.filter-changes.outputs.python == 'true' ||
+            needs.filter-changes.outputs.miscs == 'true' ||
+            needs.filter-changes.outputs.windows == 'true' ||
+            needs.filter-changes.outputs.linux == 'true' ||
+            needs.filter-changes.outputs.macos == 'true'
           ) &&
           github.ref == 'refs/heads/main'
         }}
