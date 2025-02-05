@@ -25,8 +25,8 @@ jobs:
         id: skip_check
         uses: fkirc/skip-duplicate-actions@v5.3.1
         with:
-          concurrent_skipping: 'same_content_newer'
-          skip_after_successful_duplicate: 'true'
+          concurrent_skipping: "same_content_newer"
+          skip_after_successful_duplicate: "true"
       - name: Clone Repository
         uses: actions/checkout@v4
         with:
@@ -38,13 +38,14 @@ jobs:
 
   # This job detects changes in the diff and set some ouput variables accordingly.
   # It is use to conditionaly run different jobs and steps of the pipeline
-  changes:
+  filter-changes:
     needs: pre_job
     if: needs.pre_job.outputs.should_skip != 'true'
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: read
     outputs:
+      miscs: ${{ steps.filter.outputs.miscs }}
       common: ${{ steps.filter.outputs.common }}
       linux: ${{ steps.filter.outputs.linux }}
       windows: ${{ steps.filter.outputs.windows }}
@@ -52,8 +53,6 @@ jobs:
       python: ${{ steps.filter.outputs.python }}
       rust: ${{ steps.filter.outputs.rust }}
       docs: ${{ steps.filter.outputs.docs }}
-      miscs: ${{ steps.filter.outputs.miscs }}
-      changes: ${{ steps.filter.outputs.changes }}
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
@@ -140,78 +139,105 @@ jobs:
               - *simplebluez
               - 'simpleble/**'
 
+  targets:
+    needs: [pre_job, filter-changes, libraries]
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-22.04
+    outputs:
+      lint: 'true'
+      docs: >-
+        ${{
+          needs.changes.outputs.docs == 'true' ||
+          github.ref == 'refs/heads/main'
+        }}
+      windows: >-
+        ${{
+          needs.changes.outputs.windows == 'true' ||
+          needs.changes.outputs.miscs == 'true' ||
+          github.ref == 'refs/heads/main'
+        }}
+      linux: >-
+        ${{
+          needs.changes.outputs.linux == 'true' ||
+          needs.changes.outputs.miscs == 'true' ||
+          github.ref == 'refs/heads/main'
+        }}
+      macos: >-
+        ${{
+          needs.changes.outputs.macos == 'true' ||
+          needs.changes.outputs.miscs == 'true' ||
+          github.ref == 'refs/heads/main'
+        }}
+      python: >-
+        ${{
+          needs.changes.outputs.python == 'true' ||
+          github.ref == 'refs/heads/main'
+        }}
+      android: >-
+        ${{
+          needs.changes.outputs.android == 'true' ||
+          needs.changes.outputs.miscs == 'true' ||
+          github.ref == 'refs/heads/main'
+        }}
+      release-python: >-
+        ${{
+          (
+            needs.changes.outputs.python == 'true' ||
+            needs.changes.outputs.miscs == 'true' ||
+            needs.changes.outputs.windows == 'true' ||
+            needs.changes.outputs.linux == 'true' ||
+            needs.changes.outputs.macos == 'true'
+          ) &&
+          github.ref == 'refs/heads/main'
+        }}
+    steps:
+      - run: echo "Computing required targets for build"
+
   lint:
-    needs: pre_job
-    if:  |
-      needs.pre_job.outputs.should_skip != 'true'
+    needs: [targets]
+    if: needs.targets.outputs.lint == 'true'
     uses: ./.github/workflows/ci_lint.yml
 
   docs:
-    needs: [pre_job, changes]
-    if:  |
-      needs.pre_job.outputs.should_skip != 'true' &&
-      (needs.changes.outputs.docs == 'true' || github.ref == 'refs/heads/main')
+    needs: [targets]
+    if: needs.targets.outputs.docs == 'true'
     uses: ./.github/workflows/ci_docs.yml
 
   windows:
-    needs: [pre_job, changes]
-    if: |
-      needs.pre_job.outputs.should_skip != 'true' &&
-      (needs.changes.outputs.windows == 'true' ||
-      needs.changes.outputs.miscs == 'true' ||
-      github.ref == 'refs/heads/main')
+    needs: [targets]
+    if: needs.targets.outputs.windows == 'true'
     uses: ./.github/workflows/ci_windows.yml
 
   linux:
-    needs: [pre_job, changes, libraries]
-    if: |
-      needs.pre_job.outputs.should_skip != 'true' &&
-      (needs.changes.outputs.linux == 'true' ||
-      needs.changes.outputs.miscs == 'true' ||
-      github.ref == 'refs/heads/main')
+    needs: [targets]
+    if: needs.targets.outputs.linux == 'true'
     uses: ./.github/workflows/ci_linux.yml
     with:
       libraries: ${{ needs.libraries.outputs.values }}
 
   macos:
-    needs: [pre_job, changes]
-    if: |
-      needs.pre_job.outputs.should_skip != 'true' &&
-      (needs.changes.outputs.macos == 'true' ||
-      needs.changes.outputs.miscs == 'true' ||
-      github.ref == 'refs/heads/main')
+    needs: [targets]
+    if: needs.targets.outputs.macos == 'true'
     uses: ./.github/workflows/ci_macos.yml
 
   python:
-    needs: [pre_job, changes]
-    if:  |
-      needs.pre_job.outputs.should_skip != 'true' &&
-      (needs.changes.outputs.python == 'true' || github.ref == 'refs/heads/main')
+    needs: [targets]
+    if: needs.targets.outputs.python == 'true'
     uses: ./.github/workflows/ci_python.yml
     secrets: inherit
 
   android:
-    needs: [pre_job, changes]
-    if:  |
-      needs.pre_job.outputs.should_skip != 'true' &&
-      (needs.changes.outputs.android == 'true' ||
-      needs.changes.outputs.miscs == 'true' ||
-      github.ref == 'refs/heads/main')
+    needs: [targets]
+    if: needs.targets.outputs.android == 'true'
     uses: ./.github/workflows/ci_android.yml
     secrets: inherit
 
   release-python:
-    needs: [pre_job, changes, windows, linux, macos, python]
+    needs: [targets, windows, linux, macos, python]
     # Note that Python is released on every commit in main branch with relevant
-    # changes (python, linux, windows, or macos filters). While cpp binaries are
+    # changes (python, miscs, windows, linux, or macos filters). While cpp binaries are
     # only published on manual releases.
-    if: |
-      needs.pre_job.outputs.should_skip != 'true' &&
-      (needs.changes.outputs.python == 'true' ||
-      needs.changes.outputs.windows == 'true' ||
-      needs.changes.outputs.linux == 'true' ||
-      needs.changes.outputs.macos == 'true') &&
-      github.ref == 'refs/heads/main'
+    if: needs.targets.outputs.release-python == 'true'
     uses: ./.github/workflows/ci_python_publish.yml
     with:
       tag: ${{ github.ref }}
