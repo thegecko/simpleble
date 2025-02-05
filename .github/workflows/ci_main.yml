@@ -194,6 +194,21 @@ jobs:
     steps:
       - run: echo "Generating list of required targets"
 
+  print-targets:
+    needs: [targets]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print target outputs
+        run: |
+          echo "Lint: ${{ needs.targets.outputs.lint }}"
+          echo "Docs: ${{ needs.targets.outputs.docs }}"
+          echo "Windows: ${{ needs.targets.outputs.windows }}"
+          echo "Linux: ${{ needs.targets.outputs.linux }}"
+          echo "macOS: ${{ needs.targets.outputs.macos }}"
+          echo "Python: ${{ needs.targets.outputs.python }}"
+          echo "Android: ${{ needs.targets.outputs.android }}"
+          echo "Release Python: ${{ needs.targets.outputs.release-python }}"
+
   lint:
     needs: [targets]
     if: needs.targets.outputs.lint == 'true'
