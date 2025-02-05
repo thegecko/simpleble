@@ -7,7 +7,7 @@ namespace SimpleBLE {
 
 class BackendPlain : public BackendSingleton<BackendPlain> {
   public:
-    BackendPlain(buildToken){};
+    BackendPlain(buildToken) {};
     virtual ~BackendPlain() = default;
 
     virtual SharedPtrVector<AdapterBase> get_adapters() override;
