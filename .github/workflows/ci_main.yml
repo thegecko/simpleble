@@ -92,6 +92,7 @@ jobs:
               - 'simpleble/src/frontends/**'
               - 'simplepyble/**'
               - 'setup.py'
+              - 'MANIFEST.in'
             android:
               - 'simpleble/src/backends/common/**'
               - 'simpleble/src/backends/android/**'
