@@ -53,9 +53,11 @@ echo "Running clang-format..."
 # Excluded paths
 EXCLUDED_PATHS=(
     "./simplepyble/*"
+    "./simpledroidble/*"
     "*CMakeFiles*"
     "*_deps*"
-    "*build*"
+    "./build*"
+    "./target*"
 )
 
 FIND_CMD="find . -type f \( -name \"*.h\" -o -name \"*.hpp\" -o -name \"*.cpp\" -o -name \"*.c\" \)"
