@@ -12,7 +12,7 @@ void BluetoothScanner::initialize() {
     JNI::Env env;
 
     if (_cls.get() == nullptr) {
-        _cls = env.find_class("java/util/UUID");
+        _cls = env.find_class("android/bluetooth/le/BluetoothLeScanner");
     }
 
     if (!_method_toString) {

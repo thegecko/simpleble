@@ -13,10 +13,10 @@ class BluetoothDevice {
     BluetoothDevice(JNI::Object obj);
 
     std::string getAddress();
-    int getAddressType();
+    // int getAddressType();
     std::string getName();
     int getBondState();
-    void removeBond();
+    // void removeBond();
 
     BluetoothGatt connectGatt(bool autoConnect, Bridge::BluetoothGattCallback& callback);
 
@@ -31,7 +31,7 @@ class BluetoothDevice {
   private:
     static JNI::Class _cls;
     static jmethodID _method_getAddress;
-    static jmethodID _method_getAddressType;
+    // static jmethodID _method_getAddressType;
     static jmethodID _method_getName;
     static jmethodID _method_getBondState;
     static jmethodID _method_removeBond;

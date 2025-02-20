@@ -24,7 +24,7 @@ void ScanRecord::initialize() {
     }
 
     if (!_method_getManufacturerData) {
-        _method_getManufacturerData = env->GetMethodID(_cls.get(), "getManufacturerData",
+        _method_getManufacturerData = env->GetMethodID(_cls.get(), "getManufacturerSpecificData",
                                                        "()Landroid/util/SparseArray;");
     }
 
@@ -43,7 +43,7 @@ std::vector<std::string> ScanRecord::getServiceUuids() {
     check_initialized();
 
     JNI::Object service_uuids_obj = _obj.call_object_method(_method_getServiceUuids);
-    if (!service_uuids_obj) throw std::runtime_error("Failed to get service uuids");
+    if (!service_uuids_obj) return {};
 
     std::vector<std::string> result;
     JNI::Types::List list(service_uuids_obj);
@@ -60,7 +60,7 @@ std::map<uint16_t, kvn::bytearray> ScanRecord::getManufacturerData() {
     check_initialized();
 
     JNI::Object manufacturer_data_obj = _obj.call_object_method(_method_getManufacturerData);
-    if (!manufacturer_data_obj) throw std::runtime_error("Failed to get manufacturer data");
+    if (!manufacturer_data_obj) return {};
 
     SparseArray<JNI::ByteArray> sparse_array(manufacturer_data_obj);
 

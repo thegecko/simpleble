@@ -61,14 +61,16 @@ std::string PeripheralAndroid::identifier() { return _device.getName(); }
 BluetoothAddress PeripheralAndroid::address() { return BluetoothAddress(_device.getAddress()); }
 
 BluetoothAddressType PeripheralAndroid::address_type() {
-    switch (_device.getAddressType()) {
-        case Android::BluetoothDevice::ADDRESS_TYPE_PUBLIC:
-            return BluetoothAddressType::PUBLIC;
-        case Android::BluetoothDevice::ADDRESS_TYPE_RANDOM:
-            return BluetoothAddressType::RANDOM;
-        default:
-            return BluetoothAddressType::UNSPECIFIED;
-    }
+    // TODO: This is only available on API level 35 and above, so we're forced to return UNSPECIFIED
+    return BluetoothAddressType::UNSPECIFIED;
+    // switch (_device.getAddressType()) {
+    //     case Android::BluetoothDevice::ADDRESS_TYPE_PUBLIC:
+    //         return BluetoothAddressType::PUBLIC;
+    //     case Android::BluetoothDevice::ADDRESS_TYPE_RANDOM:
+    //         return BluetoothAddressType::RANDOM;
+    //     default:
+    //         return BluetoothAddressType::UNSPECIFIED;
+    // }
 }
 
 int16_t PeripheralAndroid::rssi() { return rssi_; }
@@ -89,7 +91,8 @@ bool PeripheralAndroid::is_paired() { return _device.getBondState() == Android::
 
 void PeripheralAndroid::unpair() {
     // IMPORTANT: This is a non-public API call, which might be blacklisted by the Android OS in the future.
-    _device.removeBond();
+    // NOTE: Doesn't seem to work, needs further investigation.
+    //_device.removeBond();
 }
 
 SharedPtrVector<ServiceBase> PeripheralAndroid::available_services() {
