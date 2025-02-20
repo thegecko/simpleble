@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "simpleble/SimpleBLE.h"
-#include <thread>
 #include <chrono>
+#include <thread>
+#include "simpleble/SimpleBLE.h"
 
 TEST(BLESanityTest, FullSequentialTest) {
     // Initialize adapter
@@ -12,7 +12,7 @@ TEST(BLESanityTest, FullSequentialTest) {
 
     // Scan for device
     SimpleBLE::Peripheral target_peripheral;
-    const std::string TARGET_MAC = "11:22:33:44:55:66"; // Replace with your device's MAC
+    const std::string TARGET_MAC = "11:22:33:44:55:66";  // Replace with your device's MAC
     const std::string TARGET_NAME = "SimpleBLE DUT";
     bool device_found = false;
 

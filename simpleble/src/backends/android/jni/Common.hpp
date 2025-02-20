@@ -21,7 +21,9 @@ class Object {
 
     Object(jobject obj) : _obj(obj) {
         JNIEnv* env = VM::env();
-        _cls = env->GetObjectClass(obj);
+        if (obj != nullptr) {
+            _cls = env->GetObjectClass(obj);
+        }
     }
 
     Object(jobject obj, jclass cls) : _obj(obj), _cls(cls) {}
@@ -39,8 +41,7 @@ class Object {
     Object call_object_method(jmethodID method, Args&&... args) {
         JNIEnv* env = VM::env();
         jobject result = env->CallObjectMethod(_obj.get(), method, std::forward<Args>(args)...);
-        jclass resultClass = env->GetObjectClass(result);
-        return Object(result, resultClass);
+        return Object(result);
     }
 
     template <typename... Args>
@@ -103,9 +104,7 @@ class Object {
         jmethodID method = env->GetMethodID(_cls.get(), name, signature);
         jobject result = env->CallObjectMethod(_obj.get(), method, std::forward<Args>(args)...);
 
-        jclass resultClass = env->GetObjectClass(result);
-
-        return Object(result, resultClass);
+        return Object(result);
     }
 
     template <typename... Args>

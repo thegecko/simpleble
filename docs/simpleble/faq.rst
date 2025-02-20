@@ -7,14 +7,9 @@ More information will be made available here soon.
 
 **What platforms are supported by SimpleBLE?**
 SimpleBLE supports Windows 10+, Linux (Ubuntu 20.04+ and other distros using Bluez),
-MacOS 10.15+ (Catalina and newer), iOS 15.0+, and Android API 31+ (Alpha).
+MacOS 10.15+ (Catalina and newer), iOS 15.0+, and Android API 31+.
 
-Some platform-specific limitations to note:
-- Windows and MacOS only support a single Bluetooth adapter
-- WSL does not support Bluetooth
-- MacOS versions 12.0-12.2 have scanning issues
-- iOS support for versions below 15.0 is untested
-- Android support is currently in Release Candidate stage
+Please check the overview page on more information about platform-specific limitations.
 
 **Why do I get UUIDs for the peripheral address on MacOS?**
 

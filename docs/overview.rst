@@ -83,6 +83,8 @@ Android
 * **Notes:**
 
   - Older APIs are missing certain features of the JVM API that are required by SimpleBLE
+  - Removing bonds is not supported, as the public API does not provide a way to do this and some work is required to make it work using non-public APIs.
+  - Address type is not supported, as this is only available on API 35 and newer.
 
 .. Links
 

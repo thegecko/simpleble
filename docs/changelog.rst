@@ -13,12 +13,10 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Android) Implemented the following API functions:
   - `Adapter::scan_get_results()`
   - `Adapter::get_paired_peripherals()`
-  - `Peripheral::address_type()`
   - `Peripheral::rssi()`
   - `Peripheral::tx_power()`
   - `Peripheral::is_connectable()`
   - `Peripheral::is_paired()`
-  - `Peripheral::unpair()`
   - `Peripheral::manufacturer_data()`
   - `Peripheral::advertised_services()`
 
@@ -29,6 +27,8 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 **Fixed**
 
 - (Android) Some potential race conditions in the Android backend.
+- (Android) Fixed handling of null objects.
+- (Android) `Peripheral::address_type()` and `Peripheral::unpair()` had to be removed due to API level limitations.
 
 
 [0.9.0] - 2025-01-20
