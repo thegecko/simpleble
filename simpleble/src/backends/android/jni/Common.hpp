@@ -4,6 +4,11 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
+#include <functional>
 
 #include "GlobalRef.hpp"
 #include "VM.hpp"
@@ -278,6 +283,67 @@ class Env {
 
   private:
     JNIEnv* _env = nullptr;
+};
+
+class Runner {
+  public:
+    // Delete copy constructor and assignment
+    Runner(const Runner&) = delete;
+    Runner& operator=(const Runner&) = delete;
+
+    static Runner& get() {
+        static Runner instance;
+        return instance;
+    }
+
+    virtual ~Runner() {
+        {
+            std::unique_lock<std::mutex> lock(_mutex);
+            _stop = true;
+            _cv.notify_one();
+        }
+        _thread.join();
+    }
+
+    void enqueue(std::function<void()> func) {
+        {
+            std::unique_lock<std::mutex> lock(_mutex);
+            _queue.push(std::move(func));
+            lock.unlock();
+            _cv.notify_one();
+        }
+    }
+
+  protected:
+    void thread_func() {
+        VM::attach();
+        while (true) {
+            std::function<void()> func;
+            {
+                std::unique_lock<std::mutex> lock(_mutex);
+                _cv.wait(lock, [this] { return _stop || !_queue.empty(); });
+                if (_stop && _queue.empty()) {
+                    break;
+                }
+                func = std::move(_queue.front());
+                _queue.pop();
+            }
+            func();
+        }
+        VM::detach();
+    }
+
+  private:
+    // Move constructor to private
+    Runner() : _stop(false) {
+        _thread = std::thread(&Runner::thread_func, this);
+    }
+
+    std::thread _thread;
+    std::mutex _mutex;
+    std::condition_variable _cv;
+    std::queue<std::function<void()>> _queue;
+    bool _stop;
 };
 
 // TODO: Move these to their own namespace
