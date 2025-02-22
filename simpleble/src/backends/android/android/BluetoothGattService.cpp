@@ -65,9 +65,9 @@ void BluetoothGattService::check_initialized() const {
     if (!_obj) throw std::runtime_error("BluetoothGattService is not initialized");
 }
 
-BluetoothGattService::BluetoothGattService() { initialize(); }
+BluetoothGattService::BluetoothGattService() {}
 
-BluetoothGattService::BluetoothGattService(JNI::Object obj) : BluetoothGattService() { _obj = obj; }
+BluetoothGattService::BluetoothGattService(JNI::Object obj) : _obj(obj) {}
 
 // bool BluetoothGattService::addCharacteristic(BluetoothGattCharacteristic characteristic) {
 //     return _obj.call_boolean_method(_method_addCharacteristic, characteristic.getObject());

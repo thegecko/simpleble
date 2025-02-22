@@ -3,17 +3,12 @@
 namespace SimpleBLE {
 namespace Android {
 
-template <typename T>
-JNI::Class SparseArray<T>::_cls;
-template <typename T>
-jmethodID SparseArray<T>::_method_size = nullptr;
-template <typename T>
-jmethodID SparseArray<T>::_method_keyAt = nullptr;
-template <typename T>
-jmethodID SparseArray<T>::_method_valueAt = nullptr;
+JNI::Class SparseArrayBase::_cls;
+jmethodID SparseArrayBase::_method_size = nullptr;
+jmethodID SparseArrayBase::_method_keyAt = nullptr;
+jmethodID SparseArrayBase::_method_valueAt = nullptr;
 
-template <typename T>
-void SparseArray<T>::initialize() {
+void SparseArrayBase::initialize() {
     JNI::Env env;
 
     if (_cls.get() == nullptr) {
@@ -34,14 +29,10 @@ void SparseArray<T>::initialize() {
 }
 
 template <typename T>
-SparseArray<T>::SparseArray() {
-    initialize();
-}
+SparseArray<T>::SparseArray() {}
 
 template <typename T>
-SparseArray<T>::SparseArray(JNI::Object obj) : _obj(obj) {
-    initialize();
-}
+SparseArray<T>::SparseArray(JNI::Object obj) : _obj(obj) {}
 
 template <typename T>
 void SparseArray<T>::check_initialized() const {
@@ -67,6 +58,7 @@ T SparseArray<T>::valueAt(int index) {
 }
 
 template class SparseArray<JNI::ByteArray>;
+template class SparseArray<JNI::Object>;
 
 }  // namespace Android
 }  // namespace SimpleBLE

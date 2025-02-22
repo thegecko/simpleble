@@ -51,14 +51,13 @@ void BluetoothAdapter::initialize() {
     }
 }
 
-BluetoothAdapter::BluetoothAdapter(JNI::Object obj) : _obj(obj) { initialize(); }
+BluetoothAdapter::BluetoothAdapter(JNI::Object obj) : _obj(obj) {}
 
 void BluetoothAdapter::check_initialized() const {
     if (!_obj) throw std::runtime_error("BluetoothAdapter is not initialized");
 }
 
 BluetoothAdapter BluetoothAdapter::getDefaultAdapter() {
-    initialize();
     return BluetoothAdapter(_cls.call_static_method(_method_getDefaultAdapter));
 }
 

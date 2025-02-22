@@ -33,7 +33,7 @@ void ScanRecord::initialize() {
     }
 }
 
-ScanRecord::ScanRecord(JNI::Object obj) : _obj(obj) { initialize(); }
+ScanRecord::ScanRecord(JNI::Object obj) : _obj(obj) {}
 
 void ScanRecord::check_initialized() const {
     if (!_obj) throw std::runtime_error("ScanRecord is not initialized");

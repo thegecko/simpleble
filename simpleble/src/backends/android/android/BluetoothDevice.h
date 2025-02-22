@@ -8,6 +8,8 @@
 namespace SimpleBLE {
 namespace Android {
 
+class ClassHandler;
+
 class BluetoothDevice {
   public:
     BluetoothDevice(JNI::Object obj);
@@ -40,6 +42,8 @@ class BluetoothDevice {
     static void initialize();
     void check_initialized() const;
     JNI::Object _obj;
+
+    friend class ClassHandler;
 };
 
 }  // namespace Android

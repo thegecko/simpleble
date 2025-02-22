@@ -8,6 +8,8 @@
 namespace SimpleBLE {
 namespace Android {
 
+class ClassHandler;
+
 class ScanResult {
   public:
     ScanResult(jobject j_scan_result);
@@ -31,6 +33,8 @@ class ScanResult {
     static void initialize();
     void check_initialized() const;
     JNI::Object _obj;
+
+    friend class ClassHandler;
 };
 
 }  // namespace Android

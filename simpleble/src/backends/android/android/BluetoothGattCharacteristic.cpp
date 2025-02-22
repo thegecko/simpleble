@@ -80,11 +80,9 @@ void BluetoothGattCharacteristic::check_initialized() const {
     if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
 }
 
-BluetoothGattCharacteristic::BluetoothGattCharacteristic() { initialize(); }
+BluetoothGattCharacteristic::BluetoothGattCharacteristic() {}
 
-BluetoothGattCharacteristic::BluetoothGattCharacteristic(JNI::Object obj) : BluetoothGattCharacteristic() {
-    _obj = obj;
-}
+BluetoothGattCharacteristic::BluetoothGattCharacteristic(JNI::Object obj) : _obj(obj) {}
 
 // bool BluetoothGattCharacteristic::addDescriptor(BluetoothGattDescriptor descriptor) {
 //     return _obj.call_boolean_method(_method_addDescriptor, descriptor.getObject());

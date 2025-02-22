@@ -7,6 +7,8 @@
 namespace SimpleBLE {
 namespace Android {
 
+class ClassHandler;
+
 class BluetoothGattDescriptor {
     // See: https://developer.android.com/reference/android/bluetooth/BluetoothGattDescriptor
   public:
@@ -34,6 +36,8 @@ class BluetoothGattDescriptor {
 
     static void initialize();
     void check_initialized() const;
+
+    friend class ClassHandler;
 };
 
 }  // namespace Android

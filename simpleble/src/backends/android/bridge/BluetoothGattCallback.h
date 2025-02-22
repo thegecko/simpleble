@@ -12,6 +12,8 @@ namespace SimpleBLE {
 namespace Android {
 namespace Bridge {
 
+class ClassHandler;
+
 class BluetoothGattCallback {
   public:
     BluetoothGattCallback();
@@ -91,6 +93,8 @@ class BluetoothGattCallback {
     kvn::safe_map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_characteristicReadPending;
     kvn::safe_map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_descriptorWritePending;
     kvn::safe_map<JNI::Object, FlagData, JNI::JniObjectComparator> _flag_descriptorReadPending;
+
+    friend class ClassHandler;
 };
 
 }  // namespace Bridge

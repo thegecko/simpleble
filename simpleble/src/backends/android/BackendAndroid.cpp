@@ -3,6 +3,8 @@
 #include "BuildVec.h"
 #include "CommonUtils.h"
 #include "android/BluetoothAdapter.h"
+#include "android/ClassHandler.h"
+#include "bridge/ClassHandler.h"
 
 #include <android/log.h>
 #include <fmt/core.h>
@@ -13,7 +15,10 @@ namespace SimpleBLE {
 
 std::shared_ptr<BackendAndroid> BACKEND_ANDROID() { return BackendAndroid::get(); }
 
-BackendAndroid::BackendAndroid(buildToken) {}
+BackendAndroid::BackendAndroid(buildToken) {
+    Android::ClassHandler::initialize();
+    Android::Bridge::ClassHandler::initialize();
+}
 
 std::string BackendAndroid::name() const noexcept { return "Android"; }
 

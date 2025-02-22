@@ -46,7 +46,7 @@ void BluetoothDevice::initialize() {
     }
 }
 
-BluetoothDevice::BluetoothDevice(JNI::Object obj) : _obj(obj) { initialize(); };
+BluetoothDevice::BluetoothDevice(JNI::Object obj) : _obj(obj) {}
 
 void BluetoothDevice::check_initialized() const {
     if (!_obj) throw std::runtime_error("BluetoothDevice is not initialized");

@@ -31,7 +31,6 @@ void BluetoothGattCallback::initialize() {
 }
 
 BluetoothGattCallback::BluetoothGattCallback() : connected(false), services_discovered(false), mtu(UINT16_MAX) {
-    initialize();
     _obj = _cls.call_constructor("()V");
     _map.insert(_obj.get(), this);
 }

@@ -28,7 +28,7 @@ void BluetoothScanner::initialize() {
     }
 }
 
-BluetoothScanner::BluetoothScanner(JNI::Object obj) : _obj(obj) { initialize(); }
+BluetoothScanner::BluetoothScanner(JNI::Object obj) : _obj(obj) {}
 
 void BluetoothScanner::check_initialized() const {
     if (!_obj) throw std::runtime_error("BluetoothScanner is not initialized");

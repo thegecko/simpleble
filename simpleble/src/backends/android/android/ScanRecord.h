@@ -10,6 +10,8 @@
 namespace SimpleBLE {
 namespace Android {
 
+class ClassHandler;
+
 class ScanRecord {
   public:
     ScanRecord(JNI::Object obj);
@@ -28,6 +30,8 @@ class ScanRecord {
     static void initialize();
     void check_initialized() const;
     JNI::Object _obj;
+
+    friend class ClassHandler;
 };
 
 }  // namespace Android

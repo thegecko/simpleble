@@ -19,8 +19,6 @@ void ScanCallback::initialize() {
 }
 
 ScanCallback::ScanCallback() {
-    initialize();
-
     _obj = _cls.call_constructor("()V");
     _map[_obj.get()] = this;
 }
@@ -83,14 +81,14 @@ void ScanCallback::jni_onScanFailedCallback(JNIEnv* env, jobject thiz, jint erro
 extern "C" {
 // clang-format off
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_ScanCallback_onScanResultCallback(JNIEnv *env, jobject thiz, jint callback_type, jobject result) {
-    SimpleBLE::Android::Bridge::ScanCallback::jni_onScanResultCallback(env, thiz, callback_type, result);
+         SimpleBLE::Android::Bridge::ScanCallback::jni_onScanResultCallback(env, thiz, callback_type, result);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_ScanCallback_onScanFailedCallback(JNIEnv *env, jobject thiz, jint error_code) {
-    SimpleBLE::Android::Bridge::ScanCallback::jni_onScanFailedCallback(env, thiz, error_code);
+        SimpleBLE::Android::Bridge::ScanCallback::jni_onScanFailedCallback(env, thiz, error_code);
 }
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_ScanCallback_onBatchScanResultsCallback(JNIEnv *env, jobject thiz, jobject results) {
-    SimpleBLE::Android::Bridge::ScanCallback::jni_onBatchScanResultsCallback(env, thiz, results);
+        SimpleBLE::Android::Bridge::ScanCallback::jni_onBatchScanResultsCallback(env, thiz, results);
 }
 // clang-format on
 }

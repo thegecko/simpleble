@@ -18,9 +18,9 @@ void ParcelUUID::initialize() {
     }
 }
 
-ParcelUUID::ParcelUUID() { initialize(); }
+ParcelUUID::ParcelUUID() {}
 
-ParcelUUID::ParcelUUID(JNI::Object obj) : _obj(obj) { initialize(); }
+ParcelUUID::ParcelUUID(JNI::Object obj) : _obj(obj) {}
 
 void ParcelUUID::check_initialized() const {
     if (!_obj) throw std::runtime_error("ParcelUUID is not initialized");

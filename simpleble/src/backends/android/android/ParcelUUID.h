@@ -6,6 +6,8 @@
 namespace SimpleBLE {
 namespace Android {
 
+class ClassHandler;
+
 class ParcelUUID {
   public:
     ParcelUUID();
@@ -20,6 +22,8 @@ class ParcelUUID {
     static void initialize();
     void check_initialized() const;
     JNI::Object _obj;
+
+    friend class ClassHandler;
 };
 
 }  // namespace Android

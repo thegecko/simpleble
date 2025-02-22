@@ -18,9 +18,9 @@ void UUID::initialize() {
     }
 }
 
-UUID::UUID() { initialize(); }
+UUID::UUID() {}
 
-UUID::UUID(JNI::Object obj) : _obj(obj) { initialize(); }
+UUID::UUID(JNI::Object obj) : _obj(obj) {}
 
 void UUID::check_initialized() const {
     if (!_obj) throw std::runtime_error("UUID is not initialized");

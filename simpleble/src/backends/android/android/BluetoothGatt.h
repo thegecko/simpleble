@@ -9,6 +9,8 @@
 namespace SimpleBLE {
 namespace Android {
 
+class ClassHandler;
+
 class BluetoothGatt {
   public:
     BluetoothGatt();
@@ -59,6 +61,8 @@ class BluetoothGatt {
     static void initialize();
     void check_initialized() const;
     JNI::Object _obj;
+
+    friend class ClassHandler;
 };
 
 }  // namespace Android

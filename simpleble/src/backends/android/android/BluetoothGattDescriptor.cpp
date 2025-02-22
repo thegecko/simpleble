@@ -38,9 +38,9 @@ void BluetoothGattDescriptor::check_initialized() const {
     if (!_obj) throw std::runtime_error("BluetoothGattDescriptor is not initialized");
 }
 
-BluetoothGattDescriptor::BluetoothGattDescriptor() { initialize(); }
+BluetoothGattDescriptor::BluetoothGattDescriptor() {}
 
-BluetoothGattDescriptor::BluetoothGattDescriptor(JNI::Object obj) : BluetoothGattDescriptor() { _obj = obj; }
+BluetoothGattDescriptor::BluetoothGattDescriptor(JNI::Object obj) : _obj(obj) {}
 
 std::string BluetoothGattDescriptor::getUuid() {
     check_initialized();

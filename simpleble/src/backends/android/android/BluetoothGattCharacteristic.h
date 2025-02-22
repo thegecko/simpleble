@@ -8,6 +8,8 @@
 namespace SimpleBLE {
 namespace Android {
 
+class ClassHandler;
+
 class BluetoothGattCharacteristic {
     // See: https://developer.android.com/reference/android/bluetooth/BluetoothGattCharacteristic
   public:
@@ -55,6 +57,8 @@ class BluetoothGattCharacteristic {
 
     static void initialize();
     void check_initialized() const;
+
+    friend class ClassHandler;
 };
 
 }  // namespace Android

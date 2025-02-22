@@ -9,6 +9,8 @@ namespace SimpleBLE {
 namespace Android {
 namespace Bridge {
 
+class ClassHandler;
+
 class ScanCallback {
   public:
     ScanCallback();
@@ -34,6 +36,8 @@ class ScanCallback {
     kvn::safe_callback<void(Android::ScanResult)> _callback_onScanResult;
     kvn::safe_callback<void()> _callback_onBatchScanResults;
     kvn::safe_callback<void()> _callback_onScanFailed;
+
+    friend class ClassHandler;
 };
 
 }  // namespace Bridge

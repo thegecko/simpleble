@@ -5,8 +5,11 @@
 namespace SimpleBLE {
 namespace Android {
 
+class ClassHandler;
+
 class UUID {
   public:
+    static void initialize();
     UUID();
     UUID(JNI::Object obj);
 
@@ -16,9 +19,10 @@ class UUID {
     static JNI::Class _cls;
     static jmethodID _method_toString;
 
-    static void initialize();
     void check_initialized() const;
     JNI::Object _obj;
+
+    friend class ClassHandler;
 };
 
 }  // namespace Android
