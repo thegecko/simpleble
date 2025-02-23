@@ -44,7 +44,7 @@ void ScanResult::initialize() {
     }
 }
 
-ScanResult::ScanResult(jobject j_scan_result) : _obj(j_scan_result, _cls.get()) {}
+ScanResult::ScanResult(JNI::Object obj) : _obj(obj) {}
 
 void ScanResult::check_initialized() const {
     if (!_obj) throw std::runtime_error("ScanResult is not initialized");

@@ -12,7 +12,7 @@ class ClassHandler;
 
 class ScanResult {
   public:
-    ScanResult(jobject j_scan_result);
+    ScanResult(JNI::Object obj);
 
     BluetoothDevice getDevice();
     int16_t getRssi();

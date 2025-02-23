@@ -56,8 +56,6 @@ class AdapterAndroid : public AdapterBase {
     void onBatchScanResultsCallback(JNIEnv* env, jobject thiz, jobject results);
     void onScanFailedCallback(JNIEnv* env, jobject thiz, jint error_code);
 
-    // static std::map<jobject, AdapterBase*, JNI::JObjectComparator> _scanCallbackMap;
-
   private:
     std::shared_ptr<BackendAndroid> backend_;
 

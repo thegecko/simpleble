@@ -22,13 +22,13 @@ class ScanCallback {
     void set_callback_onScanFailed(std::function<void()> callback);
 
     // Not for public use
-    static void jni_onScanResultCallback(JNIEnv* env, jobject thiz, jint callback_type, jobject result);
-    static void jni_onBatchScanResultsCallback(JNIEnv* env, jobject thiz, jobject results);
-    static void jni_onScanFailedCallback(JNIEnv* env, jobject thiz, jint error_code);
+    static void jni_onScanResultCallback(JNI::Object thiz, jint callback_type, JNI::Object result);
+    static void jni_onBatchScanResultsCallback(JNI::Object thiz, JNI::Object results);
+    static void jni_onScanFailedCallback(JNI::Object thiz, jint error_code);
 
   private:
     static JNI::Class _cls;
-    static std::map<jobject, ScanCallback*, JNI::JObjectComparator> _map;
+    static std::map<JNI::Object, ScanCallback*, JNI::JniObjectComparator> _map;
     static void initialize();
 
     JNI::Object _obj;
