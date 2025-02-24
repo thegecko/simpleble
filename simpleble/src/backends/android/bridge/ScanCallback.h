@@ -22,7 +22,7 @@ class ScanCallback {
     void set_callback_onScanFailed(std::function<void()> callback);
 
     // Not for public use
-    static void jni_onScanResultCallback(JNI::Object thiz, jint callback_type, JNI::Object result);
+    static void jni_onScanResultCallback(JNI::Object thiz, jint callback_type, Android::ScanResult scan_result);
     static void jni_onBatchScanResultsCallback(JNI::Object thiz, JNI::Object results);
     static void jni_onScanFailedCallback(JNI::Object thiz, jint error_code);
 

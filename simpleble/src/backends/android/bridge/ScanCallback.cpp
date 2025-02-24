@@ -49,7 +49,7 @@ void ScanCallback::set_callback_onScanFailed(std::function<void()> callback) {
     }
 }
 
-void ScanCallback::jni_onScanResultCallback(JNI::Object thiz, jint callback_type, JNI::Object result) {
+void ScanCallback::jni_onScanResultCallback(JNI::Object thiz, jint callback_type, SimpleBLE::Android::ScanResult scan_result) {
     auto callback_opt = ScanCallback::_map.get(thiz);
     if (!callback_opt) {
         SIMPLEBLE_LOG_FATAL("Failed to find ScanCallback object. This should never happen.");
@@ -58,7 +58,6 @@ void ScanCallback::jni_onScanResultCallback(JNI::Object thiz, jint callback_type
     }
 
     ScanCallback* obj = callback_opt.value();
-    Android::ScanResult scan_result(result);
 
     auto msg = fmt::format("onScanResultCallback: {}", scan_result.toString());
     __android_log_write(ANDROID_LOG_DEBUG, "SimpleBLE", msg.c_str());
@@ -97,19 +96,25 @@ extern "C" {
 // clang-format off
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_ScanCallback_onScanResultCallback(JNIEnv *env, jobject thiz, jint callback_type, jobject result) {
     SimpleBLE::JNI::Object thiz_obj(thiz);
-    SimpleBLE::JNI::Object result_obj(result);
-    SimpleBLE::Android::Bridge::ScanCallback::jni_onScanResultCallback(thiz_obj, callback_type, result_obj);
+    SimpleBLE::Android::ScanResult scan_result(result);
+    SimpleBLE::JNI::Runner::get().enqueue([thiz_obj, callback_type, scan_result]() {
+        SimpleBLE::Android::Bridge::ScanCallback::jni_onScanResultCallback(thiz_obj, callback_type, scan_result);
+    });
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_ScanCallback_onScanFailedCallback(JNIEnv *env, jobject thiz, jint error_code) {
     SimpleBLE::JNI::Object thiz_obj(thiz);
-    SimpleBLE::Android::Bridge::ScanCallback::jni_onScanFailedCallback(thiz_obj, error_code);
+    SimpleBLE::JNI::Runner::get().enqueue([thiz_obj, error_code]() {
+        SimpleBLE::Android::Bridge::ScanCallback::jni_onScanFailedCallback(thiz_obj, error_code);
+    });
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_ScanCallback_onBatchScanResultsCallback(JNIEnv *env, jobject thiz, jobject results) {
     SimpleBLE::JNI::Object thiz_obj(thiz);
     SimpleBLE::JNI::Object results_obj(results);
-    SimpleBLE::Android::Bridge::ScanCallback::jni_onBatchScanResultsCallback(thiz_obj, results_obj);
+    SimpleBLE::JNI::Runner::get().enqueue([thiz_obj, results_obj]() {
+        SimpleBLE::Android::Bridge::ScanCallback::jni_onBatchScanResultsCallback(thiz_obj, results_obj);
+    });
 }
 // clang-format on
 }
