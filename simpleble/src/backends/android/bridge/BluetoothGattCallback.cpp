@@ -10,7 +10,7 @@ namespace Android {
 namespace Bridge {
 
 JNI::Class BluetoothGattCallback::_cls;
-kvn::safe_map<jobject, BluetoothGattCallback*, JNI::JObjectComparator> BluetoothGattCallback::_map;
+kvn::safe_map<JNI::Object, BluetoothGattCallback*, JNI::JniObjectComparator> BluetoothGattCallback::_map;
 
 #define GET_CALLBACK_OBJECT_OR_RETURN(thiz)                                                                \
     ({                                                                                                     \
@@ -32,10 +32,10 @@ void BluetoothGattCallback::initialize() {
 
 BluetoothGattCallback::BluetoothGattCallback() : connected(false), services_discovered(false), mtu(UINT16_MAX) {
     _obj = _cls.call_constructor("()V");
-    _map.insert(_obj.get(), this);
+    _map.insert(_obj, this);
 }
 
-BluetoothGattCallback::~BluetoothGattCallback() { _map.erase(_obj.get()); }
+BluetoothGattCallback::~BluetoothGattCallback() { _map.erase(_obj); }
 
 void BluetoothGattCallback::set_callback_onConnectionStateChange(std::function<void(bool)> callback) {
     if (callback) {
@@ -183,40 +183,41 @@ std::vector<uint8_t> BluetoothGattCallback::wait_flag_descriptorReadPending(JNI:
 
 // JNI Callbacks
 
-void BluetoothGattCallback::jni_onConnectionStateChangeCallback(JNIEnv* env, jobject thiz, jobject gatt, jint status,
+void BluetoothGattCallback::jni_onConnectionStateChangeCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt, jint status,
                                                                 jint new_state) {
     auto msg = fmt::format("onConnectionStateChangeCallback status: {} new_state: {}", status, new_state);
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
     const bool connected = new_state == 2;
     obj->connected = connected;
     SAFE_CALLBACK_CALL(obj->_callback_onConnectionStateChange, connected);
 }
 
-void BluetoothGattCallback::jni_onServicesDiscoveredCallback(JNIEnv* env, jobject thiz, jobject gatt, jint status) {
+void BluetoothGattCallback::jni_onServicesDiscoveredCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt, jint status) {
     auto msg = "onServicesDiscoveredCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
     obj->services_discovered = true;
     SAFE_CALLBACK_CALL(obj->_callback_onServicesDiscovered);
 }
 
-void BluetoothGattCallback::jni_onServiceChangedCallback(JNIEnv* env, jobject thiz, jobject gatt) {
+void BluetoothGattCallback::jni_onServiceChangedCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt) {
     // NOTE: If this one gets triggered we're kinda screwed.
     auto msg = "onServiceChangedCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
 }
 
-void BluetoothGattCallback::jni_onCharacteristicChangedCallback(JNIEnv* env, jobject thiz, jobject gatt,
+void BluetoothGattCallback::jni_onCharacteristicChangedCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt,
                                                                 jobject characteristic, jbyteArray value) {
+    // TODO KEVIN: Convert the jbyteArray to a JNI::ByteArray
     auto msg = "onCharacteristicChangedCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
     auto& callback = obj->_callback_onCharacteristicChanged[characteristic];
     if (callback) {
         std::vector<uint8_t> data = JNI::Types::fromJByteArray(value);
@@ -224,79 +225,79 @@ void BluetoothGattCallback::jni_onCharacteristicChangedCallback(JNIEnv* env, job
     }
 }
 
-void BluetoothGattCallback::jni_onCharacteristicReadCallback(JNIEnv* env, jobject thiz, jobject gatt,
+void BluetoothGattCallback::jni_onCharacteristicReadCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt,
                                                              jobject characteristic, jbyteArray value, jint status) {
     auto msg = "onCharacteristicReadCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
     obj->clear_flag_characteristicReadPending(characteristic, JNI::Types::fromJByteArray(value));
 }
 
-void BluetoothGattCallback::jni_onCharacteristicWriteCallback(JNIEnv* env, jobject thiz, jobject gatt,
+void BluetoothGattCallback::jni_onCharacteristicWriteCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt,
                                                               jobject characteristic, jint status) {
     auto msg = "onCharacteristicWriteCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
     obj->clear_flag_characteristicWritePending(characteristic);
 }
 
-void BluetoothGattCallback::jni_onDescriptorReadCallback(JNIEnv* env, jobject thiz, jobject gatt, jobject descriptor,
+void BluetoothGattCallback::jni_onDescriptorReadCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt, jobject descriptor,
                                                          jbyteArray value, jint status) {
     auto msg = "onDescriptorReadCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
     obj->clear_flag_descriptorReadPending(descriptor, JNI::Types::fromJByteArray(value));
 }
 
-void BluetoothGattCallback::jni_onDescriptorWriteCallback(JNIEnv* env, jobject thiz, jobject gatt, jobject descriptor,
+void BluetoothGattCallback::jni_onDescriptorWriteCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt, jobject descriptor,
                                                           jint status) {
     auto msg = "onDescriptorWriteCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
     obj->clear_flag_descriptorWritePending(descriptor);
 }
 
-void BluetoothGattCallback::jni_onMtuChangedCallback(JNIEnv* env, jobject thiz, jobject gatt, jint mtu, jint status) {
+void BluetoothGattCallback::jni_onMtuChangedCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt, jint mtu, jint status) {
     auto msg = "onMtuChangedCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
     obj->mtu = mtu;
 }
 
-void BluetoothGattCallback::jni_onPhyReadCallback(JNIEnv* env, jobject thiz, jobject gatt, jint tx_phy, jint rx_phy,
+void BluetoothGattCallback::jni_onPhyReadCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt, jint tx_phy, jint rx_phy,
                                                   jint status) {
     auto msg = "onPhyReadCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
 }
 
-void BluetoothGattCallback::jni_onPhyUpdateCallback(JNIEnv* env, jobject thiz, jobject gatt, jint tx_phy, jint rx_phy,
+void BluetoothGattCallback::jni_onPhyUpdateCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt, jint tx_phy, jint rx_phy,
                                                     jint status) {
     auto msg = "onPhyUpdateCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
 }
 
-void BluetoothGattCallback::jni_onReadRemoteRssiCallback(JNIEnv* env, jobject thiz, jobject gatt, jint rssi,
+void BluetoothGattCallback::jni_onReadRemoteRssiCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt, jint rssi,
                                                          jint status) {
     auto msg = "onReadRemoteRssiCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
 }
 
-void BluetoothGattCallback::jni_onReliableWriteCompletedCallback(JNIEnv* env, jobject thiz, jobject gatt, jint status) {
+void BluetoothGattCallback::jni_onReliableWriteCompletedCallback(JNIEnv* env, JNI::Object thiz_obj, jobject gatt, jint status) {
     auto msg = "onReliableWriteCompletedCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
-    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz);
+    BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
 }
 
 }  // namespace Bridge
@@ -307,67 +308,80 @@ extern "C" {
 // clang-format off
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onCharacteristicChangedCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jobject characteristic, jbyteArray value) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onCharacteristicChangedCallback(env, thiz, gatt, characteristic, value);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onCharacteristicChangedCallback(env, thiz_obj, gatt, characteristic, value);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onCharacteristicReadCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jobject characteristic, jbyteArray value, jint status) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onCharacteristicReadCallback(env, thiz, gatt, characteristic, value, status);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onCharacteristicReadCallback(env, thiz_obj, gatt, characteristic, value, status);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onCharacteristicWriteCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jobject characteristic, jint status) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onCharacteristicWriteCallback(env, thiz, gatt, characteristic, status);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onCharacteristicWriteCallback(env, thiz_obj, gatt, characteristic, status);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onConnectionStateChangeCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jint status, jint new_state) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onConnectionStateChangeCallback(env, thiz, gatt, status, new_state);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onConnectionStateChangeCallback(env, thiz_obj, gatt, status, new_state);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onDescriptorReadCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jobject descriptor, jbyteArray value, jint status) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onDescriptorReadCallback(env, thiz, gatt, descriptor, value, status);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onDescriptorReadCallback(env, thiz_obj, gatt, descriptor, value, status);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onDescriptorWriteCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jobject descriptor, jint status) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onDescriptorWriteCallback(env, thiz, gatt, descriptor, status);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onDescriptorWriteCallback(env, thiz_obj, gatt, descriptor, status);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onMtuChangedCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jint mtu, jint status) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onMtuChangedCallback(env, thiz, gatt, mtu, status);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onMtuChangedCallback(env, thiz_obj, gatt, mtu, status);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onPhyReadCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jint tx_phy, jint rx_phy, jint status) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onPhyReadCallback(env, thiz, gatt, tx_phy, rx_phy, status);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onPhyReadCallback(env, thiz_obj, gatt, tx_phy, rx_phy, status);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onPhyUpdateCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jint tx_phy, jint rx_phy, jint status) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onPhyUpdateCallback(env, thiz, gatt, tx_phy, rx_phy, status);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onPhyUpdateCallback(env, thiz_obj, gatt, tx_phy, rx_phy, status);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onReadRemoteRssiCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jint rssi, jint status) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onReadRemoteRssiCallback(env, thiz, gatt, rssi, status);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onReadRemoteRssiCallback(env, thiz_obj, gatt, rssi, status);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onReliableWriteCompletedCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jint status) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onReliableWriteCompletedCallback(env, thiz, gatt, status);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onReliableWriteCompletedCallback(env, thiz_obj, gatt, status);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onServiceChangedCallback(
     JNIEnv* env, jobject thiz, jobject gatt) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onServiceChangedCallback(env, thiz, gatt);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onServiceChangedCallback(env, thiz_obj, gatt);
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_BluetoothGattCallback_onServicesDiscoveredCallback(
     JNIEnv* env, jobject thiz, jobject gatt, jint status) {
-    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onServicesDiscoveredCallback(env, thiz, gatt, status);
+    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleBLE::Android::Bridge::BluetoothGattCallback::jni_onServicesDiscoveredCallback(env, thiz_obj, gatt, status);
 }
 // clang-format on
 }  // extern "C"

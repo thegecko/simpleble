@@ -8,7 +8,7 @@ namespace Android {
 namespace Bridge {
 
 JNI::Class ScanCallback::_cls;
-std::map<JNI::Object, ScanCallback*, JNI::JniObjectComparator> ScanCallback::_map;
+kvn::safe_map<JNI::Object, ScanCallback*, JNI::JniObjectComparator> ScanCallback::_map;
 
 void ScanCallback::initialize() {
     JNI::Env env;
@@ -20,10 +20,10 @@ void ScanCallback::initialize() {
 
 ScanCallback::ScanCallback() {
     _obj = _cls.call_constructor("()V");
-    _map[_obj] = this;
+    _map.insert(_obj, this);
 }
 
-ScanCallback::~ScanCallback() { _map.erase(_obj.get()); }
+ScanCallback::~ScanCallback() { _map.erase(_obj); }
 
 void ScanCallback::set_callback_onScanResult(std::function<void(Android::ScanResult)> callback) {
     if (callback) {
@@ -50,30 +50,45 @@ void ScanCallback::set_callback_onScanFailed(std::function<void()> callback) {
 }
 
 void ScanCallback::jni_onScanResultCallback(JNI::Object thiz, jint callback_type, JNI::Object result) {
-    auto it = ScanCallback::_map.find(thiz);
-    if (it != ScanCallback::_map.end()) {
-        ScanCallback* obj = it->second;
-        Android::ScanResult scan_result(result);
-
-        auto msg = fmt::format("onScanResultCallback: {}", scan_result.toString());
-        __android_log_write(ANDROID_LOG_INFO, "SimpleBLE", msg.c_str());
-
-        SAFE_CALLBACK_CALL(obj->_callback_onScanResult, scan_result);
-    } else {
+    auto callback_opt = ScanCallback::_map.get(thiz);
+    if (!callback_opt) {
+        SIMPLEBLE_LOG_FATAL("Failed to find ScanCallback object. This should never happen.");
         // TODO: Throw an exception
+        return;
     }
+
+    ScanCallback* obj = callback_opt.value();
+    Android::ScanResult scan_result(result);
+
+    auto msg = fmt::format("onScanResultCallback: {}", scan_result.toString());
+    __android_log_write(ANDROID_LOG_DEBUG, "SimpleBLE", msg.c_str());
+
+    SAFE_CALLBACK_CALL(obj->_callback_onScanResult, scan_result);
 }
 
 void ScanCallback::jni_onBatchScanResultsCallback(JNI::Object thiz, JNI::Object results) {
-    __android_log_write(ANDROID_LOG_INFO, "SimpleBLE", "onBatchScanResultsCallback");
+    auto callback_opt = ScanCallback::_map.get(thiz);
+    if (!callback_opt) {
+        SIMPLEBLE_LOG_FATAL("Failed to find ScanCallback object. This should never happen.");
+        // TODO: Throw an exception
+        return;
+    }
+
+    __android_log_write(ANDROID_LOG_DEBUG, "SimpleBLE", "onBatchScanResultsCallback");
     // TODO: Implement
 }
 
 void ScanCallback::jni_onScanFailedCallback(JNI::Object thiz, jint error_code) {
-    __android_log_write(ANDROID_LOG_INFO, "SimpleBLE", "onScanFailedCallback");
+    auto callback_opt = ScanCallback::_map.get(thiz);
+    if (!callback_opt) {
+        SIMPLEBLE_LOG_FATAL("Failed to find ScanCallback object. This should never happen.");
+        // TODO: Throw an exception
+        return;
+    }
+
+    __android_log_write(ANDROID_LOG_DEBUG, "SimpleBLE", "onScanFailedCallback");
     // TODO: Implement
 }
-
 }  // namespace Bridge
 }  // namespace Android
 }  // namespace SimpleBLE

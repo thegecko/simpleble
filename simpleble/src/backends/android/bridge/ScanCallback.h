@@ -28,7 +28,7 @@ class ScanCallback {
 
   private:
     static JNI::Class _cls;
-    static std::map<JNI::Object, ScanCallback*, JNI::JniObjectComparator> _map;
+    static kvn::safe_map<JNI::Object, ScanCallback*, JNI::JniObjectComparator> _map;
     static void initialize();
 
     JNI::Object _obj;
