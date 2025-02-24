@@ -184,6 +184,12 @@ class bytearray {
      */
     operator std::string() const { return std::string(data_.begin(), data_.end()); }
 
+    /**
+     * @brief Conversion operator to convert byte array to std::vector<uint8_t>.
+     * @return Vector containing the raw bytes of the byte array
+     */
+    operator std::vector<uint8_t>() const { return data_; }
+
     //! @cond Doxygen_Suppress
     // Expose vector-like functionality
     size_t size() const { return data_.size(); }

@@ -49,9 +49,9 @@ class BluetoothGattCallback {
 
     // Not for public use
     // clang-format off
-    static void jni_onConnectionStateChangeCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jint status, jint new_state);
-    static void jni_onServicesDiscoveredCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jint status);
-    static void jni_onServiceChangedCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt);
+    static void jni_onConnectionStateChangeCallback(JNI::Object thiz_obj, jint status, jint new_state);
+    static void jni_onServicesDiscoveredCallback(JNI::Object thiz_obj, jint status);
+    static void jni_onServiceChangedCallback(JNI::Object thiz_obj);
 
     static void jni_onCharacteristicChangedCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jobject characteristic, jbyteArray value);
     static void jni_onCharacteristicReadCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jobject characteristic, jbyteArray value, jint status);
@@ -60,11 +60,11 @@ class BluetoothGattCallback {
     static void jni_onDescriptorReadCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jobject descriptor, jbyteArray value, jint status);
     static void jni_onDescriptorWriteCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jobject descriptor, jint status);
 
-    static void jni_onMtuChangedCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jint mtu, jint status);
-    static void jni_onPhyReadCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jint txPhy, jint rxPhy, jint status);
-    static void jni_onPhyUpdateCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jint txPhy, jint rxPhy, jint status);
-    static void jni_onReadRemoteRssiCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jint rssi, jint status);
-    static void jni_onReliableWriteCompletedCallback(JNIEnv *env, JNI::Object thiz_obj, jobject gatt, jint status);
+    static void jni_onMtuChangedCallback(JNI::Object thiz_obj, jint mtu, jint status);
+    static void jni_onPhyReadCallback(JNI::Object thiz_obj, jint txPhy, jint rxPhy, jint status);
+    static void jni_onPhyUpdateCallback(JNI::Object thiz_obj, jint txPhy, jint rxPhy, jint status);
+    static void jni_onReadRemoteRssiCallback(JNI::Object thiz_obj, jint rssi, jint status);
+    static void jni_onReliableWriteCompletedCallback(JNI::Object thiz_obj, jint status);
     // clang-format on
 
   private:

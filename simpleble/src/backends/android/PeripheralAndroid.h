@@ -11,6 +11,8 @@
 #include <bridge/BluetoothGattCallback.h>
 
 #include <map>
+#include <mutex>
+#include <condition_variable>
 
 namespace SimpleBLE {
 
@@ -69,6 +71,9 @@ class PeripheralAndroid : public PeripheralBase {
 
     std::vector<std::string> advertised_services_;
     std::map<uint16_t, kvn::bytearray> manufacturer_data_;
+
+    std::mutex _connection_mutex;
+    std::condition_variable _connection_cv;
 
     kvn::safe_callback<void()> callback_on_connected_;
     kvn::safe_callback<void()> callback_on_disconnected_;

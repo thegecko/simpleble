@@ -32,6 +32,9 @@ PeripheralAndroid::PeripheralAndroid(Android::BluetoothDevice device) : _device(
 
         // Notify the user that the connection has been established once services have been discovered.
         SAFE_CALLBACK_CALL(callback_on_connected_);
+
+        // Notify the connection condition variable that the connection has been established.
+        _connection_cv.notify_all();
     });
 }
 
@@ -79,7 +82,17 @@ int16_t PeripheralAndroid::tx_power() { return tx_power_; }
 
 uint16_t PeripheralAndroid::mtu() { return _btGattCallback.mtu; }
 
-void PeripheralAndroid::connect() { _gatt = _device.connectGatt(false, _btGattCallback); }
+void PeripheralAndroid::connect() {
+    _gatt = _device.connectGatt(false, _btGattCallback);
+
+    // Wait for the connection to be confirmed.
+    // The condition variable will return false if the connection was not established.
+    std::unique_lock<std::mutex> lock(_connection_mutex);
+    bool connected = _connection_cv.wait_for(lock, 5s, [this]() { return is_connected(); });
+    if (!connected) {
+        throw SimpleBLE::Exception::OperationFailed("Failed to connect to device");
+    }
+}
 
 void PeripheralAndroid::disconnect() { _gatt.disconnect(); }
 
