@@ -88,7 +88,7 @@ void PeripheralAndroid::connect() {
     // Wait for the connection to be confirmed.
     // The condition variable will return false if the connection was not established.
     std::unique_lock<std::mutex> lock(_connection_mutex);
-    bool connected = _connection_cv.wait_for(lock, 5s, [this]() { return is_connected(); });
+    bool connected = _connection_cv.wait_for(lock, 8s, [this]() { return is_connected(); });
     if (!connected) {
         throw SimpleBLE::Exception::OperationFailed("Failed to connect to device");
     }
