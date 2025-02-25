@@ -211,7 +211,7 @@ void BluetoothGattCallback::jni_onServiceChangedCallback(JNI::Object thiz_obj) {
 }
 
 void BluetoothGattCallback::jni_onCharacteristicChangedCallback(JNI::Object thiz_obj, JNI::Object characteristic_obj, JNI::ByteArray value) {
-    auto msg = "onCharacteristicChangedCallback";
+    auto msg = "onCharacteristicChangedCallback with value: " + value.bytes().toHex(true);
     SIMPLEBLE_LOG_INFO(msg);
 
     BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
