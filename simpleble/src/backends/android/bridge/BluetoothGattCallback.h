@@ -53,12 +53,12 @@ class BluetoothGattCallback {
     static void jni_onServicesDiscoveredCallback(JNI::Object thiz_obj, jint status);
     static void jni_onServiceChangedCallback(JNI::Object thiz_obj);
 
-    static void jni_onCharacteristicChangedCallback(JNIEnv *env, JNI::Object thiz_obj, JNI::Object characteristic_obj, JNI::ByteArray value);
-    static void jni_onCharacteristicReadCallback(JNIEnv *env, JNI::Object thiz_obj, JNI::Object characteristic_obj, JNI::ByteArray value, jint status);
-    static void jni_onCharacteristicWriteCallback(JNIEnv *env, JNI::Object thiz_obj, JNI::Object characteristic_obj, jint status);
+    static void jni_onCharacteristicChangedCallback(JNI::Object thiz_obj, JNI::Object characteristic_obj, JNI::ByteArray value);
+    static void jni_onCharacteristicReadCallback(JNI::Object thiz_obj, JNI::Object characteristic_obj, JNI::ByteArray value, jint status);
+    static void jni_onCharacteristicWriteCallback(JNI::Object thiz_obj, JNI::Object characteristic_obj, jint status);
 
-    static void jni_onDescriptorReadCallback(JNIEnv *env, JNI::Object thiz_obj, JNI::Object descriptor_obj, JNI::ByteArray value, jint status);
-    static void jni_onDescriptorWriteCallback(JNIEnv *env, JNI::Object thiz_obj, JNI::Object descriptor_obj, jint status);
+    static void jni_onDescriptorReadCallback(JNI::Object thiz_obj, JNI::Object descriptor_obj, JNI::ByteArray value, jint status);
+    static void jni_onDescriptorWriteCallback(JNI::Object thiz_obj, JNI::Object descriptor_obj, jint status);
 
     static void jni_onMtuChangedCallback(JNI::Object thiz_obj, jint mtu, jint status);
     static void jni_onPhyReadCallback(JNI::Object thiz_obj, jint txPhy, jint rxPhy, jint status);
