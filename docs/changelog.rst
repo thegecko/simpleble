@@ -23,12 +23,15 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 **Changed**
 
 - `Adapter::identifier()` method is non-const, as underlying const conditions can't be guaranteed.
+- (Android) Callback functions are not handled on a separate, dedicated thread.
 
 **Fixed**
 
 - (Android) Some potential race conditions in the Android backend.
 - (Android) Fixed handling of null objects.
 - (Android) `Peripheral::address_type()` and `Peripheral::unpair()` had to be removed due to API level limitations.
+- (Android) Potential duplicate callback invocations on builds with newer Android API levels.
+
 
 
 [0.9.0] - 2025-01-20
