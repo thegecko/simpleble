@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog`_, and this project adheres to `Semantic Versioning`_.
 
+
 [0.9.1] - XXXX-XX-XX
 --------------------
 
@@ -19,6 +20,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
   - `Peripheral::is_paired()`
   - `Peripheral::manufacturer_data()`
   - `Peripheral::advertised_services()`
+- (Java) Early preview of Java bindings.
 
 **Changed**
 
