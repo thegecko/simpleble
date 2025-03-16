@@ -12,7 +12,7 @@ Announcements
 * **(2025-03-16)** Based in Asia or LATAM? **Looking for partners for more targeted regional sales and support.**
 * **(2025-02-25)** 🤖 Android backend support is now in Preview.
 * **(2025-01-20)** SimpleBLE is now available under the Business Source License 1.1 (BUSL-1.1). Please see the `LICENSE`_ file for more details.
-* **(2024-12-02)** Peripheral functionality is now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
+* **(2024-12-02)** Peripheral functionality for Linux is now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
 
 Key Features
 ------------
