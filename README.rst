@@ -5,13 +5,22 @@ SimpleBLE
 
 The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE), designed for simplicity and ease of use.
 
+Announcements
+-------------
+
+* **(2025-03-16)** ☕ Java bindings are now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
+* **(2025-03-16)** Based in Asia or LATAM? **Looking for partners for more targeted regional sales and support.**
+* **(2025-02-25)** 🤖 Android backend support is now in Preview.
+* **(2025-01-20)** SimpleBLE is now available under the Business Source License 1.1 (BUSL-1.1). Please see the `LICENSE`_ file for more details.
+* **(2024-12-02)** Peripheral functionality is now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
+
 Key Features
 ------------
 
 * **Cross-Platform**: Enterprise-grade support for Windows, macOS, Linux, iOS, and Android
-* **Device Roles**: Full Central support, with Peripheral functionality in early preview
+* **Device Roles**: Full Central support, with Peripheral functionality in Early Preview
 * **Easy Integration**: Clean, consistent API across all platforms
-* **Multiple Language Bindings**: Production-ready bindings for C, C++, and Python, more coming soon
+* **Multiple Language Bindings**: Production-ready bindings for C, C++, Python, Java (Early Preview), more coming soon
 * **Commercial Ready**: Source-available commercial license for proprietary applications
 
 Language Bindings
@@ -19,6 +28,7 @@ Language Bindings
 
 * **C/C++**: Core implementation with full platform support
 * **Python (SimplePyBLE)**: Python bindings. See the `SimplePyBLE`_ PyPI page for more details.
+* **Java (SimpleJavaBLE) - Early Preview**: Java bindings. **Looking for design partners who'd like to test it out and provide feedback.**
 * **Rust (SimpleRsBLE) - Alpha**: Rust bindings (under major refactor). See the `SimpleRsBLE`_ Crates.io page for more details.
 * **Android (SimpleDroidBLE) - Alpha**: Android-only bindings (alpha).
 * More languages coming soon!
