@@ -10,7 +10,6 @@ namespace JNI {
 // Generic class to handle the Java Virtual Machine (JVM)
 class VM {
   public:
-
     // TODO: Make the VM class transparent to the JavaVM pointer.
     static JavaVM* jvm() {
         static std::mutex get_mutex;       // Static mutex to ensure thread safety when accessing the VM

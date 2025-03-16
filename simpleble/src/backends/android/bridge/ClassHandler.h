@@ -12,7 +12,6 @@ class ClassHandler {
     static void initialize();
 
   private:
-
 };
 
 }  // namespace Bridge

@@ -8,8 +8,8 @@
 #include "BluetoothGattService.h"
 #include "BluetoothScanner.h"
 #include "ParcelUUID.h"
-#include "ScanResult.h"
 #include "ScanRecord.h"
+#include "ScanResult.h"
 #include "SparseArray.h"
 #include "UUID.h"
 

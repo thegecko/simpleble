@@ -7,7 +7,7 @@ namespace Java::Util {
 
 template <template <typename> class RefType>
 class Iterator {
-public:
+  public:
     Iterator();
     explicit Iterator(jobject obj);
 
@@ -31,7 +31,7 @@ public:
     bool has_next() const;
     SimpleJNI::Object<SimpleJNI::LocalRef> next();
 
-private:
+  private:
     // Underlying JNI object
     SimpleJNI::Object<RefType, jobject> _obj;
 

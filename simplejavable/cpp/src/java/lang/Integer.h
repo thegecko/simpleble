@@ -7,7 +7,7 @@ namespace Java::Util {
 
 template <template <typename> class RefType>
 class Integer {
-public:
+  public:
     Integer();
     explicit Integer(jobject obj);
     explicit Integer(int value);
@@ -31,7 +31,7 @@ public:
     // Integer methods
     int int_value() const;
 
-private:
+  private:
     // Underlying JNI object
     SimpleJNI::Object<RefType, jobject> _obj;
 

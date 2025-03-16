@@ -2,9 +2,9 @@
 
 #include <fmt/core.h>
 
-void log_error(const std::string& msg) { }
-void log_info(const std::string& msg) { }
-void log_debug(const std::string& msg) { }
+void log_error(const std::string& msg) {}
+void log_info(const std::string& msg) {}
+void log_debug(const std::string& msg) {}
 
 jstring to_jstring(JNIEnv* env, const std::string& str) { return env->NewStringUTF(str.c_str()); }
 

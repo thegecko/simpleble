@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Descriptor.h"
+#include "java/lang/ArrayList.h"
 #include "jni/Common.hpp"
 #include "jni/Registry.hpp"
-#include "java/lang/ArrayList.h"
-#include "Descriptor.h"
 
 namespace Org {
 namespace SimpleJavaBLE {
@@ -32,12 +32,8 @@ class Characteristic {
      * @param canIndicate Whether the characteristic supports indications.
      */
     Characteristic(const SimpleJNI::String<SimpleJNI::LocalRef>& uuid,
-                  const Java::Util::ArrayList<SimpleJNI::LocalRef>& descriptors,
-                  bool canRead,
-                  bool canWriteRequest,
-                  bool canWriteCommand,
-                  bool canNotify,
-                  bool canIndicate);
+                   const Java::Util::ArrayList<SimpleJNI::LocalRef>& descriptors, bool canRead, bool canWriteRequest,
+                   bool canWriteCommand, bool canNotify, bool canIndicate);
 
     // Implicit conversion to SimpleJNI::Object
     operator SimpleJNI::Object<SimpleJNI::ReleasableLocalRef, jobject>() const;
@@ -57,7 +53,7 @@ class Characteristic {
      */
     static const SimpleJNI::AutoRegister<Characteristic> registrar;
 
-    SimpleJNI::Object<SimpleJNI::ReleasableLocalRef> _obj; ///< Wrapped Java object with ReleasableLocalRef lifetime.
+    SimpleJNI::Object<SimpleJNI::ReleasableLocalRef> _obj;  ///< Wrapped Java object with ReleasableLocalRef lifetime.
 };
 
 }  // namespace SimpleJavaBLE

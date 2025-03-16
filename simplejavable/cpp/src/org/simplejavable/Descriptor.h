@@ -42,7 +42,7 @@ class Descriptor {
      */
     static const SimpleJNI::AutoRegister<Descriptor> registrar;
 
-    SimpleJNI::Object<SimpleJNI::ReleasableLocalRef> _obj; ///< Wrapped Java object with ReleasableLocalRef lifetime.
+    SimpleJNI::Object<SimpleJNI::ReleasableLocalRef> _obj;  ///< Wrapped Java object with ReleasableLocalRef lifetime.
 };
 
 }  // namespace SimpleJavaBLE

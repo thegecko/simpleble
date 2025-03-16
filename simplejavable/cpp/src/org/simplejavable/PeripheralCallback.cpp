@@ -13,10 +13,8 @@ const SimpleJNI::JNIDescriptor PeripheralCallback::descriptor{
     "org/simplejavable/Peripheral$Callback",  // Java interface name (inner class notation)
     &_cls,                                    // Where to store the jclass
     {                                         // Methods to preload
-        {"onConnected", "()V", &_method_on_connected},
-        {"onDisconnected", "()V", &_method_on_disconnected}
-    }
-};
+     {"onConnected", "()V", &_method_on_connected},
+     {"onDisconnected", "()V", &_method_on_disconnected}}};
 
 // Define the AutoRegister instance
 const SimpleJNI::AutoRegister<PeripheralCallback> PeripheralCallback::registrar{&descriptor};

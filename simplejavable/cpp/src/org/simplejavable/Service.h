@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Characteristic.h"
+#include "java/lang/ArrayList.h"
 #include "jni/Common.hpp"
 #include "jni/Registry.hpp"
-#include "java/lang/ArrayList.h"
-#include "Characteristic.h"
 
 namespace Org {
 namespace SimpleJavaBLE {
@@ -27,11 +27,11 @@ class Service {
      * @param characteristics List of characteristics associated with this service.
      */
     Service(const SimpleJNI::String<SimpleJNI::LocalRef>& uuid,
-           const Java::Util::ArrayList<SimpleJNI::LocalRef>& characteristics);
+            const Java::Util::ArrayList<SimpleJNI::LocalRef>& characteristics);
 
     // Implicit conversion to SimpleJNI::Object
     operator SimpleJNI::Object<SimpleJNI::ReleasableLocalRef, jobject>() const;
-    
+
   private:
     // Static JNI resources, populated by Registrar during JNI_OnLoad
     static SimpleJNI::GlobalRef<jclass> _cls;
@@ -47,7 +47,7 @@ class Service {
      */
     static const SimpleJNI::AutoRegister<Service> registrar;
 
-    SimpleJNI::Object<SimpleJNI::ReleasableLocalRef> _obj; ///< Wrapped Java object with ReleasableLocalRef lifetime.
+    SimpleJNI::Object<SimpleJNI::ReleasableLocalRef> _obj;  ///< Wrapped Java object with ReleasableLocalRef lifetime.
 };
 
 }  // namespace SimpleJavaBLE

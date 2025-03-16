@@ -49,7 +49,8 @@ void ScanCallback::set_callback_onScanFailed(std::function<void()> callback) {
     }
 }
 
-void ScanCallback::jni_onScanResultCallback(JNI::Object thiz, jint callback_type, SimpleBLE::Android::ScanResult scan_result) {
+void ScanCallback::jni_onScanResultCallback(JNI::Object thiz, jint callback_type,
+                                            SimpleBLE::Android::ScanResult scan_result) {
     auto callback_opt = ScanCallback::_map.get(thiz);
     if (!callback_opt) {
         SIMPLEBLE_LOG_FATAL("Failed to find ScanCallback object. This should never happen.");

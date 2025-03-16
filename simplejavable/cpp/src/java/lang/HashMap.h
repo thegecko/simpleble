@@ -7,7 +7,7 @@ namespace Java::Util {
 
 template <template <typename> class RefType>
 class HashMap {
-public:
+  public:
     HashMap();
     explicit HashMap(jobject obj);
 
@@ -23,7 +23,8 @@ public:
 
     // Release the underlying jobject
     template <template <typename> class R = RefType>
-    typename std::enable_if<std::is_same<R<jobject>, SimpleJNI::ReleasableLocalRef<jobject>>::value, jobject>::type release();
+    typename std::enable_if<std::is_same<R<jobject>, SimpleJNI::ReleasableLocalRef<jobject>>::value, jobject>::type
+    release();
 
     // Check if the object is valid
     explicit operator bool() const;
@@ -34,9 +35,9 @@ public:
     // Put a key-value pair into the map
     template <template <typename> class KeyRefType, template <typename> class ValueRefType>
     SimpleJNI::Object<SimpleJNI::LocalRef> put(const SimpleJNI::Object<KeyRefType, jobject>& key,
-                                              const SimpleJNI::Object<ValueRefType, jobject>& value);
+                                               const SimpleJNI::Object<ValueRefType, jobject>& value);
 
-private:
+  private:
     // Underlying JNI object
     SimpleJNI::Object<RefType, jobject> _obj;
 

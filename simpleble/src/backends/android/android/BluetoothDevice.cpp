@@ -5,7 +5,7 @@ namespace Android {
 
 JNI::Class BluetoothDevice::_cls;
 jmethodID BluetoothDevice::_method_getAddress;
-//jmethodID BluetoothDevice::_method_getAddressType;
+// jmethodID BluetoothDevice::_method_getAddressType;
 jmethodID BluetoothDevice::_method_getName;
 jmethodID BluetoothDevice::_method_getBondState;
 jmethodID BluetoothDevice::_method_removeBond;

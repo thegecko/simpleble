@@ -14,12 +14,10 @@ jmethodID HashMap<RefType>::_method_put = nullptr;
 template <template <typename> class RefType>
 const SimpleJNI::JNIDescriptor HashMap<RefType>::descriptor{
     "java/util/HashMap",  // Java class name
-    &_cls,               // Where to store the jclass
-    {                    // Methods to preload
-        {"<init>", "()V", &_method_init},
-        {"put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", &_method_put}
-    }
-};
+    &_cls,                // Where to store the jclass
+    {                     // Methods to preload
+     {"<init>", "()V", &_method_init},
+     {"put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", &_method_put}}};
 
 template <template <typename> class RefType>
 const SimpleJNI::AutoRegister<HashMap<RefType>> HashMap<RefType>::registrar{&descriptor};
@@ -61,7 +59,8 @@ jobject HashMap<RefType>::get() const {
 
 template <template <typename> class RefType>
 template <template <typename> class R>
-typename std::enable_if<std::is_same<R<jobject>, SimpleJNI::ReleasableLocalRef<jobject>>::value, jobject>::type HashMap<RefType>::release() {
+typename std::enable_if<std::is_same<R<jobject>, SimpleJNI::ReleasableLocalRef<jobject>>::value, jobject>::type
+HashMap<RefType>::release() {
     return _obj.release();
 }
 
@@ -72,9 +71,8 @@ HashMap<RefType>::operator bool() const {
 
 template <template <typename> class RefType>
 template <template <typename> class KeyRefType, template <typename> class ValueRefType>
-SimpleJNI::Object<SimpleJNI::LocalRef> HashMap<RefType>::put(
-    const SimpleJNI::Object<KeyRefType, jobject>& key,
-    const SimpleJNI::Object<ValueRefType, jobject>& value) {
+SimpleJNI::Object<SimpleJNI::LocalRef> HashMap<RefType>::put(const SimpleJNI::Object<KeyRefType, jobject>& key,
+                                                             const SimpleJNI::Object<ValueRefType, jobject>& value) {
     return _obj.call_object_method(_method_put, key.get(), value.get());
 }
 
@@ -89,9 +87,9 @@ template class HashMap<SimpleJNI::GlobalRef>;
 template class HashMap<SimpleJNI::WeakRef>;
 template class HashMap<SimpleJNI::ReleasableLocalRef>;
 
-template SimpleJNI::Object<SimpleJNI::LocalRef, jobject> HashMap<SimpleJNI::ReleasableLocalRef>::put<SimpleJNI::LocalRef, SimpleJNI::LocalRef>(
-    const SimpleJNI::Object<SimpleJNI::LocalRef, jobject>& key,
-    const SimpleJNI::Object<SimpleJNI::LocalRef, jobject>& value);
+template SimpleJNI::Object<SimpleJNI::LocalRef, jobject> HashMap<SimpleJNI::ReleasableLocalRef>::put<
+    SimpleJNI::LocalRef, SimpleJNI::LocalRef>(const SimpleJNI::Object<SimpleJNI::LocalRef, jobject>& key,
+                                              const SimpleJNI::Object<SimpleJNI::LocalRef, jobject>& value);
 
 template jobject HashMap<SimpleJNI::ReleasableLocalRef>::release<SimpleJNI::ReleasableLocalRef>();
 

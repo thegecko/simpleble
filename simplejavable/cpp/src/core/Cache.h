@@ -5,14 +5,14 @@
 #include "PeripheralWrapper.h"
 
 class Cache {
-private:
+  private:
     Cache() = default;
 
     // Maps now store wrappers
     std::map<size_t, AdapterWrapper> cached_adapters;
     std::map<size_t, std::map<size_t, PeripheralWrapper>> cached_peripherals;
 
-public:
+  public:
     static Cache& get();
 
     Cache(const Cache&) = delete;
@@ -27,7 +27,7 @@ public:
     void addPeripheral(size_t adapter_id, size_t peripheral_id, const PeripheralWrapper& peripheral);
     PeripheralWrapper* getPeripheral(size_t adapter_id, size_t peripheral_id);
     bool hasPeripheral(size_t adapter_id, size_t peripheral_id) const;
-    
+
     // Removal methods
     void removeAdapter(size_t adapter_id);
     void removePeripheral(size_t adapter_id, size_t peripheral_id);

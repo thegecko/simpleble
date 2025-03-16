@@ -12,14 +12,11 @@ template <template <typename> class RefType>
 jmethodID Iterator<RefType>::_method_next = nullptr;
 
 template <template <typename> class RefType>
-const SimpleJNI::JNIDescriptor Iterator<RefType>::descriptor{
-    "java/util/Iterator",  // Java interface name
-    &_cls,                // Where to store the jclass
-    {                     // Methods to preload
-        {"hasNext", "()Z", &_method_has_next},
-        {"next", "()Ljava/lang/Object;", &_method_next}
-    }
-};
+const SimpleJNI::JNIDescriptor Iterator<RefType>::descriptor{"java/util/Iterator",  // Java interface name
+                                                             &_cls,                 // Where to store the jclass
+                                                             {                      // Methods to preload
+                                                              {"hasNext", "()Z", &_method_has_next},
+                                                              {"next", "()Ljava/lang/Object;", &_method_next}}};
 
 template <template <typename> class RefType>
 const SimpleJNI::AutoRegister<Iterator<RefType>> Iterator<RefType>::registrar{&descriptor};

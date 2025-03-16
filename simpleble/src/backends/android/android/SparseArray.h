@@ -32,8 +32,6 @@ class SparseArray : public SparseArrayBase {
   private:
     void check_initialized() const;
     JNI::Object _obj;
-
-
 };
 
 }  // namespace Android

@@ -1,6 +1,6 @@
 #include "AdapterWrapper.h"
-#include "PeripheralWrapper.h"
 #include "Cache.h"
+#include "PeripheralWrapper.h"
 
 AdapterWrapper::AdapterWrapper(const SimpleBLE::Adapter& adapter) : _adapter(adapter) {}
 
@@ -11,13 +11,9 @@ AdapterWrapper::~AdapterWrapper() {
     _adapter.set_callback_on_scan_stop(nullptr);
 }
 
-SimpleBLE::Adapter& AdapterWrapper::get() {
-    return _adapter;
-}
+SimpleBLE::Adapter& AdapterWrapper::get() { return _adapter; }
 
-const SimpleBLE::Adapter& AdapterWrapper::get() const {
-    return _adapter;
-}
+const SimpleBLE::Adapter& AdapterWrapper::get() const { return _adapter; }
 
 void AdapterWrapper::setCallback(Org::SimpleJavaBLE::AdapterCallback& callback) {
     _callback = std::move(callback);
@@ -33,15 +29,9 @@ void AdapterWrapper::setCallback(Org::SimpleJavaBLE::AdapterCallback& callback) 
         _callback.on_scan_updated(peripheral_wrapper.getHash());
     });
 
-    _adapter.set_callback_on_scan_start([this]() {
-        _callback.on_scan_start();
-    });
+    _adapter.set_callback_on_scan_start([this]() { _callback.on_scan_start(); });
 
-    _adapter.set_callback_on_scan_stop([this]() {
-        _callback.on_scan_stop();
-    });
+    _adapter.set_callback_on_scan_stop([this]() { _callback.on_scan_stop(); });
 }
 
-size_t AdapterWrapper::getHash() {
-    return std::hash<std::string>{}(_adapter.identifier());
-}
+size_t AdapterWrapper::getHash() { return std::hash<std::string>{}(_adapter.identifier()); }

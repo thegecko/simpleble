@@ -13,8 +13,7 @@ const SimpleJNI::JNIDescriptor Descriptor::descriptor{
     &_cls,                           // Where to store the jclass
     {
         {"<init>", "(Ljava/lang/String;)V", &_init_method}  // Constructor method
-    }
-};
+    }};
 
 // Define the AutoRegister instance
 const SimpleJNI::AutoRegister<Descriptor> Descriptor::registrar{&descriptor};
@@ -25,9 +24,7 @@ Descriptor::Descriptor(const SimpleJNI::String<SimpleJNI::LocalRef>& uuid) {
     _obj = SimpleJNI::Object<SimpleJNI::ReleasableLocalRef>::call_new_object(_cls.get(), _init_method, uuid.get());
 }
 
-Descriptor::operator SimpleJNI::Object<SimpleJNI::ReleasableLocalRef, jobject>() const {
-    return _obj;
-}
+Descriptor::operator SimpleJNI::Object<SimpleJNI::ReleasableLocalRef, jobject>() const { return _obj; }
 
 }  // namespace SimpleJavaBLE
 }  // namespace Org

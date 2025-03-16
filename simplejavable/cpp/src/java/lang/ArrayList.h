@@ -1,15 +1,15 @@
 #pragma once
 
 #include <cstddef>
+#include "Iterator.h"
 #include "jni/Common.hpp"
 #include "jni/Registry.hpp"
-#include "Iterator.h"
 
 namespace Java::Util {
 
 template <template <typename> class RefType>
 class ArrayList {
-public:
+  public:
     ArrayList();
     explicit ArrayList(jobject obj);
     ArrayList(int initialCapacity);
@@ -26,7 +26,8 @@ public:
 
     // Release the underlying jobject
     template <template <typename> class R = RefType>
-    typename std::enable_if<std::is_same<R<jobject>, SimpleJNI::ReleasableLocalRef<jobject>>::value, jobject>::type release();
+    typename std::enable_if<std::is_same<R<jobject>, SimpleJNI::ReleasableLocalRef<jobject>>::value, jobject>::type
+    release();
 
     // Check if the object is valid
     explicit operator bool() const;
@@ -48,7 +49,7 @@ public:
     void ensureCapacity(int minCapacity);
     void trimToSize();
 
-private:
+  private:
     // Underlying JNI object
     SimpleJNI::Object<RefType, jobject> _obj;
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "Common.hpp"
 #include <string>
 #include <vector>
+#include "Common.hpp"
 
 namespace SimpleJNI {
 
@@ -13,9 +13,9 @@ namespace SimpleJNI {
  * be stored during JNI_OnLoad.
  */
 struct MethodDescriptor {
-    std::string name;           ///< Name of the Java method (e.g., "startScan").
-    std::string signature;      ///< JNI signature of the method (e.g., "(Landroid/bluetooth/le/ScanCallback;)V").
-    jmethodID* target = nullptr; ///< Pointer to where the resolved jmethodID will be stored.
+    std::string name;             ///< Name of the Java method (e.g., "startScan").
+    std::string signature;        ///< JNI signature of the method (e.g., "(Landroid/bluetooth/le/ScanCallback;)V").
+    jmethodID* target = nullptr;  ///< Pointer to where the resolved jmethodID will be stored.
 
     MethodDescriptor(const std::string& n, const std::string& sig, jmethodID* tgt)
         : name(n), signature(sig), target(tgt) {}
@@ -29,9 +29,9 @@ struct MethodDescriptor {
  * (GlobalRef<jclass> and jmethodID pointers) that will be populated during preloading.
  */
 struct JNIDescriptor {
-    std::string class_name;                  ///< Fully qualified Java class name (e.g., "android/bluetooth/le/BluetoothLeScanner").
-    SimpleJNI::GlobalRef<jclass>* class_target; ///< Pointer to where the resolved jclass will be stored.
-    std::vector<MethodDescriptor> methods;    ///< List of methods to preload for this class.
+    std::string class_name;  ///< Fully qualified Java class name (e.g., "android/bluetooth/le/BluetoothLeScanner").
+    SimpleJNI::GlobalRef<jclass>* class_target;  ///< Pointer to where the resolved jclass will be stored.
+    std::vector<MethodDescriptor> methods;       ///< List of methods to preload for this class.
 
     JNIDescriptor(const std::string& name, SimpleJNI::GlobalRef<jclass>* cls_target,
                   std::initializer_list<MethodDescriptor> meths)
@@ -61,9 +61,7 @@ class Registrar {
      * to an internal list that will be processed in preload().
      * @param descriptor Pointer to the JNIDescriptor to register.
      */
-    void register_descriptor(const JNIDescriptor* descriptor) {
-        descriptors.push_back(descriptor);
-    }
+    void register_descriptor(const JNIDescriptor* descriptor) { descriptors.push_back(descriptor); }
 
     /**
      * @brief Preload all registered JNI resources.
@@ -82,13 +80,12 @@ class Registrar {
                 throw std::runtime_error("Failed to load class: " + desc->class_name);
             }
             *desc->class_target = SimpleJNI::GlobalRef<jclass>(local_cls);
-            env->DeleteLocalRef(local_cls); // Clean up the local reference
+            env->DeleteLocalRef(local_cls);  // Clean up the local reference
 
             // Load each method
             for (const MethodDescriptor& method : desc->methods) {
-                *method.target = env->GetMethodID(desc->class_target->get(),
-                                                 method.name.c_str(),
-                                                 method.signature.c_str());
+                *method.target = env->GetMethodID(desc->class_target->get(), method.name.c_str(),
+                                                  method.signature.c_str());
                 if (!*method.target) {
                     throw std::runtime_error("Failed to get method: " + desc->class_name + "." + method.name);
                 }
@@ -102,7 +99,7 @@ class Registrar {
     Registrar(const Registrar&) = delete;
     Registrar& operator=(const Registrar&) = delete;
 
-    std::vector<const JNIDescriptor*> descriptors; ///< List of registered descriptors.
+    std::vector<const JNIDescriptor*> descriptors;  ///< List of registered descriptors.
 };
 
 /**
@@ -115,9 +112,7 @@ class Registrar {
  */
 template <typename T>
 struct AutoRegister {
-    AutoRegister(const JNIDescriptor* desc) {
-        Registrar::get().register_descriptor(desc);
-    }
+    AutoRegister(const JNIDescriptor* desc) { Registrar::get().register_descriptor(desc); }
 };
 
 }  // namespace SimpleJNI

@@ -10,9 +10,9 @@
 #include <android/ScanResult.h>
 #include <bridge/BluetoothGattCallback.h>
 
+#include <condition_variable>
 #include <map>
 #include <mutex>
-#include <condition_variable>
 
 namespace SimpleBLE {
 

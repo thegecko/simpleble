@@ -15,7 +15,6 @@ namespace SimpleJavaBLE {
  */
 class AdapterCallback {
   public:
-
     AdapterCallback() = default;
 
     /**
@@ -60,11 +59,11 @@ class AdapterCallback {
 
   private:
     // Static JNI resources, populated by Registrar during JNI_OnLoad
-    static SimpleJNI::GlobalRef<jclass> _cls;            ///< Preloaded jclass for org.simplejavable.Adapter$Callback.
-    static jmethodID _method_on_scan_start;             ///< Preloaded jmethodID for onScanStart.
-    static jmethodID _method_on_scan_stop;              ///< Preloaded jmethodID for onScanStop.
-    static jmethodID _method_on_scan_updated;           ///< Preloaded jmethodID for onScanUpdated.
-    static jmethodID _method_on_scan_found;             ///< Preloaded jmethodID for onScanFound.
+    static SimpleJNI::GlobalRef<jclass> _cls;  ///< Preloaded jclass for org.simplejavable.Adapter$Callback.
+    static jmethodID _method_on_scan_start;    ///< Preloaded jmethodID for onScanStart.
+    static jmethodID _method_on_scan_stop;     ///< Preloaded jmethodID for onScanStop.
+    static jmethodID _method_on_scan_updated;  ///< Preloaded jmethodID for onScanUpdated.
+    static jmethodID _method_on_scan_found;    ///< Preloaded jmethodID for onScanFound.
 
     /**
      * @brief JNI descriptor defining the Callback interface and its methods.
@@ -84,7 +83,7 @@ class AdapterCallback {
      */
     static const SimpleJNI::AutoRegister<AdapterCallback> registrar;
 
-    SimpleJNI::Object<SimpleJNI::WeakRef> _obj; ///< Wrapped Java object with WeakGlobalRef lifetime.
+    SimpleJNI::Object<SimpleJNI::WeakRef> _obj;  ///< Wrapped Java object with WeakGlobalRef lifetime.
 };
 
 }  // namespace SimpleJavaBLE

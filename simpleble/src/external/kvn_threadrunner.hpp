@@ -17,9 +17,7 @@ namespace kvn {
 
 class thread_runner {
   public:
-    thread_runner() : _stop(false) {
-        _thread = std::thread(&thread_runner::thread_func, this);
-    }
+    thread_runner() : _stop(false) { _thread = std::thread(&thread_runner::thread_func, this); }
 
     // Remove copy constructor and copy assignment
     thread_runner(const thread_runner&) = delete;

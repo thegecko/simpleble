@@ -21,7 +21,9 @@
 #define SAFE_RUN(code)                                                                      \
     do {                                                                                    \
         try {                                                                               \
-            { code }                                                                        \
+            {                                                                               \
+                code                                                                        \
+            }                                                                               \
         } catch (const std::exception& ex) {                                                \
             SIMPLEBLE_LOG_ERROR(fmt::format("Exception within code block: {}", ex.what())); \
         } catch (...) {                                                                     \

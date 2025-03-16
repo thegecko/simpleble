@@ -8,8 +8,8 @@
 #include <queue>
 #include <string>
 #include <thread>
-#include <vector>
 #include <type_traits>
+#include <vector>
 
 #include "References.hpp"
 #include "VM.hpp"
@@ -17,7 +17,8 @@
 
 namespace SimpleJNI {
 
-// TODO: Implement a base class that handles common functionality of complicated Objects (see the ones in org/simplejavable)
+// TODO: Implement a base class that handles common functionality of complicated Objects (see the ones in
+// org/simplejavable)
 
 template <template <typename> class RefType, typename JniType = jobject>
 class Object {

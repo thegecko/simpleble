@@ -49,25 +49,23 @@ jmethodID ArrayList<RefType>::_method_trimToSize = nullptr;
 
 template <template <typename> class RefType>
 const SimpleJNI::JNIDescriptor ArrayList<RefType>::descriptor{
-    "java/util/ArrayList",    // Java class name
-    &_cls,                    // Where to store the jclass
-    {                         // Methods to preload
-        {"<init>", "()V", &_constructor},
-        {"<init>", "(I)V", &_constructor_capacity},
-        {"iterator", "()Ljava/util/Iterator;", &_method_iterator},
-        {"add", "(Ljava/lang/Object;)Z", &_method_add},
-        {"add", "(ILjava/lang/Object;)V", &_method_add_at_index},
-        {"remove", "(Ljava/lang/Object;)Z", &_method_remove_object},
-        {"remove", "(I)Ljava/lang/Object;", &_method_remove_index},
-        {"clear", "()V", &_method_clear},
-        {"size", "()I", &_method_size},
-        {"get", "(I)Ljava/lang/Object;", &_method_get},
-        {"set", "(ILjava/lang/Object;)Ljava/lang/Object;", &_method_set},
-        {"isEmpty", "()Z", &_method_isEmpty},
-        {"ensureCapacity", "(I)V", &_method_ensureCapacity},
-        {"trimToSize", "()V", &_method_trimToSize}
-    }
-};
+    "java/util/ArrayList",  // Java class name
+    &_cls,                  // Where to store the jclass
+    {                       // Methods to preload
+     {"<init>", "()V", &_constructor},
+     {"<init>", "(I)V", &_constructor_capacity},
+     {"iterator", "()Ljava/util/Iterator;", &_method_iterator},
+     {"add", "(Ljava/lang/Object;)Z", &_method_add},
+     {"add", "(ILjava/lang/Object;)V", &_method_add_at_index},
+     {"remove", "(Ljava/lang/Object;)Z", &_method_remove_object},
+     {"remove", "(I)Ljava/lang/Object;", &_method_remove_index},
+     {"clear", "()V", &_method_clear},
+     {"size", "()I", &_method_size},
+     {"get", "(I)Ljava/lang/Object;", &_method_get},
+     {"set", "(ILjava/lang/Object;)Ljava/lang/Object;", &_method_set},
+     {"isEmpty", "()Z", &_method_isEmpty},
+     {"ensureCapacity", "(I)V", &_method_ensureCapacity},
+     {"trimToSize", "()V", &_method_trimToSize}}};
 
 template <template <typename> class RefType>
 const SimpleJNI::AutoRegister<ArrayList<RefType>> ArrayList<RefType>::registrar{&descriptor};
@@ -135,7 +133,8 @@ jobject ArrayList<RefType>::get() const {
 
 template <template <typename> class RefType>
 template <template <typename> class R>
-typename std::enable_if<std::is_same<R<jobject>, SimpleJNI::ReleasableLocalRef<jobject>>::value, jobject>::type ArrayList<RefType>::release() {
+typename std::enable_if<std::is_same<R<jobject>, SimpleJNI::ReleasableLocalRef<jobject>>::value, jobject>::type
+ArrayList<RefType>::release() {
     return _obj.release();
 }
 
@@ -215,7 +214,8 @@ SimpleJNI::Object<SimpleJNI::LocalRef> ArrayList<RefType>::get(size_t index) con
 }
 
 template <template <typename> class RefType>
-SimpleJNI::Object<SimpleJNI::LocalRef> ArrayList<RefType>::set(size_t index, const SimpleJNI::Object<RefType, jobject>& element) {
+SimpleJNI::Object<SimpleJNI::LocalRef> ArrayList<RefType>::set(size_t index,
+                                                               const SimpleJNI::Object<RefType, jobject>& element) {
     if (!*this) {
         throw std::runtime_error("ArrayList is not initialized");
     }

@@ -15,12 +15,10 @@ const SimpleJNI::JNIDescriptor AdapterCallback::descriptor{
     "org/simplejavable/Adapter$Callback",  // Java interface name (inner class notation)
     &_cls,                                 // Where to store the jclass
     {                                      // Methods to preload
-        {"onScanStart", "()V", &_method_on_scan_start},
-        {"onScanStop", "()V", &_method_on_scan_stop},
-        {"onScanUpdated", "(J)V", &_method_on_scan_updated},
-        {"onScanFound", "(J)V", &_method_on_scan_found}
-    }
-};
+     {"onScanStart", "()V", &_method_on_scan_start},
+     {"onScanStop", "()V", &_method_on_scan_stop},
+     {"onScanUpdated", "(J)V", &_method_on_scan_updated},
+     {"onScanFound", "(J)V", &_method_on_scan_found}}};
 
 // Define the AutoRegister instance
 const SimpleJNI::AutoRegister<AdapterCallback> AdapterCallback::registrar{&descriptor};

@@ -1,14 +1,14 @@
 #pragma once
 
 #include <jni.h>
-#include <cstdint>
-#include <string>
-#include <vector>
-#include <thread>
-#include <mutex>
 #include <condition_variable>
-#include <queue>
+#include <cstdint>
 #include <functional>
+#include <mutex>
+#include <queue>
+#include <string>
+#include <thread>
+#include <vector>
 
 #include "GlobalRef.hpp"
 #include "VM.hpp"
@@ -335,9 +335,7 @@ class Runner {
 
   private:
     // Move constructor to private
-    Runner() : _stop(false) {
-        _thread = std::thread(&Runner::thread_func, this);
-    }
+    Runner() : _stop(false) { _thread = std::thread(&Runner::thread_func, this); }
 
     std::thread _thread;
     std::mutex _mutex;

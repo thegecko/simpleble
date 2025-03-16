@@ -15,14 +15,13 @@ template <template <typename> class RefType>
 jmethodID Integer<RefType>::_method_value_of = nullptr;
 
 template <template <typename> class RefType>
-const SimpleJNI::JNIDescriptor Integer<RefType>::descriptor{
-    "java/lang/Integer",  // Java class name
-    &_cls,               // Where to store the jclass
-    {                    // Methods to preload
-        {"<init>", "(I)V", &_method_init},
-        {"intValue", "()I", &_method_int_value},
-    }
-};
+const SimpleJNI::JNIDescriptor Integer<RefType>::descriptor{"java/lang/Integer",  // Java class name
+                                                            &_cls,                // Where to store the jclass
+                                                            {
+                                                                // Methods to preload
+                                                                {"<init>", "(I)V", &_method_init},
+                                                                {"intValue", "()I", &_method_int_value},
+                                                            }};
 
 template <template <typename> class RefType>
 const SimpleJNI::AutoRegister<Integer<RefType>> Integer<RefType>::registrar{&descriptor};

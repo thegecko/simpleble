@@ -210,7 +210,8 @@ void BluetoothGattCallback::jni_onServiceChangedCallback(JNI::Object thiz_obj) {
     BluetoothGattCallback* obj = GET_CALLBACK_OBJECT_OR_RETURN(thiz_obj);
 }
 
-void BluetoothGattCallback::jni_onCharacteristicChangedCallback(JNI::Object thiz_obj, JNI::Object characteristic_obj, JNI::ByteArray value) {
+void BluetoothGattCallback::jni_onCharacteristicChangedCallback(JNI::Object thiz_obj, JNI::Object characteristic_obj,
+                                                                JNI::ByteArray value) {
     auto msg = "onCharacteristicChangedCallback with value: " + value.bytes().toHex(true);
     SIMPLEBLE_LOG_INFO(msg);
 
@@ -221,7 +222,8 @@ void BluetoothGattCallback::jni_onCharacteristicChangedCallback(JNI::Object thiz
     }
 }
 
-void BluetoothGattCallback::jni_onCharacteristicReadCallback(JNI::Object thiz_obj, JNI::Object characteristic_obj, JNI::ByteArray value, jint status) {
+void BluetoothGattCallback::jni_onCharacteristicReadCallback(JNI::Object thiz_obj, JNI::Object characteristic_obj,
+                                                             JNI::ByteArray value, jint status) {
     auto msg = "onCharacteristicReadCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
@@ -229,7 +231,8 @@ void BluetoothGattCallback::jni_onCharacteristicReadCallback(JNI::Object thiz_ob
     obj->clear_flag_characteristicReadPending(characteristic_obj, value.bytes());
 }
 
-void BluetoothGattCallback::jni_onCharacteristicWriteCallback(JNI::Object thiz_obj, JNI::Object characteristic_obj, jint status) {
+void BluetoothGattCallback::jni_onCharacteristicWriteCallback(JNI::Object thiz_obj, JNI::Object characteristic_obj,
+                                                              jint status) {
     auto msg = "onCharacteristicWriteCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
@@ -237,7 +240,8 @@ void BluetoothGattCallback::jni_onCharacteristicWriteCallback(JNI::Object thiz_o
     obj->clear_flag_characteristicWritePending(characteristic_obj);
 }
 
-void BluetoothGattCallback::jni_onDescriptorReadCallback(JNI::Object thiz_obj, JNI::Object descriptor_obj, JNI::ByteArray value, jint status) {
+void BluetoothGattCallback::jni_onDescriptorReadCallback(JNI::Object thiz_obj, JNI::Object descriptor_obj,
+                                                         JNI::ByteArray value, jint status) {
     auto msg = "onDescriptorReadCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
@@ -245,7 +249,8 @@ void BluetoothGattCallback::jni_onDescriptorReadCallback(JNI::Object thiz_obj, J
     obj->clear_flag_descriptorReadPending(descriptor_obj, value.bytes());
 }
 
-void BluetoothGattCallback::jni_onDescriptorWriteCallback(JNI::Object thiz_obj, JNI::Object descriptor_obj, jint status) {
+void BluetoothGattCallback::jni_onDescriptorWriteCallback(JNI::Object thiz_obj, JNI::Object descriptor_obj,
+                                                          jint status) {
     auto msg = "onDescriptorWriteCallback";
     SIMPLEBLE_LOG_INFO(msg);
 
