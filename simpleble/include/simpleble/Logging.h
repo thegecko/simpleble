@@ -22,7 +22,13 @@ enum Level : int {
 };
 
 // clang-format off
-using Callback = std::function<void(Level, const std::string&, const std::string&, uint32_t, const std::string&, const std::string&)>;
+using Callback = std::function<void(
+    Level,
+    const std::string& module,
+    const std::string& file,
+    uint32_t line,
+    const std::string& function,
+    const std::string& message)>;
 // clang-format on
 
 class SIMPLEBLE_EXPORT Logger {

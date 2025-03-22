@@ -73,7 +73,9 @@ class PeripheralAndroid : public PeripheralBase {
     std::map<uint16_t, kvn::bytearray> manufacturer_data_;
 
     std::mutex _connection_mutex;
+    std::mutex _disconnection_mutex;
     std::condition_variable _connection_cv;
+    std::condition_variable _disconnection_cv;
 
     kvn::safe_callback<void()> callback_on_connected_;
     kvn::safe_callback<void()> callback_on_disconnected_;

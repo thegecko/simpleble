@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "org.simpleble.android"
-    compileSdk = 31
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 31

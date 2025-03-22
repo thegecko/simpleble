@@ -17,23 +17,19 @@ using namespace std::chrono_literals;
 
 PeripheralAndroid::PeripheralAndroid(Android::BluetoothDevice device) : _device(device) {
     _btGattCallback.set_callback_onConnectionStateChange([this](bool connected) {
-        // If a connection has been established, request service discovery.
         if (connected) {
+            // If a connection has been established, request service discovery.
             _gatt.discoverServices();
         } else {
-            // TODO: Whatever cleanup is necessary when disconnected.
-            SIMPLEBLE_LOG_INFO("Disconnected from device");
             SAFE_CALLBACK_CALL(callback_on_disconnected_);
+            _disconnection_cv.notify_all();
         }
     });
 
     _btGattCallback.set_callback_onServicesDiscovered([this]() {
+        // Once services have been discovered, store them and notify the user.
         _services = _gatt.getServices();
-
-        // Notify the user that the connection has been established once services have been discovered.
         SAFE_CALLBACK_CALL(callback_on_connected_);
-
-        // Notify the connection condition variable that the connection has been established.
         _connection_cv.notify_all();
     });
 }
@@ -94,7 +90,16 @@ void PeripheralAndroid::connect() {
     }
 }
 
-void PeripheralAndroid::disconnect() { _gatt.disconnect(); }
+void PeripheralAndroid::disconnect() {
+    _gatt.disconnect();
+
+    // Wait for the disconnection to be confirmed.
+    std::unique_lock<std::mutex> lock(_disconnection_mutex);
+    bool disconnected = _disconnection_cv.wait_for(lock, 8s, [this]() { return !is_connected(); });
+    if (!disconnected) {
+        throw SimpleBLE::Exception::OperationFailed("Failed to disconnect from device");
+    }
+}
 
 bool PeripheralAndroid::is_connected() { return _btGattCallback.connected && _btGattCallback.services_discovered; }
 

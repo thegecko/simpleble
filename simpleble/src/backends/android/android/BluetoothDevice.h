@@ -30,6 +30,10 @@ class BluetoothDevice {
     static const int ADDRESS_TYPE_PUBLIC = 0;
     static const int ADDRESS_TYPE_RANDOM = 1;
 
+    static const int TRANSPORT_AUTO = 0;
+    static const int TRANSPORT_BREDR = 1;
+    static const int TRANSPORT_LE = 2;
+
   private:
     static JNI::Class _cls;
     static jmethodID _method_getAddress;
