@@ -79,8 +79,8 @@ fi
 
 if [[ ! -z "$FLAG_EXAMPLES" ]]; then
     GRADLE_ACTIONS="$GRADLE_ACTIONS buildAllJars"
-    exec $GRADLE_CMD -g $GRADLE_HOME -p $EXAMPLES_PATH -Dorg.gradle.project.buildDir=$EXAMPLES_BUILD_PATH $GRADLE_ACTIONS
+    exec $GRADLE_CMD -g $GRADLE_HOME -p $EXAMPLES_PATH -PbuildFromCMake -Dorg.gradle.project.buildDir=$EXAMPLES_BUILD_PATH $GRADLE_ACTIONS
 else
     GRADLE_ACTIONS="$GRADLE_ACTIONS build"
-    exec $GRADLE_CMD -g $GRADLE_HOME -p $SOURCE_PATH -Dorg.gradle.project.buildDir=$BUILD_PATH $GRADLE_ACTIONS
+    exec $GRADLE_CMD -g $GRADLE_HOME -p $SOURCE_PATH -PbuildFromCMake -Dorg.gradle.project.buildDir=$BUILD_PATH $GRADLE_ACTIONS
 fi

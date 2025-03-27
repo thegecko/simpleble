@@ -17,10 +17,7 @@ kotlin {
 
 // Native library acquisition options
 val nativeLibUrl: String? by project // -PnativeLibUrl=...
-val nativeLibPath: String? by project // -PnativeLibPath=...
-val cmakePath = "../cpp" // Default CMake location
-val cmakeBuildPath = layout.buildDirectory.dir("build_cpp").get().asFile
-val cmakeBuildOutputPath = layout.buildDirectory.dir("build_cpp/lib").get().asFile
+val buildFromCMake: String? by project // -PbuildFromCMake (presence is what matters)
 
 // OS and architecture detection for CMake builds
 val currentOs = when {
@@ -40,6 +37,8 @@ val currentArch = System.getProperty("os.arch").let { arch ->
 
 // Build native libraries using CMake
 tasks.register<Exec>("buildNativeCMake") {
+    val cmakePath = "../cpp" // Default CMake location
+    val cmakeBuildPath = layout.buildDirectory.dir("build_cpp").get().asFile
     workingDir(cmakePath)
     commandLine("cmake",
         "-B", cmakeBuildPath.absolutePath,
@@ -60,24 +59,18 @@ tasks.jar {
         attributes["Main-Class"] = "org.simplejavable.Main"
     }
 
-    nativeLibUrl?.let { url ->
-        from(uri(url)) {
-            into("native")
-        }
-    } ?: nativeLibPath?.let { path ->
-        from(path) {
-            include("**/*.so", "**/*.dll", "**/*.dylib")
-            into("native")
-        }
-    } ?: run {
+    buildFromCMake?.let {
+        // Build from CMake when explicitly requested
         dependsOn("buildNativeCMake")
+        val cmakeBuildOutputPath = layout.buildDirectory.dir("build_cpp/lib").get().asFile
         from(cmakeBuildOutputPath) {
             include("**/*.so", "**/*.dll", "**/*.dylib")
             into("native/$currentOs/$currentArch")
-            // eachFile {
-            //     // Only organize files for CMake build output
-            //     path = "native/$currentOs/$currentArch/$name"
-            // }
         }
-    }
+    } ?: nativeLibUrl?.let { url ->
+        // Use URL approach when CMake build not requested
+        from(uri(url)) {
+            into("native")
+        }
+    } ?: error("Please provide -PnativeLibUrl or use -PbuildFromCMake to build from CMake")
 }
