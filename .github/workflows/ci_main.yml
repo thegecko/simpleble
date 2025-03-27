@@ -109,8 +109,8 @@ jobs:
               - '**/*.md'
               - '**/*.rst'
 
-  # This job is used to dynamically generate the build matrix of 'build' job in 'ci_linux.yml'.
-  # The output variable 'values' is a list of strings: 'simpledbus', 'simplebluez' and 'simpleble'.
+  # This job is used to dynamically generate the build matrix of 'build' job in 'ci_linux_internals.yml'.
+  # The output variable 'values' is a list of strings: 'simpledbus', 'simplebluez'.
   # This is not inside pre-job because 'changes' variable is set by dorny/paths-filter to ALL the filters
   # that match, so we need to have a job with only these three filters.
   # Note that the filters are defined in a way that makes each of them depend on the previous one.
@@ -122,7 +122,7 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
-      values: ${{ github.ref == 'refs/heads/main' && '["simpledbus","simplebluez","simpleble"]' || steps.filter.outputs.changes }}
+      values: ${{ github.ref == 'refs/heads/main' && '["simpledbus","simplebluez"]' || steps.filter.outputs.changes }}
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
@@ -136,9 +136,6 @@ jobs:
             simplebluez: &simplebluez
               - *simpledbus
               - 'simplebluez/**'
-            simpleble: &simpleble
-              - *simplebluez
-              - 'simpleble/**'
 
   targets:
     needs: [pre_job, filter-changes, libraries]
@@ -213,6 +210,11 @@ jobs:
     needs: [targets]
     if: needs.targets.outputs.linux == 'true'
     uses: ./.github/workflows/ci_linux.yml
+
+  linux-internals:
+    needs: [targets]
+    if: needs.targets.outputs.linux == 'true'
+    uses: ./.github/workflows/ci_linux_internals.yml
     with:
       libraries: ${{ needs.libraries.outputs.values }}
 
