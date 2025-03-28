@@ -12,9 +12,6 @@ inputs:
     description: 'Library type (static or shared)'
     required: true
     default: 'static'
-  container:
-    description: 'Optional container image for Linux builds (e.g., dockcross/linux-x64)'
-    required: false
   source-dir:
     description: 'Path to SimpleBLE source directory'
     required: false
@@ -32,22 +29,6 @@ runs:
 
     - name: Setup CMake
       uses: ./.github/actions/setup-cmake
-
-    - name: Install Linux Dependencies
-      if: inputs.os == 'Linux'
-      shell: bash
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        sudo -H apt-get update -y
-        sudo -H apt-get install -y libdbus-1-dev
-
-    - name: Build DBus for Linux
-      if: inputs.os == 'Linux'
-      uses: ./.github/actions/build-dbus
-      with:
-        os: ${{ inputs.os }}
-        arch: ${{ inputs.arch }}
 
     - name: Add MSBuild to PATH (Windows)
       if: inputs.os == 'Windows'
