@@ -19,8 +19,9 @@ runs:
     - name: Get latest Expat commit hash
       id: expat-hash
       shell: bash
+      # NOTE: Something broke in libexpat, so we're using a fixed hash to 2.7.0 for now.
       run: |
-        EXPAT_HASH=$(curl -s https://api.github.com/repos/libexpat/libexpat/commits/master | jq -r .sha)
+        EXPAT_HASH=6d4ffe856df497ac2cae33537665c3fec7ec8a00
         echo "value=$EXPAT_HASH" >> $GITHUB_OUTPUT
         echo "EXPAT_ROOT=/tmp/expat/install" >> $GITHUB_ENV
         echo "CMAKE_PREFIX_PATH=/tmp/expat/install" >> $GITHUB_ENV
@@ -38,6 +39,7 @@ runs:
       run: |
         git clone https://github.com/libexpat/libexpat.git /tmp/expat
         cd /tmp/expat/expat
+        git checkout ${{ steps.expat-hash.outputs.value }}
         cmake -B build -DEXPAT_BUILD_DOCS=OFF -DEXPAT_BUILD_EXAMPLES=OFF -DEXPAT_BUILD_TESTS=OFF
         cmake --build build --config Release --parallel 4
         cmake --install build --prefix /tmp/expat/install
