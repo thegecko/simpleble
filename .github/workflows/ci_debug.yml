@@ -1,0 +1,115 @@
+name: Manual Build Test Workflow
+
+on:
+  workflow_dispatch:  # Allows manual triggering from GitHub UI
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        options: [
+          {container: dockcross/linux-x64, target: linux-x64},
+          {container: dockcross/linux-x86, target: linux-x86},
+          {container: dockcross/linux-armv6-lts, target: linux-armv6},
+        ]
+        type: [static]
+    container:
+      image: ${{ matrix.options.container }}
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      # Build Expat steps (from build-expat/action.yml)
+      - name: Install Expat Dependencies
+        run: |
+          sudo -H apt-get update -y
+          sudo -H apt-get install -y jq curl
+        env:
+          DEBIAN_FRONTEND: noninteractive
+
+      - name: Get latest Expat commit hash
+        id: expat-hash
+        run: |
+          # Using fixed hash from original action
+          EXPAT_HASH=6d4ffe856df497ac2cae33537665c3fec7ec8a00
+          echo "value=$EXPAT_HASH" >> $GITHUB_OUTPUT
+          echo "EXPAT_ROOT=/tmp/expat/install" >> $GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=/tmp/expat/install" >> $GITHUB_ENV
+
+      - name: Cache Expat
+        id: cache-expat
+        uses: actions/cache@v4
+        with:
+          path: /tmp/expat/install
+          key: ${{ runner.os }}-${{ matrix.options.target }}-expat-${{ steps.expat-hash.outputs.value }}
+
+      - name: Build Expat
+        if: steps.cache-expat.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/libexpat/libexpat.git /tmp/expat
+          cd /tmp/expat/expat
+          git checkout ${{ steps.expat-hash.outputs.value }}
+          cmake -B build -DEXPAT_BUILD_DOCS=OFF -DEXPAT_BUILD_EXAMPLES=OFF -DEXPAT_BUILD_TESTS=OFF
+          cmake --build build --config Release --parallel 4
+          cmake --install build --prefix /tmp/expat/install
+
+      # Build DBus steps (from build-dbus/action.yml)
+      - name: Install DBus Dependencies
+        run: |
+          sudo -H apt-get update -y
+          sudo -H apt-get install -y jq curl
+        env:
+          DEBIAN_FRONTEND: noninteractive
+
+      - name: Set DBus env
+        run: |
+          echo "EXPAT_ROOT=/tmp/expat/install" >> $GITHUB_ENV
+          echo "DBUS_ROOT=/tmp/dbus/install" >> $GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=/tmp/dbus/install:/tmp/expat/install" >> $GITHUB_ENV
+
+      - name: Get latest DBus commit hash
+        id: dbus-hash
+        run: |
+          DBUS_HASH=$(curl -s https://gitlab.freedesktop.org/api/v4/projects/1187/repository/commits | jq -r '.[0].id')
+          echo "value=$DBUS_HASH" >> $GITHUB_OUTPUT
+
+      - name: Cache DBus
+        id: cache-dbus
+        uses: actions/cache@v4
+        with:
+          path: /tmp/dbus/install
+          key: ${{ runner.os }}-${{ matrix.options.target }}-dbus-${{ steps.dbus-hash.outputs.value }}
+
+      - name: Build DBus
+        if: steps.cache-dbus.outputs.cache-hit != 'true'
+        run: |
+          git clone https://gitlab.freedesktop.org/dbus/dbus.git /tmp/dbus
+          cd /tmp/dbus
+          cmake -B build -DDBUS_SESSION_SOCKET_DIR=/usr/local/var/run/dbus/system_bus_socket -DDBUS_BUILD_TESTS=OFF
+          cmake --build build --config Release --parallel 4
+          cmake --install build --prefix /tmp/dbus/install
+
+      # Original build steps
+      - name: Build SimpleBLE
+        run: |
+          GITHUB_WORKSPACE=$(pwd)
+          if [ "${{ matrix.type }}" == "shared" ]; then
+            BUILD_SHARED_LIBS=ON
+          else
+            BUILD_SHARED_LIBS=OFF
+          fi
+          export CMAKE_PREFIX_PATH=/tmp/dbus/install:$CMAKE_PREFIX_PATH
+          cmake -B $GITHUB_WORKSPACE/build_simpleble -DCMAKE_BUILD_TYPE=Release -S $GITHUB_WORKSPACE/simpleble -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS
+          cmake --build $GITHUB_WORKSPACE/build_simpleble --config Release --parallel 4
+          cmake --install $GITHUB_WORKSPACE/build_simpleble --prefix $GITHUB_WORKSPACE/build_simpleble/install
+          mkdir -p $GITHUB_WORKSPACE/artifacts
+          zip -r $GITHUB_WORKSPACE/artifacts/simpleble_${{ matrix.type }}_${{ matrix.options.target }}.zip $GITHUB_WORKSPACE/build_simpleble/install
+
+      - name: Upload binaries to job
+        uses: actions/upload-artifact@v4
+        with:
+          name: simpleble_${{ matrix.type }}_${{ matrix.options.target }}
+          path: artifacts/simpleble_${{ matrix.type }}_${{ matrix.options.target }}.zip
