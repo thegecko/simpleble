@@ -81,6 +81,8 @@ jobs:
           arch: ${{ matrix.options.target }}
 
       - name: Build SimpleBLE
+        # NOTE: The build step requires us to extend the CMAKE_FIND_ROOT_PATH to include the dbus install path,
+        #       as cross-compilation environments will ignore CMAKE_PREFIX_PATH.
         run: |
           GITHUB_WORKSPACE=$(pwd)
 
@@ -90,9 +92,7 @@ jobs:
             BUILD_SHARED_LIBS=OFF
           fi
 
-          export CMAKE_PREFIX_PATH=/tmp/dbus/install:$CMAKE_PREFIX_PATH
-
-          cmake -B $GITHUB_WORKSPACE/build_simpleble -DCMAKE_BUILD_TYPE=Release -S $GITHUB_WORKSPACE/simpleble -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS
+          cmake -B $GITHUB_WORKSPACE/build_simpleble -DCMAKE_BUILD_TYPE=Release -S $GITHUB_WORKSPACE/simpleble -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS -DCMAKE_FIND_ROOT_PATH='${CMAKE_FIND_ROOT_PATH};/tmp/dbus/install'
           cmake --build $GITHUB_WORKSPACE/build_simpleble --config Release --parallel 4
           cmake --install $GITHUB_WORKSPACE/build_simpleble --prefix $GITHUB_WORKSPACE/build_simpleble/install
 

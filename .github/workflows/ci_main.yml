@@ -1,11 +1,8 @@
 name: CI Main
 
-# TODO: Disabled until the figure out why the Linux build is failing.
 on:
-  workflow_dispatch:
-# on:
-#   push:
-#   pull_request:
+  push:
+  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
