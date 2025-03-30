@@ -12,14 +12,6 @@ inputs:
     description: 'Library type (static or shared)'
     required: true
     default: 'static'
-  source-dir:
-    description: 'Path to SimpleBLE source directory'
-    required: false
-    default: 'simpleble'
-  output-dir:
-    description: 'Directory for build artifacts'
-    required: false
-    default: '${{ github.workspace }}/artifacts'
 
 runs:
   using: 'composite'
@@ -27,25 +19,18 @@ runs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup CMake
-      uses: ./.github/actions/setup-cmake
-
-    - name: Add MSBuild to PATH (Windows)
-      if: inputs.os == 'Windows'
-      uses: microsoft/setup-msbuild@v1.1
-
     - name: Configure CMake
       shell: bash
       run: |
         BUILD_SHARED_LIBS=${{ inputs.type == 'shared' && 'ON' || 'OFF' }}
-        OUTPUT_DIR="${{ inputs.output-dir }}"
+        OUTPUT_DIR="${{ github.workspace }}/artifacts"
         mkdir -p "$OUTPUT_DIR"
 
         # Base CMake arguments
         CMAKE_ARGS=(
           "-B" "$GITHUB_WORKSPACE/build"
           "-DCMAKE_BUILD_TYPE=Release"
-          "-S" "${{ inputs.source-dir }}"
+          "-S" "simpleble"
           "-DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS"
         )
 
@@ -80,9 +65,9 @@ runs:
     - name: Package Artifacts
       shell: bash
       run: |
-        mkdir -p "${{ inputs.output-dir }}"
+        mkdir -p "${{ github.workspace }}/artifacts"
         cd $GITHUB_WORKSPACE/build/install
-        zip -r "${{ inputs.output-dir }}/simpleble_${{ inputs.type }}_${{ inputs.os }}-${{ inputs.arch }}.zip" .
+        zip -r "${{ github.workspace }}/artifacts/simpleble_${{ inputs.type }}_${{ inputs.os }}-${{ inputs.arch }}.zip" .
       if: inputs.os != 'Windows'
 
     - name: Package Artifacts (Windows)
@@ -92,9 +77,3 @@ runs:
         cd %GITHUB_WORKSPACE%\build\install
         7z a -tzip "%GITHUB_WORKSPACE%\artifacts\simpleble_${{ inputs.type }}_${{ inputs.os }}-${{ inputs.arch }}.zip" .
       if: inputs.os == 'Windows'
-
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: simpleble_${{ inputs.type }}_${{ inputs.os }}-${{ inputs.arch }}
-        path: ${{ inputs.output-dir }}/simpleble_${{ inputs.type }}_${{ inputs.os }}-${{ inputs.arch }}.zip

@@ -85,12 +85,7 @@ jobs:
         #       as cross-compilation environments will ignore CMAKE_PREFIX_PATH.
         run: |
           GITHUB_WORKSPACE=$(pwd)
-
-          if [ "${{ matrix.type }}" == "shared" ]; then
-            BUILD_SHARED_LIBS=ON
-          else
-            BUILD_SHARED_LIBS=OFF
-          fi
+          BUILD_SHARED_LIBS=$([ "${{ matrix.type }}" == "shared" ] && echo "ON" || echo "OFF")
 
           cmake -B $GITHUB_WORKSPACE/build_simpleble -DCMAKE_BUILD_TYPE=Release -S $GITHUB_WORKSPACE/simpleble -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS -DCMAKE_FIND_ROOT_PATH='${CMAKE_FIND_ROOT_PATH};/tmp/dbus/install'
           cmake --build $GITHUB_WORKSPACE/build_simpleble --config Release --parallel 4
