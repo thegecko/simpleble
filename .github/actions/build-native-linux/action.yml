@@ -63,6 +63,8 @@ runs:
         echo "  Library Type:     ${{ inputs.library-type }} (BUILD_SHARED_LIBS=${{ env.BUILD_SHARED_LIBS_FLAG }})"
         echo "  Build Config:     ${{ env.BUILD_CONFIG_TYPE }}"
         echo "  CMake Options:    ${{ inputs.cmake-options }}"
+        echo "  GITHUB_WORKSPACE: ${{ github.workspace }}"
+        echo "  CWD:              $(pwd)"
 
     - name: Configure CMake
       shell: bash
