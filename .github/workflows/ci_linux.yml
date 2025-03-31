@@ -83,9 +83,9 @@ jobs:
       - name: Build SimpleBLE Library using Action
         uses: ./.github/actions/build-native-linux
         with:
-          source-dir: "${{ github.workspace }}/simpleble"
-          build-dir: "${{ github.workspace }}/build_simpleble"
-          install-prefix: "${{ github.workspace }}/build_simpleble/install"
+          source-dir: "$(pwd)/simpleble"
+          build-dir: "$(pwd)/build_simpleble"
+          install-prefix: "$(pwd)/build_simpleble/install"
           library-type: ${{ matrix.type }}
           build-config: 'Release'
           target-name: 'simpleble'
