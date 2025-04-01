@@ -77,8 +77,10 @@ jobs:
         # Set log type variable based on variant name
         if [[ "${{ matrix.variant.name }}" == "asan" ]]; then
           echo "log_type=asan" >> $GITHUB_OUTPUT
+          echo "log_type_upper=ASAN" >> $GITHUB_OUTPUT
         else
           echo "log_type=tsan" >> $GITHUB_OUTPUT
+          echo "log_type_upper=TSAN" >> $GITHUB_OUTPUT
         fi
 
         # Run the actual test
@@ -87,7 +89,7 @@ jobs:
         # Process logs if needed
         if [[ "${{ matrix.variant.name }}" == "asan" || "${{ matrix.variant.name }}" == "tsan" ]]; then
           cp "$(ls ${{ steps.test_setup.outputs.log_type }}_log.txt.* | head -1)" ${{ matrix.variant.name }}_log.txt || true
-          (test ! -f ${{ matrix.variant.name }}_log.txt && echo "No ${{ matrix.variant.name | upper }} log found") || (cat ${{ matrix.variant.name }}_log.txt && exit 1)
+          (test ! -f ${{ matrix.variant.name }}_log.txt && echo "No ${{ steps.test_setup.outputs.log_type_upper }} log found") || (cat ${{ matrix.variant.name }}_log.txt && exit 1)
         fi
 
   examples:
