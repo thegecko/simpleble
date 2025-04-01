@@ -16,30 +16,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        library: ['simpledbus', 'simplebluez']
+        library: ${{ fromJSON(inputs.libraries) }}
         variant:
           - { name: 'unit', config: 'Release', library_suffix: '_TEST=ON', run_extra: '' }
           - { name: 'asan', config: 'Debug', library_suffix: '_SANITIZE=Address _TEST=ON', run_extra: 'PYTHONMALLOC=malloc' }
           - { name: 'tsan', config: 'Debug', library_suffix: '_SANITIZE=Thread _TEST=ON', run_extra: '' }
-        exclude:
-          - library: 'simpledbus'
-            variant: { name: 'unit' }
-            if: ${{ !contains(inputs.libraries, 'simpledbus') }}
-          - library: 'simpledbus'
-            variant: { name: 'asan' }
-            if: ${{ !contains(inputs.libraries, 'simpledbus') }}
-          - library: 'simpledbus'
-            variant: { name: 'tsan' }
-            if: ${{ !contains(inputs.libraries, 'simpledbus') }}
-          - library: 'simplebluez'
-            variant: { name: 'unit' }
-            if: ${{ !contains(inputs.libraries, 'simplebluez') }}
-          - library: 'simplebluez'
-            variant: { name: 'asan' }
-            if: ${{ !contains(inputs.libraries, 'simplebluez') }}
-          - library: 'simplebluez'
-            variant: { name: 'tsan' }
-            if: ${{ !contains(inputs.libraries, 'simplebluez') }}
 
     steps:
     - name: Clone Repository
@@ -97,12 +78,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        library: ['simpledbus', 'simplebluez']
-        exclude:
-          - library: 'simpledbus'
-            if: ${{ !contains(inputs.libraries, 'simpledbus') }}
-          - library: 'simplebluez'
-            if: ${{ !contains(inputs.libraries, 'simplebluez') }}
+        library: ${{ fromJSON(inputs.libraries) }}
 
     steps:
     - name: Clone Repository
