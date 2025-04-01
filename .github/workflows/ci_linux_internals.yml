@@ -75,7 +75,7 @@ jobs:
       run: |
         ${{ matrix.variant.run_extra }} $(pwd)/build_${{ matrix.variant.name }}_${{ matrix.library }}/bin/${{ matrix.library }}_test
         if [[ "${{ matrix.variant.name }}" == "asan" || "${{ matrix.variant.name }}" == "tsan" ]]; then
-          cp "$(ls ${{ matrix.variant.name == "asan" && "asan" || "tsan" }}_log.txt.* | head -1)" ${{ matrix.variant.name }}_log.txt || true
+          cp "$(ls ${{ (matrix.variant.name == ''asan'') && ''asan'' || ''tsan'' }}_log.txt.* | head -1)" ${{ matrix.variant.name }}_log.txt || true
           (test ! -f ${{ matrix.variant.name }}_log.txt && echo "No ${{ matrix.variant.name | upper }} log found") || (cat ${{ matrix.variant.name }}_log.txt && exit 1)
         fi
 
