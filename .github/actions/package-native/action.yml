@@ -1,0 +1,35 @@
+name: 'Package Native Target'
+description: 'Packages a directory into a ZIP file for Linux, macOS, or Windows using zip.'
+
+inputs:
+  source-dir:
+    description: 'Path to the directory to package (e.g., build/install)'
+    required: true
+  output-dir:
+    description: 'Directory where the ZIP file will be created (e.g., artifacts)'
+    required: true
+  archive-name:
+    description: 'Name of the output ZIP file (without .zip extension)'
+    required: true
+  os:
+    description: 'Operating system (linux, macos, or windows) to determine shell and command'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Package Directory (Linux/macOS)
+      if: inputs.os == 'linux' || inputs.os == 'macos'
+      shell: bash
+      run: |
+        mkdir -p "${{ inputs.output-dir }}"
+        cd "${{ inputs.source-dir }}"
+        zip -r "${{ inputs.output-dir }}/${{ inputs.archive-name }}.zip" .
+
+    - name: Package Directory (Windows)
+      if: inputs.os == 'windows'
+      shell: powershell
+      run: |
+        New-Item -ItemType Directory -Force -Path "${{ inputs.output-dir }}"
+        Set-Location "${{ inputs.source-dir }}"
+        Compress-Archive -Path * -DestinationPath "${{ inputs.output-dir }}/${{ inputs.archive-name }}.zip"
