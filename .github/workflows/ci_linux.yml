@@ -99,20 +99,6 @@ jobs:
           mkdir -p {{ github.workspace }}/artifacts
           zip -r {{ github.workspace }}/artifacts/simpleble_${{ matrix.type }}_${{ matrix.options.target }}.zip {{ github.workspace }}/build_simpleble/install
 
-      # - name: Build SimpleBLE
-      #   # NOTE: The build step requires us to extend the CMAKE_FIND_ROOT_PATH to include the dbus install path,
-      #   #       as cross-compilation environments will ignore CMAKE_PREFIX_PATH.
-      #   run: |
-      #     GITHUB_WORKSPACE=$(pwd)
-      #     BUILD_SHARED_LIBS=$([ "${{ matrix.type }}" == "shared" ] && echo "ON" || echo "OFF")
-
-      #     cmake -B $GITHUB_WORKSPACE/build_simpleble -DCMAKE_BUILD_TYPE=Release -S $GITHUB_WORKSPACE/simpleble -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS -DCMAKE_FIND_ROOT_PATH='${CMAKE_FIND_ROOT_PATH};/tmp/dbus/install'
-      #     cmake --build $GITHUB_WORKSPACE/build_simpleble --config Release --parallel 4
-      #     cmake --install $GITHUB_WORKSPACE/build_simpleble --prefix $GITHUB_WORKSPACE/build_simpleble/install
-
-      #     mkdir -p $GITHUB_WORKSPACE/artifacts
-      #     zip -r $GITHUB_WORKSPACE/artifacts/simpleble_${{ matrix.type }}_${{ matrix.options.target }}.zip $GITHUB_WORKSPACE/build_simpleble/install
-
       - name: Upload binaries to job
         uses: actions/upload-artifact@v4
         with:

@@ -1,0 +1,70 @@
+name: 'Build Native Target'
+description: 'Builds and installs a CMake target on Linux, Windows, or macOS.'
+
+inputs:
+  source-dir:
+    description: 'Path to the source directory containing CMakeLists.txt'
+    required: true
+  build-dir:
+    description: 'Path for the CMake build directory (e.g., build_linux_x64)'
+    required: true
+  install-prefix:
+    description: 'Directory where the target will be installed via "cmake --install"'
+    required: true
+  build-config:
+    description: 'CMake build configuration (e.g., Release, Debug)'
+    default: 'Release'
+  library-type:
+    description: 'Type of library to build (static or shared)'
+    default: 'static'
+  cmake-options:  # Platform-specific options
+    description: 'Additional options to pass to the initial CMake configuration command (e.g., -DSOME_FLAG=ON)'
+    default: ''
+  parallel-jobs:
+    description: 'Number of parallel jobs to use for building (empty means default to CPU cores)'
+    default: ''  # Empty means default to CPU cores
+  os:  # New input to determine platform
+    description: 'Operating system (e.g., linux, windows, macos)'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare Environment
+      shell: bash
+      run: |
+        echo "BUILD_TYPE=${{ inputs.build-config }}" >> $GITHUB_ENV
+        echo "LIBRARY_TYPE=$([[ "${{ inputs.library-type }}" == "shared" ]] && echo "ON" || echo "OFF")" >> $GITHUB_ENV
+        echo "PARALLEL_JOBS=${{ inputs.parallel-jobs }}" >> $GITHUB_ENV
+
+        # Set platform-specific options
+        if [ "${{ inputs.os }}" == "windows" ]; then
+          echo "CMAKE_OPTIONS=-G \"Visual Studio 17 2022\" -A x64 -DCMAKE_SYSTEM_VERSION=\"10.0.19041.0\" ${{ inputs.cmake-options }}" >> $GITHUB_ENV
+          echo "SHELL=cmd" >> $GITHUB_ENV
+        elif [ "${{ inputs.os }}" == "macos" ]; then
+          echo "CMAKE_OPTIONS=-DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=11 ${{ inputs.cmake-options }}" >> $GITHUB_ENV
+          echo "SHELL=bash" >> $GITHUB_ENV
+        else  # Assume Linux
+          echo "CMAKE_OPTIONS=${{ inputs.cmake-options }}" >> $GITHUB_ENV
+          echo "SHELL=bash" >> $GITHUB_ENV
+        fi
+
+    - name: Configure CMake
+      shell: ${{ env.SHELL }}
+      run: |
+        cmake -B "${{ inputs.build-dir }}" \
+              -S "${{ inputs.source-dir }}" \
+              -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}" \
+              -DBUILD_SHARED_LIBS="${{ env.LIBRARY_TYPE }}" \
+              ${{ env.CMAKE_OPTIONS }}
+
+    - name: Build Target
+      shell: ${{ env.SHELL }}
+      run: |
+        cmake --build "${{ inputs.build-dir }}" --config "${{ env.BUILD_TYPE }}" \
+              $([ -n "${{ env.PARALLEL_JOBS }}" ] && echo "--parallel ${{ env.PARALLEL_JOBS }}" || echo "--parallel")
+
+    - name: Install Target
+      shell: ${{ env.SHELL }}
+      run: |
+        cmake --install "${{ inputs.build-dir }}" --prefix "${{ inputs.install-prefix }}"
