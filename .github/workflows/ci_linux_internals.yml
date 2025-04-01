@@ -69,7 +69,7 @@ jobs:
         install-prefix: '$(pwd)/build_${{ matrix.variant.name }}_${{ matrix.library }}/install'
         build-config: '${{ matrix.variant.config }}'
         library-type: 'static'
-        cmake-options: '-DGTEST_ROOT=$(pwd)/googletest/install -D${{ matrix.library == 'simpledbus' && 'SIMPLEDBUS' || 'SIMPLEBLUEZ' }}${{ matrix.variant.library_suffix }}'
+        cmake-options: '-DGTEST_ROOT=$(pwd)/googletest/install -D${{ matrix.library == ''simpledbus'' && ''SIMPLEDBUS'' || ''SIMPLEBLUEZ'' }}${{ matrix.variant.library_suffix }}'
         parallel-jobs: '4'
     - name: Run ${{ matrix.library }} Tests (${{ matrix.variant.name }})
       run: |
