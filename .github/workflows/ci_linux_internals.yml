@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        library: ${{ fromJSON(inputs.libraries) }}
+        library: ${{ fromJSON(inputs.libraries || '["simpledbus","simplebluez"]') }}
         variant:
           - { name: 'unit', config: 'Release', library_suffix: '_TEST=ON', run_extra: '' }
           - { name: 'asan', config: 'Debug', library_suffix: '_SANITIZE=Address _TEST=ON', run_extra: 'PYTHONMALLOC=malloc' }
@@ -78,7 +78,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        library: ${{ fromJSON(inputs.libraries) }}
+        library: ${{ fromJSON(inputs.libraries || '["simpledbus","simplebluez"]') }}
 
     steps:
     - name: Clone Repository
@@ -115,7 +115,7 @@ jobs:
           - {container: dockcross/linux-x64, target: linux-x64}
           - {container: dockcross/linux-x86, target: linux-x86}
           - {container: dockcross/linux-armv6-lts, target: linux-armv6}
-        library: ${{ fromJSON(inputs.libraries) }}
+        library: ${{ fromJSON(inputs.libraries || '["simpledbus","simplebluez"]') }}
         type: [static]
     container:
       image: ${{ matrix.options.container }}
