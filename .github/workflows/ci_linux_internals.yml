@@ -72,10 +72,21 @@ jobs:
         cmake-options: '-DGTEST_ROOT=$(pwd)/googletest/install -D${{ matrix.library == ''simpledbus'' && ''SIMPLEDBUS'' || ''SIMPLEBLUEZ'' }}${{ matrix.variant.library_suffix }}'
         parallel-jobs: '4'
     - name: Run ${{ matrix.library }} Tests (${{ matrix.variant.name }})
+      id: test_setup
       run: |
+        # Set log type variable based on variant name
+        if [[ "${{ matrix.variant.name }}" == "asan" ]]; then
+          echo "log_type=asan" >> $GITHUB_OUTPUT
+        else
+          echo "log_type=tsan" >> $GITHUB_OUTPUT
+        fi
+
+        # Run the actual test
         ${{ matrix.variant.run_extra }} $(pwd)/build_${{ matrix.variant.name }}_${{ matrix.library }}/bin/${{ matrix.library }}_test
+
+        # Process logs if needed
         if [[ "${{ matrix.variant.name }}" == "asan" || "${{ matrix.variant.name }}" == "tsan" ]]; then
-          cp "$(ls ${{ (matrix.variant.name == ''asan'') && ''asan'' || ''tsan'' }}_log.txt.* | head -1)" ${{ matrix.variant.name }}_log.txt || true
+          cp "$(ls ${{ steps.test_setup.outputs.log_type }}_log.txt.* | head -1)" ${{ matrix.variant.name }}_log.txt || true
           (test ! -f ${{ matrix.variant.name }}_log.txt && echo "No ${{ matrix.variant.name | upper }} log found") || (cat ${{ matrix.variant.name }}_log.txt && exit 1)
         fi
 
