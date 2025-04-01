@@ -18,9 +18,9 @@ jobs:
       matrix:
         library: ['simpledbus', 'simplebluez']
         variant:
-          - { name: 'unit', config: 'Release', options: '-D${{ (matrix.library == ''simpledbus'') && ''SIMPLEDBUS'' || ''SIMPLEBLUEZ'' }}_TEST=ON', run_extra: '' }
-          - { name: 'asan', config: 'Debug', options: '-D${{ (matrix.library == ''simpledbus'') && ''SIMPLEDBUS'' || ''SIMPLEBLUEZ'' }}_SANITIZE=Address -D${{ (matrix.library == ''simpledbus'') && ''SIMPLEDBUS'' || ''SIMPLEBLUEZ'' }}_TEST=ON', run_extra: 'PYTHONMALLOC=malloc' }
-          - { name: 'tsan', config: 'Debug', options: '-D${{ (matrix.library == ''simpledbus'') && ''SIMPLEDBUS'' || ''SIMPLEBLUEZ'' }}_SANITIZE=Thread -D${{ (matrix.library == ''simpledbus'') && ''SIMPLEBLUEZ'' }}_TEST=ON', run_extra: '' }
+          - { name: 'unit', config: 'Release', library_suffix: '_TEST=ON', run_extra: '' }
+          - { name: 'asan', config: 'Debug', library_suffix: '_SANITIZE=Address _TEST=ON', run_extra: 'PYTHONMALLOC=malloc' }
+          - { name: 'tsan', config: 'Debug', library_suffix: '_SANITIZE=Thread _TEST=ON', run_extra: '' }
         exclude:
           - library: 'simpledbus'
             variant: { name: 'unit' }
@@ -69,7 +69,7 @@ jobs:
         install-prefix: '$(pwd)/build_${{ matrix.variant.name }}_${{ matrix.library }}/install'
         build-config: '${{ matrix.variant.config }}'
         library-type: 'static'
-        cmake-options: '-DGTEST_ROOT=$(pwd)/googletest/install ${{ matrix.variant.options }}'
+        cmake-options: '-DGTEST_ROOT=$(pwd)/googletest/install -D${{ matrix.library == 'simpledbus' && 'SIMPLEDBUS' || 'SIMPLEBLUEZ' }}${{ matrix.variant.library_suffix }}'
         parallel-jobs: '4'
     - name: Run ${{ matrix.library }} Tests (${{ matrix.variant.name }})
       run: |
