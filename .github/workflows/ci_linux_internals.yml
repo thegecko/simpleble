@@ -18,9 +18,9 @@ jobs:
       matrix:
         library: ['simpledbus', 'simplebluez']
         variant:
-          - { name: 'unit', config: 'Release', options: '-D${{ matrix.library == "simpledbus" && "SIMPLEDBUS" || "SIMPLEBLUEZ" }}_TEST=ON', run_extra: '' }
-          - { name: 'asan', config: 'Debug', options: '-D${{ matrix.library == "simpledbus" && "SIMPLEDBUS" || "SIMPLEBLUEZ" }}_SANITIZE=Address -D${{ matrix.library == "simpledbus" && "SIMPLEDBUS" || "SIMPLEBLUEZ" }}_TEST=ON', run_extra: 'PYTHONMALLOC=malloc' }
-          - { name: 'tsan', config: 'Debug', options: '-D${{ matrix.library == "simpledbus" && "SIMPLEDBUS" || "SIMPLEBLUEZ" }}_SANITIZE=Thread -D${{ matrix.library == "simpledbus" && "SIMPLEBLUEZ" }}_TEST=ON', run_extra: '' }
+          - { name: 'unit', config: 'Release', options: '-D${{ (matrix.library == ''simpledbus'') && ''SIMPLEDBUS'' || ''SIMPLEBLUEZ'' }}_TEST=ON', run_extra: '' }
+          - { name: 'asan', config: 'Debug', options: '-D${{ (matrix.library == ''simpledbus'') && ''SIMPLEDBUS'' || ''SIMPLEBLUEZ'' }}_SANITIZE=Address -D${{ (matrix.library == ''simpledbus'') && ''SIMPLEDBUS'' || ''SIMPLEBLUEZ'' }}_TEST=ON', run_extra: 'PYTHONMALLOC=malloc' }
+          - { name: 'tsan', config: 'Debug', options: '-D${{ (matrix.library == ''simpledbus'') && ''SIMPLEDBUS'' || ''SIMPLEBLUEZ'' }}_SANITIZE=Thread -D${{ (matrix.library == ''simpledbus'') && ''SIMPLEBLUEZ'' }}_TEST=ON', run_extra: '' }
         exclude:
           - library: 'simpledbus'
             variant: { name: 'unit' }
