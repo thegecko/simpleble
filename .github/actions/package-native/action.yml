@@ -30,8 +30,22 @@ runs:
       if: inputs.os == 'windows'
       shell: powershell
       run: |
+        Write-Host "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
+        Write-Host "Raw source-dir: ${{ inputs.source-dir }}"
+        Write-Host "Raw output-dir: ${{ inputs.output-dir }}"
+        Write-Host "`nContents of GitHub workspace:"
+        Get-ChildItem -Path $env:GITHUB_WORKSPACE -Recurse | Select-Object FullName
+        Write-Host "`nContents of build directory (if it exists):"
+        if (Test-Path "$env:GITHUB_WORKSPACE\build_simpleble") {
+            Get-ChildItem -Path "$env:GITHUB_WORKSPACE\build_simpleble" -Recurse | Select-Object FullName
+        } else {
+            Write-Host "build_simpleble directory does not exist"
+        }
         $sourceDir = "${{ inputs.source-dir }}".Replace('/', '\')
         $outputDir = "${{ inputs.output-dir }}".Replace('/', '\')
+        Write-Host "`nConverted source-dir: $sourceDir"
+        Write-Host "Converted output-dir: $outputDir"
+        Write-Host "Current directory: $(Get-Location)"
         New-Item -ItemType Directory -Force -Path $outputDir
         Set-Location $sourceDir
         Compress-Archive -Path * -DestinationPath "$outputDir\${{ inputs.archive-name }}.zip"
