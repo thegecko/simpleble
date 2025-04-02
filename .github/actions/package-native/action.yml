@@ -44,4 +44,4 @@ runs:
 
         mkdir -p "${{ inputs.output-dir }}"
         cd "${{ inputs.source-dir }}"
-        zip -r "${{ inputs.output-dir }}/${{ inputs.archive-name }}.zip" .
+        7z a -tzip "${{ inputs.output-dir }}/${{ inputs.archive-name }}.zip" .
