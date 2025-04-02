@@ -30,18 +30,6 @@ runs:
       if: inputs.os == 'windows'
       shell: bash
       run: |
-        echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-        echo "Raw source-dir: ${{ inputs.source-dir }}"
-        echo "Raw output-dir: ${{ inputs.output-dir }}"
-        echo -e "\nContents of GitHub workspace:"
-        find "$GITHUB_WORKSPACE" -type f
-        echo -e "\nContents of build directory (if it exists):"
-        if [ -d "$GITHUB_WORKSPACE/build_simpleble" ]; then
-            find "$GITHUB_WORKSPACE/build_simpleble" -type f
-        else
-            echo "build_simpleble directory does not exist"
-        fi
-
         mkdir -p "${{ inputs.output-dir }}"
         cd "${{ inputs.source-dir }}"
         7z a -tzip "${{ inputs.output-dir }}/${{ inputs.archive-name }}.zip" .
