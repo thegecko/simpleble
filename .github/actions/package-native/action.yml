@@ -30,6 +30,8 @@ runs:
       if: inputs.os == 'windows'
       shell: powershell
       run: |
-        New-Item -ItemType Directory -Force -Path "${{ inputs.output-dir }}"
-        Set-Location "${{ inputs.source-dir }}"
-        Compress-Archive -Path * -DestinationPath "${{ inputs.output-dir }}/${{ inputs.archive-name }}.zip"
+        $sourceDir = "${{ inputs.source-dir }}".Replace('/', '\')
+        $outputDir = "${{ inputs.output-dir }}".Replace('/', '\')
+        New-Item -ItemType Directory -Force -Path $outputDir
+        Set-Location $sourceDir
+        Compress-Archive -Path * -DestinationPath "$outputDir\${{ inputs.archive-name }}.zip"
