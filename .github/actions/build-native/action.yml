@@ -40,7 +40,7 @@ runs:
         # Set platform-specific options
         if [ "${{ inputs.os }}" == "windows" ]; then
           echo "CMAKE_OPTIONS=-G \"Visual Studio 17 2022\" -A x64 -DCMAKE_SYSTEM_VERSION=\"10.0.19041.0\" ${{ inputs.cmake-options }}" >> $GITHUB_ENV
-          echo "SHELL=cmd" >> $GITHUB_ENV
+          echo "SHELL=powershell" >> $GITHUB_ENV
         elif [ "${{ inputs.os }}" == "macos" ]; then
           echo "CMAKE_OPTIONS=-DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=11 ${{ inputs.cmake-options }}" >> $GITHUB_ENV
           echo "SHELL=bash" >> $GITHUB_ENV
@@ -52,17 +52,12 @@ runs:
     - name: Configure CMake
       shell: ${{ env.SHELL }}
       run: |
-        cmake -B "${{ inputs.build-dir }}" \
-              -S "${{ inputs.source-dir }}" \
-              -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}" \
-              -DBUILD_SHARED_LIBS="${{ env.LIBRARY_TYPE }}" \
-              ${{ env.CMAKE_OPTIONS }}
+        cmake -B "${{ inputs.build-dir }}" -S "${{ inputs.source-dir }}" -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}" -DBUILD_SHARED_LIBS="${{ env.LIBRARY_TYPE }}" ${{ env.CMAKE_OPTIONS }}
 
     - name: Build Target
       shell: ${{ env.SHELL }}
       run: |
-        cmake --build "${{ inputs.build-dir }}" --config "${{ env.BUILD_TYPE }}" \
-              $([ -n "${{ env.PARALLEL_JOBS }}" ] && echo "--parallel ${{ env.PARALLEL_JOBS }}" || echo "--parallel")
+        cmake --build "${{ inputs.build-dir }}" --config "${{ env.BUILD_TYPE }}" $([ -n "${{ env.PARALLEL_JOBS }}" ] && echo "--parallel ${{ env.PARALLEL_JOBS }}" || echo "--parallel")
 
     - name: Install Target
       shell: ${{ env.SHELL }}
