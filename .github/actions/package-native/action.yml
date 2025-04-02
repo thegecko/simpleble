@@ -28,24 +28,20 @@ runs:
 
     - name: Package Directory (Windows)
       if: inputs.os == 'windows'
-      shell: powershell
+      shell: bash
       run: |
-        Write-Host "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
-        Write-Host "Raw source-dir: ${{ inputs.source-dir }}"
-        Write-Host "Raw output-dir: ${{ inputs.output-dir }}"
-        Write-Host "`nContents of GitHub workspace:"
-        Get-ChildItem -Path $env:GITHUB_WORKSPACE -Recurse | Select-Object FullName
-        Write-Host "`nContents of build directory (if it exists):"
-        if (Test-Path "$env:GITHUB_WORKSPACE\build_simpleble") {
-            Get-ChildItem -Path "$env:GITHUB_WORKSPACE\build_simpleble" -Recurse | Select-Object FullName
-        } else {
-            Write-Host "build_simpleble directory does not exist"
-        }
-        $sourceDir = "${{ inputs.source-dir }}".Replace('/', '\')
-        $outputDir = "${{ inputs.output-dir }}".Replace('/', '\')
-        Write-Host "`nConverted source-dir: $sourceDir"
-        Write-Host "Converted output-dir: $outputDir"
-        Write-Host "Current directory: $(Get-Location)"
-        New-Item -ItemType Directory -Force -Path $outputDir
-        Set-Location $sourceDir
-        Compress-Archive -Path * -DestinationPath "$outputDir\${{ inputs.archive-name }}.zip"
+        echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+        echo "Raw source-dir: ${{ inputs.source-dir }}"
+        echo "Raw output-dir: ${{ inputs.output-dir }}"
+        echo -e "\nContents of GitHub workspace:"
+        find "$GITHUB_WORKSPACE" -type f
+        echo -e "\nContents of build directory (if it exists):"
+        if [ -d "$GITHUB_WORKSPACE/build_simpleble" ]; then
+            find "$GITHUB_WORKSPACE/build_simpleble" -type f
+        else
+            echo "build_simpleble directory does not exist"
+        fi
+
+        mkdir -p "${{ inputs.output-dir }}"
+        cd "${{ inputs.source-dir }}"
+        zip -r "${{ inputs.output-dir }}/${{ inputs.archive-name }}.zip" .
