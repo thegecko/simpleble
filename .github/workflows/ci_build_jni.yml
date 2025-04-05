@@ -60,6 +60,7 @@ jobs:
 
   build-jar:
     runs-on: ubuntu-22.04
+    needs: build-jni-dependencies
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
