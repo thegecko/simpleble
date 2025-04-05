@@ -52,6 +52,12 @@ jobs:
           os: "${{ matrix.config.os }}"
           cmake-options: ""  # No additional options needed; handled by the action
 
+      - name: Print build directory tree (Linux)
+        if: matrix.config.os == 'linux'
+        run: |
+          echo "Listing build_simplejavable directory structure:"
+          find "$GITHUB_WORKSPACE/build_simplejavable" -type f -o -type d | sort
+
       - name: Upload JNI Binaries
         uses: actions/upload-artifact@v4
         with:
