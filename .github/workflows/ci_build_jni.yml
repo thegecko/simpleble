@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: libsimplejavable_${{ matrix.config.type }}_${{ matrix.config.target }}
-          path: "$GITHUB_WORKSPACE/build_simplejavable/*"
+          path: ${{ env.GITHUB_WORKSPACE }}/build_simplejavable/lib/libsimplejavable*
 
   build-jar:
     runs-on: ubuntu-22.04
