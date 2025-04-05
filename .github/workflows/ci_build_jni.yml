@@ -57,6 +57,8 @@ jobs:
         run: |
           echo "Listing build_simplejavable directory structure:"
           find "$GITHUB_WORKSPACE/build_simplejavable" -type f -o -type d | sort
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "Resolved path=${{ env.GITHUB_WORKSPACE }}/build_simplejavable/"
 
       - name: Upload JNI Binaries
         uses: actions/upload-artifact@v4
