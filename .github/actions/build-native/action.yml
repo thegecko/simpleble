@@ -10,7 +10,7 @@ inputs:
     required: true
   install-prefix:
     description: 'Directory where the target will be installed via "cmake --install"'
-    required: true
+    default: ''
   build-config:
     description: 'CMake build configuration (e.g., Release, Debug)'
     default: 'Release'
@@ -60,6 +60,7 @@ runs:
         cmake --build "${{ inputs.build-dir }}" --config "${{ env.BUILD_TYPE }}" $([ -n "${{ env.PARALLEL_JOBS }}" ] && echo "--parallel ${{ env.PARALLEL_JOBS }}" || echo "--parallel")
 
     - name: Install Target
+      if: inputs.install-prefix != ''
       shell: ${{ env.SHELL }}
       run: |
         cmake --install "${{ inputs.build-dir }}" --prefix "${{ inputs.install-prefix }}"
