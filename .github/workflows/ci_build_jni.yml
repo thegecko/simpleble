@@ -1,0 +1,60 @@
+name: Build JNI
+
+on:
+  workflow_dispatch:
+  workflow_call:  # Allows this to be called from other workflows
+
+jobs:
+  build:
+    runs-on: ${{ matrix.config.container-os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        config:
+          - { container-os: ubuntu-22.04, os: linux, target: linux-x64, type: static }
+          - { container-os: macos-14, os: macos, target: macos-arm64, type: static }
+          - { container-os: windows-2022, os: windows, target: windows-x64, type: static }
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Setup Environment (Linux)
+        if: matrix.config.os == 'linux'
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo -H apt-get update -y
+          sudo -H apt-get install -y libdbus-1-dev
+
+      - name: Setup Environment (Windows)
+        if: matrix.config.os == 'windows'
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Setup CMake (macOS)
+        if: matrix.config.os == 'macos'
+        uses: ./.github/actions/setup-cmake
+
+      - name: Build SimpleBLE Library
+        uses: ./.github/actions/build-native
+        with:
+          source-dir: "$GITHUB_WORKSPACE/simplejavable/cpp"
+          build-dir: "$GITHUB_WORKSPACE/build_simplejavable"
+          install-prefix: "$GITHUB_WORKSPACE/build_simplejavable/install"
+          build-config: "Release"
+          library-type: "${{ matrix.config.type }}"
+          os: "${{ matrix.config.os }}"
+          cmake-options: ""  # No additional options needed; handled by the action
+
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: simplejavable_${{ matrix.config.type }}_${{ matrix.config.target }}
+          path: "$GITHUB_WORKSPACE/build_simplejavable/install/lib/*"
