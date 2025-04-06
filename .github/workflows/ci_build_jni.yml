@@ -52,13 +52,14 @@ jobs:
           os: "${{ matrix.config.os }}"
           cmake-options: ""  # No additional options needed; handled by the action
 
-      - name: Print build directory tree (Linux)
-        if: matrix.config.os == 'linux'
+      - name: Print build directory tree (Windows)
+        if: matrix.config.os == 'windows'
+        shell: powershell
         run: |
           echo "Listing build_simplejavable directory structure:"
-          find "$GITHUB_WORKSPACE/build_simplejavable" -type f -o -type d | sort
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
-          echo "Resolved path=${{ env.GITHUB_WORKSPACE }}/build_simplejavable/"
+          Get-ChildItem -Path "$env:GITHUB_WORKSPACE\build_simplejavable" -Recurse | Sort-Object FullName
+          echo "GITHUB_WORKSPACE=$env:GITHUB_WORKSPACE"
+          echo "Resolved path=$env:GITHUB_WORKSPACE\build_simplejavable\"
 
       - name: Upload JNI Binaries
         if: matrix.config.os != 'windows'
@@ -66,6 +67,7 @@ jobs:
         with:
           name: libsimplejavable_${{ matrix.config.type }}_${{ matrix.config.target }}
           path: build_simplejavable/lib/libsimplejavable*
+          
 
       - name: Upload JNI Binaries
         if: matrix.config.os == 'windows'
