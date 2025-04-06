@@ -61,10 +61,18 @@ jobs:
           echo "Resolved path=${{ env.GITHUB_WORKSPACE }}/build_simplejavable/"
 
       - name: Upload JNI Binaries
+        if: matrix.config.os != 'windows'
         uses: actions/upload-artifact@v4
         with:
           name: libsimplejavable_${{ matrix.config.type }}_${{ matrix.config.target }}
           path: build_simplejavable/lib/libsimplejavable*
+
+      - name: Upload JNI Binaries
+        if: matrix.config.os == 'windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: libsimplejavable_${{ matrix.config.type }}_${{ matrix.config.target }}
+          path: build_simplejavable/bin/Release/libsimplejavable*
 
   build-jar:
     runs-on: ubuntu-22.04
