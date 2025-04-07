@@ -96,3 +96,13 @@ jobs:
 
       - name: List downloaded files
         run: ls -la jni
+
+      - name: Build SimpleJavaBLE Java Library
+        run: |
+          ./gradlew -p simplejavable/java -PnativeLibPath=jni -Dorg.gradle.project.buildDir=$GITHUB_WORKSPACE/artifacts --no-daemon build
+
+      - name: Upload SimpleJavaBLE Java Library
+        uses: actions/upload-artifact@v4
+        with:
+          name: simplejavable.jar
+          path: artifacts/libs/simplejavable*.jar
