@@ -87,6 +87,9 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: "Download JNI Binaries"
         uses: actions/download-artifact@v4
         with:
@@ -99,7 +102,7 @@ jobs:
 
       - name: Build SimpleJavaBLE Java Library
         run: |
-          ./gradlew -p simplejavable/java -PnativeLibPath=jni -Dorg.gradle.project.buildDir=$GITHUB_WORKSPACE/artifacts --no-daemon build
+          gradle -p simplejavable/java -PnativeLibPath=jni -Dorg.gradle.project.buildDir=$GITHUB_WORKSPACE/artifacts --no-daemon build
 
       - name: Upload SimpleJavaBLE Java Library
         uses: actions/upload-artifact@v4
