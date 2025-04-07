@@ -27,6 +27,8 @@ inputs:
     description: 'Operating system (e.g., linux, windows, macos)'
     required: true
 
+# TODO: Add an option to select the target architecture.
+
 runs:
   using: "composite"
   steps:

@@ -29,8 +29,8 @@ public class NativeLibraryLoader {
         String libExtension = getLibraryExtension(osName);
 
         // Construct the path to the native library inside the JAR
-        String resourcePath = String.format("%s/%s/%s/%s%s",
-            NATIVE_FOLDER, osName, archName,
+        String resourcePath = String.format("%s/%s/%s%s",
+            NATIVE_FOLDER, archName,
             getLibraryPrefix(osName), libraryName + libExtension);
 
         // Create a temporary directory for extracting the native library

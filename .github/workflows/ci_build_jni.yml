@@ -12,9 +12,9 @@ jobs:
       max-parallel: 4
       matrix:
         config:
-          - { container-os: ubuntu-22.04, os: linux, target: linux-x64, type: static }
-          - { container-os: macos-14, os: macos, target: macos-arm64, type: static }
-          - { container-os: windows-2022, os: windows, target: windows-x64, type: static }
+          - { container-os: ubuntu-22.04, os: linux, target: linux-x64 }
+          - { container-os: macos-14, os: macos, target: macos-arm64 }
+          - { container-os: windows-2022, os: windows, target: windows-x64 }
 
     steps:
       - name: Clone Repository
@@ -48,7 +48,6 @@ jobs:
           source-dir: "$GITHUB_WORKSPACE/simplejavable/cpp"
           build-dir: "$GITHUB_WORKSPACE/build_simplejavable"
           build-config: "Release"
-          library-type: "${{ matrix.config.type }}"
           os: "${{ matrix.config.os }}"
           cmake-options: ""  # No additional options needed; handled by the action
 

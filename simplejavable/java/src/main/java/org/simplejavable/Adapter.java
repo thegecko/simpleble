@@ -141,7 +141,8 @@ public class Adapter {
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("JVM shutdown initiated at " + System.currentTimeMillis());
+            // TODO: We might need this to clean up the native library.
+            // System.out.println("JVM shutdown initiated at " + System.currentTimeMillis());
         }));
     }
 }

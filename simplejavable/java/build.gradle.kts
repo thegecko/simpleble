@@ -1,7 +1,7 @@
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
-    kotlin("jvm") version "2.0.20"
+    id("java-library")
 }
 
 group = "org.simplejavable"
@@ -11,29 +11,15 @@ repositories {
     mavenCentral()
 }
 
-kotlin {
-    jvmToolchain(17)
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 // Native library acquisition options
-val nativeLibUrl: String? by project // -PnativeLibUrl=...
+val nativeLibPath: String? by project // -PnativeLibPath=...
 val buildFromCMake: String? by project // -PbuildFromCMake (presence is what matters)
-
-// OS and architecture detection for CMake builds
-val currentOs = when {
-    OperatingSystem.current().isWindows -> "windows"
-    OperatingSystem.current().isMacOsX -> "macos"
-    OperatingSystem.current().isLinux -> "linux"
-    else -> error("Unsupported OS")
-}
-
-val currentArch = System.getProperty("os.arch").let { arch ->
-    when {
-        arch.contains("amd64") || arch.contains("x86_64") -> "x86_64"
-        arch.contains("aarch64") -> "aarch64"
-        else -> error("Unsupported architecture: $arch")
-    }
-}
 
 // Build native libraries using CMake
 tasks.register<Exec>("buildNativeCMake") {
@@ -63,14 +49,22 @@ tasks.jar {
         // Build from CMake when explicitly requested
         dependsOn("buildNativeCMake")
         val cmakeBuildOutputPath = layout.buildDirectory.dir("build_cpp/lib").get().asFile
+        val currentArch = System.getProperty("os.arch").let { arch ->
+            when {
+                arch.contains("amd64") || arch.contains("x86_64") -> "x86_64"
+                arch.contains("aarch64") -> "aarch64"
+                else -> error("Unsupported architecture: $arch")
+            }
+        }
         from(cmakeBuildOutputPath) {
             include("**/*.so", "**/*.dll", "**/*.dylib")
-            into("native/$currentOs/$currentArch")
+            into("native/$currentArch")
         }
-    } ?: nativeLibUrl?.let { url ->
-        // Use URL approach when CMake build not requested
-        from(uri(url)) {
-            into("native")
+    } ?: nativeLibPath?.let { path ->
+        // Use local path approach when CMake build not requested
+        from(file(path)) {
+            include("**/*.so", "**/*.dll", "**/*.dylib") // Ensure only shared libraries are included
+            into("native/x86_64") // Target directory inside the JAR
         }
-    } ?: error("Please provide -PnativeLibUrl or use -PbuildFromCMake to build from CMake")
+    } ?: error("Please provide -PnativeLibPath or use -PbuildFromCMake to build from CMake")
 }
