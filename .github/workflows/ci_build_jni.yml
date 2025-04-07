@@ -98,11 +98,11 @@ jobs:
           merge-multiple: true
 
       - name: List downloaded files
-        run: ls -la jni
+        run: ls -la $GITHUB_WORKSPACE/jni
 
       - name: Build SimpleJavaBLE Java Library
         run: |
-          gradle -p simplejavable/java -PnativeLibPath=jni -Dorg.gradle.project.buildDir=$GITHUB_WORKSPACE/artifacts --no-daemon build
+          gradle -p simplejavable/java -PnativeLibPath=$GITHUB_WORKSPACE/jni -Dorg.gradle.project.buildDir=$GITHUB_WORKSPACE/artifacts --no-daemon build
 
       - name: Upload SimpleJavaBLE Java Library
         uses: actions/upload-artifact@v4
