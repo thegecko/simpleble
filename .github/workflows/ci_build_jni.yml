@@ -31,7 +31,7 @@ jobs:
 
       - name: Setup Environment (Linux)
         if: matrix.config.os == 'linux'
-        uses: ./.github/actions/build-dbus
+        uses: ./.github/actions/build-dbus-full
         with:
           os: ${{ matrix.config.os }}
           arch: ${{ matrix.config.target }}
