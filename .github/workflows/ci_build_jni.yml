@@ -6,15 +6,16 @@ on:
 
 jobs:
   build-jni-dependencies:
-    runs-on: ${{ matrix.config.container-os }}
+    runs-on: ${{ matrix.config.runner-os || 'ubuntu-latest' }} # Fallback runner
+    container: ${{ matrix.config.container-image }} # Use container if specified
     strategy:
       fail-fast: false
       max-parallel: 4
       matrix:
         config:
-          - { container-os: ubuntu-22.04, os: linux, target: linux-x64 }
-          - { container-os: macos-14, os: macos, target: macos-arm64 }
-          - { container-os: windows-2022, os: windows, target: windows-x64 }
+          - { runner-os: ubuntu-22.04, os: linux, target: linux-x64, architecture: amd64, container-image: dockcross/linux-x64 }
+          - { runner-os: macos-14, os: macos, target: macos-arm64, architecture: arm64 }
+          - { runner-os: windows-2022, os: windows, target: windows-x64, architecture: amd64 }
 
     steps:
       - name: Clone Repository
@@ -49,16 +50,8 @@ jobs:
           build-dir: "$GITHUB_WORKSPACE/build_simplejavable"
           build-config: "Release"
           os: "${{ matrix.config.os }}"
+          target-arch: "${{ matrix.config.architecture }}"
           cmake-options: ""  # No additional options needed; handled by the action
-
-      - name: Print build directory tree (Windows)
-        if: matrix.config.os == 'windows'
-        shell: powershell
-        run: |
-          echo "Listing build_simplejavable directory structure:"
-          Get-ChildItem -Path "$env:GITHUB_WORKSPACE\build_simplejavable" -Recurse | Sort-Object FullName
-          echo "GITHUB_WORKSPACE=$env:GITHUB_WORKSPACE"
-          echo "Resolved path=$env:GITHUB_WORKSPACE\build_simplejavable\"
 
       - name: Upload JNI Binaries
         if: matrix.config.os != 'windows'
