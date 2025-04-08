@@ -91,7 +91,7 @@ jobs:
           target-name: 'simpleble'
           # NOTE: The build step requires us to extend the CMAKE_FIND_ROOT_PATH to include the dbus install path,
           #       as cross-compilation environments will ignore CMAKE_PREFIX_PATH.
-          cmake-options: "-DCMAKE_FIND_ROOT_PATH='${CMAKE_FIND_ROOT_PATH};/tmp/dbus/install'"
+          cmake-options: "-DCMAKE_FIND_ROOT_PATH='${CMAKE_FIND_ROOT_PATH};/tmp/install/dbus'"
 
       - name: Package Artifact
         shell: bash

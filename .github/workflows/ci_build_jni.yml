@@ -31,11 +31,10 @@ jobs:
 
       - name: Setup Environment (Linux)
         if: matrix.config.os == 'linux'
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          sudo -H apt-get update -y
-          sudo -H apt-get install -y libdbus-1-dev
+        uses: ./.github/actions/build-dbus
+        with:
+          os: ${{ matrix.config.os }}
+          arch: ${{ matrix.config.target }}
 
       - name: Setup Environment (Windows)
         if: matrix.config.os == 'windows'

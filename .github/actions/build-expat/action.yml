@@ -28,7 +28,7 @@ runs:
       id: cache-expat
       uses: actions/cache@v4
       with:
-        path: /tmp/expat/install
+        path: /tmp/install/expat
         key: ${{ inputs.os }}-${{ inputs.arch }}-expat-${{ steps.expat-hash.outputs.value }}
 
     - name: Build Expat
@@ -40,4 +40,4 @@ runs:
         git checkout ${{ steps.expat-hash.outputs.value }}
         cmake -B build -DEXPAT_BUILD_DOCS=OFF -DEXPAT_BUILD_EXAMPLES=OFF -DEXPAT_BUILD_TESTS=OFF
         cmake --build build --config Release --parallel 4
-        cmake --install build --prefix /tmp/expat/install
+        cmake --install build --prefix /tmp/install/expat

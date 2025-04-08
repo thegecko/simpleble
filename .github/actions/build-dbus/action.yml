@@ -43,7 +43,7 @@ runs:
       id: cache-dbus
       uses: actions/cache@v4
       with:
-        path: /tmp/dbus/install
+        path: /tmp/install/dbus
         key: ${{ inputs.os }}-${{ inputs.arch }}-dbus-${{ steps.dbus-hash.outputs.value }}
 
     - name: Build DBus
@@ -55,6 +55,6 @@ runs:
         git clone https://gitlab.freedesktop.org/dbus/dbus.git /tmp/dbus
         cd /tmp/dbus
         git checkout ${{ steps.dbus-hash.outputs.value }}
-        cmake -B build -DDBUS_SESSION_SOCKET_DIR=/usr/local/var/run/dbus/system_bus_socket -DDBUS_BUILD_TESTS=OFF -DCMAKE_FIND_ROOT_PATH='${CMAKE_FIND_ROOT_PATH};/tmp/expat/install'
+        cmake -B build -DDBUS_SESSION_SOCKET_DIR=/usr/local/var/run/dbus/system_bus_socket -DDBUS_BUILD_TESTS=OFF -DCMAKE_FIND_ROOT_PATH='${CMAKE_FIND_ROOT_PATH};/tmp/install/expat'
         cmake --build build --config Release --parallel 4
-        cmake --install build --prefix /tmp/dbus/install
+        cmake --install build --prefix /tmp/install/dbus
