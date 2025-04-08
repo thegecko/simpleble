@@ -27,6 +27,7 @@ jobs:
         with:
           java-version: "17"
           distribution: "temurin"
+          architecture: ${{ matrix.config.architecture }}
 
       - name: Setup Environment (Linux)
         if: matrix.config.os == 'linux'
@@ -58,14 +59,14 @@ jobs:
         if: matrix.config.os != 'windows'
         uses: actions/upload-artifact@v4
         with:
-          name: libsimplejavable_${{ matrix.config.architecture }}
+          name: libsimplejavable_${{ matrix.config.architecture }}_${{ matrix.config.target }}
           path: build_simplejavable/lib/libsimplejavable*
 
       - name: Upload JNI Binaries
         if: matrix.config.os == 'windows'
         uses: actions/upload-artifact@v4
         with:
-          name: libsimplejavable_${{ matrix.config.architecture }}
+          name: libsimplejavable_${{ matrix.config.architecture }}_${{ matrix.config.target }}
           path: build_simplejavable/bin/Release/simplejavable*
 
   build-jar:
@@ -95,8 +96,8 @@ jobs:
         run: |
           mkdir -p $GITHUB_WORKSPACE/jni
           for dir in libsimplejavable_*; do
-            # Extract architecture (e.g., 'amd64' from 'libsimplejavable_amd64')
-            arch=$(echo "$dir" | sed 's/libsimplejavable_//')
+            # Extract architecture (e.g., 'amd64' from 'libsimplejavable_amd64_linux-x64')
+            arch=$(echo "$dir" | sed 's/libsimplejavable_//;s/_[^_]*$//')
             mkdir -p $GITHUB_WORKSPACE/jni/$arch
             mv "$dir" "$GITHUB_WORKSPACE/jni/$arch"
           done
