@@ -27,9 +27,9 @@ inputs:
     description: 'Operating system (e.g., linux, windows, macos)'
     required: true
   target-arch:
-    description: 'Target architecture (amd64, arm64, or x86). Defaults to amd64.'
+    description: 'Target architecture (x64, aarch64, or x86). Defaults to x64.'
     required: false
-    default: 'amd64'
+    default: 'x64'
 
 # TODO: Add an option to select the target architecture.
 
@@ -47,9 +47,9 @@ runs:
 
         if [ "${{ inputs.os }}" == "windows" ]; then
           _ARCH_FLAG=""
-          if [ "${{ inputs.target-arch }}" == "amd64" ]; then
+          if [ "${{ inputs.target-arch }}" == "x64" ]; then
             _ARCH_FLAG="-A x64"
-          elif [ "${{ inputs.target-arch }}" == "arm64" ]; then
+          elif [ "${{ inputs.target-arch }}" == "aarch64" ]; then
             _ARCH_FLAG="-A ARM64"
           elif [ "${{ inputs.target-arch }}" == "x86" ]; then
             _ARCH_FLAG="-A Win32"
@@ -58,9 +58,9 @@ runs:
           echo "SHELL=bash" >> $GITHUB_ENV
         elif [ "${{ inputs.os }}" == "macos" ]; then
           _ARCH_FLAG=""
-          if [ "${{ inputs.target-arch }}" == "amd64" ]; then
+          if [ "${{ inputs.target-arch }}" == "x64" ]; then
             _ARCH_FLAG="-DCMAKE_OSX_ARCHITECTURES=x86_64"
-          elif [ "${{ inputs.target-arch }}" == "arm64" ]; then
+          elif [ "${{ inputs.target-arch }}" == "aarch64" ]; then
             _ARCH_FLAG="-DCMAKE_OSX_ARCHITECTURES=arm64"
           elif [ "${{ inputs.target-arch }}" == "x86" ]; then
              _ARCH_FLAG="-DCMAKE_OSX_ARCHITECTURES=i386"
@@ -74,9 +74,9 @@ runs:
           # Device vs Simulator builds might require CMAKE_OSX_SYSROOT or a specific CMake toolchain file
           # for robust SDK and toolchain detection.
           _ARCH_FLAG_VALUE=""
-          if [ "${{ inputs.target-arch }}" == "arm64" ]; then
+          if [ "${{ inputs.target-arch }}" == "aarch64" ]; then
              _ARCH_FLAG_VALUE="arm64" # For iOS devices or simulators on Apple Silicon
-          elif [ "${{ inputs.target-arch }}" == "amd64" ]; then
+          elif [ "${{ inputs.target-arch }}" == "x64" ]; then
              _ARCH_FLAG_VALUE="x86_64" # For iOS simulators on Intel
           # elif [ "${{ inputs.target-arch }}" == "x86" ]; then
           #    _ARCH_FLAG_VALUE="i386" # For older iOS simulators (less common now)
