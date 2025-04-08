@@ -14,8 +14,9 @@ jobs:
       matrix:
         config:
           - { runner-os: ubuntu-22.04, os: linux, target: linux-x64, architecture: amd64, container-image: dockcross/linux-x64 }
-          - { runner-os: macos-14, os: macos, target: macos-arm64, architecture: arm64 }
-          - { runner-os: windows-2022, os: windows, target: windows-x64, architecture: amd64 }
+          - { runner-os: ubuntu-22.04, os: linux, target: linux-arm64, architecture: arm64, container-image: dockcross/linux-arm64 }
+          - { runner-os: macos-14, os: macos, target: macos-arm64, architecture: arm64 } # Containers are not required.
+          - { runner-os: windows-2022, os: windows, target: windows-x64, architecture: amd64 } # Containers are not required.
 
     steps:
       - name: Clone Repository
@@ -57,14 +58,14 @@ jobs:
         if: matrix.config.os != 'windows'
         uses: actions/upload-artifact@v4
         with:
-          name: libsimplejavable_${{ matrix.config.type }}_${{ matrix.config.target }}
+          name: libsimplejavable_${{ matrix.config.architecture }}
           path: build_simplejavable/lib/libsimplejavable*
 
       - name: Upload JNI Binaries
         if: matrix.config.os == 'windows'
         uses: actions/upload-artifact@v4
         with:
-          name: libsimplejavable_${{ matrix.config.type }}_${{ matrix.config.target }}
+          name: libsimplejavable_${{ matrix.config.architecture }}
           path: build_simplejavable/bin/Release/simplejavable*
 
   build-jar:
@@ -87,11 +88,21 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: 'libsimplejavable*'
-          path: 'jni'
-          merge-multiple: true
+          path: 'jni_download'
+
+      - name: Rename JNI Directories
+        working-directory: ${{ github.workspace }}/jni_download
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/jni
+          for dir in libsimplejavable_*; do
+            # Extract architecture (e.g., 'amd64' from 'libsimplejavable_amd64')
+            arch=$(echo "$dir" | sed 's/libsimplejavable_//')
+            mkdir -p $GITHUB_WORKSPACE/jni/$arch
+            mv "$dir" "$GITHUB_WORKSPACE/jni/$arch"
+          done
 
       - name: List downloaded files
-        run: ls -la $GITHUB_WORKSPACE/jni
+        run: find $GITHUB_WORKSPACE/jni -type f -ls
 
       - name: Build SimpleJavaBLE Java Library
         run: |
