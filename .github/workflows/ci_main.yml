@@ -205,30 +205,38 @@ jobs:
     needs: [targets]
     uses: ./.github/workflows/ci_smoketest.yml
 
-  windows:
+  simpleble:
     needs: [targets]
+    uses: ./.github/workflows/ci_simpleble.yml
+
+  simplejavable:
+    needs: [smoketest]
+    uses: ./.github/workflows/ci_simplejavable.yml
+
+  windows:
+    needs: [smoketest]
     if: needs.targets.outputs.windows == 'true'
     uses: ./.github/workflows/ci_windows.yml
 
   linux:
-    needs: [targets]
+    needs: [smoketest]
     if: needs.targets.outputs.linux == 'true'
     uses: ./.github/workflows/ci_linux.yml
 
   linux-internals:
-    needs: [targets]
+    needs: [smoketest]
     if: needs.targets.outputs.linux == 'true'
     uses: ./.github/workflows/ci_linux_internals.yml
     with:
       libraries: ${{ needs.libraries.outputs.values }}
 
   macos:
-    needs: [targets]
+    needs: [smoketest]
     if: needs.targets.outputs.macos == 'true'
     uses: ./.github/workflows/ci_macos.yml
 
   python:
-    needs: [targets]
+    needs: [smoketest]
     if: needs.targets.outputs.python == 'true'
     uses: ./.github/workflows/ci_python.yml
     secrets: inherit
@@ -238,14 +246,6 @@ jobs:
     if: needs.targets.outputs.android == 'true'
     uses: ./.github/workflows/ci_android.yml
     secrets: inherit
-
-  build:
-    needs: [targets]
-    uses: ./.github/workflows/ci_build.yml
-
-  simplejavable:
-    needs: [targets]
-    uses: ./.github/workflows/ci_simplejavable.yml
 
   release-python:
     needs: [targets, windows, linux, macos, python]
