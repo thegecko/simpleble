@@ -51,7 +51,7 @@ jobs:
         with:
           source-dir: $GITHUB_WORKSPACE/install_simpleble
           output-dir: $GITHUB_WORKSPACE/artifacts
-          archive-name: libsimpleble_${{ matrix.config.os }}-${{ matrix.config.architecture }}.zip
+          archive-name: libsimpleble_${{ matrix.config.os }}-${{ matrix.config.architecture }}
           os: "${{ matrix.config.os }}"
 
       - name: Upload Binaries
