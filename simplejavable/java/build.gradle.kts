@@ -51,8 +51,9 @@ tasks.jar {
         val cmakeBuildOutputPath = layout.buildDirectory.dir("build_cpp/lib").get().asFile
         val currentArch = System.getProperty("os.arch").let { arch ->
             when {
-                arch.contains("amd64") || arch.contains("x86_64") -> "x86_64"
+                arch.contains("amd64") || arch.contains("x86_64") -> "x64"
                 arch.contains("aarch64") -> "aarch64"
+                arch.contains("x86") || arch.contains("i386") || arch.contains("i686") -> "x86"
                 else -> error("Unsupported architecture: $arch")
             }
         }
@@ -62,9 +63,15 @@ tasks.jar {
         }
     } ?: nativeLibPath?.let { path ->
         // Use local path approach when CMake build not requested
-        from(file(path)) {
-            include("**/*.so", "**/*.dll", "**/*.dylib") // Ensure only shared libraries are included
-            into("native/x86_64") // Target directory inside the JAR
+        // Assumes the directory structure within 'path' matches the desired 'native/<arch>' structure
+        val nativeLibDir = file(path)
+        if (nativeLibDir.isDirectory) {
+            from(nativeLibDir) {
+                include("**/*.so", "**/*.dll", "**/*.dylib")
+                into("native")
+            }
+        } else {
+             logger.warn("nativeLibPath '$path' provided is not a directory. Cannot include native libraries.")
         }
     } ?: error("Please provide -PnativeLibPath or use -PbuildFromCMake to build from CMake")
 }

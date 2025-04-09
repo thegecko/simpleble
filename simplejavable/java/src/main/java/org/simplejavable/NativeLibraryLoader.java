@@ -12,13 +12,16 @@ public class NativeLibraryLoader {
     // Directory structure inside the JAR:
     // /native
     //   /windows
-    //     /x86_64/library.dll
+    //     /x86/library.dll
+    //     /x64/library.dll
     //     /aarch64/library.dll
     //   /linux
-    //     /x86_64/liblibrary.so
+    //     /x86/liblibrary.so
+    //     /x64/liblibrary.so
     //     /aarch64/liblibrary.so
     //   /macos
-    //     /x86_64/liblibrary.dylib
+    //     /x86/liblibrary.dylib
+    //     /x64/liblibrary.dylib
     //     /aarch64/liblibrary.dylib
 
     private static final String NATIVE_FOLDER = "/native";
@@ -56,9 +59,11 @@ public class NativeLibraryLoader {
     private static String getArchitecture() {
         String arch = System.getProperty("os.arch").toLowerCase(Locale.ROOT);
         if (arch.contains("amd64") || arch.contains("x86_64")) {
-            return "x86_64";
+            return "x64";
         } else if (arch.contains("aarch64")) {
             return "aarch64";
+        } else if (arch.contains("x86") || arch.contains("i386") || arch.contains("i686")) {
+            return "x86";
         }
         throw new UnsupportedOperationException("Unsupported architecture: " + arch);
     }
