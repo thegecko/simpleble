@@ -30,6 +30,9 @@ inputs:
     description: "Target architecture (x64, aarch64, or x86). Defaults to x64."
     required: false
     default: "x64"
+  linux-use-system-dbus:
+    description: "Use system DBus instead of building it from source"
+    default: "false"
 
 # TODO: Add an option to select the target architecture.
 
@@ -37,7 +40,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup Environment (Linux)
-      if: inputs.os == 'linux'
+      if: inputs.os == 'linux' && inputs.linux-use-system-dbus == 'false'
       uses: ./.github/actions/build-dbus-full
       with:
         os: ${{ inputs.os }}

@@ -12,10 +12,10 @@ jobs:
       max-parallel: 4
       matrix:
         config:
-          - { runner-os: ubuntu-22.04, os: linux }
-          - { runner-os: macos-14, os: macos }
-          - { runner-os: macos-14, os: ios }
-          - { runner-os: windows-2022, os: windows }
+          - { runner-os: ubuntu-22.04, os: linux, architecture: x64 }
+          - { runner-os: macos-14, os: macos, architecture: x64 }
+          - { runner-os: macos-14, os: ios, architecture: arm64 }
+          - { runner-os: windows-2022, os: windows, architecture: x64 }
 
     steps:
       - name: Clone Repository
@@ -30,4 +30,5 @@ jobs:
           build-config: "Release"
           library-type: "static"
           os: "${{ matrix.config.os }}"
+          target-arch: "${{ matrix.config.architecture }}"
           cmake-options: ""  # No additional options needed; handled by the action
