@@ -37,6 +37,13 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      - name: Install Dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo -H apt-get update -y
+          sudo -H apt-get install -y libdbus-1-dev
+
       - name: Clone Repository
         uses: actions/checkout@v4
 
