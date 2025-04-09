@@ -92,7 +92,7 @@ runs:
           fi
           echo "SHELL=bash" >> $GITHUB_ENV
         else  # Linux
-          echo "CMAKE_OPTIONS=-DCMAKE_PREFIX_PATH=/tmp/install' $_BASE_CMAKE_OPTIONS" >> $GITHUB_ENV
+          echo "CMAKE_OPTIONS=-DCMAKE_PREFIX_PATH=/tmp/install $_BASE_CMAKE_OPTIONS" >> $GITHUB_ENV
           echo "SHELL=bash" >> $GITHUB_ENV
         fi
 
