@@ -50,12 +50,12 @@ jobs:
         uses: ./.github/actions/package-native
         with:
           source-dir: $GITHUB_WORKSPACE/install_simpleble
-          output-dir: artifacts
+          output-dir: $GITHUB_WORKSPACE/artifacts
           archive-name: "libsimpleble_${{ matrix.config.os }}-${{ matrix.config.architecture }}.zip"
           os: "${{ matrix.config.os }}"
 
       - name: List Artifacts
-        run: find artifacts -type f -ls
+        run: find $GITHUB_WORKSPACE/artifacts -type f -ls
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v4
