@@ -34,7 +34,7 @@ jobs:
         uses: ./.github/actions/build-dbus-full
         with:
           os: ${{ matrix.config.os }}
-          arch: ${{ matrix.config.target }}
+          arch: ${{ matrix.config.architecture }}
 
       - name: Setup Environment (Windows)
         if: matrix.config.os == 'windows'

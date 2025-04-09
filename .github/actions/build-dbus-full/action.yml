@@ -5,12 +5,11 @@ inputs:
   os:
     description: "Runner OS"
     default: ''
-    required: false
-
+    required: true
   arch:
     description: "Platform architecture"
     default: ''
-    required: false
+    required: true
 
 runs:
   using: "composite"
@@ -22,23 +21,28 @@ runs:
       run: |
         sudo -H apt-get remove -y libexpat1-dev
 
-    - name: Get latest Expat commit hash
-      id: expat-hash
+    - name: Generate Hashes
+      id: hashes
       shell: bash
       # NOTE: Pinning libexpat to 2.7.0 as the exact version is not important.
+      # NOTE: Pinning DBus to 1.16.2 as the exact version is not important.
       run: |
         EXPAT_HASH=6d4ffe856df497ac2cae33537665c3fec7ec8a00
-        echo "value=$EXPAT_HASH" >> $GITHUB_OUTPUT
+        DBUS_HASH=958bf9db2100553bcd2fe2a854e1ebb42e886054
+        COMBINED_HASH="$EXPAT_HASH:$DBUS_HASH"
+        echo "expat_hash=$EXPAT_HASH" >> $GITHUB_OUTPUT
+        echo "dbus_hash=$DBUS_HASH" >> $GITHUB_OUTPUT
+        echo "combined_hash=$COMBINED_HASH" >> $GITHUB_OUTPUT
 
-    # - name: Cache Expat
-    #   id: cache-expat
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: /tmp/install/expat
-    #     key: ${{ inputs.os }}-${{ inputs.arch }}-expat-${{ steps.expat-hash.outputs.value }}
+    - name: Cache Linux Dependencies
+      id: cache-simpleble-linux-deps
+      uses: actions/cache@v4
+      with:
+        path: /tmp/install
+        key: expat-dbus-${{ inputs.os }}-${{ inputs.arch }}-${{ steps.hashes.outputs.combined_hash }}
 
     - name: Build Expat
-      if: steps.cache-expat.outputs.cache-hit != 'true'
+      if: steps.cache-simpleble-linux-deps.outputs.cache-hit != 'true'
       shell: bash
       run: |
         git clone https://github.com/libexpat/libexpat.git /tmp/expat
@@ -48,26 +52,9 @@ runs:
         cmake --build build --config Release --parallel 4
         cmake --install build --prefix /tmp/install
 
-    - name: Get latest DBus commit hash
-      id: dbus-hash
-      shell: bash
-      # NOTE: Pinning DBus to 1.16.2 as the exact version is not important.
-      run: |
-        DBUS_HASH=958bf9db2100553bcd2fe2a854e1ebb42e886054
-        echo "value=$DBUS_HASH" >> $GITHUB_OUTPUT
-
-    # - name: Cache DBus
-    #   id: cache-dbus
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: /tmp/install/dbus
-    #     key: ${{ inputs.os }}-${{ inputs.arch }}-dbus-${{ steps.dbus-hash.outputs.value }}
-
     - name: Build DBus
-      if: steps.cache-dbus.outputs.cache-hit != 'true'
+      if: steps.cache-simpleble-linux-deps.outputs.cache-hit != 'true'
       shell: bash
-      # NOTE: The build step requires us to extend the CMAKE_FIND_ROOT_PATH to include the expat install path,
-      #       as cross-compilation environments will ignore CMAKE_PREFIX_PATH.
       run: |
         git clone https://gitlab.freedesktop.org/dbus/dbus.git /tmp/dbus
         cd /tmp/dbus
