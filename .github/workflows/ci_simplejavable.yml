@@ -29,21 +29,6 @@ jobs:
           distribution: "temurin"
           architecture: ${{ matrix.config.architecture }}
 
-      - name: Setup Environment (Linux)
-        if: matrix.config.os == 'linux'
-        uses: ./.github/actions/build-dbus-full
-        with:
-          os: ${{ matrix.config.os }}
-          arch: ${{ matrix.config.architecture }}
-
-      - name: Setup Environment (Windows)
-        if: matrix.config.os == 'windows'
-        uses: microsoft/setup-msbuild@v1.1
-
-      - name: Setup CMake (macOS)
-        if: matrix.config.os == 'macos'
-        uses: ./.github/actions/setup-cmake
-
       - name: Build SimpleBLE Library
         uses: ./.github/actions/build-native
         with:

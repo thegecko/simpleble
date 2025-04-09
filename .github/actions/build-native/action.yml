@@ -1,41 +1,56 @@
-name: 'Build Native Target'
-description: 'Builds and installs a CMake target on Linux, Windows, or macOS.'
+name: "Build Native Target"
+description: "Builds and installs a CMake target on Linux, Windows, or macOS."
 
 inputs:
   source-dir:
-    description: 'Path to the source directory containing CMakeLists.txt'
+    description: "Path to the source directory containing CMakeLists.txt"
     required: true
   build-dir:
-    description: 'Path for the CMake build directory (e.g., build_linux_x64)'
+    description: "Path for the CMake build directory (e.g., build_linux_x64)"
     required: true
   install-prefix:
     description: 'Directory where the target will be installed via "cmake --install"'
-    default: ''
+    default: ""
   build-config:
-    description: 'CMake build configuration (e.g., Release, Debug)'
-    default: 'Release'
+    description: "CMake build configuration (e.g., Release, Debug)"
+    default: "Release"
   library-type:
-    description: 'Type of library to build (static or shared)'
-    default: 'static'
-  cmake-options:  # Platform-specific options
-    description: 'Additional options to pass to the initial CMake configuration command (e.g., -DSOME_FLAG=ON)'
-    default: ''
+    description: "Type of library to build (static or shared)"
+    default: "static"
+  cmake-options: # Platform-specific options
+    description: "Additional options to pass to the initial CMake configuration command (e.g., -DSOME_FLAG=ON)"
+    default: ""
   parallel-jobs:
-    description: 'Number of parallel jobs to use for building (empty means default to CPU cores)'
-    default: ''  # Empty means default to CPU cores
+    description: "Number of parallel jobs to use for building (empty means default to CPU cores)"
+    default: "" # Empty means default to CPU cores
   os:
-    description: 'Operating system (e.g., linux, windows, macos)'
+    description: "Operating system (e.g., linux, windows, macos)"
     required: true
   target-arch:
-    description: 'Target architecture (x64, aarch64, or x86). Defaults to x64.'
+    description: "Target architecture (x64, aarch64, or x86). Defaults to x64."
     required: false
-    default: 'x64'
+    default: "x64"
 
 # TODO: Add an option to select the target architecture.
 
 runs:
   using: "composite"
   steps:
+    - name: Setup Environment (Linux)
+      if: inputs.os == 'linux'
+      uses: ./.github/actions/build-dbus-full
+      with:
+        os: ${{ inputs.os }}
+        arch: ${{ inputs.target-arch }}
+
+    - name: Setup Environment (Windows)
+      if: inputs.os == 'windows'
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Setup CMake (macOS)
+      if: inputs.os == 'macos'
+      uses: ./.github/actions/setup-cmake
+
     - name: Prepare Environment
       shell: bash
       run: |

@@ -201,6 +201,10 @@ jobs:
     if: needs.targets.outputs.docs == 'true'
     uses: ./.github/workflows/ci_docs.yml
 
+  smoketest:
+    needs: [targets]
+    uses: ./.github/workflows/ci_smoketest.yml
+
   windows:
     needs: [targets]
     if: needs.targets.outputs.windows == 'true'

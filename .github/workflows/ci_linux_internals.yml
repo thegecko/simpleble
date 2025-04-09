@@ -33,8 +33,7 @@ jobs:
         sudo -H apt-get install -y dbus libdbus-1-dev python3-dev
         sudo -H pip3 install -r $(pwd)/simpledbus/test/requirements.txt
         echo "Running for libraries: ${{ inputs.libraries }}"
-    - name: Setup cmake
-      uses: ./.github/actions/setup-cmake
+
     - name: Setup gtest
       uses: ./.github/actions/setup-gtest
     - name: Start DBus
@@ -93,8 +92,6 @@ jobs:
       run: |
         sudo -H apt-get update -y
         sudo -H apt-get install -y libdbus-1-dev
-    - name: Setup cmake
-      uses: ./.github/actions/setup-cmake
     - name: Compile ${{ matrix.library }} Examples
       uses: ./.github/actions/build-native
       with:
@@ -126,11 +123,6 @@ jobs:
     steps:
     - name: Clone repository
       uses: actions/checkout@v4
-    - name: Build DBus
-      uses: ./.github/actions/build-dbus
-      with:
-        os: ${{ runner.os }}
-        arch: ${{ matrix.options.target }}
     - name: Build ${{ matrix.library }}
       uses: ./.github/actions/build-native
       with:
