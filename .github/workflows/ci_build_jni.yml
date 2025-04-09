@@ -95,10 +95,15 @@ jobs:
         run: |
           mkdir -p $GITHUB_WORKSPACE/jni
           for dir in libsimplejavable_*; do
-            # Extract architecture (e.g., 'amd64' from 'libsimplejavable_amd64_linux-x64')
+            # Extract architecture (e.g., 'x64' from 'libsimplejavable_x64_linux-x64')
             arch=$(echo "$dir" | sed 's/libsimplejavable_//;s/_[^_]*$//')
-            mkdir -p $GITHUB_WORKSPACE/jni/$arch
-            mv "$dir" "$GITHUB_WORKSPACE/jni/$arch"
+            target_dir="$GITHUB_WORKSPACE/jni/$arch"
+            mkdir -p "$target_dir"
+            # Move the contents of the downloaded directory into the target directory
+            echo "Moving contents of '$dir' to '$target_dir'"
+            mv -v "$dir"/* "$target_dir/"
+            # Remove the now-empty source directory
+            rmdir "$dir"
           done
 
       - name: List downloaded files
