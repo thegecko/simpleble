@@ -239,9 +239,9 @@ jobs:
     needs: [targets]
     uses: ./.github/workflows/ci_build.yml
 
-  build-jni:
+  simplejavable:
     needs: [targets]
-    uses: ./.github/workflows/ci_build_jni.yml
+    uses: ./.github/workflows/ci_simplejavable.yml
 
   release-python:
     needs: [targets, windows, linux, macos, python]

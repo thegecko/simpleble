@@ -52,7 +52,7 @@ jobs:
           build-config: "Release"
           os: "${{ matrix.config.os }}"
           target-arch: "${{ matrix.config.architecture }}"
-          cmake-options: ""  # No additional options needed; handled by the action
+          cmake-options: ""
 
       - name: Upload JNI Binaries
         if: matrix.config.os != 'windows'
@@ -112,6 +112,9 @@ jobs:
       - name: Build SimpleJavaBLE Java Library
         run: |
           gradle -p simplejavable/java -PnativeLibPath=$GITHUB_WORKSPACE/jni -Dorg.gradle.project.buildDir=$GITHUB_WORKSPACE/artifacts --no-daemon build
+
+      - name: List JAR contents
+        run: unzip -l artifacts/libs/simplejavable*.jar
 
       - name: Upload SimpleJavaBLE Java Library
         uses: actions/upload-artifact@v4
