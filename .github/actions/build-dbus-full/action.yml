@@ -15,13 +15,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # - name: Install Dependencies
-    #   shell: bash
-    #   env:
-    #       DEBIAN_FRONTEND: noninteractive
-    #   run: |
-    #     sudo -H apt-get update -y
-    #     sudo -H apt-get install -y jq curl
+    - name: Install Dependencies
+      shell: bash
+      env:
+          DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo -H apt-get remove -y libexpat1-dev
 
     - name: Get latest Expat commit hash
       id: expat-hash
