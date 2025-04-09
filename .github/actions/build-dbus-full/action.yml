@@ -29,7 +29,7 @@ runs:
       run: |
         EXPAT_HASH=6d4ffe856df497ac2cae33537665c3fec7ec8a00
         DBUS_HASH=958bf9db2100553bcd2fe2a854e1ebb42e886054
-        COMBINED_HASH="$EXPAT_HASH:$DBUS_HASH"
+        COMBINED_HASH="$EXPAT_HASH-$DBUS_HASH"
         echo "expat_hash=$EXPAT_HASH" >> $GITHUB_OUTPUT
         echo "dbus_hash=$DBUS_HASH" >> $GITHUB_OUTPUT
         echo "combined_hash=$COMBINED_HASH" >> $GITHUB_OUTPUT
