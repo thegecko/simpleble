@@ -1,11 +1,11 @@
-name: CI Build Demo
+name: CI Smoketest
 
 on:
   workflow_dispatch:
-  workflow_call:  # Allows this to be called from other workflows
+  workflow_call:
 
 jobs:
-  build:
+  build-cpp:
     runs-on: ${{ matrix.config.runner-os }}
     strategy:
       fail-fast: false
@@ -31,4 +31,57 @@ jobs:
           library-type: "static"
           os: "${{ matrix.config.os }}"
           target-arch: "${{ matrix.config.architecture }}"
-          cmake-options: ""  # No additional options needed; handled by the action
+          cmake-options: ""
+
+  build-java:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build SimpleJavaBLE Java Library
+        run: |
+          gradle -p simplejavable/java -PbuildFromCMake --no-daemon build
+
+  build-python:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r simplepyble/requirements.txt
+
+      - name: Build wheel
+        uses: pypa/cibuildwheel@v2.23.2
+        env:
+          CIBW_BUILD_VERBOSITY: 3
+          CIBW_BUILD: cp312*
+          CIBW_BEFORE_ALL_LINUX: "yum update -y && yum group install -y \"Development Tools\" && yum install -y dbus-devel"
+          CIBW_ARCHS_LINUX: x86_64
+          CIBW_SKIP: "*musllinux_* pp* cp36-* cp37-*"
