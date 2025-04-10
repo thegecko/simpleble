@@ -13,10 +13,10 @@ jobs:
       max-parallel: 4
       matrix:
         config:
-          - { runner-os: ubuntu-22.04, os: linux, target: linux-x64, architecture: x64, container-image: dockcross/linux-x64 }
-          - { runner-os: ubuntu-22.04, os: linux, target: linux-aarch64, architecture: aarch64, container-image: dockcross/linux-arm64 }
-          - { runner-os: macos-14, os: macos, target: macos-aarch64, architecture: aarch64 } # Containers are not required.
-          - { runner-os: windows-2022, os: windows, target: windows-x64, architecture: x64 } # Containers are not required.
+          - { runner-os: ubuntu-22.04, os: linux, architecture: x64, container-image: dockcross/linux-x64 }
+          - { runner-os: ubuntu-22.04, os: linux, architecture: aarch64, container-image: dockcross/linux-arm64 }
+          - { runner-os: macos-14, os: macos, architecture: aarch64 } # Containers are not required.
+          - { runner-os: windows-2022, os: windows, architecture: x64 } # Containers are not required.
 
     steps:
       - name: Clone Repository
@@ -43,14 +43,14 @@ jobs:
         if: matrix.config.os != 'windows'
         uses: actions/upload-artifact@v4
         with:
-          name: libsimplejavable_${{ matrix.config.architecture }}_${{ matrix.config.target }}
+          name: libsimplejavable_${{ matrix.config.os }}-${{ matrix.config.architecture }}
           path: build_simplejavable/lib/libsimplejavable*
 
       - name: Upload JNI Binaries
         if: matrix.config.os == 'windows'
         uses: actions/upload-artifact@v4
         with:
-          name: libsimplejavable_${{ matrix.config.architecture }}_${{ matrix.config.target }}
+          name: libsimplejavable_${{ matrix.config.os }}-${{ matrix.config.architecture }}
           path: build_simplejavable/bin/Release/simplejavable*
 
   build-jar:
@@ -80,8 +80,8 @@ jobs:
         run: |
           mkdir -p $GITHUB_WORKSPACE/jni
           for dir in libsimplejavable_*; do
-            # Extract architecture (e.g., 'x64' from 'libsimplejavable_x64_linux-x64')
-            arch=$(echo "$dir" | sed 's/libsimplejavable_//;s/_[^_]*$//')
+            # Extract architecture (e.g., 'x64', 'aarch64' from 'libsimplejavable_linux-x64')
+            arch=$(echo "$dir" | sed 's/.*-//')
             target_dir="$GITHUB_WORKSPACE/jni/$arch"
             mkdir -p "$target_dir"
             # Move the contents of the downloaded directory into the target directory

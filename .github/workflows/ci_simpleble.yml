@@ -27,7 +27,7 @@ jobs:
         with:
           source-dir: "$GITHUB_WORKSPACE/simpleble"
           build-dir: "$GITHUB_WORKSPACE/build_simpleble_static"
-          install-prefix: "$GITHUB_WORKSPACE/install_simpleble"
+          install-prefix: "$GITHUB_WORKSPACE/install_simpleble/static"
           build-config: "Release"
           library-type: "static"
           os: "${{ matrix.config.os }}"
@@ -39,7 +39,7 @@ jobs:
         with:
           source-dir: "$GITHUB_WORKSPACE/simpleble"
           build-dir: "$GITHUB_WORKSPACE/build_simpleble_shared"
-          install-prefix: "$GITHUB_WORKSPACE/install_simpleble"
+          install-prefix: "$GITHUB_WORKSPACE/install_simpleble/shared"
           build-config: "Release"
           library-type: "shared"
           os: "${{ matrix.config.os }}"
@@ -57,5 +57,5 @@ jobs:
       - name: Upload Binaries
         uses: actions/upload-artifact@v4
         with:
-          name: libsimpleble_${{ matrix.config.os }}-${{ matrix.config.architecture }}.zip
+          name: libsimpleble_${{ matrix.config.os }}-${{ matrix.config.architecture }}
           path: artifacts/libsimpleble_${{ matrix.config.os }}-${{ matrix.config.architecture }}.zip
