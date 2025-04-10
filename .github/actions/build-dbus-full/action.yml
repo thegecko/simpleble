@@ -46,9 +46,13 @@ runs:
         key: expat-dbus-${{ inputs.os }}-${{ inputs.arch }}-${{ steps.hashes.outputs.combined_hash }}
 
     - name: Build Expat
-      if: steps.cache-simpleble-linux-deps.outputs.cache-hit != 'true' && ! test -d /tmp/expat
+      if: steps.cache-simpleble-linux-deps.outputs.cache-hit != 'true'
       shell: bash
       run: |
+        if [[ -d "/tmp/expat" ]]; then
+          echo "/tmp/expat already exists, skipping clone and build."
+          exit 0
+        fi
         git clone https://github.com/libexpat/libexpat.git /tmp/expat
         cd /tmp/expat/expat
         git checkout ${{ steps.hashes.outputs.expat_hash }}
@@ -57,9 +61,13 @@ runs:
         cmake --install build --prefix /tmp/install
 
     - name: Build DBus
-      if: steps.cache-simpleble-linux-deps.outputs.cache-hit != 'true' && ! test -d /tmp/dbus
+      if: steps.cache-simpleble-linux-deps.outputs.cache-hit != 'true'
       shell: bash
       run: |
+        if [[ -d "/tmp/dbus" ]]; then
+          echo "/tmp/dbus already exists, skipping clone and build."
+          exit 0
+        fi
         git clone https://gitlab.freedesktop.org/dbus/dbus.git /tmp/dbus
         cd /tmp/dbus
         git checkout ${{ steps.hashes.outputs.dbus_hash }}
