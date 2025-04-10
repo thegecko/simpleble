@@ -51,59 +51,59 @@ jobs:
         cmake -B $GITHUB_WORKSPACE/build_simpleble_examples -DCMAKE_BUILD_TYPE=Release -S $GITHUB_WORKSPACE/examples/simpleble
         cmake --build $GITHUB_WORKSPACE/build_simpleble_examples --config Release --parallel 4
 
-  build:
-    runs-on: ubuntu-22.04
-    needs: [tests, examples]
+  # build:
+  #   runs-on: ubuntu-22.04
+  #   needs: [tests, examples]
 
-    strategy:
-      fail-fast: false
-      max-parallel: 4
-      matrix:
-        # For testing purposes only static libraries are built to reduce run time.
-        # In release workflow all combinations are build.
-        options: [
-          {container: dockcross/linux-x64, target: linux-x64},
-          {container: dockcross/linux-x86, target: linux-x86},
-          {container: dockcross/linux-armv6-lts, target: linux-armv6},
-        ]
-        type: [static]
+  #   strategy:
+  #     fail-fast: false
+  #     max-parallel: 4
+  #     matrix:
+  #       # For testing purposes only static libraries are built to reduce run time.
+  #       # In release workflow all combinations are build.
+  #       options: [
+  #         {container: dockcross/linux-x64, target: linux-x64},
+  #         {container: dockcross/linux-x86, target: linux-x86},
+  #         {container: dockcross/linux-armv6-lts, target: linux-armv6},
+  #       ]
+  #       type: [static]
 
-    container:
-      image: ${{ matrix.options.container }}
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v4
+  #   container:
+  #     image: ${{ matrix.options.container }}
+  #   steps:
+  #     - name: Clone repository
+  #       uses: actions/checkout@v4
 
-      - name: Build DBus
-        uses: ./.github/actions/build-dbus
-        with:
-          os: ${{ runner.os }}
-          arch: ${{ matrix.options.target }}
+  #     - name: Build DBus
+  #       uses: ./.github/actions/build-dbus
+  #       with:
+  #         os: ${{ runner.os }}
+  #         arch: ${{ matrix.options.target }}
 
-      - name: Build SimpleBLE Library using Action
-        uses: ./.github/actions/build-native-linux
-        with:
-          source-dir: "$(pwd)/simpleble"
-          build-dir: "$(pwd)/build_simpleble"
-          install-prefix: "$(pwd)/build_simpleble/install"
-          library-type: ${{ matrix.type }}
-          build-config: 'Release'
-          target-name: 'simpleble'
-          # NOTE: The build step requires us to extend the CMAKE_FIND_ROOT_PATH to include the dbus install path,
-          #       as cross-compilation environments will ignore CMAKE_PREFIX_PATH.
-          cmake-options: "-DCMAKE_FIND_ROOT_PATH='${CMAKE_FIND_ROOT_PATH};/tmp/install/dbus'"
+  #     - name: Build SimpleBLE Library using Action
+  #       uses: ./.github/actions/build-native-linux
+  #       with:
+  #         source-dir: "$(pwd)/simpleble"
+  #         build-dir: "$(pwd)/build_simpleble"
+  #         install-prefix: "$(pwd)/build_simpleble/install"
+  #         library-type: ${{ matrix.type }}
+  #         build-config: 'Release'
+  #         target-name: 'simpleble'
+  #         # NOTE: The build step requires us to extend the CMAKE_FIND_ROOT_PATH to include the dbus install path,
+  #         #       as cross-compilation environments will ignore CMAKE_PREFIX_PATH.
+  #         cmake-options: "-DCMAKE_FIND_ROOT_PATH='${CMAKE_FIND_ROOT_PATH};/tmp/install/dbus'"
 
-      - name: Package Artifact
-        shell: bash
-        run: |
-          mkdir -p {{ github.workspace }}/artifacts
-          zip -r {{ github.workspace }}/artifacts/simpleble_${{ matrix.type }}_${{ matrix.options.target }}.zip {{ github.workspace }}/build_simpleble/install
+  #     - name: Package Artifact
+  #       shell: bash
+  #       run: |
+  #         mkdir -p {{ github.workspace }}/artifacts
+  #         zip -r {{ github.workspace }}/artifacts/simpleble_${{ matrix.type }}_${{ matrix.options.target }}.zip {{ github.workspace }}/build_simpleble/install
 
-      - name: Upload binaries to job
-        uses: actions/upload-artifact@v4
-        with:
-          name: simpleble_${{ matrix.type }}_${{ matrix.options.target }}
-          path: artifacts/simpleble_${{ matrix.type }}_${{ matrix.options.target }}.zip
+  #     - name: Upload binaries to job
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: simpleble_${{ matrix.type }}_${{ matrix.options.target }}
+  #         path: artifacts/simpleble_${{ matrix.type }}_${{ matrix.options.target }}.zip
 
   python:
     needs: [tests, examples]

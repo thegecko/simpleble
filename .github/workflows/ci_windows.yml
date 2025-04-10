@@ -36,48 +36,48 @@ jobs:
         cmake --build %GITHUB_WORKSPACE%\build --config Release --parallel 4
       shell: cmd
 
-  build:
-    runs-on: windows-2022
-    needs: [tests, examples]
+  # build:
+  #   runs-on: windows-2022
+  #   needs: [tests, examples]
 
-    strategy:
-      fail-fast: false
-      max-parallel: 4
-      matrix:
-        # For testing purposes only static libraries are built to reduce run time.
-        # In release workflow all combinations are build.
-        arch: [Win32, x64]
-        type: [static]
+  #   strategy:
+  #     fail-fast: false
+  #     max-parallel: 4
+  #     matrix:
+  #       # For testing purposes only static libraries are built to reduce run time.
+  #       # In release workflow all combinations are build.
+  #       arch: [Win32, x64]
+  #       type: [static]
 
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Clone repository
+  #       uses: actions/checkout@v4
 
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
+  #     - name: Add msbuild to PATH
+  #       uses: microsoft/setup-msbuild@v1.1
 
-      - name: Compile SimpleBLE
-        shell: cmd
-        run: |
+  #     - name: Compile SimpleBLE
+  #       shell: cmd
+  #       run: |
 
-          if "${{ matrix.type }}" == "shared" (
-            set BUILD_SHARED_LIBS=ON
-          ) else (
-            set BUILD_SHARED_LIBS=OFF
-          )
+  #         if "${{ matrix.type }}" == "shared" (
+  #           set BUILD_SHARED_LIBS=ON
+  #         ) else (
+  #           set BUILD_SHARED_LIBS=OFF
+  #         )
 
-          cmake -B %GITHUB_WORKSPACE%\build -G "Visual Studio 17 2022" -A ${{ matrix.arch }} -DCMAKE_SYSTEM_VERSION="10.0.19041.0" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=%BUILD_SHARED_LIBS% -S %GITHUB_WORKSPACE%/simpleble
-          cmake --build %GITHUB_WORKSPACE%\build --config Release --parallel 4
-          cmake --install %GITHUB_WORKSPACE%\build --prefix %GITHUB_WORKSPACE%\build\install
+  #         cmake -B %GITHUB_WORKSPACE%\build -G "Visual Studio 17 2022" -A ${{ matrix.arch }} -DCMAKE_SYSTEM_VERSION="10.0.19041.0" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=%BUILD_SHARED_LIBS% -S %GITHUB_WORKSPACE%/simpleble
+  #         cmake --build %GITHUB_WORKSPACE%\build --config Release --parallel 4
+  #         cmake --install %GITHUB_WORKSPACE%\build --prefix %GITHUB_WORKSPACE%\build\install
 
-          mkdir -p $GITHUB_WORKSPACE\artifacts
-          7z a -tzip %GITHUB_WORKSPACE%\artifacts\simpleble_${{ matrix.type }}_windows-${{ matrix.arch }}.zip %GITHUB_WORKSPACE%\build\install
+  #         mkdir -p $GITHUB_WORKSPACE\artifacts
+  #         7z a -tzip %GITHUB_WORKSPACE%\artifacts\simpleble_${{ matrix.type }}_windows-${{ matrix.arch }}.zip %GITHUB_WORKSPACE%\build\install
 
-      - name: Upload binaries to job
-        uses: actions/upload-artifact@v4
-        with:
-          name: simpleble_${{ matrix.type }}_windows-${{ matrix.arch }}
-          path: artifacts/simpleble_${{ matrix.type }}_windows-${{ matrix.arch }}.zip
+  #     - name: Upload binaries to job
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: simpleble_${{ matrix.type }}_windows-${{ matrix.arch }}
+  #         path: artifacts/simpleble_${{ matrix.type }}_windows-${{ matrix.arch }}.zip
 
   python:
     needs: [tests, examples]
