@@ -19,7 +19,11 @@ runs:
       env:
           DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo -H apt-get remove -y libexpat1-dev
+        if [[ "${{ inputs.arch }}" == "x86" ]]; then
+          sudo -H apt-get remove -y libexpat1-dev:i386
+        else
+          sudo -H apt-get remove -y libexpat1-dev
+        fi
 
     - name: Generate Hashes
       id: hashes
@@ -42,23 +46,23 @@ runs:
         key: expat-dbus-${{ inputs.os }}-${{ inputs.arch }}-${{ steps.hashes.outputs.combined_hash }}
 
     - name: Build Expat
-      if: steps.cache-simpleble-linux-deps.outputs.cache-hit != 'true'
+      if: steps.cache-simpleble-linux-deps.outputs.cache-hit != 'true' && ! test -d /tmp/expat
       shell: bash
       run: |
         git clone https://github.com/libexpat/libexpat.git /tmp/expat
         cd /tmp/expat/expat
-        git checkout ${{ steps.expat-hash.outputs.value }}
+        git checkout ${{ steps.hashes.outputs.expat_hash }}
         cmake -B build -DEXPAT_BUILD_DOCS=OFF -DEXPAT_BUILD_EXAMPLES=OFF -DEXPAT_BUILD_TESTS=OFF
         cmake --build build --config Release --parallel 4
         cmake --install build --prefix /tmp/install
 
     - name: Build DBus
-      if: steps.cache-simpleble-linux-deps.outputs.cache-hit != 'true'
+      if: steps.cache-simpleble-linux-deps.outputs.cache-hit != 'true' && ! test -d /tmp/dbus
       shell: bash
       run: |
         git clone https://gitlab.freedesktop.org/dbus/dbus.git /tmp/dbus
         cd /tmp/dbus
-        git checkout ${{ steps.dbus-hash.outputs.value }}
+        git checkout ${{ steps.hashes.outputs.dbus_hash }}
         cmake -B build -DDBUS_SESSION_SOCKET_DIR=/usr/local/var/run/dbus/system_bus_socket -DDBUS_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/tmp/install -DCMAKE_PREFIX_PATH=/tmp/install
         cmake --build build --config Release --parallel 4
         cmake --install build --prefix /tmp/install

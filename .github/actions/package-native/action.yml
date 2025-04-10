@@ -24,6 +24,8 @@ runs:
       run: |
         mkdir -p "${{ inputs.output-dir }}"
         cd "${{ inputs.source-dir }}"
+        echo "Files to be packaged:"
+        find . -type f | sort
         zip -r "${{ inputs.output-dir }}/${{ inputs.archive-name }}.zip" .
 
     - name: Package Directory (Windows)
@@ -32,4 +34,6 @@ runs:
       run: |
         mkdir -p "${{ inputs.output-dir }}"
         cd "${{ inputs.source-dir }}"
+        echo "Files to be packaged:"
+        find . -type f | sort
         7z a -tzip "${{ inputs.output-dir }}/${{ inputs.archive-name }}.zip" .
