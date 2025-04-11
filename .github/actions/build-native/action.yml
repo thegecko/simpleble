@@ -102,8 +102,7 @@ runs:
 
           if [ -n "$_ARCH_FLAG_VALUE" ]; then
             # Set CMake options required for iOS cross-compilation
-            # Using 13.0 as a default minimum deployment target. Adjust if needed.
-            echo "CMAKE_OPTIONS=-DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_ARCHITECTURES=$_ARCH_FLAG_VALUE -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 $_BASE_CMAKE_OPTIONS" >> $GITHUB_ENV
+            echo "CMAKE_OPTIONS=-DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_ARCHITECTURES=$_ARCH_FLAG_VALUE -DCMAKE_OSX_DEPLOYMENT_TARGET=15.8 $_BASE_CMAKE_OPTIONS" >> $GITHUB_ENV
           else
             echo "Unsupported target architecture for iOS: ${{ inputs.target-arch }}"
             exit 1

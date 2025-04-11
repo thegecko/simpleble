@@ -18,8 +18,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Package Directory (Linux/macOS)
-      if: inputs.os == 'linux' || inputs.os == 'macos'
+    - name: Package Directory (Other than Windows)
+      if: inputs.os != 'windows'
       shell: bash
       run: |
         mkdir -p "${{ inputs.output-dir }}"

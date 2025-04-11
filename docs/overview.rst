@@ -72,7 +72,7 @@ MacOS
 
 iOS
 """
-* **Supported Versions:** iOS 15.0 and newer
+* **Supported Versions:** iOS 15.8 and newer
 * **Notes:**
 
   - Older versions of iOS might work but haven't been formally tested.
