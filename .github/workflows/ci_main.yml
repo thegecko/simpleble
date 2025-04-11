@@ -213,6 +213,10 @@ jobs:
     needs: [smoketest]
     uses: ./.github/workflows/ci_simplejavable.yml
 
+  simplersble:
+    needs: [smoketest]
+    uses: ./.github/workflows/ci_simplersble.yml
+
   windows:
     needs: [smoketest]
     if: needs.targets.outputs.windows == 'true'
