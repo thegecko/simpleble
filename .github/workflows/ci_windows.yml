@@ -79,9 +79,9 @@ jobs:
   #         name: simpleble_${{ matrix.type }}_windows-${{ matrix.arch }}
   #         path: artifacts/simpleble_${{ matrix.type }}_windows-${{ matrix.arch }}.zip
 
-  python:
-    needs: [tests, examples]
-    uses: ./.github/workflows/ci_wheels.yml
-    secrets: inherit
-    with:
-      os: windows-2022
+  # python:
+  #   needs: [tests, examples]
+  #   uses: ./.github/workflows/ci_wheels.yml
+  #   secrets: inherit
+  #   with:
+  #     os: windows-2022
