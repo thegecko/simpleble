@@ -255,13 +255,13 @@ jobs:
     uses: ./.github/workflows/ci_android.yml
     secrets: inherit
 
-  release-python:
-    needs: [targets, windows, linux, macos, python]
-    # Note that Python is released on every commit in main branch with relevant
-    # changes (python, miscs, windows, linux, or macos filters). While cpp binaries are
-    # only published on manual releases.
-    if: needs.targets.outputs.release-python == 'true'
-    uses: ./.github/workflows/ci_python_publish.yml
-    with:
-      tag: ${{ github.ref }}
-    secrets: inherit
+  # release-python:
+  #   needs: [targets, windows, linux, macos, python]
+  #   # Note that Python is released on every commit in main branch with relevant
+  #   # changes (python, miscs, windows, linux, or macos filters). While cpp binaries are
+  #   # only published on manual releases.
+  #   if: needs.targets.outputs.release-python == 'true'
+  #   uses: ./.github/workflows/ci_python_publish.yml
+  #   with:
+  #     tag: ${{ github.ref }}
+  #   secrets: inherit

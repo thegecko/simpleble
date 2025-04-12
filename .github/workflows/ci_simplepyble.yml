@@ -6,7 +6,7 @@ on:
 
 jobs:
 
-  sdist:
+  build-sdist:
     runs-on: ubuntu-22.04
 
     steps:
@@ -65,17 +65,17 @@ jobs:
         with:
           platforms: arm64
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.11
-          cache: "pip"
+      # - name: Set up Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: 3.11
+      #     cache: "pip"
 
-      - name: Install dependencies
-        run: pip install -r simplepyble/requirements.txt
+      # - name: Install dependencies
+      #   run: pip install -r simplepyble/requirements.txt
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@v2.19.2
+        uses: pypa/cibuildwheel@v2.23.2
         env:
           CIBW_BUILD_VERBOSITY: 3
           CIBW_BUILD: ${{ matrix.python.tag }}-*
@@ -91,3 +91,46 @@ jobs:
         with:
           name: simplepyble-${{ matrix.config.os }}-${{ matrix.python.version }}
           path: wheelhouse/*.whl
+
+  publish-sdist:
+    needs: [build-sdist, build-wheels]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: "Download Python source distribution"
+        uses: actions/download-artifact@v4
+        with:
+          name: simplepyble-sdist
+          path: sdist
+
+      - name: Check source distribution
+        run: |
+          pip3 install twine
+          twine check sdist/simplepyble*.tar.gz
+
+      - name: Publish source distribution to PyPI
+        run: twine upload --skip-existing sdist/simplepyble*.tar.gz --verbose
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USER }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+
+  publish-wheels:
+    needs: [build-sdist, build-wheels]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: "Download Python Wheels"
+        uses: actions/download-artifact@v4
+        with:
+          pattern: simplepyble-*-*
+          path: wheels
+          merge-multiple: true
+
+      - name: Check Packages
+        run: |
+          pip3 install twine
+          twine check wheels/*.whl
+
+      - name: Publish packages
+        run: twine upload --skip-existing wheels/*.whl --verbose
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USER }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
