@@ -77,7 +77,7 @@ jobs:
       - name: Clone Repository
         uses: actions/checkout@v4
 
-      - name: Build SimpleBLE Examples (Static)
+      - name: Build SimpleBLE Examples
         uses: ./.github/actions/build-native
         with:
           source-dir: "$GITHUB_WORKSPACE/examples/simpleble"

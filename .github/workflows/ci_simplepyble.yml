@@ -41,16 +41,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { runner-os: ubuntu-22.04, os: linux }
+          # - { runner-os: ubuntu-22.04, os: linux }
           - { runner-os: macos-14, os: macos }
-          - { runner-os: windows-2022, os: windows }
+          # - { runner-os: windows-2022, os: windows }
         python:
           - { version: 3.13, tag: cp313 }
-          - { version: 3.12, tag: cp312 }
-          - { version: 3.11, tag: cp311 }
-          - { version: 3.10, tag: cp310 }
-          - { version: 3.9, tag: cp39 }
-          - { version: 3.8, tag: cp38 }
+          # - { version: 3.12, tag: cp312 }
+          # - { version: 3.11, tag: cp311 }
+          # - { version: 3.10, tag: cp310 }
+          # - { version: 3.9, tag: cp39 }
+          # - { version: 3.8, tag: cp38 }
 
     steps:
       - name: Clone Repository
@@ -116,8 +116,10 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: wheels
+          skip-existing: true
 
       - name: Publish wheels to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: sdist
+          skip-existing: true
