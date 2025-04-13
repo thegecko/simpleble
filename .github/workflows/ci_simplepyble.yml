@@ -65,15 +65,6 @@ jobs:
         with:
           platforms: arm64
 
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: 3.11
-      #     cache: "pip"
-
-      # - name: Install dependencies
-      #   run: pip install -r simplepyble/requirements.txt
-
       - name: Build wheel
         uses: pypa/cibuildwheel@v2.23.2
         env:
@@ -92,31 +83,14 @@ jobs:
           name: simplepyble-${{ matrix.config.os }}-${{ matrix.python.version }}
           path: wheelhouse/*.whl
 
-  publish-sdist:
+  publish:
     needs: [build-sdist, build-wheels]
     runs-on: ubuntu-22.04
     steps:
-      - name: "Download Python source distribution"
-        uses: actions/download-artifact@v4
-        with:
-          name: simplepyble-sdist
-          path: sdist
 
-      - name: Check source distribution
-        run: |
-          pip3 install twine
-          twine check sdist/simplepyble*.tar.gz
+      - name: Install dependencies
+        run: pip install twine
 
-      - name: Publish source distribution to PyPI
-        run: twine upload --skip-existing sdist/simplepyble*.tar.gz --verbose
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USER }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-
-  publish-wheels:
-    needs: [build-sdist, build-wheels]
-    runs-on: ubuntu-22.04
-    steps:
       - name: "Download Python Wheels"
         uses: actions/download-artifact@v4
         with:
@@ -124,13 +98,24 @@ jobs:
           path: wheels
           merge-multiple: true
 
-      - name: Check Packages
-        run: |
-          pip3 install twine
-          twine check wheels/*.whl
+      - name: "Download Python source distribution"
+        uses: actions/download-artifact@v4
+        with:
+          name: simplepyble-sdist
+          path: sdist
 
-      - name: Publish packages
-        run: twine upload --skip-existing wheels/*.whl --verbose
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USER }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      - name: Check packages
+        run: twine check wheels/*.whl
+
+      - name: Check source distribution
+        run: twine check sdist/simplepyble*.tar.gz
+
+      - name: Publish wheels to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: wheels
+
+      - name: Publish wheels to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: sdist
