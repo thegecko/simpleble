@@ -41,16 +41,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - { runner-os: ubuntu-22.04, os: linux }
+          - { runner-os: ubuntu-22.04, os: linux }
           - { runner-os: macos-14, os: macos }
-          # - { runner-os: windows-2022, os: windows }
+          - { runner-os: windows-2022, os: windows }
         python:
           - { version: 3.13, tag: cp313 }
-          # - { version: 3.12, tag: cp312 }
-          # - { version: 3.11, tag: cp311 }
-          # - { version: 3.10, tag: cp310 }
-          # - { version: 3.9, tag: cp39 }
-          # - { version: 3.8, tag: cp38 }
+          - { version: 3.12, tag: cp312 }
+          - { version: 3.11, tag: cp311 }
+          - { version: 3.10, tag: cp310 }
+          - { version: 3.9, tag: cp39 }
+          - { version: 3.8, tag: cp38 }
 
     steps:
       - name: Clone Repository
@@ -71,9 +71,9 @@ jobs:
           CIBW_BUILD_VERBOSITY: 3
           CIBW_BUILD: ${{ matrix.python.tag }}-*
           CIBW_BEFORE_ALL_LINUX: "yum update -y && yum group install -y \"Development Tools\" && yum install -y dbus-devel"
-          CIBW_ARCHS_LINUX: x86_64 # i686 aarch64 # TODO: Reenable once publishing works again
-          CIBW_ARCHS_MACOS: x86_64 # universal2 arm64 # TODO: Reenable once publishing works again
-          CIBW_ARCHS_WINDOWS: AMD64 # x86 # TODO: Reenable once publishing works again
+          CIBW_ARCHS_LINUX: x86_64 i686 aarch64
+          CIBW_ARCHS_MACOS: x86_64 universal2 arm64
+          CIBW_ARCHS_WINDOWS: AMD64 x86
           CIBW_SKIP: "*musllinux_* pp* cp36-* cp37-*"
           MACOSX_DEPLOYMENT_TARGET: "11.0"
 
@@ -117,9 +117,11 @@ jobs:
         with:
           packages-dir: wheels
           skip-existing: true
+          attestations: false # Broken, see: https://github.com/pypa/gh-action-pypi-publish/issues/166
 
       - name: Publish wheels to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: sdist
           skip-existing: true
+          attestations: false # Broken, see: https://github.com/pypa/gh-action-pypi-publish/issues/166
