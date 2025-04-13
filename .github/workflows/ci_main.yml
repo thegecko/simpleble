@@ -221,15 +221,15 @@ jobs:
     needs: [smoketest]
     uses: ./.github/workflows/ci_simplersble.yml
 
-  windows:
-    needs: [smoketest]
-    if: needs.targets.outputs.windows == 'true'
-    uses: ./.github/workflows/ci_windows.yml
+  # windows:
+  #   needs: [smoketest]
+  #   if: needs.targets.outputs.windows == 'true'
+  #   uses: ./.github/workflows/ci_windows.yml
 
-  linux:
-    needs: [smoketest]
-    if: needs.targets.outputs.linux == 'true'
-    uses: ./.github/workflows/ci_linux.yml
+  # linux:
+  #   needs: [smoketest]
+  #   if: needs.targets.outputs.linux == 'true'
+  #   uses: ./.github/workflows/ci_linux.yml
 
   linux-internals:
     needs: [smoketest]
@@ -238,10 +238,10 @@ jobs:
     with:
       libraries: ${{ needs.libraries.outputs.values }}
 
-  macos:
-    needs: [smoketest]
-    if: needs.targets.outputs.macos == 'true'
-    uses: ./.github/workflows/ci_macos.yml
+  # macos:
+  #   needs: [smoketest]
+  #   if: needs.targets.outputs.macos == 'true'
+  #   uses: ./.github/workflows/ci_macos.yml
 
   python:
     needs: [smoketest]

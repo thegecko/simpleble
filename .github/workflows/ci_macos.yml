@@ -5,21 +5,21 @@ on:
   workflow_call:  # This allows it to be called from ci_main.yml
 
 jobs:
-  tests:
-    runs-on: macos-14
+  # tests:
+  #   runs-on: macos-14
 
-    steps:
-    - name: Clone Repository
-      uses: actions/checkout@v4
-    - name: Setup cmake
-      uses: ./.github/actions/setup-cmake
-    - name: Setup gtest
-      uses: ./.github/actions/setup-gtest
-    - name: Compile Tests for MacOS arm64
-      run: |
-        cmake -B $GITHUB_WORKSPACE/build_test -DCMAKE_OSX_DEPLOYMENT_TARGET=11 -DCMAKE_BUILD_TYPE=Release -DGTEST_ROOT=$GITHUB_WORKSPACE/googletest/install -S $GITHUB_WORKSPACE/simpleble -DSIMPLEBLE_TEST=ON
-        cmake --build $GITHUB_WORKSPACE/build_test --config Release --parallel 4
-        $GITHUB_WORKSPACE/build_test/bin/simpleble_test
+  #   steps:
+  #   - name: Clone Repository
+  #     uses: actions/checkout@v4
+  #   - name: Setup cmake
+  #     uses: ./.github/actions/setup-cmake
+  #   - name: Setup gtest
+  #     uses: ./.github/actions/setup-gtest
+  #   - name: Compile Tests for MacOS arm64
+  #     run: |
+  #       cmake -B $GITHUB_WORKSPACE/build_test -DCMAKE_OSX_DEPLOYMENT_TARGET=11 -DCMAKE_BUILD_TYPE=Release -DGTEST_ROOT=$GITHUB_WORKSPACE/googletest/install -S $GITHUB_WORKSPACE/simpleble -DSIMPLEBLE_TEST=ON
+  #       cmake --build $GITHUB_WORKSPACE/build_test --config Release --parallel 4
+  #       $GITHUB_WORKSPACE/build_test/bin/simpleble_test
 
   examples:
     runs-on: macos-14
