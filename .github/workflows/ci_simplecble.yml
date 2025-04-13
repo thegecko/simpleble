@@ -33,10 +33,9 @@ jobs:
           build-dir: "$GITHUB_WORKSPACE/build_simplecble_static"
           install-prefix: "$GITHUB_WORKSPACE/install_simplecble/static"
           build-config: "Release"
-          library-type: "static"
           os: "${{ matrix.config.os }}"
           target-arch: "${{ matrix.config.architecture }}"
-          cmake-options: ""
+          cmake-options: "-DBUILD_SHARED_LIBS=OFF"
 
       - name: Build SimpleCBLE Library (Shared)
         uses: ./.github/actions/build-native
@@ -45,10 +44,9 @@ jobs:
           build-dir: "$GITHUB_WORKSPACE/build_simplecble_shared"
           install-prefix: "$GITHUB_WORKSPACE/install_simplecble/shared"
           build-config: "Release"
-          library-type: "shared"
           os: "${{ matrix.config.os }}"
           target-arch: "${{ matrix.config.architecture }}"
-          cmake-options: ""
+          cmake-options: "-DBUILD_SHARED_LIBS=ON"
 
       - name: Package SimpleBLE Artifact
         uses: ./.github/actions/package-native

@@ -14,9 +14,6 @@ inputs:
   build-config:
     description: "CMake build configuration (e.g., Release, Debug)"
     default: "Release"
-  library-type:
-    description: "Type of library to build (static or shared)"
-    default: "static"
   cmake-options: # Platform-specific options
     description: "Additional options to pass to the initial CMake configuration command (e.g., -DSOME_FLAG=ON)"
     default: ""
@@ -58,7 +55,6 @@ runs:
       shell: bash
       run: |
         echo "BUILD_TYPE=${{ inputs.build-config }}" >> $GITHUB_ENV
-        echo "LIBRARY_TYPE=$([[ "${{ inputs.library-type }}" == "shared" ]] && echo "ON" || echo "OFF")" >> $GITHUB_ENV
         echo "PARALLEL_JOBS=${{ inputs.parallel-jobs }}" >> $GITHUB_ENV
 
         _BASE_CMAKE_OPTIONS="${{ inputs.cmake-options }}"
@@ -116,7 +112,7 @@ runs:
     - name: Configure CMake
       shell: ${{ env.SHELL }}
       run: |
-        cmake -B "${{ inputs.build-dir }}" -S "${{ inputs.source-dir }}" -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}" -DBUILD_SHARED_LIBS="${{ env.LIBRARY_TYPE }}" ${{ env.CMAKE_OPTIONS }}
+        cmake -B "${{ inputs.build-dir }}" -S "${{ inputs.source-dir }}" -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}" ${{ env.CMAKE_OPTIONS }}
 
     - name: Build Target
       shell: ${{ env.SHELL }}

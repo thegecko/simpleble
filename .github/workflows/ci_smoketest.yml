@@ -28,10 +28,9 @@ jobs:
           build-dir: "$GITHUB_WORKSPACE/build_simpleble"
           install-prefix: "$GITHUB_WORKSPACE/build_simpleble/install"
           build-config: "Release"
-          library-type: "static"
           os: "${{ matrix.config.os }}"
           target-arch: "${{ matrix.config.architecture }}"
-          cmake-options: ""
+          cmake-options: "-DBUILD_SHARED_LIBS=OFF"
 
   build-java:
     runs-on: ubuntu-22.04

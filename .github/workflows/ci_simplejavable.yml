@@ -37,7 +37,7 @@ jobs:
           build-config: "Release"
           os: "${{ matrix.config.os }}"
           target-arch: "${{ matrix.config.architecture }}"
-          cmake-options: ""
+          cmake-options: "-DBUILD_SHARED_LIBS=OFF"
 
       - name: Upload JNI Binaries
         if: matrix.config.os != 'windows'

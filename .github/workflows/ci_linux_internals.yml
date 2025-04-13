@@ -48,9 +48,9 @@ jobs:
         build-dir: '$(pwd)/build_${{ matrix.variant.name }}_${{ matrix.library }}'
         install-prefix: '$(pwd)/build_${{ matrix.variant.name }}_${{ matrix.library }}/install'
         build-config: '${{ matrix.variant.config }}'
-        library-type: 'static'
         cmake-options: >-
           -DGTEST_ROOT=$(pwd)/googletest/install
+          -DBUILD_SHARED_LIBS=OFF
           ${{ matrix.variant.name == 'unit' && format('-D{0}_TEST=ON', matrix.library == 'simpledbus' && 'SIMPLEDBUS' || 'SIMPLEBLUEZ') || '' }}
           ${{ matrix.variant.name == 'asan' && format('-D{0}_SANITIZE=Address -D{0}_TEST=ON', matrix.library == 'simpledbus' && 'SIMPLEDBUS' || 'SIMPLEBLUEZ') || '' }}
           ${{ matrix.variant.name == 'tsan' && format('-D{0}_SANITIZE=Thread -D{0}_TEST=ON', matrix.library == 'simpledbus' && 'SIMPLEDBUS' || 'SIMPLEBLUEZ') || '' }}
@@ -101,8 +101,7 @@ jobs:
         build-dir: '$(pwd)/build_${{ matrix.library }}_examples'
         install-prefix: '$(pwd)/build_${{ matrix.library }}_examples/install'
         build-config: 'Release'
-        library-type: 'static'
-        cmake-options: ''
+        cmake-options: '-DBUILD_SHARED_LIBS=OFF'
         parallel-jobs: '4'
         linux-use-system-dbus: 'true'
   build:
@@ -132,7 +131,6 @@ jobs:
         build-dir: '$(pwd)/build_${{ matrix.library }}'
         install-prefix: '$(pwd)/build_${{ matrix.library }}/install'
         build-config: 'Release'
-        library-type: '${{ matrix.type }}'
         cmake-options: '-DCMAKE_PREFIX_PATH=/tmp/dbus/install:${CMAKE_PREFIX_PATH}'
         parallel-jobs: '4'
         linux-use-system-dbus: 'true'
