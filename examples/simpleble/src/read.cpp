@@ -1,10 +1,13 @@
-#include <iomanip>
+#include <chrono>
 #include <iostream>
+#include <thread>
 #include <vector>
 
-#include "../common/utils.hpp"
+#include "utils.hpp"
 
 #include "simpleble/SimpleBLE.h"
+
+using namespace std::chrono_literals;
 
 int main() {
     auto adapter_optional = Utils::getAdapter();
@@ -35,11 +38,12 @@ int main() {
                   << std::endl;
     }
 
-    auto selection = Utils::getUserInputInt("Please select a device to connect to: ", peripherals.size() - 1);
+    auto selection = Utils::getUserInputInt("Please select a device to connect to", peripherals.size() - 1);
 
     if (!selection.has_value()) {
         return EXIT_FAILURE;
     }
+
     auto peripheral = peripherals[selection.value()];
     std::cout << "Connecting to " << peripheral.identifier() << " [" << peripheral.address() << "]" << std::endl;
     peripheral.connect();
@@ -59,23 +63,20 @@ int main() {
         std::cout << "[" << i << "] " << uuids[i].first << " " << uuids[i].second << std::endl;
     }
 
-    selection = Utils::getUserInputInt("Please select a characteristic to write into: ", uuids.size() - 1);
-
-    std::string contents;
-    std::cout << "Please write the contents to be sent: ";
-    std::cin >> contents;
+    selection = Utils::getUserInputInt("Select a characteristic to read", uuids.size() - 1);
 
     if (!selection.has_value()) {
         return EXIT_FAILURE;
     }
 
-    SimpleBLE::ByteArray bytes = SimpleBLE::ByteArray::fromHex(contents);
-
-    // NOTE: Alternatively, `write_command` can be used to write to a characteristic too.
-    // `write_request` is for unacknowledged writes.
-    // `write_command` is for acknowledged writes.
-    peripheral.write_request(uuids[selection.value()].first, uuids[selection.value()].second, bytes);
+    // Attempt to read the characteristic 5 times in 5 seconds.
+    for (size_t i = 0; i < 5; i++) {
+        SimpleBLE::ByteArray rx_data = peripheral.read(uuids[selection.value()].first, uuids[selection.value()].second);
+        std::cout << "Characteristic content is: " << rx_data << std::endl;
+        std::this_thread::sleep_for(1s);
+    }
 
     peripheral.disconnect();
+
     return EXIT_SUCCESS;
 }

@@ -11,29 +11,45 @@ option(SIMPLEBLE_LOCAL "Use local SimpleBLE" ON)
 
 if (SIMPLEBLE_LOCAL)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../../simpleble ${CMAKE_BINARY_DIR}/simpleble)
+    set_target_properties(simpleble::simpleble PROPERTIES EXCLUDE_FROM_ALL TRUE)
 else()
-    cmake_policy(SET CMP0144 OLD) # NOTE: This broke on older versions of CMake
+    cmake_policy(SET CMP0144 OLD)
     find_package(simpleble CONFIG REQUIRED)
 endif()
 
-# C++
-add_subdirectory(cpp/list_adapters)
-add_subdirectory(cpp/list_adapters_safe)
-add_subdirectory(cpp/scan)
-add_subdirectory(cpp/connect)
-add_subdirectory(cpp/connect_safe)
-add_subdirectory(cpp/multiconnect)
-add_subdirectory(cpp/read)
-add_subdirectory(cpp/write)
-add_subdirectory(cpp/notify)
-add_subdirectory(cpp/notify_multi)
+# Macro to apply common settings to SimpleBLE example targets
+macro(configure_simpleble_target target_name)
+    target_link_libraries(${target_name} simpleble::simpleble)
+    install(TARGETS ${target_name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endmacro()
 
-# C
-add_executable(example_connect_c c/connect.c)
-target_link_libraries(example_connect_c simpleble::simpleble-c)
+# C++ Examples
+add_executable(simpleble_list_adapters src/list_adapters.cpp)
+configure_simpleble_target(simpleble_list_adapters)
 
-add_executable(example_notify_c c/notify.c)
-target_link_libraries(example_notify_c simpleble::simpleble-c)
+add_executable(simpleble_list_adapters_safe src/list_adapters_safe.cpp)
+configure_simpleble_target(simpleble_list_adapters_safe)
 
-add_executable(example_scan_c c/scan.c)
-target_link_libraries(example_scan_c simpleble::simpleble-c)
+add_executable(simpleble_scan src/scan.cpp src/utils.cpp)
+configure_simpleble_target(simpleble_scan)
+
+add_executable(simpleble_connect src/connect.cpp src/utils.cpp)
+configure_simpleble_target(simpleble_connect)
+
+add_executable(simpleble_connect_safe src/connect_safe.cpp src/utils.cpp)
+configure_simpleble_target(simpleble_connect_safe)
+
+add_executable(simpleble_multiconnect src/multiconnect.cpp src/utils.cpp)
+configure_simpleble_target(simpleble_multiconnect)
+
+add_executable(simpleble_read src/read.cpp src/utils.cpp)
+configure_simpleble_target(simpleble_read)
+
+add_executable(simpleble_write src/write.cpp src/utils.cpp)
+configure_simpleble_target(simpleble_write)
+
+add_executable(simpleble_notify src/notify.cpp src/utils.cpp)
+configure_simpleble_target(simpleble_notify)
+
+add_executable(simpleble_notify_multi src/notify_multi.cpp src/utils.cpp)
+configure_simpleble_target(simpleble_notify_multi)

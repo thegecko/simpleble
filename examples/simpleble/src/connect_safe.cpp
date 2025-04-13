@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../common/utils.hpp"
+#include "utils.hpp"
 
 #include "simpleble/SimpleBLE.h"
 

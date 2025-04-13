@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "../common/utils.hpp"
+#include "utils.hpp"
 
 #include "simpleble/Adapter.h"
 

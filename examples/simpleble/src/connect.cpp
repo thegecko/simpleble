@@ -1,14 +1,9 @@
-#include <chrono>
-#include <iomanip>
 #include <iostream>
-#include <thread>
 #include <vector>
 
-#include "../common/utils.hpp"
+#include "utils.hpp"
 
 #include "simpleble/SimpleBLE.h"
-
-using namespace std::chrono_literals;
 
 int main() {
     auto adapter_optional = Utils::getAdapter();
@@ -33,7 +28,7 @@ int main() {
     // Scan for 5 seconds and return.
     adapter.scan_for(5000);
 
-    std::cout << "The following devices were found:" << std::endl;
+    std::cout << "The following connectable devices were found:" << std::endl;
     for (size_t i = 0; i < peripherals.size(); i++) {
         std::cout << "[" << i << "] " << peripherals[i].identifier() << " [" << peripherals[i].address() << "]"
                   << std::endl;
@@ -48,36 +43,25 @@ int main() {
     std::cout << "Connecting to " << peripheral.identifier() << " [" << peripheral.address() << "]" << std::endl;
     peripheral.connect();
 
-    std::cout << "Successfully connected, printing services and characteristics.." << std::endl;
+    std::cout << "Successfully connected." << std::endl;
+    std::cout << "MTU: " << peripheral.mtu() << std::endl;
+    for (auto& service : peripheral.services()) {
+        std::cout << "Service: " << service.uuid() << std::endl;
 
-    // Store all service and characteristic uuids in a vector.
-    std::vector<std::pair<SimpleBLE::BluetoothUUID, SimpleBLE::BluetoothUUID>> uuids;
-    for (auto service : peripheral.services()) {
-        for (auto characteristic : service.characteristics()) {
-            uuids.push_back(std::make_pair(service.uuid(), characteristic.uuid()));
+        for (auto& characteristic : service.characteristics()) {
+            std::cout << "  Characteristic: " << characteristic.uuid() << std::endl;
+
+            std::cout << "    Capabilities: ";
+            for (auto& capability : characteristic.capabilities()) {
+                std::cout << capability << " ";
+            }
+            std::cout << std::endl;
+
+            for (auto& descriptor : characteristic.descriptors()) {
+                std::cout << "    Descriptor: " << descriptor.uuid() << std::endl;
+            }
         }
     }
-
-    std::cout << "The following services and characteristics were found:" << std::endl;
-    for (size_t i = 0; i < uuids.size(); i++) {
-        std::cout << "[" << i << "] " << uuids[i].first << " " << uuids[i].second << std::endl;
-    }
-
-    selection = Utils::getUserInputInt("Please select a characteristic to read", uuids.size() - 1);
-
-    if (!selection.has_value()) {
-        return EXIT_FAILURE;
-    }
-
-    // Subscribe to the characteristic.
-    peripheral.notify(uuids[selection.value()].first, uuids[selection.value()].second,
-                      [&](SimpleBLE::ByteArray bytes) { std::cout << "Received: " << bytes << std::endl; });
-
-    std::this_thread::sleep_for(5s);
-
-    peripheral.unsubscribe(uuids[selection.value()].first, uuids[selection.value()].second);
-
     peripheral.disconnect();
-
     return EXIT_SUCCESS;
 }

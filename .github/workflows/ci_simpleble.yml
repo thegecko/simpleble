@@ -94,7 +94,7 @@ jobs:
       - name: Package SimpleBLE Artifact
         uses: ./.github/actions/package-native
         with:
-          source-dir: $GITHUB_WORKSPACE/install_simpleble_examples
+          source-dir: $GITHUB_WORKSPACE/install_simpleble_examples/bin
           output-dir: $GITHUB_WORKSPACE/artifacts
           archive-name: libsimpleble_examples_${{ matrix.config.os }}-${{ matrix.config.architecture }}
           os: "${{ matrix.config.os }}"
