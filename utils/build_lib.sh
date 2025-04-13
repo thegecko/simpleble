@@ -99,9 +99,10 @@ EXTRA_BUILD_ARGS=${@:2}
 PROJECT_ROOT=$(realpath $(dirname `realpath $0`)/..)
 SOURCE_PATH=$PROJECT_ROOT/$LIB_NAME
 BUILD_PATH=$PROJECT_ROOT/build_$LIB_NAME
-INSTALL_PATH=$BUILD_PATH/install
+INSTALL_PATH=$PROJECT_ROOT/install_$LIB_NAME
 
 EXAMPLE_BUILD_PATH=$PROJECT_ROOT/build_"$LIB_NAME"_examples
+EXAMPLE_INSTALL_PATH=$PROJECT_ROOT/install_"$LIB_NAME"_examples
 EXAMPLE_SOURCE_PATH=$PROJECT_ROOT/examples/$LIB_NAME
 
 # If FLAG_TEST is set, build the library with the test argument
@@ -136,6 +137,8 @@ fi
 if [[ ! -z "$FLAG_CLEAN" ]]; then
     rm -rf $BUILD_PATH
     rm -rf $EXAMPLE_BUILD_PATH
+    rm -rf $INSTALL_PATH
+    rm -rf $EXAMPLE_INSTALL_PATH
 fi
 
 if [[ ! -z "$FLAG_DEBUG" ]]; then
@@ -156,4 +159,5 @@ fi
 if [[ ! -z "$FLAG_EXAMPLE" ]]; then
     cmake $DEBUG_ARG -H$EXAMPLE_SOURCE_PATH -B $EXAMPLE_BUILD_PATH $BUILD_EXAMPLE_ARGS $BUILD_SHARED_ARG
     cmake --build $EXAMPLE_BUILD_PATH -j7
+    cmake --install $EXAMPLE_BUILD_PATH --prefix "${EXAMPLE_INSTALL_PATH}"
 fi

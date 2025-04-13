@@ -7,6 +7,7 @@ _skbuild
 .gradle
 
 /build_*
+/install_*
 /dist
 
 __pycache__

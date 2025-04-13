@@ -9,6 +9,9 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 [0.9.1] - XXXX-XX-XX
 --------------------
 
+**Important:**
+ -  In the near future we will deprecate the `simpleble-c` target in favor of `simplecble`, which will be a drop-in replacement for the existing C bindings.
+
 **Added**
 
 - (Android) Implemented the following API functions:
@@ -22,6 +25,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
   - `Peripheral::advertised_services()`
 - (Java) Early preview of Java bindings.
 - Configuration class to control the behavior of SimpleBLE internals as well as experimental features.
+- SimpleCBLE: Moved SimpleBLE C bindings into a separate library.
 
 **Changed**
 

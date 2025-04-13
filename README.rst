@@ -8,6 +8,7 @@ The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE),
 Announcements
 -------------
 
+* **(2025-04-13)** SimpleBLE C bindings are being ported to a separate library called **simplecble**. The old C bindings will be deprecated in a future release.
 * **(2025-03-16)** ☕ Java bindings are now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
 * **(2025-03-16)** Based in Asia or LATAM? **Looking for partners for more targeted regional sales and support.**
 * **(2025-02-25)** 🤖 Android backend support is now in Preview.
