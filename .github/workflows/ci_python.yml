@@ -9,8 +9,14 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout with Version Tag
-        uses: ./.github/actions/checkout-with-version
+      - name: Clone Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Add Version Suffix
+        uses: ./.github/actions/setup-version
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -27,43 +33,3 @@ jobs:
       - name: Run PyTest
         run: pytest
         working-directory: ./simplepyble/test
-
-  # sdist:
-  #   runs-on: ubuntu-22.04
-  #   needs: tests
-
-  #   steps:
-  #     - name: Clone Repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  #         fetch-tags: true
-
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: 3.11
-  #         cache: "pip"
-
-  #     - name: Build source distribution
-  #       run: |
-  #           pip3 install build twine
-  #           python3 -m build --sdist
-
-  #     - name: Upload files
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: simplepyble
-  #         path: dist/*.tar.gz
-
-  #     - name: Check source distribution
-  #       run: twine check dist/*.tar.gz
-
-  #     - name: Publish source distribution
-  #       if: ${{ env.HAS_TWINE_USERNAME == 'true' }}
-  #       run: |
-  #         twine upload --repository testpypi --skip-existing dist/*.tar.gz --verbose
-  #       env:
-  #         HAS_TWINE_USERNAME: ${{ secrets.TEST_PYPI_USER != '' }}
-  #         TWINE_USERNAME: ${{ secrets.TEST_PYPI_USER }}
-  #         TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}

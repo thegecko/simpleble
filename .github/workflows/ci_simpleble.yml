@@ -76,8 +76,8 @@ jobs:
       matrix:
         config:
           - { runner-os: ubuntu-22.04, os: linux, architecture: x64, container-image: dockcross/linux-x64 }
-          # - { runner-os: macos-14, os: macos, architecture: x64 } # Containers are not required.
-          # - { runner-os: windows-2022, os: windows, architecture: x64 } # Containers are not required.
+          - { runner-os: macos-14, os: macos, architecture: x64 } # Containers are not required.
+          - { runner-os: windows-2022, os: windows, architecture: x64 } # Containers are not required.
 
     steps:
       - name: Clone Repository
