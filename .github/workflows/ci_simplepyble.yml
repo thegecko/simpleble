@@ -131,3 +131,33 @@ jobs:
           packages-dir: sdist
           skip-existing: true
           attestations: false # Broken, see: https://github.com/pypa/gh-action-pypi-publish/issues/166
+
+
+  # tests:
+  #   runs-on: ubuntu-22.04
+
+  #   steps:
+  #     - name: Clone Repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #         fetch-tags: true
+
+  #     - name: Add Version Suffix
+  #       uses: ./.github/actions/setup-version
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: 3.11
+  #         cache: "pip"
+
+  #     - name: Install dependencies
+  #       run: pip install -r simplepyble/requirements.txt
+
+  #     - name: Install SimplePyBLE with Plain flavor
+  #       run: python setup.py install --plain
+
+  #     - name: Run PyTest
+  #       run: pytest
+  #       working-directory: ./simplepyble/test

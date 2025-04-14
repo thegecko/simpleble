@@ -32,16 +32,16 @@ jobs:
           name: simpleble-bridge
           path: outputs/aar/simpleble-bridge*.aar
 
-      - name: Upload simpleble-bridge AAR to release
-        uses: svenstaro/upload-release-action@v2
-        if: github.event_name == 'release'
-        env:
-          TAG: ${{ inputs.tag }}
-        with:
-          file: outputs/aar/simpleble-bridge*.aar
-          tag: ${{ env.TAG }}
-          overwrite: true
-          file_glob: true
+      # - name: Upload simpleble-bridge AAR to release
+      #   uses: svenstaro/upload-release-action@v2
+      #   if: github.event_name == 'release'
+      #   env:
+      #     TAG: ${{ inputs.tag }}
+      #   with:
+      #     file: outputs/aar/simpleble-bridge*.aar
+      #     tag: ${{ env.TAG }}
+      #     overwrite: true
+      #     file_glob: true
 
   simpledroidble:
     runs-on: ubuntu-22.04
