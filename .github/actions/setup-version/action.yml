@@ -7,6 +7,9 @@ runs:
     - name: Update VERSION file
       shell: bash
       run: |
+        # Configure Git to trust this repository
+        git config --global --add safe.directory $GITHUB_WORKSPACE
+
         # Read the base version from the VERSION file
         version_str=$(cat VERSION | tr -d ' \t\n\r')
 
