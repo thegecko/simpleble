@@ -77,7 +77,7 @@ jobs:
         config:
           - { runner-os: ubuntu-22.04, os: linux, architecture: x64, container-image: dockcross/linux-x64 }
           - { runner-os: macos-14, os: macos, architecture: x64 } # Containers are not required.
-          - { runner-os: windows-2022, os: windows, architecture: x64 } # Containers are not required.
+          # - { runner-os: windows-2022, os: windows, architecture: x64 } # Containers are not required. # TODO: https://github.com/fmtlib/fmt/issues/3540
 
     steps:
       - name: Clone Repository

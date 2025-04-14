@@ -5,6 +5,7 @@ project(simpleble_examples)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/epilogue.cmake)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(SIMPLEBLE_LOCAL "Use local SimpleBLE" ON)

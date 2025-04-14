@@ -252,7 +252,7 @@ jobs:
     secrets: inherit
 
   release:
-    needs: [smoketest, simpleble, simplepyble, simplejavable, simplecble, simplersble, android, linux-internals, python]
+    needs: [smoketest, simpleble, simplepyble, simplejavable, simplecble, simplersble, android, linux-internals]
     runs-on: ubuntu-22.04
     steps:
 
