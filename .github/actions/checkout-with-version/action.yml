@@ -1,0 +1,31 @@
+name: 'Checkout with Version Tag'
+description: 'Checks out the repository and updates the VERSION file with a new version string'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Clone Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+
+    - name: Update VERSION file
+      shell: bash
+      run: |
+        # Read the base version from the VERSION file
+        version_str=$(cat VERSION | tr -d ' \t\n\r')
+
+        # Check if the current commit is tagged
+        if ! git describe --exact-match --tags HEAD >/dev/null 2>&1; then
+          # Get the number of commits since the last version bump
+          commits=$(git rev-list --count "$(git log -1 --format=%H -- VERSION)"..HEAD)
+          if [ "$commits" -gt 0 ]; then
+            # Append the dev suffix
+            version_str="${version_str}.dev$((commits - 1))"
+          fi
+        fi
+
+        # Update the VERSION file
+        echo "$version_str" > VERSION
+        echo "Updated VERSION file to: $version_str"
