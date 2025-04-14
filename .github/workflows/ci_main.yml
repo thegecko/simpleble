@@ -249,7 +249,6 @@ jobs:
 
   python:
     needs: [smoketest]
-    if: needs.targets.outputs.python == 'true'
     uses: ./.github/workflows/ci_python.yml
     secrets: inherit
 
