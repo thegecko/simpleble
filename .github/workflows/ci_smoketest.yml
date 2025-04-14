@@ -63,14 +63,14 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      # - name: Clone Repository
-      #   uses: actions/checkout@v4
-      #   with:
-      #     fetch-depth: 0
-      #     fetch-tags: true
+      - name: Clone Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
-      - name: Checkout with Version Tag
-        uses: ./.github/actions/checkout-with-version
+      - name: Add Version Suffix
+        uses: ./.github/actions/setup-version
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2

@@ -1,15 +1,9 @@
-name: 'Checkout with Version Tag'
-description: 'Checks out the repository and updates the VERSION file with a new version string'
+name: 'Add Version Suffix'
+description: 'Adds a version suffix to the VERSION file'
 
 runs:
   using: 'composite'
   steps:
-    - name: Clone Repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        fetch-tags: true
-
     - name: Update VERSION file
       shell: bash
       run: |
