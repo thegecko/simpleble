@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Add Version Suffix
+        uses: ./.github/actions/setup-version
 
       - name: Build SimpleBLE Library
         uses: ./.github/actions/build-native
@@ -45,6 +51,12 @@ jobs:
 
       - name: Clone Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Add Version Suffix
+        uses: ./.github/actions/setup-version
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4

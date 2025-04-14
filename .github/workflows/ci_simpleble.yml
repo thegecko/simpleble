@@ -25,6 +25,12 @@ jobs:
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Add Version Suffix
+        uses: ./.github/actions/setup-version
 
       - name: Build SimpleBLE Library (Static)
         uses: ./.github/actions/build-native
@@ -76,6 +82,12 @@ jobs:
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Add Version Suffix
+        uses: ./.github/actions/setup-version
 
       - name: Build SimpleBLE Examples
         uses: ./.github/actions/build-native

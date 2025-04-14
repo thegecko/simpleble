@@ -16,6 +16,9 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      - name: Add Version Suffix
+        uses: ./.github/actions/setup-version
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -58,6 +61,9 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+
+      - name: Add Version Suffix
+        uses: ./.github/actions/setup-version
 
       - name: Set up QEMU
         if: matrix.config.os == 'linux'
