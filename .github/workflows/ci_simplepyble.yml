@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.11
+          python-version: 3.12
           cache: "pip"
 
       - name: Install dependencies
@@ -43,16 +43,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { runner-os: ubuntu-22.04, os: linux }
-          - { runner-os: macos-14, os: macos }
-          - { runner-os: windows-2022, os: windows }
-        python:
-          - { version: 3.13, tag: cp313 }
-          - { version: 3.12, tag: cp312 }
-          - { version: 3.11, tag: cp311 }
-          - { version: 3.10, tag: cp310 }
-          - { version: 3.9, tag: cp39 }
-          - { version: 3.8, tag: cp38 }
+          - { runner-os: ubuntu-22.04, os: linux, arch: x86_64 }
+          - { runner-os: ubuntu-22.04, os: linux, arch: i686 }
+          - { runner-os: ubuntu-22.04, os: linux, arch: aarch64 }
+          - { runner-os: ubuntu-22.04, os: linux, arch: armv7l }
+          - { runner-os: macos-14, os: macos, arch: x86_64 }
+          - { runner-os: macos-14, os: macos, arch: universal2 }
+          - { runner-os: macos-14, os: macos, arch: arm64 }
+          - { runner-os: windows-2022, os: windows, arch: AMD64 }
+          - { runner-os: windows-2022, os: windows, arch: x86 }
+          - { runner-os: windows-2022, os: windows, arch: ARM64 }
 
     steps:
       - name: Clone Repository
@@ -73,19 +73,16 @@ jobs:
       - name: Build wheel
         uses: pypa/cibuildwheel@v2.23.2
         env:
-          CIBW_BUILD_VERBOSITY: 3
-          CIBW_BUILD: ${{ matrix.python.tag }}-*
+          CIBW_BUILD_VERBOSITY: 1
           CIBW_BEFORE_ALL_LINUX: "yum update -y && yum group install -y \"Development Tools\" && yum install -y dbus-devel"
-          CIBW_ARCHS_LINUX: x86_64 i686 aarch64
-          CIBW_ARCHS_MACOS: x86_64 universal2 arm64
-          CIBW_ARCHS_WINDOWS: AMD64 x86
+          CIBW_ARCHS: ${{ matrix.config.arch }}
           CIBW_SKIP: "*musllinux_* pp* cp36-* cp37-*"
           MACOSX_DEPLOYMENT_TARGET: "11.0"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: simplepyble-${{ matrix.config.os }}-${{ matrix.python.version }}
+          name: simplepyble-${{ matrix.config.os }}-${{ matrix.config.arch }}
           path: wheelhouse/*.whl
 
   publish:

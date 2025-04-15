@@ -73,6 +73,13 @@ jobs:
 
   build-python:
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { runner-os: ubuntu-22.04, os: linux, arch: native }
+          - { runner-os: macos-14, os: macos, arch: native }
+          - { runner-os: windows-2022, os: windows, arch: native }
 
     steps:
       - name: Clone Repository
@@ -101,8 +108,8 @@ jobs:
       - name: Build wheel
         uses: pypa/cibuildwheel@v2.23.2
         env:
-          CIBW_BUILD_VERBOSITY: 3
+          CIBW_BUILD_VERBOSITY: 1
           CIBW_BUILD: cp312*
           CIBW_BEFORE_ALL_LINUX: "yum update -y && yum group install -y \"Development Tools\" && yum install -y dbus-devel"
-          CIBW_ARCHS_LINUX: x86_64
+          CIBW_ARCHS: ${{ matrix.config.arch }}
           CIBW_SKIP: "*musllinux_* pp* cp36-* cp37-*"
