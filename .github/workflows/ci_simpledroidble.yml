@@ -1,0 +1,48 @@
+name: CI Build for SimpleDroidBLE
+
+# NOTE: This workflow is currently unused, but kept here for reference until we decide to bring this back.
+
+on:
+  workflow_dispatch:
+  workflow_call:  # This allows it to be called from ci_main.yml
+    inputs:
+      tag:
+        description: "The tag to upload artifacts"
+        required: false
+        type: string
+
+jobs:
+
+  simpledroidble:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Android Setup
+        uses: ./.github/actions/android-setup
+
+      - name: Build simpledroidble AAR
+        working-directory: ./simpledroidble
+        run: |
+          ./gradlew simpledroidble:bundleReleaseAar   \
+                    --no-daemon                       \
+                    -PbuildDir="${{ github.workspace }}"
+
+      - name: Upload simpledroidble AAR to job
+        uses: actions/upload-artifact@v4
+        with:
+          name: simpledroidble
+          path: outputs/aar/simpledroidble*.aar
+
+      # - name: Upload simpledroidble AAR to release
+      #   uses: svenstaro/upload-release-action@v2
+      #   if: github.event_name == 'release'
+      #   env:
+      #     TAG: ${{ inputs.tag }}
+      #   with:
+      #     file: outputs/aar/simpledroidble*.aar
+      #     tag: ${{ env.TAG }}
+      #     overwrite: true
+      #     file_glob: true
+
