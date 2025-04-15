@@ -2,7 +2,7 @@ name: CI Docs
 
 on:
   workflow_dispatch:
-  workflow_call:  # This allows it to be called from ci_main.yml
+  workflow_call:
 
 jobs:
   build-docs:
@@ -30,8 +30,16 @@ jobs:
         working-directory: docs
         run: make html
 
-      - name: Upload artifacts
+      - name: Package Docs Artifact
+        uses: ./.github/actions/package-native
+        with:
+          source-dir: $GITHUB_WORKSPACE/docs
+          output-dir: $GITHUB_WORKSPACE/artifacts
+          archive-name: simpleble-docs
+          os: "linux"
+
+      - name: Upload Binaries
         uses: actions/upload-artifact@v4
         with:
-          path: docs/_build/*
-          name: docs
+          name: simpleble-docs
+          path: artifacts/simpleble-docs.zip

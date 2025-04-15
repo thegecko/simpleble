@@ -2,7 +2,7 @@ name: CI Lint
 
 on:
   workflow_dispatch:
-  workflow_call:  # This allows it to be called from ci_main.yml
+  workflow_call:
 
 jobs:
   clang-format:

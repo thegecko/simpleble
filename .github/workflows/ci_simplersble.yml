@@ -1,7 +1,6 @@
-name: CI Build Demo
+name: CI Build SimpleRsBLE
 
 on:
-  workflow_dispatch:
   workflow_call:
 
 jobs:

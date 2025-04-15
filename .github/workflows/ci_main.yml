@@ -5,11 +5,6 @@ on:
   pull_request:
   release:
     types: [published]
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "The tag to upload artifacts"
-        required: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
@@ -263,12 +258,14 @@ jobs:
           path: artifacts
           merge-multiple: true
 
+      - name: List all artifacts
+        run: find artifacts -type f -ls | sort
+
       - name: Upload artifacts to release
         uses: svenstaro/upload-release-action@v2
-        env:
-          TAG: ${{ inputs.tag || github.ref }}
+        if: github.event_name == 'release'
         with:
           file: artifacts/**/*
-          tag: ${{ env.TAG }}
+          tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
