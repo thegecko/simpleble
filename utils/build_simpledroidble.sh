@@ -62,7 +62,8 @@ BUILD_PATH=$PROJECT_ROOT/build_simpledroidble
 
 # If FLAG_CLEAN is set, clean the build directory
 if [[ ! -z "$FLAG_CLEAN" ]]; then
-    GRADLE_ACTIONS="$GRADLE_ACTIONS clean"
+    #GRADLE_ACTIONS="$GRADLE_ACTIONS clean"
+    rm -rf $BUILD_PATH
 fi
 
 if [[ ! -z "$FLAG_DEBUG" ]]; then
