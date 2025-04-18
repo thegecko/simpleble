@@ -19,11 +19,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SimpleDroidBle"
-
-includeBuild("../simpledroidbridge") {
-    dependencySubstitution {
-        substitute(module("org.simpleble.android.bridge:simpledroidbridge")).using(project(":"))
-    }
-}
-include(":simpledroidble")
+rootProject.name = "simpledroidbridge"
