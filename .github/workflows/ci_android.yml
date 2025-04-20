@@ -19,6 +19,10 @@ jobs:
       - name: Android Setup
         uses: ./.github/actions/android-setup
 
+      - name: List all gradlew files
+        run: |
+          find . -name "gradlew" -type f -ls
+
       - name: Build simpleble-bridge AAR
         run: |
           ./gradlew simpleble-bridge:bundleReleaseAar -p ./simpledroidbridge --no-daemon -PbuildDir="${{ github.workspace }}"
