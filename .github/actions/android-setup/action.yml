@@ -12,3 +12,6 @@ runs:
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
+
+    # - name: Setup Gradle
+    #   uses: gradle/actions/setup-gradle@v4
