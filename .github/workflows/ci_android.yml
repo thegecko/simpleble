@@ -25,7 +25,7 @@ jobs:
 
       - name: Build simpleble-bridge AAR
         run: |
-          utils/gradle/gradlew/gradlew simpleble-bridge:bundleReleaseAar -p ./simpledroidbridge --no-daemon -PbuildDir="${{ github.workspace }}"
+          utils/gradle/gradlew simpleble-bridge:bundleReleaseAar -p ./simpledroidbridge --no-daemon -PbuildDir="${{ github.workspace }}"
 
       - name: List all artifacts
         run: find outputs -type f -ls
@@ -58,7 +58,7 @@ jobs:
 
       - name: Build simpleble-bridge AAR
         run: |
-          gradlew build -p ./simpledroidbridge --no-daemon -PbuildDir="${{ github.workspace }}"
+          gradle build -p ./simpledroidbridge --no-daemon -PbuildDir="${{ github.workspace }}"
 
       - name: List all artifacts
         run: find outputs -type f -ls
@@ -74,7 +74,7 @@ jobs:
 
       - name: Build simpleble-bridge AAR
         run: |
-          gradlew build -p ./simpledroidbridge --no-daemon -Dorg.gradle.project.buildDir="${{ github.workspace }}"
+          gradle build -p ./simpledroidbridge --no-daemon -Dorg.gradle.project.buildDir="${{ github.workspace }}"
 
       - name: List all artifacts
         run: find outputs -type f -ls
