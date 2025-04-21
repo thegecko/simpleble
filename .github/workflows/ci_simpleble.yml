@@ -20,7 +20,10 @@ jobs:
           - { runner-os: macos-14, os: ios, architecture: aarch64 } # Containers are not required.
           - { runner-os: windows-2022, os: windows, architecture: x64 } # Containers are not required.
           - { runner-os: windows-2022, os: windows, architecture: x86 } # Containers are not required.
-
+          - { runner-os: ubuntu-22.04, os: android, architecture: armeabi-v7a }
+          - { runner-os: ubuntu-22.04, os: android, architecture: arm64-v8a }
+          - { runner-os: ubuntu-22.04, os: android, architecture: x86 }
+          - { runner-os: ubuntu-22.04, os: android, architecture: x86_64 }
     steps:
       - name: Clone Repository
         uses: actions/checkout@v4

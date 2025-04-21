@@ -272,7 +272,7 @@ elseif(SIMPLEBLE_BACKEND_ANDROID)
     include_directories(${ANDROID_NDK}/sysroot/usr/include)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android)
 
-    add_compile_options(-DANDROID -D__ANDROID_API__=${ANDROID_NATIVE_API_LEVEL})
+    #add_compile_options(-DANDROID -D__ANDROID_API__=${ANDROID_NATIVE_API_LEVEL})
 
     target_sources(simpleble PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/AdapterAndroid.cpp
