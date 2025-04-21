@@ -142,7 +142,7 @@ jobs:
           gradle -p ./simpledroidbridge tasks --all
 
       - name: Build simplebledroidbridge AAR
-        run: gradle simplebledroidbridge:bundleReleaseAar -p ./simpledroidbridge --no-daemon -Dorg.gradle.project.buildDir="$GITHUB_WORKSPACE/build_simpledroidbridge"
+        run: gradle :bundleReleaseAar -p ./simpledroidbridge --no-daemon -Dorg.gradle.project.buildDir="$GITHUB_WORKSPACE/build_simpledroidbridge"
 
       - name: List all artifacts
         run: find ./simpledroidbridge -type f -ls
