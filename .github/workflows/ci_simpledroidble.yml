@@ -46,3 +46,38 @@ jobs:
       #     overwrite: true
       #     file_glob: true
 
+    # example:
+    #   runs-on: ubuntu-22.04
+    #   steps:
+    #     - name: Clone repository
+    #       uses: actions/checkout@v4
+
+    #     - name: Android Setup
+    #       uses: ./.github/actions/android-setup
+
+    #     - name: Build example APK
+    #       working-directory: ./examples/simpleble-android
+    #       run: ./gradlew build
+
+    #     - name: Upload example APK to job
+    #       uses: actions/upload-artifact@v4
+    #       with:
+    #         name: simpledroidble-example
+    #         path: examples/simpleble-android/app/build/outputs/apk/debug/*.apk
+
+    #     - name: Upload lint report to job
+    #       uses: actions/upload-artifact@v4
+    #       with:
+    #         name: simpledroidble-example-lint-report
+    #         path: examples/simpleble-android/app/build/reports/lint-results-debug.html
+
+    #     - name: Upload simpledroidble-example to release
+    #       uses: svenstaro/upload-release-action@v2
+    #       if: github.event_name == 'release'
+    #       env:
+    #         TAG: ${{ inputs.tag }}
+    #       with:
+    #         file: examples/simpleble-android/app/build/outputs/apk/debug/*.apk
+    #         tag: ${{ env.TAG }}
+    #         overwrite: true
+  #         file_glob: true

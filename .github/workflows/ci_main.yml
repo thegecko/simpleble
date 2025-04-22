@@ -240,14 +240,8 @@ jobs:
   #   uses: ./.github/workflows/ci_python.yml
   #   secrets: inherit
 
-  android:
-    needs: [targets]
-    if: needs.targets.outputs.android == 'true'
-    uses: ./.github/workflows/ci_android.yml
-    secrets: inherit
-
   release:
-    needs: [smoketest, simpleble, simplepyble, simplejavable, simplecble, simplersble, android, linux-internals]
+    needs: [smoketest, simpleble, simplepyble, simplejavable, simplecble, simplersble, linux-internals]
     runs-on: ubuntu-22.04
     steps:
 
