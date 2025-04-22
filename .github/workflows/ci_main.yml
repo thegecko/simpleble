@@ -219,6 +219,10 @@ jobs:
     needs: [smoketest]
     uses: ./.github/workflows/ci_simplejavable.yml
 
+  simpledroidble:
+    needs: [smoketest]
+    uses: ./.github/workflows/ci_simpledroidble.yml
+
   simplecble:
     needs: [targets]
     uses: ./.github/workflows/ci_simplecble.yml
@@ -234,14 +238,8 @@ jobs:
     with:
       libraries: ${{ needs.libraries.outputs.values }}
 
-  # python:
-  #   needs: [smoketest]
-  #   if: needs.targets.outputs.python == 'true'
-  #   uses: ./.github/workflows/ci_python.yml
-  #   secrets: inherit
-
   release:
-    needs: [smoketest, simpleble, simplepyble, simplejavable, simplecble, simplersble, linux-internals]
+    needs: [smoketest, simpleble, simplepyble, simplejavable, simpledroidble, simplecble, simplersble, linux-internals]
     runs-on: ubuntu-22.04
     steps:
 
