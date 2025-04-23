@@ -34,6 +34,10 @@ while (( "$#" )); do
         FLAG_DEBUG=0
         shift
         ;;
+    -e|--examples)
+        FLAG_EXAMPLES=0
+        shift
+        ;;
     -*|--*=) # unsupported flags
         echo "Error: Unsupported flag $1" >&2
         exit 1
@@ -60,6 +64,10 @@ GRADLE_ACTIONS=""
 SOURCE_PATH=$PROJECT_ROOT/simpledroidble
 BUILD_PATH=$PROJECT_ROOT/build_simpledroidble
 
+EXAMPLES_PATH=$PROJECT_ROOT/examples/simpleble-android
+EXAMPLES_BUILD_PATH=$PROJECT_ROOT/build_simpleble_android
+
+
 # If FLAG_CLEAN is set, clean the build directory
 if [[ ! -z "$FLAG_CLEAN" ]]; then
     #GRADLE_ACTIONS="$GRADLE_ACTIONS clean"
@@ -72,6 +80,11 @@ if [[ ! -z "$FLAG_DEBUG" ]]; then
     exit 1
 fi
 
-GRADLE_ACTIONS="$GRADLE_ACTIONS build"
-exec $GRADLE_CMD -g $GRADLE_HOME -p $SOURCE_PATH -Dorg.gradle.project.buildDir=$BUILD_PATH $GRADLE_ACTIONS
+if [[ ! -z "$FLAG_EXAMPLES" ]]; then
+    GRADLE_ACTIONS="$GRADLE_ACTIONS build"
+    exec $GRADLE_CMD -g $GRADLE_HOME -p $EXAMPLES_PATH -Dorg.gradle.project.buildDir=$EXAMPLES_BUILD_PATH $GRADLE_ACTIONS
+else
+    GRADLE_ACTIONS="$GRADLE_ACTIONS build"
+    exec $GRADLE_CMD -g $GRADLE_HOME -p $SOURCE_PATH -Dorg.gradle.project.buildDir=$BUILD_PATH $GRADLE_ACTIONS
+fi
 

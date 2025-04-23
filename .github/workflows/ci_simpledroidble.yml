@@ -28,7 +28,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build simplebledroidble AAR
-        run: gradle :bundleReleaseAar -p ./simpledroidble --no-daemon -Dorg.gradle.project.buildDir="$GITHUB_WORKSPACE/build_simpledroidble"
+        run: gradle simpledroidble:bundleReleaseAar -p ./simpledroidble --no-daemon -PbuildDir="$GITHUB_WORKSPACE/build_simpledroidble"
 
       - name: Package Artifact
         uses: ./.github/actions/package-native
@@ -66,7 +66,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build simplebledroidble examples AAR
-        run: gradle :bundleReleaseAar -p ./examples/simpleble-android --no-daemon -Dorg.gradle.project.buildDir="$GITHUB_WORKSPACE/build_simpledroidble_examples"
+        run: gradle :bundleReleaseAar -p ./examples/simpleble-android --no-daemon -PbuildDir="$GITHUB_WORKSPACE/build_simpledroidble_examples"
 
       - name: Package Artifact
         uses: ./.github/actions/package-native
