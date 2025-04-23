@@ -38,79 +38,6 @@ jobs:
         run: |
           ./scripts/check_version.sh
 
-  # This job detects changes in the diff and set some ouput variables accordingly.
-  # It is use to conditionaly run different jobs and steps of the pipeline
-  filter-changes:
-    needs: pre_job
-    if: needs.pre_job.outputs.should_skip != 'true'
-    runs-on: ubuntu-22.04
-    permissions:
-      pull-requests: read
-    outputs:
-      miscs: ${{ steps.filter.outputs.miscs }}
-      common: ${{ steps.filter.outputs.common }}
-      linux: ${{ steps.filter.outputs.linux }}
-      windows: ${{ steps.filter.outputs.windows }}
-      macos: ${{ steps.filter.outputs.macos }}
-      python: ${{ steps.filter.outputs.python }}
-      rust: ${{ steps.filter.outputs.rust }}
-      docs: ${{ steps.filter.outputs.docs }}
-    steps:
-      - name: Clone Repository
-        uses: actions/checkout@v4
-      - name: Detect file changes
-        uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          list-files: shell
-          filters: |
-            miscs:
-              - '.github/workflows/**'
-              - '.github/actions/**'
-              - 'examples/simpleble/**'
-              - 'cmake/**'
-            common: &common
-              - 'simpleble/include/**'
-              - 'simpleble/src/builders/**'
-              - 'simpleble/src/external/**'
-              - 'simpleble/src/frontends/**'
-              - 'simpleble/src/backends/common/**'
-              - 'external/**'
-            windows: &windows
-              - *common
-              - 'simpleble/src/backends/windows/**'
-            linux: &linux
-              - *common
-              - 'simpleble/src/backends/linux/**'
-              - 'simpledbus/**'
-              - 'examples/simpledbus/**'
-              - 'simplebluez/**'
-              - 'examples/simplebluez/**'
-            macos: &macos
-              - *common
-              - 'simpleble/src/backends/macos/**'
-            python:
-              - 'simpleble/src/backends/plain/**'
-              - 'simpleble/src/frontends/**'
-              - 'simplepyble/**'
-              - 'setup.py'
-              - 'MANIFEST.in'
-            android:
-              - 'simpleble/src/backends/common/**'
-              - 'simpleble/src/backends/android/**'
-              - 'simpleble/src/frontends/**'
-              - 'simpledroidble/**'
-            rust:
-              - *linux
-              - *macos
-              - 'simplersble/**'
-              - 'Cargo.lock'
-              - 'Cargo.toml'
-            docs:
-              - 'docs/**'
-              - '**/*.md'
-              - '**/*.rst'
-
   # This job is used to dynamically generate the build matrix of 'build' job in 'ci_linux_internals.yml'.
   # The output variable 'values' is a list of strings: 'simpledbus', 'simplebluez'.
   # This is not inside pre-job because 'changes' variable is set by dorny/paths-filter to ALL the filters
@@ -139,80 +66,27 @@ jobs:
               - *simpledbus
               - 'simplebluez/**'
 
-  targets:
-    needs: [pre_job, filter-changes, libraries]
-    if: needs.pre_job.outputs.should_skip != 'true'
-    runs-on: ubuntu-22.04
-    outputs:
-      lint: 'true'
-      docs: >-
-        ${{
-          needs.filter-changes.outputs.docs == 'true' ||
-          github.ref == 'refs/heads/main'
-        }}
-      windows: >-
-        ${{
-          needs.filter-changes.outputs.windows == 'true' ||
-          needs.filter-changes.outputs.miscs == 'true' ||
-          github.ref == 'refs/heads/main'
-        }}
-      linux: >-
-        ${{
-          needs.filter-changes.outputs.linux == 'true' ||
-          needs.filter-changes.outputs.miscs == 'true' ||
-          github.ref == 'refs/heads/main'
-        }}
-      macos: >-
-        ${{
-          needs.filter-changes.outputs.macos == 'true' ||
-          needs.filter-changes.outputs.miscs == 'true' ||
-          github.ref == 'refs/heads/main'
-        }}
-      python: >-
-        ${{
-          needs.filter-changes.outputs.python == 'true' ||
-          github.ref == 'refs/heads/main'
-        }}
-      android: >-
-        ${{
-          needs.filter-changes.outputs.android == 'true' ||
-          needs.filter-changes.outputs.miscs == 'true' ||
-          github.ref == 'refs/heads/main'
-        }}
-      release-python: >-
-        ${{
-          (
-            needs.filter-changes.outputs.python == 'true' ||
-            needs.filter-changes.outputs.miscs == 'true' ||
-            needs.filter-changes.outputs.windows == 'true' ||
-            needs.filter-changes.outputs.linux == 'true' ||
-            needs.filter-changes.outputs.macos == 'true'
-          ) &&
-          github.ref == 'refs/heads/main'
-        }}
-    steps:
-      - run: echo "Generating list of required targets"
-
   lint:
-    needs: [targets]
-    if: needs.targets.outputs.lint == 'true'
+    needs: [pre_job]
+    if: needs.pre_job.outputs.should_skip != 'true'
     uses: ./.github/workflows/ci_lint.yml
 
   docs:
-    needs: [targets]
-    if: needs.targets.outputs.docs == 'true'
+    needs: [pre_job]
+    if: needs.pre_job.outputs.should_skip != 'true'
     uses: ./.github/workflows/ci_docs.yml
 
   smoketest:
-    needs: [targets]
+    needs: [pre_job]
+    if: needs.pre_job.outputs.should_skip != 'true'
     uses: ./.github/workflows/ci_smoketest.yml
 
   simpleble:
-    needs: [targets]
+    needs: [smoketest]
     uses: ./.github/workflows/ci_simpleble.yml
 
   simplepyble:
-    needs: [targets]
+    needs: [smoketest]
     uses: ./.github/workflows/ci_simplepyble.yml
 
   simplejavable:
@@ -224,7 +98,7 @@ jobs:
     uses: ./.github/workflows/ci_simpledroidble.yml
 
   simplecble:
-    needs: [targets]
+    needs: [smoketest]
     uses: ./.github/workflows/ci_simplecble.yml
 
   simplersble:
@@ -232,14 +106,13 @@ jobs:
     uses: ./.github/workflows/ci_simplersble.yml
 
   linux-internals:
-    needs: [smoketest]
-    if: needs.targets.outputs.linux == 'true'
+    needs: [smoketest, libraries]
     uses: ./.github/workflows/ci_linux_internals.yml
     with:
       libraries: ${{ needs.libraries.outputs.values }}
 
   release:
-    needs: [smoketest, simpleble, simplepyble, simplejavable, simpledroidble, simplecble, simplersble, linux-internals]
+    needs: [simpleble, simplepyble, simplejavable, simpledroidble, simplecble, simplersble]
     runs-on: ubuntu-22.04
     steps:
 

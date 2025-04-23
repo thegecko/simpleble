@@ -2,6 +2,8 @@ plugins {
     id("com.android.library") version "8.7.1"
 }
 
+version = "v${file("../VERSION").readText().trim()}"
+
 android {
     namespace = "org.simpleble.android.bridge"
     compileSdk = 31
