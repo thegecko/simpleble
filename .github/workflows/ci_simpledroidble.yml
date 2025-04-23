@@ -74,16 +74,16 @@ jobs:
       - name: Build simplebledroidble examples AAR
         run: gradle build -p ./examples/simpleble-android --no-daemon
 
-      - name: Package Artifact
-        uses: ./.github/actions/package-native
-        with:
-          source-dir: examples/simpleble-android/app/build/outputs/aar
-          output-dir: $GITHUB_WORKSPACE/artifacts
-          archive-name: simpledroidble_examples
-          os: linux
+      # - name: Package Artifact
+      #   uses: ./.github/actions/package-native
+      #   with:
+      #     source-dir: examples/simpleble-android/app/build/outputs/aar
+      #     output-dir: $GITHUB_WORKSPACE/artifacts
+      #     archive-name: simpledroidble_examples
+      #     os: linux
 
-      - name: Upload Binaries
-        uses: actions/upload-artifact@v4
-        with:
-          name: simpledroidble_examples
-          path: artifacts/simpledroidble_examples.zip
+      # - name: Upload Binaries
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: simpledroidble_examples
+      #     path: artifacts/simpledroidble_examples.zip
