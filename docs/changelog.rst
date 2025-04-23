@@ -11,6 +11,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Important:**
  -  In the near future we will deprecate the `simpleble-c` target in favor of `simplecble`, which will be a drop-in replacement for the existing C bindings.
+ -  The `simpleble-bridge` project has been renamed to `simpledroidbridge` and can be found in the root directory of the repository.
 
 **Added**
 
@@ -32,6 +33,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - `Adapter::identifier()` method is non-const, as underlying const conditions can't be guaranteed.
 - (Android) Callback functions are not handled on a separate, dedicated thread.
 - (Windows) **(Experimental)** Calls to the WinRT backend can now be executed in a separate MTA apartment via feature flag.
+- (Android) The `simpleble-bridge` project has been renamed to `simpledroidbridge`.
 
 **Fixed**
 
