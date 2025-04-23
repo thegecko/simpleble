@@ -71,7 +71,8 @@ EXAMPLES_BUILD_PATH=$PROJECT_ROOT/build_simpleble_android
 # If FLAG_CLEAN is set, clean the build directory
 if [[ ! -z "$FLAG_CLEAN" ]]; then
     #GRADLE_ACTIONS="$GRADLE_ACTIONS clean"
-    rm -rf $BUILD_PATH
+    #rm -rf $BUILD_PATH
+    echo "Cleaning build directory"
 fi
 
 if [[ ! -z "$FLAG_DEBUG" ]]; then
@@ -84,7 +85,7 @@ if [[ ! -z "$FLAG_EXAMPLES" ]]; then
     GRADLE_ACTIONS="$GRADLE_ACTIONS build"
     exec $GRADLE_CMD -g $GRADLE_HOME -p $EXAMPLES_PATH -Dorg.gradle.project.buildDir=$EXAMPLES_BUILD_PATH $GRADLE_ACTIONS
 else
-    GRADLE_ACTIONS="$GRADLE_ACTIONS build"
+    GRADLE_ACTIONS="$GRADLE_ACTIONS clean build"
     exec $GRADLE_CMD -g $GRADLE_HOME -p $SOURCE_PATH -Dorg.gradle.project.buildDir=$BUILD_PATH $GRADLE_ACTIONS
 fi
 
