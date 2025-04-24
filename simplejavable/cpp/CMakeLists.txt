@@ -54,4 +54,4 @@ target_include_directories(
 
 target_link_libraries(${CMAKE_PROJECT_NAME} simpleble::simpleble ${JNI_LIBRARIES})
 
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE FMT_HEADER_ONLY)
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE FMT_HEADER_ONLY FMT_UNICODE=0)
