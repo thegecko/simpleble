@@ -136,7 +136,7 @@ jobs:
           file_glob: true
 
   publish-python:
-    needs: [release]
+    needs: [publish-release]
     runs-on: ubuntu-22.04
     permissions:
       id-token: write
