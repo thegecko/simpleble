@@ -48,6 +48,7 @@ set_target_properties(
 target_include_directories(
     ${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/external
     ${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/internal
     ${JNI_INCLUDE_DIRS}
 )

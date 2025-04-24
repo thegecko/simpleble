@@ -36,7 +36,7 @@ endif()
 set(SIMPLEBLUEZ_INCLUDE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../external/include)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external)
 
 set(SIMPLEBLUEZ_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ProxyOrg.cpp
@@ -98,10 +98,11 @@ list(APPEND PRIVATE_COMPILE_DEFINITIONS FMT_HEADER_ONLY)
 target_link_libraries(simplebluez PUBLIC ${DBus1_LIBRARIES})
 
 target_include_directories(simplebluez PRIVATE ${SIMPLEBLUEZ_INCLUDE})
+target_include_directories(simplebluez PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external)
 target_include_directories(simplebluez PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal)
 target_include_directories(simplebluez INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../external/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     $<INSTALL_INTERFACE:${DBus1_INCLUDE_DIR}>
@@ -137,7 +138,7 @@ install(
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simplebluez)
 
 install(
-    DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../external/include/
+    DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../dependencies/external/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simplebluez)
 
 install(

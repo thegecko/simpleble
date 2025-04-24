@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "external/kvn_bytearray.h"
+#include "kvn/kvn_bytearray.h"
 
 using namespace kvn;
 

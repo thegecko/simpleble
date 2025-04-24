@@ -33,6 +33,7 @@ target_include_directories(
     ${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../dependencies/internal
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../dependencies/external
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

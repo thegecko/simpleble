@@ -30,7 +30,7 @@ set(SIMPLEBLE_PRIVATE_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/external
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/common
     ${CMAKE_CURRENT_SOURCE_DIR}/src/frontends/safe
-    ${CMAKE_CURRENT_SOURCE_DIR}/../external/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external
     ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal)
 
 set(SIMPLEBLE_SRC
@@ -82,7 +82,7 @@ generate_export_header(
 target_include_directories(simpleble PRIVATE ${SIMPLEBLE_PRIVATE_INCLUDES})
 target_include_directories(simpleble INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../external/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_include_directories(simpleble SYSTEM PUBLIC
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/export>)
@@ -316,7 +316,7 @@ install(
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpleble)
 
 install(
-    DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../external/include/
+    DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../dependencies/external/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpleble)
 
 install(

@@ -2,7 +2,7 @@
 
 #include <simpledbus/advanced/Interface.h>
 #include <simpledbus/base/Path.h>
-#include <simpledbus/external/kvn_safe_callback.hpp>
+#include "kvn/kvn_safe_callback.hpp"
 
 #include <memory>
 #include <mutex>

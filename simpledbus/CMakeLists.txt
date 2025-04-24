@@ -25,8 +25,6 @@ if(NOT SIMPLEDBUS_LOG_LEVEL)
     set(SIMPLEDBUS_LOG_LEVEL "FATAL")
 endif()
 
-set(SIMPLEDBUS_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
 set(SIMPLEDBUS_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/advanced/Interface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/advanced/Proxy.cpp
@@ -62,9 +60,11 @@ target_link_libraries(simpledbus PUBLIC ${DBus1_LIBRARIES})
 target_compile_definitions(simpledbus PRIVATE FMT_HEADER_ONLY)
 
 target_include_directories(simpledbus PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(simpledbus PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external)
 target_include_directories(simpledbus PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal)
 target_include_directories(simpledbus INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     $<INSTALL_INTERFACE:${DBus1_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:${DBus1_ARCH_INCLUDE_DIR}>)
@@ -96,6 +96,10 @@ install(
 
 install(
     DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/simpledbus/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus)
+
+install(
+    DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../dependencies/external/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus)
 
 install(

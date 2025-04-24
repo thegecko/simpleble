@@ -5,7 +5,7 @@
 
 #include <map>
 #include <vector>
-#include "external/kvn_bytearray.h"
+#include "kvn/kvn_bytearray.h"
 
 namespace SimpleBLE {
 namespace Android {

@@ -12,7 +12,7 @@
 
 #include "GlobalRef.hpp"
 #include "VM.hpp"
-#include "external/kvn_bytearray.h"
+#include "kvn/kvn_bytearray.h"
 
 namespace SimpleBLE {
 namespace JNI {
