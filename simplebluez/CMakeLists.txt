@@ -18,11 +18,6 @@ project(
 # Run prelude script to set up environment
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/epilogue.cmake)
 
-option(LIBFMT_VENDORIZE "Enable vendorized libfmt" ON)
-
-find_package(fmt REQUIRED)
-set_target_properties(fmt PROPERTIES EXCLUDE_FROM_ALL TRUE)
-
 find_package(DBus1 REQUIRED)
 
 if(NOT DEFINED SIMPLEDBUS_SANITIZE AND DEFINED SIMPLEBLUEZ_SANITIZE)
@@ -98,10 +93,12 @@ if(SIMPLEBLUEZ_USE_SESSION_DBUS)
     list(APPEND PRIVATE_COMPILE_DEFINITIONS SIMPLEBLUEZ_USE_SESSION_DBUS)
 endif()
 
+list(APPEND PRIVATE_COMPILE_DEFINITIONS FMT_HEADER_ONLY)
+
 target_link_libraries(simplebluez PUBLIC ${DBus1_LIBRARIES})
-target_link_libraries(simplebluez PRIVATE $<BUILD_INTERFACE:fmt::fmt-header-only>)
 
 target_include_directories(simplebluez PRIVATE ${SIMPLEBLUEZ_INCLUDE})
+target_include_directories(simplebluez PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal)
 target_include_directories(simplebluez INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../external/include>

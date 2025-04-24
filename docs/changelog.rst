@@ -34,6 +34,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Android) Callback functions are not handled on a separate, dedicated thread.
 - (Windows) **(Experimental)** Calls to the WinRT backend can now be executed in a separate MTA apartment via feature flag.
 - (Android) The `simpleble-bridge` project has been renamed to `simpledroidbridge`.
+- Upgraded `fmt` dependency to version 11.1.4 and vendorized into the repository.
 
 **Fixed**
 
@@ -41,7 +42,6 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Android) Fixed handling of null objects.
 - (Android) `Peripheral::address_type()` and `Peripheral::unpair()` had to be removed due to API level limitations.
 - (Android) Potential duplicate callback invocations on builds with newer Android API levels.
-
 
 
 [0.9.0] - 2025-01-20

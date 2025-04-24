@@ -70,7 +70,6 @@ target_include_directories(simplecble SYSTEM PUBLIC
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/export>)
 
 # Configure linked libraries for simplecble
-# target_link_libraries(simplecble PRIVATE $<BUILD_INTERFACE:fmt::fmt-header-only>)
 target_link_libraries(simplecble PRIVATE simpleble::simpleble)
 target_compile_definitions(simplecble PRIVATE SIMPLEBLE_VERSION="${PROJECT_VERSION}")
 

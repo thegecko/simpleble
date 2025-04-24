@@ -16,15 +16,6 @@ set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(${PROJECT_ROOT_DIR}/simpleble ${CMAKE_BINARY_DIR}/simpleble)
 set(BUILD_SHARED_LIBS ON)
 
-if(NOT TARGET fmt::fmt-header-only)
-    option(LIBFMT_VENDORIZE "Enable vendorized libfmt" ON)
-    find_package(fmt REQUIRED)
-
-    if(TARGET fmt)
-        set_target_properties(fmt PROPERTIES EXCLUDE_FROM_ALL TRUE)
-    endif()
-endif()
-
 find_package(JNI REQUIRED)
 
 add_library(
@@ -57,7 +48,10 @@ set_target_properties(
 target_include_directories(
     ${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/internal
     ${JNI_INCLUDE_DIRS}
 )
 
-target_link_libraries(${CMAKE_PROJECT_NAME} simpleble::simpleble fmt::fmt-header-only ${JNI_LIBRARIES})
+target_link_libraries(${CMAKE_PROJECT_NAME} simpleble::simpleble ${JNI_LIBRARIES})
+
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE FMT_HEADER_ONLY)

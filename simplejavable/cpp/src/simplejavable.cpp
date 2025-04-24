@@ -1,7 +1,7 @@
 #include <jni.h>
 #include <string>
 
-#include <fmt/core.h>
+#include "fmt/core.h"
 #include <simpleble/Logging.h>
 #include <simpleble/SimpleBLE.h>
 #include <map>

@@ -18,15 +18,6 @@ include(GNUInstallDirs)
 option(SIMPLEBLE_PLAIN "Use plain version of SimpleBLE" OFF)
 option(SIMPLEBLE_EXCLUDE_C "Exclude C bindings from SimpleBLE" OFF)
 
-if(NOT TARGET fmt::fmt-header-only)
-    option(LIBFMT_VENDORIZE "Enable vendorized libfmt" ON)
-    find_package(fmt REQUIRED)
-
-    if(TARGET fmt)
-        set_target_properties(fmt PROPERTIES EXCLUDE_FROM_ALL TRUE)
-    endif()
-endif()
-
 if(SIMPLEBLE_TEST)
     message(STATUS "Building tests requires plain version of SimpleBLE")
     set(SIMPLEBLE_PLAIN ON)
@@ -39,7 +30,8 @@ set(SIMPLEBLE_PRIVATE_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/external
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/common
     ${CMAKE_CURRENT_SOURCE_DIR}/src/frontends/safe
-    ${CMAKE_CURRENT_SOURCE_DIR}/../external/include)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../external/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal)
 
 set(SIMPLEBLE_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/frontends/base/Adapter.cpp
@@ -95,9 +87,6 @@ target_include_directories(simpleble INTERFACE
 target_include_directories(simpleble SYSTEM PUBLIC
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/export>)
 
-# Configure linked libraries for simpleble
-target_link_libraries(simpleble PRIVATE $<BUILD_INTERFACE:fmt::fmt-header-only>)
-
 append_sanitize_options("${SIMPLEBLE_SANITIZE}")
 
 if(NOT SIMPLEBLE_LOG_LEVEL)
@@ -106,6 +95,7 @@ endif()
 
 list(APPEND PRIVATE_COMPILE_DEFINITIONS SIMPLEBLE_LOG_LEVEL=SIMPLEBLE_LOG_LEVEL_${SIMPLEBLE_LOG_LEVEL})
 list(APPEND PRIVATE_COMPILE_DEFINITIONS SIMPLEBLE_VERSION="${PROJECT_VERSION}")
+list(APPEND PRIVATE_COMPILE_DEFINITIONS FMT_HEADER_ONLY)
 
 if(NOT SIMPLEBLE_TEST AND NOT SIMPLEBLE_PLAIN)
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -394,7 +384,6 @@ if(NOT SIMPLEBLE_EXCLUDE_C)
         $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/export>)
 
     # Configure linked libraries for simpleble-c
-    target_link_libraries(simpleble-c PRIVATE $<BUILD_INTERFACE:fmt::fmt-header-only>)
     target_link_libraries(simpleble-c PRIVATE simpleble::simpleble)
 
     # Apply OS-specific settings for simpleble-c
