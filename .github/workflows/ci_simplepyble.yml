@@ -84,49 +84,6 @@ jobs:
           name: simplepyble-${{ matrix.config.os }}-${{ matrix.config.arch }}
           path: wheelhouse/*.whl
 
-  publish:
-    needs: [build-sdist, build-wheels]
-    runs-on: ubuntu-22.04
-    permissions:
-      id-token: write
-    steps:
-
-      - name: Install dependencies
-        run: pip install twine
-
-      - name: "Download Python Wheels"
-        uses: actions/download-artifact@v4
-        with:
-          pattern: simplepyble-*-*
-          path: wheels
-          merge-multiple: true
-
-      - name: "Download Python source distribution"
-        uses: actions/download-artifact@v4
-        with:
-          name: simplepyble-sdist
-          path: sdist
-
-      - name: Check packages
-        run: twine check wheels/*.whl
-
-      - name: Check source distribution
-        run: twine check sdist/simplepyble*.tar.gz
-
-      - name: Publish wheels to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: wheels
-          skip-existing: true
-          attestations: false # Broken, see: https://github.com/pypa/gh-action-pypi-publish/issues/166
-
-      - name: Publish wheels to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: sdist
-          skip-existing: true
-          attestations: false # Broken, see: https://github.com/pypa/gh-action-pypi-publish/issues/166
-
 
   # tests:
   #   runs-on: ubuntu-22.04
