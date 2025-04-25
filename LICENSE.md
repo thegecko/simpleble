@@ -40,4 +40,4 @@ TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSED WORK IS PROVIDED ON AN "
 
 # SimpleBLE Commercial License Agreement
 
-(A new version of this license will be released soon)
+You can find more information on our commercial license at www.simpleble.org
