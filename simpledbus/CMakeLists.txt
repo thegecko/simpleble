@@ -99,7 +99,9 @@ install(
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus)
 
 install(
-    DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../dependencies/external/
+    FILES
+        ${CMAKE_CURRENT_LIST_DIR}/../dependencies/external/kvn/kvn_safe_callback.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/../dependencies/external/kvn/logfwd.hpp
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus)
 
 install(
