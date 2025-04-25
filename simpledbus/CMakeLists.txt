@@ -102,7 +102,7 @@ install(
     FILES
         ${CMAKE_CURRENT_LIST_DIR}/../dependencies/external/kvn/kvn_safe_callback.hpp
         ${CMAKE_CURRENT_LIST_DIR}/../dependencies/external/kvn/logfwd.hpp
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus)
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpledbus/kvn)
 
 install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/simpledbus.pc

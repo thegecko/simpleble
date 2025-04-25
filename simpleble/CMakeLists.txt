@@ -318,7 +318,7 @@ install(
 install(
     FILES
         ${CMAKE_CURRENT_LIST_DIR}/../dependencies/external/kvn/kvn_bytearray.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpleble)
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simpleble/kvn)
 
 install(
     DIRECTORY ${PROJECT_BINARY_DIR}/export/simpleble/
