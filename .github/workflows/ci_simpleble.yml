@@ -73,8 +73,11 @@ jobs:
   build-plugins:
     runs-on: ubuntu-22.04
     steps:
-      - name: Clone repository
+      - name: Clone Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Add Version Suffix
         uses: ./.github/actions/setup-version
