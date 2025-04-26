@@ -6,12 +6,18 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog`_, and this project adheres to `Semantic Versioning`_.
 
 
-[0.10.0] - XXXX-XX-XX
+[0.10.1] - XXXX-XX-XX
 --------------------
+
+**Notes**
+
+- iOS, MacOS and Android do not support powering on and off the adapter. Calling these methods will not have any effect on the adapter.
+- Linux does have support for powering on and off the adapter, but further architecture changes are needed to properly expose this.
 
 **Added**
 
--
+- (Windows) Added support for powering on and off the adapter.
+- (Python) Exposed the `Adapter::power_on()`, `Adapter::power_off()` and `Adapter::is_powered()` methods.
 
 **Changed**
 
@@ -26,6 +32,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 --------------------
 
 **Important:**
+
  -  In the near future we will deprecate the `simpleble-c` target in favor of `simplecble`, which will be a drop-in replacement for the existing C bindings.
  -  The `simpleble-bridge` project has been renamed to `simpledroidbridge` and can be found in the root directory of the repository.
 

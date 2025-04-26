@@ -30,6 +30,18 @@ constexpr auto kDocsAdapterAddress = R"pbdoc(
     Address of the adapter
 )pbdoc";
 
+constexpr auto kDocsAdapterPowerOn = R"pbdoc(
+    Power on the adapter
+)pbdoc";
+
+constexpr auto kDocsAdapterPowerOff = R"pbdoc(
+    Power off the adapter
+)pbdoc";
+
+constexpr auto kDocsAdapterIsPowered = R"pbdoc(
+    Whether the adapter is powered
+)pbdoc";
+
 constexpr auto kDocsAdapterScanStart = R"pbdoc(
     Start scanning for peripherals
 )pbdoc";
@@ -78,6 +90,9 @@ void wrap_adapter(py::module& m) {
         .def("initialized", &SimpleBLE::Adapter::initialized, kDocsAdapterInitialized)
         .def("identifier", &SimpleBLE::Adapter::identifier, kDocsAdapterIdentifier)
         .def("address", &SimpleBLE::Adapter::address, kDocsAdapterAddress)
+        .def("power_on", &SimpleBLE::Adapter::power_on, kDocsAdapterPowerOn)
+        .def("power_off", &SimpleBLE::Adapter::power_off, kDocsAdapterPowerOff)
+        .def("is_powered", &SimpleBLE::Adapter::is_powered, kDocsAdapterIsPowered)
         .def("scan_start", &SimpleBLE::Adapter::scan_start, kDocsAdapterScanStart)
         .def("scan_stop", &SimpleBLE::Adapter::scan_stop, kDocsAdapterScanStop)
         .def("scan_is_active", &SimpleBLE::Adapter::scan_is_active, kDocsAdapterScanIsActive)

@@ -16,10 +16,15 @@ runs:
         # Check if the current commit is tagged
         if ! git describe --exact-match --tags HEAD >/dev/null 2>&1; then
           # Get the number of commits since the last version bump
-          commits=$(git rev-list --count "$(git log -1 --format=%H -- VERSION)"..HEAD)
-          if [ "$commits" -gt 0 ]; then
-            # Append the dev suffix
-            version_str="${version_str}.dev$((commits - 1))"
+          latest_tag=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -n "$latest_tag" ]; then
+            commits=$(git rev-list --count "${latest_tag}"..HEAD)
+            # Since HEAD is not tagged and latest_tag exists, commits > 0. Append the dev suffix.
+            version_str="${version_str}.dev${commits}"
+          else
+            # If no tags found, exit with error
+            echo "Error: No tags found in the repository history." >&2
+            exit 1
           fi
         fi
 
