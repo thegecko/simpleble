@@ -50,6 +50,12 @@ std::string Adapter::identifier() { return (*this)->identifier(); }
 
 BluetoothAddress Adapter::address() { return (*this)->address(); }
 
+void Adapter::power_on() { (*this)->power_on(); }
+
+void Adapter::power_off() { (*this)->power_off(); }
+
+bool Adapter::is_powered() { return (*this)->is_powered(); }
+
 void Adapter::scan_start() {
     if (!bluetooth_enabled()) {
         SIMPLEBLE_LOG_WARN(fmt::format("Bluetooth is not enabled."));
