@@ -46,7 +46,7 @@ AdapterWindows::AdapterWindows(std::string device_id)
 }
 
 AdapterWindows::~AdapterWindows() {
-    callback_on_scan_stop_.unload();
+    _callback_on_scan_stop.unload();
 
     MtaManager::get().execute_sync([this]() {
         scanner_.Stop();
@@ -106,7 +106,7 @@ void AdapterWindows::scan_start() {
         scanner_.Start();
     });
 
-    SAFE_CALLBACK_CALL(this->callback_on_scan_start_);
+    SAFE_CALLBACK_CALL(this->_callback_on_scan_start);
 }
 
 void AdapterWindows::scan_stop() {
@@ -135,38 +135,6 @@ SharedPtrVector<PeripheralBase> AdapterWindows::scan_get_results() { return Util
 
 SharedPtrVector<PeripheralBase> AdapterWindows::get_paired_peripherals() { return {}; }
 
-void AdapterWindows::set_callback_on_scan_start(std::function<void()> on_scan_start) {
-    if (on_scan_start) {
-        callback_on_scan_start_.load(on_scan_start);
-    } else {
-        callback_on_scan_start_.unload();
-    }
-}
-
-void AdapterWindows::set_callback_on_scan_stop(std::function<void()> on_scan_stop) {
-    if (on_scan_stop) {
-        callback_on_scan_stop_.load(on_scan_stop);
-    } else {
-        callback_on_scan_stop_.unload();
-    }
-}
-
-void AdapterWindows::set_callback_on_scan_updated(std::function<void(Peripheral)> on_scan_updated) {
-    if (on_scan_updated) {
-        callback_on_scan_updated_.load(on_scan_updated);
-    } else {
-        callback_on_scan_updated_.unload();
-    }
-}
-
-void AdapterWindows::set_callback_on_scan_found(std::function<void(Peripheral)> on_scan_found) {
-    if (on_scan_found) {
-        callback_on_scan_found_.load(on_scan_found);
-    } else {
-        callback_on_scan_found_.unload();
-    }
-}
-
 // Private functions
 
 void AdapterWindows::_scan_stopped_callback() {
@@ -174,7 +142,7 @@ void AdapterWindows::_scan_stopped_callback() {
     scan_is_active_ = false;
     scan_stop_cv_.notify_all();
 
-    SAFE_CALLBACK_CALL(this->callback_on_scan_stop_);
+    SAFE_CALLBACK_CALL(this->_callback_on_scan_stop_);
 }
 
 void AdapterWindows::_scan_received_callback(advertising_data_t data) {
@@ -195,9 +163,9 @@ void AdapterWindows::_scan_received_callback(advertising_data_t data) {
     if (this->seen_peripherals_.count(data.mac_address) == 0) {
         // Store it in our table of seen peripherals
         this->seen_peripherals_.insert(std::make_pair(data.mac_address, base_peripheral));
-        SAFE_CALLBACK_CALL(this->callback_on_scan_found_, peripheral);
+        SAFE_CALLBACK_CALL(this->_callback_on_scan_found_, peripheral);
     } else {
-        SAFE_CALLBACK_CALL(this->callback_on_scan_updated_, peripheral);
+        SAFE_CALLBACK_CALL(this->_callback_on_scan_updated_, peripheral);
     }
 }
 

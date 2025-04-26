@@ -50,10 +50,10 @@ class AdapterBase {
     virtual bool scan_is_active() = 0;
     virtual std::vector<std::shared_ptr<PeripheralBase>> scan_get_results() = 0;
 
-    virtual void set_callback_on_scan_start(std::function<void()> on_scan_start) = 0;
-    virtual void set_callback_on_scan_stop(std::function<void()> on_scan_stop) = 0;
-    virtual void set_callback_on_scan_updated(std::function<void(Peripheral)> on_scan_updated) = 0;
-    virtual void set_callback_on_scan_found(std::function<void(Peripheral)> on_scan_found) = 0;
+    virtual void set_callback_on_scan_start(std::function<void()> on_scan_start);
+    virtual void set_callback_on_scan_stop(std::function<void()> on_scan_stop);
+    virtual void set_callback_on_scan_updated(std::function<void(Peripheral)> on_scan_updated);
+    virtual void set_callback_on_scan_found(std::function<void(Peripheral)> on_scan_found);
 
     virtual std::vector<std::shared_ptr<PeripheralBase>> get_paired_peripherals() = 0;
 
@@ -70,6 +70,11 @@ class AdapterBase {
 
     kvn::safe_callback<void()> _callback_on_power_on;
     kvn::safe_callback<void()> _callback_on_power_off;
+
+    kvn::safe_callback<void()> _callback_on_scan_start;
+    kvn::safe_callback<void()> _callback_on_scan_stop;
+    kvn::safe_callback<void(Peripheral)> _callback_on_scan_updated;
+    kvn::safe_callback<void(Peripheral)> _callback_on_scan_found;
 };
 
 }  // namespace SimpleBLE

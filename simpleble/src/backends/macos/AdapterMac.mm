@@ -69,14 +69,14 @@ void AdapterMac::scan_start() {
     AdapterBaseMacOS* internal = (__bridge AdapterBaseMacOS*)opaque_internal_;
     [internal scanStart];
 
-    SAFE_CALLBACK_CALL(this->callback_on_scan_start_);
+    SAFE_CALLBACK_CALL(this->_callback_on_scan_start);
 }
 
 void AdapterMac::scan_stop() {
     AdapterBaseMacOS* internal = (__bridge AdapterBaseMacOS*)opaque_internal_;
     [internal scanStop];
 
-    SAFE_CALLBACK_CALL(this->callback_on_scan_stop_);
+    SAFE_CALLBACK_CALL(this->_callback_on_scan_stop);
 }
 
 void AdapterMac::scan_for(int timeout_ms) {
@@ -93,35 +93,6 @@ bool AdapterMac::scan_is_active() {
 SharedPtrVector<PeripheralBase> AdapterMac::scan_get_results() {
     SharedPtrVector<PeripheralBase> peripherals = Util::values(seen_peripherals_);
     return peripherals;
-}
-
-void AdapterMac::set_callback_on_scan_start(std::function<void()> on_scan_start) {
-    if (on_scan_start) {
-        callback_on_scan_start_.load(on_scan_start);
-    } else {
-        callback_on_scan_start_.unload();
-    }
-}
-void AdapterMac::set_callback_on_scan_stop(std::function<void()> on_scan_stop) {
-    if (on_scan_stop) {
-        callback_on_scan_stop_.load(on_scan_stop);
-    } else {
-        callback_on_scan_stop_.unload();
-    }
-}
-void AdapterMac::set_callback_on_scan_updated(std::function<void(Peripheral)> on_scan_updated) {
-    if (on_scan_updated) {
-        callback_on_scan_updated_.load(on_scan_updated);
-    } else {
-        callback_on_scan_updated_.unload();
-    }
-}
-void AdapterMac::set_callback_on_scan_found(std::function<void(Peripheral)> on_scan_found) {
-    if (on_scan_found) {
-        callback_on_scan_found_.load(on_scan_found);
-    } else {
-        callback_on_scan_found_.unload();
-    }
 }
 
 SharedPtrVector<PeripheralBase> AdapterMac::get_paired_peripherals() { return {}; }
@@ -146,9 +117,9 @@ void AdapterMac::delegate_did_discover_peripheral(void* opaque_peripheral, void*
     if (this->seen_peripherals_.count(opaque_peripheral) == 0) {
         // Store it in our table of seen peripherals
         this->seen_peripherals_.insert(std::make_pair(opaque_peripheral, base_peripheral));
-        SAFE_CALLBACK_CALL(this->callback_on_scan_found_, peripheral);
+        SAFE_CALLBACK_CALL(this->_callback_on_scan_found, peripheral);
     } else {
-        SAFE_CALLBACK_CALL(this->callback_on_scan_updated_, peripheral);
+        SAFE_CALLBACK_CALL(this->_callback_on_scan_updated, peripheral);
     }
 }
 

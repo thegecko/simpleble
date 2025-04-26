@@ -49,11 +49,6 @@ class AdapterWindows : public AdapterBase {
     virtual bool scan_is_active() override;
     virtual std::vector<std::shared_ptr<PeripheralBase>> scan_get_results() override;
 
-    virtual void set_callback_on_scan_start(std::function<void()> on_scan_start) override;
-    virtual void set_callback_on_scan_stop(std::function<void()> on_scan_stop) override;
-    virtual void set_callback_on_scan_updated(std::function<void(Peripheral)> on_scan_updated) override;
-    virtual void set_callback_on_scan_found(std::function<void(Peripheral)> on_scan_found) override;
-
     virtual std::vector<std::shared_ptr<PeripheralBase>> get_paired_peripherals() override;
 
     virtual bool bluetooth_enabled() override;
@@ -84,11 +79,6 @@ class AdapterWindows : public AdapterBase {
 
     void _scan_stopped_callback();
     void _scan_received_callback(advertising_data_t data);
-
-    kvn::safe_callback<void()> callback_on_scan_start_;
-    kvn::safe_callback<void()> callback_on_scan_stop_;
-    kvn::safe_callback<void(Peripheral)> callback_on_scan_updated_;
-    kvn::safe_callback<void(Peripheral)> callback_on_scan_found_;
 };
 
 }  // namespace SimpleBLE
