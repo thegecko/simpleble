@@ -16,8 +16,9 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Added**
 
-- (Windows) Added support for powering on and off the adapter.
+- (Windows) Added support for powering adapters on and off.
 - (Python) Exposed the `Adapter::power_on()`, `Adapter::power_off()` and `Adapter::is_powered()` methods.
+- Callbacks to monitor adapter power on and off events.
 
 **Changed**
 

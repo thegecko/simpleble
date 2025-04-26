@@ -56,6 +56,14 @@ void Adapter::power_off() { (*this)->power_off(); }
 
 bool Adapter::is_powered() { return (*this)->is_powered(); }
 
+void Adapter::set_callback_on_power_on(std::function<void()> on_power_on) {
+    (*this)->set_callback_on_power_on(std::move(on_power_on));
+}
+
+void Adapter::set_callback_on_power_off(std::function<void()> on_power_off) {
+    (*this)->set_callback_on_power_off(std::move(on_power_off));
+}
+
 void Adapter::scan_start() {
     if (!bluetooth_enabled()) {
         SIMPLEBLE_LOG_WARN(fmt::format("Bluetooth is not enabled."));

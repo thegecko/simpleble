@@ -41,6 +41,7 @@ set(SIMPLEBLE_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/frontends/base/Descriptor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/frontends/base/Backend.cpp
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/common/AdapterBase.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/common/ServiceBase.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/common/CharacteristicBase.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/common/DescriptorBase.cpp

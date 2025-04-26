@@ -47,11 +47,15 @@ class SIMPLEBLE_EXPORT Adapter {
     /**
      * Control the power state of the adapter.
      *
-     * This is only supported on Windows and Linux (implementation pending).
+     * NOTE: The power on/off functionality is only supported on Windows and Linux (implementation pending).
+     *       On other platforms, this method will do nothing.
+     * NOTE: Callbacks are currently a placeholder for future implementation.
      */
     void power_on();
     void power_off();
     bool is_powered();
+    void set_callback_on_power_on(std::function<void()> on_power_on);
+    void set_callback_on_power_off(std::function<void()> on_power_off);
 
     void scan_start();
     void scan_stop();
