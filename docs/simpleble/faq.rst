@@ -37,4 +37,9 @@ you don't need to deal with operating-system shenanigans and just want to test t
 
 **How are vectors supposed to be handled in the C-API?**
 
+**What is the default behavior of functions that are not supported by a specific backend?**
+
+Successfully calling a function that is not supported by a specific backend will result in
+a no-op.
+
 .. _Discord: https://discord.gg/N9HqNEcvP3

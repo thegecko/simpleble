@@ -73,6 +73,24 @@ BluetoothAddress AdapterWindows::address() {
     });
 }
 
+void AdapterWindows::power_on() {
+    MtaManager::get().execute_sync([this]() {
+
+    });
+}
+
+void AdapterWindows::power_off() {
+    MtaManager::get().execute_sync([this]() {
+        
+    });
+}
+
+bool AdapterWindows::is_powered() {
+    return MtaManager::get().execute_sync<bool>([this]() {
+        return adapter_.State() == Bluetooth::BluetoothAdapterState::On;
+    });
+}
+
 void AdapterWindows::scan_start() {
     this->seen_peripherals_.clear();
 

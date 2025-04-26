@@ -16,10 +16,10 @@
 
 - (void*)underlying;
 
+- (bool)isPowered;
+
 - (void)scanStart;
-
 - (void)scanStop;
-
 - (bool)scanIsActive;
 
 - (NSString*)address;
