@@ -11,6 +11,7 @@
 #include "MtaManager.h"
 
 #include "winrt/Windows.Devices.Bluetooth.h"
+#include "winrt/Windows.Devices.Radios.h"
 #include "winrt/Windows.Devices.Enumeration.h"
 #include "winrt/Windows.Foundation.Collections.h"
 #include "winrt/Windows.Foundation.h"
@@ -70,6 +71,29 @@ std::string AdapterWindows::identifier() { return identifier_; }
 BluetoothAddress AdapterWindows::address() {
     return MtaManager::get().execute_sync<BluetoothAddress>([this]() {
         return _mac_address_to_str(adapter_.BluetoothAddress());
+    });
+}
+
+void AdapterWindows::power_on() {
+    MtaManager::get().execute_sync([this]() {
+        auto radio = async_get(adapter_.GetRadioAsync());
+        async_get(radio.SetStateAsync(RadioState::On));
+    });
+}
+
+void AdapterWindows::power_off() {
+    MtaManager::get().execute_sync([this]() {
+        auto radio = async_get(adapter_.GetRadioAsync());
+        async_get(radio.SetStateAsync(RadioState::Off));
+    });
+}
+
+bool AdapterWindows::is_powered() {
+    return MtaManager::get().execute_sync<bool>([this]() {
+        auto radio = async_get(adapter_.GetRadioAsync());
+        auto state = radio.State();
+
+        return state == RadioState::On;
     });
 }
 

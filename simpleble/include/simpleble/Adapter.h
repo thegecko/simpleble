@@ -44,6 +44,15 @@ class SIMPLEBLE_EXPORT Adapter {
     std::string identifier();
     BluetoothAddress address();
 
+    /**
+     * Control the power state of the adapter.
+     *
+     * This is only supported on Windows and Linux (implementation pending).
+     */
+    void power_on();
+    void power_off();
+    bool is_powered();
+
     void scan_start();
     void scan_stop();
     void scan_for(int timeout_ms);

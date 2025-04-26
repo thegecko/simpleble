@@ -52,6 +52,20 @@ std::string AdapterAndroid::identifier() { return _btAdapter.getName(); }
 
 BluetoothAddress AdapterAndroid::address() { return BluetoothAddress(_btAdapter.getAddress()); }
 
+void AdapterAndroid::power_on() {
+    // NOTE: This feature was deprecated in API level 33.
+    // Despite us targeting API level 31, we'll play nicely and not call this method.
+    // https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#enable()
+}
+
+void AdapterAndroid::power_off() {
+    // NOTE: This feature was deprecated in API level 33.
+    // Despite us targeting API level 31, we'll play nicely and not call this method.
+    // https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#disable()
+}
+
+bool AdapterAndroid::is_powered() { return _btAdapter.isEnabled(); }
+
 void AdapterAndroid::scan_start() {
     seen_peripherals_.clear();
     _btScanner.startScan(_btScanCallback);

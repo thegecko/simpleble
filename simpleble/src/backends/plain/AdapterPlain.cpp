@@ -23,6 +23,12 @@ std::string AdapterPlain::identifier() { return "Plain Adapter"; }
 
 BluetoothAddress AdapterPlain::address() { return "AA:BB:CC:DD:EE:FF"; }
 
+void AdapterPlain::power_on() {}
+
+void AdapterPlain::power_off() {}
+
+bool AdapterPlain::is_powered() { return true; }
+
 void AdapterPlain::scan_start() {
     is_scanning_ = true;
     SAFE_CALLBACK_CALL(this->callback_on_scan_start_);

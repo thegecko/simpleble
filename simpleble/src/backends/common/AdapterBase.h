@@ -39,6 +39,11 @@ class AdapterBase {
     virtual std::string identifier() = 0;
     virtual BluetoothAddress address() = 0;
 
+    // NOTE: A default implementation is provided for these methods until all backends have implemented them.
+    virtual void power_on() = 0;
+    virtual void power_off() = 0;
+    virtual bool is_powered() = 0;
+
     virtual void scan_start() = 0;
     virtual void scan_stop() = 0;
     virtual void scan_for(int timeout_ms) = 0;

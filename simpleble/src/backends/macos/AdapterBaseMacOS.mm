@@ -45,6 +45,10 @@
     return (__bridge void*)self.centralManager;
 }
 
+- (bool)isPowered {
+    return self.centralManager.state == CBManagerStatePoweredOn;
+}
+
 - (void)scanStart {
     [self.centralManager scanForPeripheralsWithServices:nil options:@{CBCentralManagerScanOptionAllowDuplicatesKey : @YES}];
 }

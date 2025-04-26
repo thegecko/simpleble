@@ -39,6 +39,10 @@ class AdapterWindows : public AdapterBase {
     virtual std::string identifier() override;
     virtual BluetoothAddress address() override;
 
+    virtual void power_on() override;
+    virtual void power_off() override;
+    virtual bool is_powered() override;
+
     virtual void scan_start() override;
     virtual void scan_stop() override;
     virtual void scan_for(int timeout_ms) override;
