@@ -115,7 +115,7 @@ void AdapterWindows::scan_stop() {
     });
 
     std::unique_lock<std::mutex> lock(scan_stop_mutex_);
-    if (scan_stop_cv_.wait_for(lock, 1s, [=] { return !this->scan_is_active_; })) {
+    if (scan_stop_cv_.wait_for(lock, 1s, [this] { return !this->scan_is_active_; })) {
         // Scan stopped
     } else {
         // Scan did not stop, this can be because some other process
@@ -142,7 +142,7 @@ void AdapterWindows::_scan_stopped_callback() {
     scan_is_active_ = false;
     scan_stop_cv_.notify_all();
 
-    SAFE_CALLBACK_CALL(this->_callback_on_scan_stop_);
+    SAFE_CALLBACK_CALL(this->_callback_on_scan_stop);
 }
 
 void AdapterWindows::_scan_received_callback(advertising_data_t data) {
@@ -163,9 +163,9 @@ void AdapterWindows::_scan_received_callback(advertising_data_t data) {
     if (this->seen_peripherals_.count(data.mac_address) == 0) {
         // Store it in our table of seen peripherals
         this->seen_peripherals_.insert(std::make_pair(data.mac_address, base_peripheral));
-        SAFE_CALLBACK_CALL(this->_callback_on_scan_found_, peripheral);
+        SAFE_CALLBACK_CALL(this->_callback_on_scan_found, peripheral);
     } else {
-        SAFE_CALLBACK_CALL(this->_callback_on_scan_updated_, peripheral);
+        SAFE_CALLBACK_CALL(this->_callback_on_scan_updated, peripheral);
     }
 }
 
@@ -211,8 +211,8 @@ void AdapterWindows::_on_scanner_received(
     }
 
     // Parse manufacturer data
-    auto manufacturer_data = args.Advertisement().ManufacturerData();
-    for (auto& item : manufacturer_data) {
+    const auto manufacturer_data = args.Advertisement().ManufacturerData();
+    for (const auto& item : manufacturer_data) {
         uint16_t company_id = item.CompanyId();
         ByteArray manufacturer_data_buffer = ibuffer_to_bytearray(item.Data());
         data.manufacturer_data[company_id] = manufacturer_data_buffer;
@@ -260,8 +260,8 @@ void AdapterWindows::_on_scanner_received(
     }
 
     // Parse service uuids
-    auto service_data = args.Advertisement().ServiceUuids();
-    for (auto& service_guid : service_data) {
+    const auto service_data = args.Advertisement().ServiceUuids();
+    for (const auto& service_guid : service_data) {
         std::string service_uuid = guid_to_uuid(service_guid);
         data.service_data.emplace(std::make_pair(service_uuid, ByteArray()));
     }
