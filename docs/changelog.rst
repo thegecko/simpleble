@@ -23,7 +23,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Changed**
 
--
+- (Windows) Calls to the WinRT backend are now executed in a separate MTA apartment by default.
 
 **Fixed**
 

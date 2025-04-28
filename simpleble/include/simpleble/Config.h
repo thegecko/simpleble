@@ -7,10 +7,10 @@ namespace Config {
     }
 
     namespace WinRT {
-        inline static bool experimental_use_own_mta_apartment = false;
+        inline static bool experimental_use_own_mta_apartment = true;
 
         static void reset() {
-            experimental_use_own_mta_apartment = false;
+            experimental_use_own_mta_apartment = true;
         }
     }
 
