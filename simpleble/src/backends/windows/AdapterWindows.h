@@ -61,6 +61,9 @@ class AdapterWindows : public AdapterBase {
     winrt::event_token scanner_received_token_;
     winrt::event_token scanner_stopped_token_;
 
+    Radio radio_;
+    winrt::event_token radio_state_changed_token_;
+
     std::atomic_bool scan_is_active_{false};
     std::condition_variable scan_stop_cv_;
     std::mutex scan_stop_mutex_;
@@ -68,7 +71,8 @@ class AdapterWindows : public AdapterBase {
     std::map<BluetoothAddress, std::shared_ptr<PeripheralWindows>> peripherals_;
     std::map<BluetoothAddress, std::shared_ptr<PeripheralBase>> seen_peripherals_;
 
-    // Event handler methods for scanner events
+    void on_power_state_changed(Radio const& sender, Foundation::IInspectable const&);
+
     void _on_scanner_stopped(
         const Advertisement::BluetoothLEAdvertisementWatcher& watcher,
         const Advertisement::BluetoothLEAdvertisementWatcherStoppedEventArgs args);

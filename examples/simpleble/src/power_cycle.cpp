@@ -18,6 +18,14 @@ int main() {
     for (auto& adapter : adapter_list) {
         std::cout << "Adapter: " << adapter.identifier() << " [" << adapter.address() << "]" << std::endl;
 
+        adapter.set_callback_on_power_on([&]() {
+            std::cout << "Adapter powered on" << std::endl;
+        });
+
+        adapter.set_callback_on_power_off([&]() {
+            std::cout << "Adapter powered off" << std::endl;
+        });
+
         std::cout << "Adapter powered: " << adapter.is_powered() << std::endl;
 
         std::cout << "Powering off adapter" << std::endl;

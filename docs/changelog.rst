@@ -13,6 +13,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 - iOS, MacOS and Android do not support powering on and off the adapter. Calling these methods will not have any effect on the adapter.
 - Linux does have support for powering on and off the adapter, but further architecture changes are needed to properly expose this.
+- Callbacks for power on and off events are currently only supported on Windows.
 
 **Added**
 

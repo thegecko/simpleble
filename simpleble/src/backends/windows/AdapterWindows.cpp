@@ -31,7 +31,8 @@ using namespace SimpleBLE::WinRT;
 using namespace std::chrono_literals;
 
 AdapterWindows::AdapterWindows(std::string device_id)
-    : adapter_(async_get(BluetoothAdapter::FromIdAsync(winrt::to_hstring(device_id)))) {
+    : adapter_(async_get(BluetoothAdapter::FromIdAsync(winrt::to_hstring(device_id)))),
+      radio_(async_get(adapter_.GetRadioAsync())) {
     // IMPORTANT NOTE: This function must be executed in the MTA context. In this case, this is managed by the BackendWinRT class.
     auto device_information = async_get(
         Devices::Enumeration::DeviceInformation::CreateFromIdAsync(winrt::to_hstring(device_id)));
@@ -41,6 +42,7 @@ AdapterWindows::AdapterWindows(std::string device_id)
     scanner_ = Advertisement::BluetoothLEAdvertisementWatcher();
 
     // Register member functions directly as callback handlers
+    radio_state_changed_token_ = radio_.StateChanged({this, &AdapterWindows::on_power_state_changed});
     scanner_stopped_token_ = scanner_.Stopped({this, &AdapterWindows::_on_scanner_stopped});
     scanner_received_token_ = scanner_.Received({this, &AdapterWindows::_on_scanner_received});
 }
@@ -75,26 +77,15 @@ BluetoothAddress AdapterWindows::address() {
 }
 
 void AdapterWindows::power_on() {
-    MtaManager::get().execute_sync([this]() {
-        auto radio = async_get(adapter_.GetRadioAsync());
-        async_get(radio.SetStateAsync(RadioState::On));
-    });
+    MtaManager::get().execute_sync([this]() { async_get(radio_.SetStateAsync(RadioState::On)); });
 }
 
 void AdapterWindows::power_off() {
-    MtaManager::get().execute_sync([this]() {
-        auto radio = async_get(adapter_.GetRadioAsync());
-        async_get(radio.SetStateAsync(RadioState::Off));
-    });
+    MtaManager::get().execute_sync([this]() { async_get(radio_.SetStateAsync(RadioState::Off)); });
 }
 
 bool AdapterWindows::is_powered() {
-    return MtaManager::get().execute_sync<bool>([this]() {
-        auto radio = async_get(adapter_.GetRadioAsync());
-        auto state = radio.State();
-
-        return state == RadioState::On;
-    });
+    return MtaManager::get().execute_sync<bool>([this]() { return radio_.State() == RadioState::On; });
 }
 
 void AdapterWindows::scan_start() {
@@ -169,11 +160,20 @@ void AdapterWindows::_scan_received_callback(advertising_data_t data) {
     }
 }
 
+void AdapterWindows::on_power_state_changed(Radio const& sender, Foundation::IInspectable const&) {
+    auto state = sender.State();
+    if (state == RadioState::On) {
+        SAFE_CALLBACK_CALL(this->_callback_on_power_on);
+    } else if (state == RadioState::Off) {
+        SAFE_CALLBACK_CALL(this->_callback_on_power_off);
+    }
+}
+
 void AdapterWindows::_on_scanner_stopped(
     const Advertisement::BluetoothLEAdvertisementWatcher& watcher,
     const Advertisement::BluetoothLEAdvertisementWatcherStoppedEventArgs args) {
     // This callback is already in the MTA context as it's called by WinRT
-    this->_scan_stopped_callback();
+    SAFE_CALLBACK_CALL(this->_callback_on_scan_stop);
 }
 
 void AdapterWindows::_on_scanner_received(
