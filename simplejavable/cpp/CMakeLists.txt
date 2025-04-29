@@ -34,7 +34,6 @@ add_library(
     src/java/lang/Iterator.cpp
     src/java/lang/ArrayList.cpp
     src/simplejavable.cpp
-    src/utils.cpp
 )
 
 set_target_properties(
