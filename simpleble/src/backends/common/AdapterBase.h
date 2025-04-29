@@ -56,6 +56,7 @@ class AdapterBase {
     virtual void set_callback_on_scan_found(std::function<void(Peripheral)> on_scan_found);
 
     virtual std::vector<std::shared_ptr<PeripheralBase>> get_paired_peripherals() = 0;
+    virtual std::vector<std::shared_ptr<PeripheralBase>> get_connected_peripherals() { return {}; };
 
     /**
      * Checks if Bluetooth is enabled.

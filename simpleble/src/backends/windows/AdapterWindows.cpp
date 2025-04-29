@@ -149,9 +149,37 @@ SharedPtrVector<PeripheralBase> AdapterWindows::get_paired_peripherals() {
             } catch (const winrt::hresult_error& e) {
                 SIMPLEBLE_LOG_ERROR(fmt::format("WinRT error processing paired device {} : {}", winrt::to_string(dev_info.Id()), winrt::to_string(e.message())));
                 throw Exception::WinRTException(e.code().value, winrt::to_string(e.message()));
-            } catch (...) {
-                SIMPLEBLE_LOG_ERROR(fmt::format("Unknown error processing paired device {}", winrt::to_string(dev_info.Id())));
-                throw Exception::BaseException(fmt::format("Unknown error processing paired device {}", winrt::to_string(dev_info.Id())));
+            }
+        }
+        return peripherals;
+    });
+}
+
+SharedPtrVector<PeripheralBase> AdapterWindows::get_connected_peripherals() {
+    return MtaManager::get().execute_sync<SharedPtrVector<PeripheralBase>>([this]() {
+        SharedPtrVector<PeripheralBase> peripherals;
+        winrt::hstring aqs_filter = BluetoothLEDevice::GetDeviceSelectorFromConnectionStatus(BluetoothConnectionStatus::Connected);
+        auto dev_info_collection = async_get(Devices::Enumeration::DeviceInformation::FindAllAsync(aqs_filter));
+
+        for (const auto& dev_info : dev_info_collection) {
+            try {
+                BluetoothLEDevice device = async_get(BluetoothLEDevice::FromIdAsync(dev_info.Id()));
+                if (device == nullptr) {
+                    SIMPLEBLE_LOG_WARN(fmt::format("Could not get BluetoothLEDevice for connected device ID: {}", winrt::to_string(dev_info.Id())));
+                    continue;
+                }
+
+                BluetoothAddress address = _mac_address_to_str(device.BluetoothAddress());
+                if (this->peripherals_.count(address) == 0) {
+                    // If the peripheral has never been seen before, create and save a reference to it.
+                    auto base_peripheral = std::make_shared<PeripheralWindows>(device);
+                    this->peripherals_.insert(std::make_pair(address, base_peripheral));
+                }
+
+                peripherals.push_back(this->peripherals_.at(address));
+            } catch (const winrt::hresult_error& e) {
+                SIMPLEBLE_LOG_ERROR(fmt::format("WinRT error processing connected device {} : {}", winrt::to_string(dev_info.Id()), winrt::to_string(e.message())));
+                throw Exception::WinRTException(e.code().value, winrt::to_string(e.message()));
             }
         }
         return peripherals;

@@ -50,6 +50,7 @@ class AdapterWindows : public AdapterBase {
     virtual std::vector<std::shared_ptr<PeripheralBase>> scan_get_results() override;
 
     virtual std::vector<std::shared_ptr<PeripheralBase>> get_paired_peripherals() override;
+    virtual std::vector<std::shared_ptr<PeripheralBase>> get_connected_peripherals() override;
 
     virtual bool bluetooth_enabled() override;
 

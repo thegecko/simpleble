@@ -14,13 +14,16 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - iOS, MacOS and Android do not support powering on and off the adapter. Calling these methods will not have any effect on the adapter.
 - Linux does have support for powering on and off the adapter, but further architecture changes are needed to properly expose this.
 - Callbacks for power on and off events are currently only supported on Windows.
+- Retrieving connected peripherals is currently only supported on Windows. (More backends coming soon.)
 
 **Added**
 
-- (Windows) Added support for powering adapters on and off.
-- (Python) Exposed the `Adapter::power_on()`, `Adapter::power_off()` and `Adapter::is_powered()` methods.
+- Functions for powering adapters on, off and querying their power state.
 - Callbacks to monitor adapter power on and off events.
+- (Windows) Added support for powering adapters on and off.
 - (Windows) Added support for retrieving paired peripherals.
+- (Windows) Added support for retrieving connected peripherals.
+- (Python) Exposed the `Adapter::power_on()`, `Adapter::power_off()` and `Adapter::is_powered()` methods.
 
 **Changed**
 

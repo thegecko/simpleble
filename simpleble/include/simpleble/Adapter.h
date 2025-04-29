@@ -68,7 +68,19 @@ class SIMPLEBLE_EXPORT Adapter {
     void set_callback_on_scan_updated(std::function<void(Peripheral)> on_scan_updated);
     void set_callback_on_scan_found(std::function<void(Peripheral)> on_scan_found);
 
+    /**
+     * Retrieve a list of all paired peripherals.
+     *
+     * NOTE:This method is currently only supported by the Linux, Windows and Android backends.
+     */
     std::vector<Peripheral> get_paired_peripherals();
+
+    /**
+     * Retrieve a list of all connected peripherals.
+     *
+     * NOTE: This method is currently only supported by the Windows backend. (More backends coming soon.)
+     */
+    std::vector<Peripheral> get_connected_peripherals();
 
     static bool bluetooth_enabled();
 
