@@ -33,6 +33,10 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 -
 
+**Removed**
+
+- Source code of the `simpleble-bridge` project in favor of `simpledroidbridge`.
+
 
 [0.9.1] - 2025-04-24
 --------------------
