@@ -30,6 +30,9 @@ configure_simpleble_target(simpleble_list_adapters)
 add_executable(simpleble_power_cycle src/power_cycle.cpp)
 configure_simpleble_target(simpleble_power_cycle)
 
+add_executable(simpleble_list_paired src/list_paired.cpp)
+configure_simpleble_target(simpleble_list_paired)
+
 add_executable(simpleble_list_adapters_safe src/list_adapters_safe.cpp)
 configure_simpleble_target(simpleble_list_adapters_safe)
 

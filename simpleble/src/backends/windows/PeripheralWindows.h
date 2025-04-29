@@ -40,6 +40,7 @@ struct gatt_service_t {
 
 class PeripheralWindows : public PeripheralBase {
   public:
+    PeripheralWindows(BluetoothLEDevice device);
     PeripheralWindows(advertising_data_t advertising_data);
     virtual ~PeripheralWindows();
 

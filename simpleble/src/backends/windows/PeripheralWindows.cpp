@@ -26,6 +26,17 @@ using namespace SimpleBLE;
 using namespace SimpleBLE::WinRT;
 using namespace std::chrono_literals;
 
+PeripheralWindows::PeripheralWindows(BluetoothLEDevice device) {
+    device_ = device;
+    identifier_ = winrt::to_string(device.Name());
+    address_ = _mac_address_to_str(device.BluetoothAddress());
+    address_type_ = BluetoothAddressType::PUBLIC;
+
+    // NOTE: We're assuming that the device is connectable, as this constructor is only called
+    // when the device has paired in the past.
+    connectable_ = true;
+}
+
 PeripheralWindows::PeripheralWindows(advertising_data_t advertising_data) {
     address_type_ = advertising_data.address_type;
     identifier_ = advertising_data.identifier;
