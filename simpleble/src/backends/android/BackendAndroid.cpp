@@ -4,7 +4,6 @@
 #include "CommonUtils.h"
 #include "android/BluetoothAdapter.h"
 #include "android/ClassHandler.h"
-#include "bridge/ClassHandler.h"
 #include "simplejni/Registry.hpp"
 
 #include <android/log.h>
@@ -19,7 +18,6 @@ std::shared_ptr<BackendAndroid> BACKEND_ANDROID() { return BackendAndroid::get()
 BackendAndroid::BackendAndroid(buildToken) {
     SimpleJNI::Registrar::get().preload(SimpleJNI::VM::env());
     Android::ClassHandler::initialize();
-    Android::Bridge::ClassHandler::initialize();
 }
 
 std::string BackendAndroid::name() const noexcept { return "Android"; }

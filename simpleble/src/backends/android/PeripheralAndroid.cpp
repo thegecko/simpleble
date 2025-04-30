@@ -218,12 +218,12 @@ void PeripheralAndroid::notify(BluetoothUUID const& service, BluetoothUUID const
         throw SimpleBLE::Exception::OperationFailed("Failed to subscribe to characteristic " + characteristic);
     }
 
-    _btGattCallback.set_flag_descriptorWritePending(descriptor_obj.getObject().get());
+    _btGattCallback.set_flag_descriptorWritePending(descriptor_obj.getObject());
     descriptor_obj.setValue(Android::BluetoothGattDescriptor::ENABLE_NOTIFICATION_VALUE);
     if (!_gatt.writeDescriptor(descriptor_obj)) {
         throw SimpleBLE::Exception::OperationFailed("Failed to write descriptor for characteristic " + characteristic);
     }
-    _btGattCallback.wait_flag_descriptorWritePending(descriptor_obj.getObject().get());
+    _btGattCallback.wait_flag_descriptorWritePending(descriptor_obj.getObject());
 }
 
 void PeripheralAndroid::indicate(BluetoothUUID const& service, BluetoothUUID const& characteristic,
@@ -244,12 +244,12 @@ void PeripheralAndroid::indicate(BluetoothUUID const& service, BluetoothUUID con
         throw SimpleBLE::Exception::OperationFailed("Failed to subscribe to characteristic " + characteristic);
     }
 
-    _btGattCallback.set_flag_descriptorWritePending(descriptor_obj.getObject().get());
+    _btGattCallback.set_flag_descriptorWritePending(descriptor_obj.getObject());
     descriptor_obj.setValue(Android::BluetoothGattDescriptor::ENABLE_INDICATION_VALUE);
     if (!_gatt.writeDescriptor(descriptor_obj)) {
         throw SimpleBLE::Exception::OperationFailed("Failed to write descriptor for characteristic " + characteristic);
     }
-    _btGattCallback.wait_flag_descriptorWritePending(descriptor_obj.getObject().get());
+    _btGattCallback.wait_flag_descriptorWritePending(descriptor_obj.getObject());
 }
 
 void PeripheralAndroid::unsubscribe(BluetoothUUID const& service, BluetoothUUID const& characteristic) {
@@ -259,12 +259,12 @@ void PeripheralAndroid::unsubscribe(BluetoothUUID const& service, BluetoothUUID 
     auto descriptor_obj = _fetch_descriptor(service, characteristic,
                                             Android::BluetoothGattDescriptor::CLIENT_CHARACTERISTIC_CONFIG);
 
-    _btGattCallback.set_flag_descriptorWritePending(descriptor_obj.getObject().get());
+    _btGattCallback.set_flag_descriptorWritePending(descriptor_obj.getObject());
     descriptor_obj.setValue(Android::BluetoothGattDescriptor::DISABLE_NOTIFICATION_VALUE);
     if (!_gatt.writeDescriptor(descriptor_obj)) {
         throw SimpleBLE::Exception::OperationFailed("Failed to write descriptor for characteristic " + characteristic);
     }
-    _btGattCallback.wait_flag_descriptorWritePending(descriptor_obj.getObject().get());
+    _btGattCallback.wait_flag_descriptorWritePending(descriptor_obj.getObject());
 
     _btGattCallback.clear_callback_onCharacteristicChanged(characteristic_obj.getObject());
     bool success = _gatt.setCharacteristicNotification(characteristic_obj, false);
@@ -279,12 +279,12 @@ ByteArray PeripheralAndroid::read(BluetoothUUID const& service, BluetoothUUID co
 
     auto descriptor_obj = _fetch_descriptor(service, characteristic, descriptor);
 
-    _btGattCallback.set_flag_descriptorReadPending(descriptor_obj.getObject().get());
+    _btGattCallback.set_flag_descriptorReadPending(descriptor_obj.getObject());
     if (!_gatt.readDescriptor(descriptor_obj)) {
         throw SimpleBLE::Exception::OperationFailed("Failed to read descriptor " + descriptor);
     }
 
-    auto value = _btGattCallback.wait_flag_descriptorReadPending(descriptor_obj.getObject().get());
+    auto value = _btGattCallback.wait_flag_descriptorReadPending(descriptor_obj.getObject());
     return ByteArray(value);
 }
 
@@ -294,12 +294,12 @@ void PeripheralAndroid::write(BluetoothUUID const& service, BluetoothUUID const&
 
     auto descriptor_obj = _fetch_descriptor(service, characteristic, descriptor);
 
-    _btGattCallback.set_flag_descriptorWritePending(descriptor_obj.getObject().get());
+    _btGattCallback.set_flag_descriptorWritePending(descriptor_obj.getObject());
     descriptor_obj.setValue(std::vector<uint8_t>(data.begin(), data.end()));
     if (!_gatt.writeDescriptor(descriptor_obj)) {
         throw SimpleBLE::Exception::OperationFailed("Failed to write descriptor " + descriptor);
     }
-    _btGattCallback.wait_flag_descriptorWritePending(descriptor_obj.getObject().get());
+    _btGattCallback.wait_flag_descriptorWritePending(descriptor_obj.getObject());
 }
 
 void PeripheralAndroid::set_callback_on_connected(std::function<void()> on_connected) {

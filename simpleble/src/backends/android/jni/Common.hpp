@@ -13,6 +13,7 @@
 #include "GlobalRef.hpp"
 #include "VM.hpp"
 #include "kvn/kvn_bytearray.h"
+#include "simplejni/Common.hpp"
 
 namespace SimpleBLE {
 namespace JNI {
@@ -175,6 +176,11 @@ class Object {
 
         env->ReleaseByteArrayElements(jarr, arr, JNI_ABORT);
         return result;
+    }
+
+    // Conversion to SimpleJNI::Object with GlobalRef for implicit conversion
+    operator SimpleJNI::Object<SimpleJNI::GlobalRef, jobject>() const {
+        return SimpleJNI::Object<SimpleJNI::GlobalRef, jobject>(_obj.get(), _cls.get());
     }
 
   private:
