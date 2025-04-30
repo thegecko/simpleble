@@ -7,23 +7,42 @@ namespace SimpleBLE {
 namespace Android {
 namespace Bridge {
 
-JNI::Class ScanCallback::_cls;
-kvn::safe_map<JNI::Object, ScanCallback*, JNI::JniObjectComparator> ScanCallback::_map;
+// Define static JNI resources
+SimpleJNI::GlobalRef<jclass> ScanCallback::_cls;
+jmethodID ScanCallback::_constructor = nullptr;
 
-void ScanCallback::initialize() {
-    JNI::Env env;
+// Define the JNI descriptor
+const SimpleJNI::JNIDescriptor ScanCallback::descriptor{
+    "org/simpleble/android/bridge/ScanCallback", // Java class name
+    &_cls,                                       // Where to store the jclass
+    {                                            // Methods to preload
+     {"<init>", "()V", &_constructor}            // Constructor
+    }};
 
-    if (_cls.get() == nullptr) {
-        _cls = env.find_class("org/simpleble/android/bridge/ScanCallback");
+const SimpleJNI::AutoRegister<ScanCallback> ScanCallback::registrar{&descriptor};
+
+kvn::safe_map<SimpleJNI::Object<SimpleJNI::GlobalRef, jobject>, ScanCallback*,
+                     SimpleJNI::ObjectComparator<SimpleJNI::GlobalRef, jobject>>
+    ScanCallback::_map;
+
+ScanCallback::ScanCallback() : _obj() {
+    if (!_cls.get()) {
+        throw std::runtime_error("ScanCallback JNI resources not preloaded. Ensure SimpleJNI::Registrar::preload() is called.");
     }
+
+    SimpleJNI::Env env;
+    jobject local_obj = env->NewObject(_cls.get(), _constructor);
+    if (local_obj == nullptr) {
+        throw std::runtime_error("Failed to create ScanCallback Java instance");
+    }
+
+    _obj = SimpleJNI::Object<SimpleJNI::GlobalRef, jobject>(local_obj);
+    env->DeleteLocalRef(local_obj);
+
+    ScanCallback::_map.insert(_obj, this);
 }
 
-ScanCallback::ScanCallback() {
-    _obj = _cls.call_constructor("()V");
-    _map.insert(_obj, this);
-}
-
-ScanCallback::~ScanCallback() { _map.erase(_obj); }
+ScanCallback::~ScanCallback() { ScanCallback::_map.erase(_obj); }
 
 void ScanCallback::set_callback_onScanResult(std::function<void(Android::ScanResult)> callback) {
     if (callback) {
@@ -49,7 +68,7 @@ void ScanCallback::set_callback_onScanFailed(std::function<void()> callback) {
     }
 }
 
-void ScanCallback::jni_onScanResultCallback(JNI::Object thiz, jint callback_type,
+void ScanCallback::jni_onScanResultCallback(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> thiz, jint callback_type,
                                             SimpleBLE::Android::ScanResult scan_result) {
     auto callback_opt = ScanCallback::_map.get(thiz);
     if (!callback_opt) {
@@ -66,7 +85,8 @@ void ScanCallback::jni_onScanResultCallback(JNI::Object thiz, jint callback_type
     SAFE_CALLBACK_CALL(obj->_callback_onScanResult, scan_result);
 }
 
-void ScanCallback::jni_onBatchScanResultsCallback(JNI::Object thiz, JNI::Object results) {
+void ScanCallback::jni_onBatchScanResultsCallback(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> thiz,
+                                                 SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> results) {
     auto callback_opt = ScanCallback::_map.get(thiz);
     if (!callback_opt) {
         SIMPLEBLE_LOG_FATAL("Failed to find ScanCallback object. This should never happen.");
@@ -78,7 +98,7 @@ void ScanCallback::jni_onBatchScanResultsCallback(JNI::Object thiz, JNI::Object 
     // TODO: Implement
 }
 
-void ScanCallback::jni_onScanFailedCallback(JNI::Object thiz, jint error_code) {
+void ScanCallback::jni_onScanFailedCallback(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> thiz, jint error_code) {
     auto callback_opt = ScanCallback::_map.get(thiz);
     if (!callback_opt) {
         SIMPLEBLE_LOG_FATAL("Failed to find ScanCallback object. This should never happen.");
@@ -96,24 +116,24 @@ void ScanCallback::jni_onScanFailedCallback(JNI::Object thiz, jint error_code) {
 extern "C" {
 // clang-format off
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_ScanCallback_onScanResultCallback(JNIEnv *env, jobject thiz, jint callback_type, jobject result) {
-    SimpleBLE::JNI::Object thiz_obj(thiz);
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> thiz_obj(thiz);
     SimpleBLE::Android::ScanResult scan_result(result);
-    SimpleBLE::JNI::Runner::get().enqueue([thiz_obj, callback_type, scan_result]() {
+    SimpleJNI::Runner::get().enqueue([thiz_obj, callback_type, scan_result]() {
         SimpleBLE::Android::Bridge::ScanCallback::jni_onScanResultCallback(thiz_obj, callback_type, scan_result);
     });
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_ScanCallback_onScanFailedCallback(JNIEnv *env, jobject thiz, jint error_code) {
-    SimpleBLE::JNI::Object thiz_obj(thiz);
-    SimpleBLE::JNI::Runner::get().enqueue([thiz_obj, error_code]() {
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> thiz_obj(thiz);
+    SimpleJNI::Runner::get().enqueue([thiz_obj, error_code]() {
         SimpleBLE::Android::Bridge::ScanCallback::jni_onScanFailedCallback(thiz_obj, error_code);
     });
 }
 
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_ScanCallback_onBatchScanResultsCallback(JNIEnv *env, jobject thiz, jobject results) {
-    SimpleBLE::JNI::Object thiz_obj(thiz);
-    SimpleBLE::JNI::Object results_obj(results);
-    SimpleBLE::JNI::Runner::get().enqueue([thiz_obj, results_obj]() {
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> thiz_obj(thiz);
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> results_obj(results);
+    SimpleJNI::Runner::get().enqueue([thiz_obj, results_obj]() {
         SimpleBLE::Android::Bridge::ScanCallback::jni_onBatchScanResultsCallback(thiz_obj, results_obj);
     });
 }

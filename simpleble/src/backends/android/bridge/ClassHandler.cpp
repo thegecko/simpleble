@@ -9,7 +9,6 @@ namespace Bridge {
 
 void ClassHandler::initialize() {
     BluetoothGattCallback::initialize();
-    ScanCallback::initialize();
 }
 
 }  // namespace Bridge
