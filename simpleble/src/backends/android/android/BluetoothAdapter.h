@@ -1,18 +1,17 @@
 #pragma once
 
-#include "jni/Common.hpp"
-
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 #include "BluetoothDevice.h"
 #include "BluetoothScanner.h"
 
 namespace SimpleBLE {
 namespace Android {
 
-class ClassHandler;
-
 class BluetoothAdapter {
   public:
-    BluetoothAdapter(JNI::Object obj);
+    BluetoothAdapter(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj);
+    virtual ~BluetoothAdapter() = default;
 
     std::string getName();
     std::string getAddress();
@@ -31,10 +30,13 @@ class BluetoothAdapter {
     // NOTE: Android BluetoothAdapter and BluetoothScanner classes are singletons, but so is this
     // class, so we don't need to make them static.
     static BluetoothAdapter getDefaultAdapter();
+    jobject get() const { return _obj.get(); }  // TODO: Remove once nothing uses this
 
   private:
-    static JNI::Class _cls;
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> _obj;
 
+    // Static JNI resources managed by Registrar
+    static SimpleJNI::GlobalRef<jclass> _cls;
     static jmethodID _method_getName;
     static jmethodID _method_getAddress;
     static jmethodID _method_isEnabled;
@@ -42,11 +44,11 @@ class BluetoothAdapter {
     static jmethodID _method_getBluetoothLeScanner;
     static jmethodID _method_getBondedDevices;
     static jmethodID _method_getDefaultAdapter;
-    static void initialize();
-    void check_initialized() const;
-    JNI::Object _obj;
 
-    friend class ClassHandler;
+    // JNI descriptors for auto-registration
+    static const SimpleJNI::JNIDescriptor instance_descriptor;
+    static const SimpleJNI::StaticJNIDescriptor static_descriptor;
+    static const SimpleJNI::AutoRegister<BluetoothAdapter> registrar;
 };
 
 }  // namespace Android

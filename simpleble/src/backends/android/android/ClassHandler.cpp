@@ -17,9 +17,6 @@ namespace SimpleBLE {
 namespace Android {
 
 void ClassHandler::initialize() {
-    BluetoothAdapter::initialize();
-    BluetoothDevice::initialize();
-    BluetoothGatt::initialize();
     BluetoothGattCharacteristic::initialize();
     BluetoothGattDescriptor::initialize();
     BluetoothGattService::initialize();

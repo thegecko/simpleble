@@ -1,18 +1,17 @@
 #pragma once
 
 #include "BluetoothGatt.h"
-
 #include "bridge/BluetoothGattCallback.h"
-#include "jni/Common.hpp"
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 
 namespace SimpleBLE {
 namespace Android {
 
-class ClassHandler;
-
 class BluetoothDevice {
   public:
-    BluetoothDevice(JNI::Object obj);
+    BluetoothDevice(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj);
+    virtual ~BluetoothDevice() = default;
 
     std::string getAddress();
     // int getAddressType();
@@ -35,7 +34,10 @@ class BluetoothDevice {
     static const int TRANSPORT_LE = 2;
 
   private:
-    static JNI::Class _cls;
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> _obj;
+
+    // Static JNI resources managed by Registrar
+    static SimpleJNI::GlobalRef<jclass> _cls;
     static jmethodID _method_getAddress;
     // static jmethodID _method_getAddressType;
     static jmethodID _method_getName;
@@ -43,11 +45,9 @@ class BluetoothDevice {
     static jmethodID _method_removeBond;
     static jmethodID _method_connectGatt;
 
-    static void initialize();
-    void check_initialized() const;
-    JNI::Object _obj;
-
-    friend class ClassHandler;
+    // JNI descriptor for auto-registration
+    static const SimpleJNI::JNIDescriptor descriptor;
+    static const SimpleJNI::AutoRegister<BluetoothDevice> registrar;
 };
 
 }  // namespace Android

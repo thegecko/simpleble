@@ -4,99 +4,98 @@
 namespace SimpleBLE {
 namespace Android {
 
-JNI::Class BluetoothAdapter::_cls;
-jmethodID BluetoothAdapter::_method_getName;
-jmethodID BluetoothAdapter::_method_getAddress;
-jmethodID BluetoothAdapter::_method_isEnabled;
-jmethodID BluetoothAdapter::_method_getState;
-jmethodID BluetoothAdapter::_method_getBluetoothLeScanner;
-jmethodID BluetoothAdapter::_method_getBondedDevices;
-jmethodID BluetoothAdapter::_method_getDefaultAdapter;
+// Static member initialization
+SimpleJNI::GlobalRef<jclass> BluetoothAdapter::_cls;
+jmethodID BluetoothAdapter::_method_getName = nullptr;
+jmethodID BluetoothAdapter::_method_getAddress = nullptr;
+jmethodID BluetoothAdapter::_method_isEnabled = nullptr;
+jmethodID BluetoothAdapter::_method_getState = nullptr;
+jmethodID BluetoothAdapter::_method_getBluetoothLeScanner = nullptr;
+jmethodID BluetoothAdapter::_method_getBondedDevices = nullptr;
+jmethodID BluetoothAdapter::_method_getDefaultAdapter = nullptr;
 
-void BluetoothAdapter::initialize() {
-    JNI::Env env;
-
-    if (_cls.get() == nullptr) {
-        _cls = env.find_class("android/bluetooth/BluetoothAdapter");
+// JNI descriptors for auto-registration
+const SimpleJNI::JNIDescriptor BluetoothAdapter::instance_descriptor{
+    "android/bluetooth/BluetoothAdapter",  // Java class name
+    &_cls,                                 // Where to store the jclass
+    {                                      // Instance methods to preload
+     {"getName", "()Ljava/lang/String;", &_method_getName},
+     {"getAddress", "()Ljava/lang/String;", &_method_getAddress},
+     {"isEnabled", "()Z", &_method_isEnabled},
+     {"getState", "()I", &_method_getState},
+     {"getBluetoothLeScanner", "()Landroid/bluetooth/le/BluetoothLeScanner;", &_method_getBluetoothLeScanner},
+     {"getBondedDevices", "()Ljava/util/Set;", &_method_getBondedDevices}
     }
+};
 
-    if (_method_getName == nullptr) {
-        _method_getName = env->GetMethodID(_cls.get(), "getName", "()Ljava/lang/String;");
+const SimpleJNI::StaticJNIDescriptor BluetoothAdapter::static_descriptor{
+    "android/bluetooth/BluetoothAdapter",  // Java class name
+    &_cls,                                 // Where to store the jclass (shared with instance)
+    {                                      // Static methods to preload
+     {"getDefaultAdapter", "()Landroid/bluetooth/BluetoothAdapter;", &_method_getDefaultAdapter}
     }
+};
 
-    if (_method_getAddress == nullptr) {
-        _method_getAddress = env->GetMethodID(_cls.get(), "getAddress", "()Ljava/lang/String;");
+// Auto-register both descriptors
+const SimpleJNI::AutoRegister<BluetoothAdapter> BluetoothAdapter::registrar{&instance_descriptor, &static_descriptor};
+
+BluetoothAdapter::BluetoothAdapter(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj) : _obj(obj) {
+    if (!obj) {
+        throw std::runtime_error("BluetoothAdapter object is null");
     }
-
-    if (_method_isEnabled == nullptr) {
-        _method_isEnabled = env->GetMethodID(_cls.get(), "isEnabled", "()Z");
-    }
-
-    if (_method_getState == nullptr) {
-        _method_getState = env->GetMethodID(_cls.get(), "getState", "()I");
-    }
-
-    if (_method_getBluetoothLeScanner == nullptr) {
-        _method_getBluetoothLeScanner = env->GetMethodID(_cls.get(), "getBluetoothLeScanner",
-                                                         "()Landroid/bluetooth/le/BluetoothLeScanner;");
-    }
-
-    if (_method_getBondedDevices == nullptr) {
-        _method_getBondedDevices = env->GetMethodID(_cls.get(), "getBondedDevices", "()Ljava/util/Set;");
-    }
-
-    if (_method_getDefaultAdapter == nullptr) {
-        _method_getDefaultAdapter = env->GetStaticMethodID(_cls.get(), "getDefaultAdapter",
-                                                           "()Landroid/bluetooth/BluetoothAdapter;");
-    }
-}
-
-BluetoothAdapter::BluetoothAdapter(JNI::Object obj) : _obj(obj) {}
-
-void BluetoothAdapter::check_initialized() const {
-    if (!_obj) throw std::runtime_error("BluetoothAdapter is not initialized");
 }
 
 BluetoothAdapter BluetoothAdapter::getDefaultAdapter() {
-    return BluetoothAdapter(_cls.call_static_method(_method_getDefaultAdapter));
+    if (!_cls.get()) {
+        throw std::runtime_error("BluetoothAdapter JNI resources not preloaded. Ensure SimpleJNI::Registrar::preload() is called.");
+    }
+    SimpleJNI::Env env;
+    jobject local_obj = env->CallStaticObjectMethod(_cls.get(), _method_getDefaultAdapter);
+    if (local_obj == nullptr) {
+        throw std::runtime_error("Failed to get default BluetoothAdapter");
+    }
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj(local_obj);
+    env->DeleteLocalRef(local_obj);
+    return BluetoothAdapter(obj);
 }
 
 std::string BluetoothAdapter::getName() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothAdapter is not initialized");
     return _obj.call_string_method(_method_getName);
 }
 
 std::string BluetoothAdapter::getAddress() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothAdapter is not initialized");
     return _obj.call_string_method(_method_getAddress);
 }
 
 bool BluetoothAdapter::isEnabled() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothAdapter is not initialized");
     return _obj.call_boolean_method(_method_isEnabled);
 }
 
 int BluetoothAdapter::getState() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothAdapter is not initialized");
     return _obj.call_int_method(_method_getState);
 }
 
 BluetoothScanner BluetoothAdapter::getBluetoothLeScanner() {
-    check_initialized();
-    return BluetoothScanner(_obj.call_object_method(_method_getBluetoothLeScanner));
+    if (!_obj) throw std::runtime_error("BluetoothAdapter is not initialized");
+    auto scanner_obj = _obj.call_object_method(_method_getBluetoothLeScanner);
+    return BluetoothScanner(scanner_obj.get());
 }
 
 std::vector<BluetoothDevice> BluetoothAdapter::getBondedDevices() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothAdapter is not initialized");
 
-    JNI::Object devices_obj = _obj.call_object_method(_method_getBondedDevices);
+    auto devices_obj = _obj.call_object_method(_method_getBondedDevices);
     if (!devices_obj) throw std::runtime_error("Failed to get bonded devices");
 
     std::vector<BluetoothDevice> result;
-    JNI::Types::Set set(devices_obj);
+    JNI::Types::Set set(devices_obj.get());
     JNI::Types::Iterator iterator = set.iterator();
     while (iterator.hasNext()) {
-        JNI::Object device_obj = iterator.next();
+        auto device_obj = iterator.next();
         if (!device_obj) continue;
         result.push_back(BluetoothDevice(device_obj));
     }

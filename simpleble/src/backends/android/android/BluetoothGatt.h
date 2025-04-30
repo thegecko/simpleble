@@ -1,7 +1,8 @@
 #pragma once
 
 #include "BluetoothGattService.h"
-#include "jni/Common.hpp"
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 
 #include <cstdint>
 #include <vector>
@@ -9,12 +10,10 @@
 namespace SimpleBLE {
 namespace Android {
 
-class ClassHandler;
-
 class BluetoothGatt {
   public:
     BluetoothGatt();
-    BluetoothGatt(JNI::Object obj);
+    BluetoothGatt(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj);
 
     void close();
     bool connect();
@@ -46,7 +45,10 @@ class BluetoothGatt {
     // int writeDescriptor(BluetoothGattDescriptor descriptor, std::vector<byte>& value);
 
   private:
-    static JNI::Class _cls;
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> _obj;
+
+    // Static JNI resources managed by Registrar
+    static SimpleJNI::GlobalRef<jclass> _cls;
     static jmethodID _method_close;
     static jmethodID _method_connect;
     static jmethodID _method_disconnect;
@@ -58,11 +60,9 @@ class BluetoothGatt {
     static jmethodID _method_writeCharacteristic;
     static jmethodID _method_writeDescriptor;
 
-    static void initialize();
-    void check_initialized() const;
-    JNI::Object _obj;
-
-    friend class ClassHandler;
+    // JNI descriptor for auto-registration
+    static const SimpleJNI::JNIDescriptor descriptor;
+    static const SimpleJNI::AutoRegister<BluetoothGatt> registrar;
 };
 
 }  // namespace Android
