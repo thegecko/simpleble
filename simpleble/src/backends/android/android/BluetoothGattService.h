@@ -3,17 +3,16 @@
 #include <string>
 #include <vector>
 #include "BluetoothGattCharacteristic.h"
-#include "jni/Common.hpp"
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 
 namespace SimpleBLE {
 namespace Android {
 
-class ClassHandler;
-
 class BluetoothGattService {
   public:
     BluetoothGattService();
-    BluetoothGattService(JNI::Object obj);
+    BluetoothGattService(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj);
 
     //    bool addCharacteristic(BluetoothGattCharacteristic characteristic);
     //    bool addService(BluetoothGattService service);
@@ -25,11 +24,11 @@ class BluetoothGattService {
     int getType();
     std::string getUuid();
 
-    JNI::Object getObject() const { return _obj; }
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> getObject() const { return _obj; }
 
   private:
-    JNI::Object _obj;
-    static JNI::Class _cls;
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> _obj;
+    static SimpleJNI::GlobalRef<jclass> _cls;
     static jmethodID _method_addCharacteristic;
     static jmethodID _method_addService;
     static jmethodID _method_getCharacteristic;
@@ -39,10 +38,9 @@ class BluetoothGattService {
     static jmethodID _method_getType;
     static jmethodID _method_getUuid;
 
-    static void initialize();
-    void check_initialized() const;
-
-    friend class ClassHandler;
+    // JNI descriptor for auto-registration
+    static const SimpleJNI::JNIDescriptor descriptor;
+    static const SimpleJNI::AutoRegister<BluetoothGattService> registrar;
 };
 
 }  // namespace Android

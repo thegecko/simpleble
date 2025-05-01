@@ -4,63 +4,56 @@
 namespace SimpleBLE {
 namespace Android {
 
-JNI::Class BluetoothGattDescriptor::_cls;
+// Define static JNI resources
+SimpleJNI::GlobalRef<jclass> BluetoothGattDescriptor::_cls;
 jmethodID BluetoothGattDescriptor::_method_getUuid = nullptr;
 jmethodID BluetoothGattDescriptor::_method_getValue = nullptr;
 jmethodID BluetoothGattDescriptor::_method_setValue = nullptr;
+
+// Define the JNI descriptor
+const SimpleJNI::JNIDescriptor BluetoothGattDescriptor::descriptor{
+    "android/bluetooth/BluetoothGattDescriptor", // Java class name
+    &_cls,                                       // Where to store the jclass
+    {                                            // Methods to preload
+     {"getUuid", "()Ljava/util/UUID;", &_method_getUuid},
+     {"getValue", "()[B", &_method_getValue},
+     {"setValue", "([B)Z", &_method_setValue}
+    }};
+
+const SimpleJNI::AutoRegister<BluetoothGattDescriptor> BluetoothGattDescriptor::registrar{&descriptor};
 
 const std::string BluetoothGattDescriptor::CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
 const std::vector<uint8_t> BluetoothGattDescriptor::DISABLE_NOTIFICATION_VALUE = {0x00, 0x00};
 const std::vector<uint8_t> BluetoothGattDescriptor::ENABLE_NOTIFICATION_VALUE = {0x01, 0x00};
 const std::vector<uint8_t> BluetoothGattDescriptor::ENABLE_INDICATION_VALUE = {0x02, 0x00};
 
-void BluetoothGattDescriptor::initialize() {
-    JNI::Env env;
-
-    if (_cls.get() == nullptr) {
-        _cls = env.find_class("android/bluetooth/BluetoothGattDescriptor");
-    }
-
-    if (!_method_getUuid) {
-        _method_getUuid = env->GetMethodID(_cls.get(), "getUuid", "()Ljava/util/UUID;");
-    }
-
-    if (!_method_getValue) {
-        _method_getValue = env->GetMethodID(_cls.get(), "getValue", "()[B");
-    }
-
-    if (!_method_setValue) {
-        _method_setValue = env->GetMethodID(_cls.get(), "setValue", "([B)Z");
+BluetoothGattDescriptor::BluetoothGattDescriptor() : _obj() {
+    if (!_cls.get()) {
+        throw std::runtime_error("BluetoothGattDescriptor JNI resources not preloaded. Ensure SimpleJNI::Registrar::preload() is called.");
     }
 }
 
-void BluetoothGattDescriptor::check_initialized() const {
-    if (!_obj) throw std::runtime_error("BluetoothGattDescriptor is not initialized");
-}
-
-BluetoothGattDescriptor::BluetoothGattDescriptor() {}
-
-BluetoothGattDescriptor::BluetoothGattDescriptor(JNI::Object obj) : _obj(obj) {}
+BluetoothGattDescriptor::BluetoothGattDescriptor(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj) : _obj(obj) {}
 
 std::string BluetoothGattDescriptor::getUuid() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattDescriptor is not initialized");
 
-    JNI::Object uuidObj = _obj.call_object_method(_method_getUuid);
+    SimpleJNI::Object<SimpleJNI::LocalRef, jobject> uuidObj = _obj.call_object_method(_method_getUuid);
     if (!uuidObj) throw std::runtime_error("Failed to get UUID");
 
-    return UUID(uuidObj).toString();
+    return UUID(uuidObj.get()).toString();
 }
 
 std::vector<uint8_t> BluetoothGattDescriptor::getValue() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattDescriptor is not initialized");
 
     return _obj.call_byte_array_method(_method_getValue);
 }
 
 bool BluetoothGattDescriptor::setValue(const std::vector<uint8_t>& value) {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattDescriptor is not initialized");
 
-    JNI::Env env;
+    SimpleJNI::Env env;
     jbyteArray jbyteArray_obj = env->NewByteArray(value.size());
     env->SetByteArrayRegion(jbyteArray_obj, 0, value.size(), reinterpret_cast<const jbyte*>(value.data()));
 

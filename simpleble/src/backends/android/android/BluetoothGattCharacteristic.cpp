@@ -6,10 +6,12 @@
 #include "UUID.h"
 #include "jni/List.h"
 #include "jni/Types.h"
+
 namespace SimpleBLE {
 namespace Android {
 
-JNI::Class BluetoothGattCharacteristic::_cls;
+// Static JNI resources
+SimpleJNI::GlobalRef<jclass> BluetoothGattCharacteristic::_cls;
 jmethodID BluetoothGattCharacteristic::_method_addDescriptor = nullptr;
 jmethodID BluetoothGattCharacteristic::_method_getDescriptor = nullptr;
 jmethodID BluetoothGattCharacteristic::_method_getDescriptors = nullptr;
@@ -22,67 +24,43 @@ jmethodID BluetoothGattCharacteristic::_method_getWriteType = nullptr;
 jmethodID BluetoothGattCharacteristic::_method_setWriteType = nullptr;
 jmethodID BluetoothGattCharacteristic::_method_setValue = nullptr;
 
-void BluetoothGattCharacteristic::initialize() {
-    JNI::Env env;
+// JNI descriptor for auto-registration
+const SimpleJNI::JNIDescriptor BluetoothGattCharacteristic::descriptor{
+    "android/bluetooth/BluetoothGattCharacteristic", // Java class name
+    &_cls,                                           // Where to store the jclass
+    {                                                // Methods to preload
+     {"addDescriptor", "(Landroid/bluetooth/BluetoothGattDescriptor;)Z", &_method_addDescriptor},
+     {"getDescriptor", "(Ljava/util/UUID;)Landroid/bluetooth/BluetoothGattDescriptor;", &_method_getDescriptor},
+     {"getDescriptors", "()Ljava/util/List;", &_method_getDescriptors},
+     {"getInstanceId", "()I", &_method_getInstanceId},
+     {"getPermissions", "()I", &_method_getPermissions},
+     {"getProperties", "()I", &_method_getProperties},
+     {"getService", "()Landroid/bluetooth/BluetoothGattService;", &_method_getService},
+     {"getUuid", "()Ljava/util/UUID;", &_method_getUuid},
+     {"getWriteType", "()I", &_method_getWriteType},
+     {"setWriteType", "(I)V", &_method_setWriteType},
+     {"setValue", "([B)Z", &_method_setValue}
+    }};
 
-    if (_cls.get() == nullptr) {
-        _cls = env.find_class("android/bluetooth/BluetoothGattCharacteristic");
+// Auto-register the descriptor
+const SimpleJNI::AutoRegister<BluetoothGattCharacteristic> BluetoothGattCharacteristic::registrar{&descriptor};
+
+BluetoothGattCharacteristic::BluetoothGattCharacteristic() : _obj() {
+    if (!_cls.get()) {
+        throw std::runtime_error("BluetoothGattCharacteristic JNI resources not preloaded. Ensure SimpleJNI::Registrar::preload() is called.");
     }
 
-    if (!_method_addDescriptor) {
-        _method_addDescriptor = env->GetMethodID(_cls.get(), "addDescriptor",
-                                                 "(Landroid/bluetooth/BluetoothGattDescriptor;)Z");
+    SimpleJNI::Env env;
+    jobject local_obj = env->NewObject(_cls.get(), env->GetMethodID(_cls.get(), "<init>", "()V"));
+    if (local_obj == nullptr) {
+        throw std::runtime_error("Failed to create BluetoothGattCharacteristic Java instance");
     }
 
-    if (!_method_getDescriptor) {
-        _method_getDescriptor = env->GetMethodID(_cls.get(), "getDescriptor",
-                                                 "(Ljava/util/UUID;)Landroid/bluetooth/BluetoothGattDescriptor;");
-    }
-
-    if (!_method_getDescriptors) {
-        _method_getDescriptors = env->GetMethodID(_cls.get(), "getDescriptors", "()Ljava/util/List;");
-    }
-
-    if (!_method_getInstanceId) {
-        _method_getInstanceId = env->GetMethodID(_cls.get(), "getInstanceId", "()I");
-    }
-
-    if (!_method_getPermissions) {
-        _method_getPermissions = env->GetMethodID(_cls.get(), "getPermissions", "()I");
-    }
-
-    if (!_method_getProperties) {
-        _method_getProperties = env->GetMethodID(_cls.get(), "getProperties", "()I");
-    }
-
-    if (!_method_getService) {
-        _method_getService = env->GetMethodID(_cls.get(), "getService", "()Landroid/bluetooth/BluetoothGattService;");
-    }
-
-    if (!_method_getUuid) {
-        _method_getUuid = env->GetMethodID(_cls.get(), "getUuid", "()Ljava/util/UUID;");
-    }
-
-    if (!_method_getWriteType) {
-        _method_getWriteType = env->GetMethodID(_cls.get(), "getWriteType", "()I");
-    }
-
-    if (!_method_setWriteType) {
-        _method_setWriteType = env->GetMethodID(_cls.get(), "setWriteType", "(I)V");
-    }
-
-    if (!_method_setValue) {
-        _method_setValue = env->GetMethodID(_cls.get(), "setValue", "([B)Z");
-    }
+    _obj = SimpleJNI::Object<SimpleJNI::GlobalRef, jobject>(local_obj);
+    env->DeleteLocalRef(local_obj);
 }
 
-void BluetoothGattCharacteristic::check_initialized() const {
-    if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
-}
-
-BluetoothGattCharacteristic::BluetoothGattCharacteristic() {}
-
-BluetoothGattCharacteristic::BluetoothGattCharacteristic(JNI::Object obj) : _obj(obj) {}
+BluetoothGattCharacteristic::BluetoothGattCharacteristic(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj) : _obj(obj) {}
 
 // bool BluetoothGattCharacteristic::addDescriptor(BluetoothGattDescriptor descriptor) {
 //     return _obj.call_boolean_method(_method_addDescriptor, descriptor.getObject());
@@ -90,21 +68,21 @@ BluetoothGattCharacteristic::BluetoothGattCharacteristic(JNI::Object obj) : _obj
 //
 // BluetoothGattDescriptor BluetoothGattCharacteristic::getDescriptor(std::string uuid) {
 //     JNI::Env env;
-//     JNI::Object descObj = _obj.call_object_method(_method_getDescriptor, env->NewStringUTF(uuid.c_str()));
+//     SimpleJNI::Object<SimpleJNI::LocalRef, jobject> descObj = _obj.call_object_method(_method_getDescriptor, env->NewStringUTF(uuid.c_str()));
 //     return BluetoothGattDescriptor(descObj);
 // }
 //
 std::vector<BluetoothGattDescriptor> BluetoothGattCharacteristic::getDescriptors() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
 
-    JNI::Object descriptors_obj = _obj.call_object_method(_method_getDescriptors);
+    SimpleJNI::Object<SimpleJNI::LocalRef, jobject> descriptors_obj = _obj.call_object_method(_method_getDescriptors);
     if (!descriptors_obj) throw std::runtime_error("Failed to get descriptors");
 
     std::vector<BluetoothGattDescriptor> result;
-    JNI::Types::List list(descriptors_obj);
+    JNI::Types::List list(descriptors_obj.get());
     JNI::Types::Iterator iterator = list.iterator();
     while (iterator.hasNext()) {
-        JNI::Object descriptor = iterator.next();
+        SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> descriptor = iterator.next();
 
         if (!descriptor) continue;
         result.push_back(BluetoothGattDescriptor(descriptor));
@@ -114,43 +92,43 @@ std::vector<BluetoothGattDescriptor> BluetoothGattCharacteristic::getDescriptors
 }
 
 int BluetoothGattCharacteristic::getInstanceId() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
     return _obj.call_int_method(_method_getInstanceId);
 }
 
 int BluetoothGattCharacteristic::getPermissions() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
     return _obj.call_int_method(_method_getPermissions);
 }
 
 int BluetoothGattCharacteristic::getProperties() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
     return _obj.call_int_method(_method_getProperties);
 }
 
 std::string BluetoothGattCharacteristic::getUuid() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
 
-    JNI::Object uuidObj = _obj.call_object_method(_method_getUuid);
+    SimpleJNI::Object<SimpleJNI::LocalRef, jobject> uuidObj = _obj.call_object_method(_method_getUuid);
     if (!uuidObj) throw std::runtime_error("Failed to get UUID");
 
-    return UUID(uuidObj).toString();
+    return UUID(uuidObj.get()).toString();
 }
 
 int BluetoothGattCharacteristic::getWriteType() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
     return _obj.call_int_method(_method_getWriteType);
 }
 
 void BluetoothGattCharacteristic::setWriteType(int writeType) {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
     _obj.call_void_method(_method_setWriteType, writeType);
 }
 
 bool BluetoothGattCharacteristic::setValue(const std::vector<uint8_t>& value) {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
 
-    JNI::Env env;
+    SimpleJNI::Env env;
     jbyteArray array = JNI::Types::toJByteArray(value);
 
     bool result = _obj.call_boolean_method(_method_setValue, array);

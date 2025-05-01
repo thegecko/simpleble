@@ -75,7 +75,7 @@ std::vector<BluetoothGattService> BluetoothGatt::getServices() {
     while (iterator.hasNext()) {
         SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> service = iterator.next();
         if (!service) continue;
-        result.push_back(BluetoothGattService(service.get()));
+        result.push_back(BluetoothGattService(service));
     }
     return result;
 }
