@@ -117,7 +117,8 @@ extern "C" {
 // clang-format off
 JNIEXPORT void JNICALL Java_org_simpleble_android_bridge_ScanCallback_onScanResultCallback(JNIEnv *env, jobject thiz, jint callback_type, jobject result) {
     SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> thiz_obj(thiz);
-    SimpleBLE::Android::ScanResult scan_result(result);
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> result_obj(result);
+    SimpleBLE::Android::ScanResult scan_result(result_obj);
     SimpleJNI::Runner::get().enqueue([thiz_obj, callback_type, scan_result]() {
         SimpleBLE::Android::Bridge::ScanCallback::jni_onScanResultCallback(thiz_obj, callback_type, scan_result);
     });

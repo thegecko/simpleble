@@ -1,20 +1,21 @@
 #pragma once
 
-#include "UUID.h"
-#include "jni/Common.hpp"
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 
+#include "UUID.h"
 #include <map>
 #include <vector>
 #include "kvn/kvn_bytearray.h"
+#include "ParcelUUID.h"
+#include "SparseArray.h"
 
 namespace SimpleBLE {
 namespace Android {
 
-class ClassHandler;
-
 class ScanRecord {
   public:
-    ScanRecord(JNI::Object obj);
+    ScanRecord(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj);
 
     std::vector<std::string> getServiceUuids();
     std::map<uint16_t, kvn::bytearray> getManufacturerData();
@@ -22,16 +23,18 @@ class ScanRecord {
     std::string toString();
 
   private:
-    static JNI::Class _cls;
+    // Underlying JNI object
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> _obj;
+
+    // Static JNI resources managed by Registrar
+    static SimpleJNI::GlobalRef<jclass> _cls;
     static jmethodID _method_getServiceUuids;
     static jmethodID _method_getManufacturerData;
     static jmethodID _method_toString;
 
-    static void initialize();
-    void check_initialized() const;
-    JNI::Object _obj;
-
-    friend class ClassHandler;
+    // JNI descriptor for auto-registration
+    static const SimpleJNI::JNIDescriptor descriptor;
+    static const SimpleJNI::AutoRegister<ScanRecord> registrar;
 };
 
 }  // namespace Android

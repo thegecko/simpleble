@@ -179,6 +179,9 @@ class ByteArray : public Object<RefType, jbyteArray> {
   public:
     ByteArray() = default;
 
+    // NOTE: The user is responsible for ensuring that the jobject is a jbyteArray
+    explicit ByteArray(jobject obj) : Object<RefType, jbyteArray>(static_cast<jbyteArray>(obj)) {}
+
     explicit ByteArray(jbyteArray obj) : Object<RefType, jbyteArray>(obj) {}
 
     ByteArray(const kvn::bytearray& data) : Object<RefType, jbyteArray>() {

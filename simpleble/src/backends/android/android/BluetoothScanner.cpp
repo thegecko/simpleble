@@ -1,51 +1,45 @@
 #include "BluetoothScanner.h"
+#include <CommonUtils.h>
+#include <android/log.h>
+#include <fmt/format.h>
 
 namespace SimpleBLE {
 namespace Android {
 
-JNI::Class BluetoothScanner::_cls;
-jmethodID BluetoothScanner::_method_startScan;
-jmethodID BluetoothScanner::_method_stopScan;
-jmethodID BluetoothScanner::_method_toString;
+// Define static JNI resources
+SimpleJNI::GlobalRef<jclass> BluetoothScanner::_cls;
+jmethodID BluetoothScanner::_constructor = nullptr;
+jmethodID BluetoothScanner::_method_startScan = nullptr;
+jmethodID BluetoothScanner::_method_stopScan = nullptr;
+jmethodID BluetoothScanner::_method_toString = nullptr;
 
-void BluetoothScanner::initialize() {
-    JNI::Env env;
+// Define the JNI descriptor
+const SimpleJNI::JNIDescriptor BluetoothScanner::descriptor{
+    "android/bluetooth/le/BluetoothLeScanner", // Java class name
+    &_cls,                                     // Where to store the jclass
+    {                                          // Methods to preload
+     {"<init>", "()V", &_constructor},
+     {"startScan", "(Landroid/bluetooth/le/ScanCallback;)V", &_method_startScan},
+     {"stopScan", "(Landroid/bluetooth/le/ScanCallback;)V", &_method_stopScan},
+     {"toString", "()Ljava/lang/String;", &_method_toString}
+    }};
 
-    if (_cls.get() == nullptr) {
-        _cls = env.find_class("android/bluetooth/le/BluetoothLeScanner");
-    }
+const SimpleJNI::AutoRegister<BluetoothScanner> BluetoothScanner::registrar{&descriptor};
 
-    if (!_method_toString) {
-        _method_toString = env->GetMethodID(_cls.get(), "toString", "()Ljava/lang/String;");
-    }
-
-    if (!_method_startScan) {
-        _method_startScan = env->GetMethodID(_cls.get(), "startScan", "(Landroid/bluetooth/le/ScanCallback;)V");
-    }
-
-    if (!_method_stopScan) {
-        _method_stopScan = env->GetMethodID(_cls.get(), "stopScan", "(Landroid/bluetooth/le/ScanCallback;)V");
-    }
-}
-
-BluetoothScanner::BluetoothScanner(JNI::Object obj) : _obj(obj) {}
-
-void BluetoothScanner::check_initialized() const {
-    if (!_obj) throw std::runtime_error("BluetoothScanner is not initialized");
-}
+BluetoothScanner::BluetoothScanner(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj) : _obj(obj) {}
 
 void BluetoothScanner::startScan(Bridge::ScanCallback& callback) {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothScanner is not initialized");
     _obj.call_void_method(_method_startScan, callback.get());
 }
 
 void BluetoothScanner::stopScan(Bridge::ScanCallback& callback) {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothScanner is not initialized");
     _obj.call_void_method(_method_stopScan, callback.get());
 }
 
 std::string BluetoothScanner::toString() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("BluetoothScanner is not initialized");
     return _obj.call_string_method(_method_toString);
 }
 

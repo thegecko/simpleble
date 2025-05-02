@@ -17,11 +17,7 @@ namespace SimpleBLE {
 namespace Android {
 
 void ClassHandler::initialize() {
-    BluetoothScanner::initialize();
     ParcelUUID::initialize();
-    ScanResult::initialize();
-    ScanRecord::initialize();
-    SparseArrayBase::initialize();
     UUID::initialize();
 }
 

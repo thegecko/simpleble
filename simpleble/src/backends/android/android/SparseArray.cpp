@@ -3,62 +3,52 @@
 namespace SimpleBLE {
 namespace Android {
 
-JNI::Class SparseArrayBase::_cls;
+// Define static JNI resources
+SimpleJNI::GlobalRef<jclass> SparseArrayBase::_cls;
 jmethodID SparseArrayBase::_method_size = nullptr;
 jmethodID SparseArrayBase::_method_keyAt = nullptr;
 jmethodID SparseArrayBase::_method_valueAt = nullptr;
 
-void SparseArrayBase::initialize() {
-    JNI::Env env;
+// Define the JNI descriptor
+const SimpleJNI::JNIDescriptor SparseArrayBase::descriptor{
+    "android/util/SparseArray", // Java class name
+    &_cls,                      // Where to store the jclass
+    {                           // Methods to preload
+     {"size", "()I", &_method_size},
+     {"keyAt", "(I)I", &_method_keyAt},
+     {"valueAt", "(I)Ljava/lang/Object;", &_method_valueAt}
+    }};
 
-    if (_cls.get() == nullptr) {
-        _cls = env.find_class("android/util/SparseArray");
-    }
-
-    if (!_method_size) {
-        _method_size = env->GetMethodID(_cls.get(), "size", "()I");
-    }
-
-    if (!_method_keyAt) {
-        _method_keyAt = env->GetMethodID(_cls.get(), "keyAt", "(I)I");
-    }
-
-    if (!_method_valueAt) {
-        _method_valueAt = env->GetMethodID(_cls.get(), "valueAt", "(I)Ljava/lang/Object;");
-    }
-}
+const SimpleJNI::AutoRegister<SparseArrayBase> SparseArrayBase::registrar{&descriptor};
 
 template <typename T>
 SparseArray<T>::SparseArray() {}
 
 template <typename T>
-SparseArray<T>::SparseArray(JNI::Object obj) : _obj(obj) {}
+SparseArray<T>::SparseArray(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj) : _obj(obj) {}
 
-template <typename T>
-void SparseArray<T>::check_initialized() const {
-    if (!_obj) throw std::runtime_error("SparseArray is not initialized");
-}
 
 template <typename T>
 int SparseArray<T>::size() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("SparseArray is not initialized");
     return _obj.call_int_method(_method_size);
 }
 
 template <typename T>
 int SparseArray<T>::keyAt(int index) {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("SparseArray is not initialized");
     return _obj.call_int_method(_method_keyAt, index);
 }
 
 template <typename T>
 T SparseArray<T>::valueAt(int index) {
-    check_initialized();
-    return T(_obj.call_object_method(_method_valueAt, index));
+    if (!_obj) throw std::runtime_error("SparseArray is not initialized");
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> value = _obj.call_object_method(_method_valueAt, index);
+    return T(value.get());
 }
 
-template class SparseArray<JNI::ByteArray>;
-template class SparseArray<JNI::Object>;
+template class SparseArray<SimpleJNI::ByteArray<SimpleJNI::LocalRef>>;
+template class SparseArray<SimpleJNI::Object<SimpleJNI::LocalRef, jobject>>;
 
 }  // namespace Android
 }  // namespace SimpleBLE

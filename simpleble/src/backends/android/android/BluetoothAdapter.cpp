@@ -82,7 +82,7 @@ int BluetoothAdapter::getState() {
 BluetoothScanner BluetoothAdapter::getBluetoothLeScanner() {
     if (!_obj) throw std::runtime_error("BluetoothAdapter is not initialized");
     auto scanner_obj = _obj.call_object_method(_method_getBluetoothLeScanner);
-    return BluetoothScanner(scanner_obj.get());
+    return BluetoothScanner(scanner_obj);
 }
 
 std::vector<BluetoothDevice> BluetoothAdapter::getBondedDevices() {

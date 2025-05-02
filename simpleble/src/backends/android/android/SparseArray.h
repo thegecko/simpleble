@@ -1,37 +1,36 @@
 #pragma once
 
-#include "jni/Common.hpp"
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 
 namespace SimpleBLE {
 namespace Android {
 
-class ClassHandler;
-
 class SparseArrayBase {
   public:
-    static void initialize();
-
-    static JNI::Class _cls;
+    // Static JNI resources managed by Registrar
+    static SimpleJNI::GlobalRef<jclass> _cls;
     static jmethodID _method_size;
     static jmethodID _method_keyAt;
     static jmethodID _method_valueAt;
 
-    friend class ClassHandler;
+    // JNI descriptor for auto-registration
+    static const SimpleJNI::JNIDescriptor descriptor;
+    static const SimpleJNI::AutoRegister<SparseArrayBase> registrar;
 };
 
 template <typename T>
 class SparseArray : public SparseArrayBase {
   public:
     SparseArray();
-    SparseArray(JNI::Object obj);
+    SparseArray(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj);
 
     int size();
     int keyAt(int index);
     T valueAt(int index);
 
   private:
-    void check_initialized() const;
-    JNI::Object _obj;
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> _obj;
 };
 
 }  // namespace Android
