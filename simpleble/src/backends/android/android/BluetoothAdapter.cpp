@@ -92,8 +92,8 @@ std::vector<BluetoothDevice> BluetoothAdapter::getBondedDevices() {
     if (!devices_obj) throw std::runtime_error("Failed to get bonded devices");
 
     std::vector<BluetoothDevice> result;
-    JNI::Types::Set set(devices_obj.get());
-    JNI::Types::Iterator iterator = set.iterator();
+    Set set(devices_obj.to_global());
+    Iterator iterator = set.iterator();
     while (iterator.hasNext()) {
         auto device_obj = iterator.next();
         if (!device_obj) continue;

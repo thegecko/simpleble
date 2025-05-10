@@ -34,8 +34,8 @@ std::vector<std::string> ScanRecord::getServiceUuids() {
     if (!service_uuids_obj) return {};
 
     std::vector<std::string> result;
-    JNI::Types::List list(service_uuids_obj.get());
-    JNI::Types::Iterator iterator = list.iterator();
+    List list(service_uuids_obj.to_global());
+    Iterator iterator = list.iterator();
     while (iterator.hasNext()) {
         ParcelUUID parcel_uuid = ParcelUUID(iterator.next());
         result.push_back(parcel_uuid.getUuid().toString());

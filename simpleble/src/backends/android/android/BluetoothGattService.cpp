@@ -65,8 +65,8 @@ std::vector<BluetoothGattCharacteristic> BluetoothGattService::getCharacteristic
     if (!characteristics_obj) throw std::runtime_error("Failed to get characteristics");
 
     std::vector<BluetoothGattCharacteristic> result;
-    JNI::Types::List list(characteristics_obj.get());
-    JNI::Types::Iterator iterator = list.iterator();
+    List list(characteristics_obj.to_global());
+    Iterator iterator = list.iterator();
     while (iterator.hasNext()) {
         SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> characteristic = iterator.next();
 

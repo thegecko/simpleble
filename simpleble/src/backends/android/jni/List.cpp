@@ -1,37 +1,29 @@
 #include "List.h"
+#include "Iterator.h"
 
 namespace SimpleBLE {
-namespace JNI {
-namespace Types {
+namespace Android {
 
-JNI::Class List::_cls;
-jmethodID List::_method_iterator;
+SimpleJNI::GlobalRef<jclass> List::_cls;
+jmethodID List::_method_iterator = nullptr;
 
-void List::initialize() {
-    JNI::Env env;
-
-    if (_cls.get() == nullptr) {
-        _cls = env.find_class("java/util/List");
+const SimpleJNI::JNIDescriptor List::descriptor{
+    "java/util/List", // Java class name
+    &_cls,            // Where to store the jclass
+    {                 // Methods to preload
+     {"iterator", "()Ljava/util/Iterator;", &_method_iterator}
     }
+};
 
-    if (!_method_iterator) {
-        _method_iterator = env->GetMethodID(_cls.get(), "iterator", "()Ljava/util/Iterator;");
-    }
-}
+const SimpleJNI::AutoRegister<List> List::registrar{&descriptor};
 
-List::List(JNI::Object obj) : _obj(obj) { initialize(); }
-
-void List::check_initialized() const {
-    if (!_obj) throw std::runtime_error("List is not initialized");
-}
+List::List(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj) : _obj(obj) {}
 
 Iterator List::iterator() {
-    check_initialized();
-
-    JNI::Object iterator = _obj.call_object_method(_method_iterator);
-    return Iterator(iterator);
+    if (!_obj) throw std::runtime_error("List is not initialized");
+    SimpleJNI::Object<SimpleJNI::LocalRef> iterator_obj = _obj.call_object_method(_method_iterator);
+    return Iterator(iterator_obj.to_global());
 }
 
-}  // namespace Types
-}  // namespace JNI
+}  // namespace Android
 }  // namespace SimpleBLE

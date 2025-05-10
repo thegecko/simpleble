@@ -1,28 +1,28 @@
 #pragma once
 
-#include <jni.h>
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 #include <vector>
-#include "Common.hpp"
 
 namespace SimpleBLE {
-namespace JNI {
-namespace Types {
+namespace Android {
+
 class Iterator {
   public:
-    Iterator(JNI::Object obj);
+    Iterator(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj);
 
     bool hasNext();
-    JNI::Object next();
+    SimpleJNI::Object<SimpleJNI::LocalRef> next();
 
   private:
-    static JNI::Class _cls;
+    static SimpleJNI::GlobalRef<jclass> _cls;
     static jmethodID _method_hasNext;
     static jmethodID _method_next;
 
-    static void initialize();
-    void check_initialized() const;
-    JNI::Object _obj;
+    static const SimpleJNI::JNIDescriptor descriptor;
+    static const SimpleJNI::AutoRegister<Iterator> registrar;
+
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> _obj;
 };
-}  // namespace Types
-}  // namespace JNI
+}  // namespace Android
 }  // namespace SimpleBLE

@@ -79,8 +79,8 @@ std::vector<BluetoothGattDescriptor> BluetoothGattCharacteristic::getDescriptors
     if (!descriptors_obj) throw std::runtime_error("Failed to get descriptors");
 
     std::vector<BluetoothGattDescriptor> result;
-    JNI::Types::List list(descriptors_obj.get());
-    JNI::Types::Iterator iterator = list.iterator();
+    List list(descriptors_obj.to_global());
+    Iterator iterator = list.iterator();
     while (iterator.hasNext()) {
         SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> descriptor = iterator.next();
 

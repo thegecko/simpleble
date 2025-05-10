@@ -70,8 +70,8 @@ std::vector<BluetoothGattService> BluetoothGatt::getServices() {
     std::vector<BluetoothGattService> result;
     // Assuming JNI::Types::List and related classes are adapted to SimpleJNI namespace
     // This part might need further adjustment based on how List and Iterator are implemented in SimpleJNI
-    JNI::Types::List list(services_obj.get());
-    JNI::Types::Iterator iterator = list.iterator();
+    List list(services_obj.to_global());
+    Iterator iterator = list.iterator();
     while (iterator.hasNext()) {
         SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> service = iterator.next();
         if (!service) continue;

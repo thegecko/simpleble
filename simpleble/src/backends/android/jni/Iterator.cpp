@@ -1,45 +1,36 @@
 #include "Iterator.h"
 
 namespace SimpleBLE {
-namespace JNI {
-namespace Types {
+namespace Android {
 
-JNI::Class Iterator::_cls;
+// Define static JNI resources
+SimpleJNI::GlobalRef<jclass> Iterator::_cls;
 jmethodID Iterator::_method_hasNext = nullptr;
 jmethodID Iterator::_method_next = nullptr;
 
-void Iterator::initialize() {
-    JNI::Env env;
-
-    if (_cls.get() == nullptr) {
-        _cls = env.find_class("java/util/Iterator");
+// Define the JNI descriptor
+const SimpleJNI::JNIDescriptor Iterator::descriptor{
+    "java/util/Iterator",             // Java class name
+    &_cls,                            // Where to store the jclass
+    {                                 // Methods to preload
+     {"hasNext", "()Z", &_method_hasNext},
+     {"next", "()Ljava/lang/Object;", &_method_next}
     }
+};
 
-    if (!_method_hasNext) {
-        _method_hasNext = env->GetMethodID(_cls.get(), "hasNext", "()Z");
-    }
+const SimpleJNI::AutoRegister<Iterator> Iterator::registrar{&descriptor};
 
-    if (!_method_next) {
-        _method_next = env->GetMethodID(_cls.get(), "next", "()Ljava/lang/Object;");
-    }
-}
-
-Iterator::Iterator(JNI::Object obj) : _obj(obj) { initialize(); }
-
-void Iterator::check_initialized() const {
-    if (!_obj) throw std::runtime_error("Iterator is not initialized");
-}
+Iterator::Iterator(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj) : _obj(obj) {}
 
 bool Iterator::hasNext() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("Iterator is not initialized");
     return _obj.call_boolean_method(_method_hasNext);
 }
 
-JNI::Object Iterator::next() {
-    check_initialized();
+SimpleJNI::Object<SimpleJNI::LocalRef> Iterator::next() {
+    if (!_obj) throw std::runtime_error("Iterator is not initialized");
     return _obj.call_object_method(_method_next);
 }
 
-}  // namespace Types
-}  // namespace JNI
+}  // namespace Android
 }  // namespace SimpleBLE
