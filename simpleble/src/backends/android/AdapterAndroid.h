@@ -16,7 +16,6 @@
 #include "android/BluetoothAdapter.h"
 #include "android/BluetoothScanner.h"
 #include "bridge/ScanCallback.h"
-#include "jni/Common.hpp"
 
 namespace SimpleBLE {
 

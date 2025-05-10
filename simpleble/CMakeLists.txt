@@ -283,9 +283,9 @@ elseif(SIMPLEBLE_BACKEND_ANDROID)
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/SparseArray.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/bridge/BluetoothGattCallback.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/bridge/ScanCallback.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/jni/Iterator.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/jni/List.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/jni/Set.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/Iterator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/List.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/Set.cpp)
     target_link_libraries(simpleble PUBLIC android nativehelper log)
 endif()
 

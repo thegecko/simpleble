@@ -3,8 +3,6 @@
 #include "../common/BackendBase.h"
 #include "../common/BackendUtils.h"
 
-#include "jni/Common.hpp"
-
 namespace SimpleBLE {
 
 class BackendAndroid : public BackendSingleton<BackendAndroid> {

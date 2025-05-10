@@ -1,9 +1,8 @@
 #include "ScanRecord.h"
 #include "ParcelUUID.h"
 #include "SparseArray.h"
-#include "jni/List.h"
-#include "jni/Types.h"
-
+#include "List.h"
+#include "Iterator.h"
 namespace SimpleBLE {
 namespace Android {
 

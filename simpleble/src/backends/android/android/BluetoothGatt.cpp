@@ -2,7 +2,7 @@
 #include <android/log.h>
 #include <fmt/core.h>
 
-#include "jni/List.h"
+#include "List.h"
 
 namespace SimpleBLE {
 namespace Android {

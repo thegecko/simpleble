@@ -1,5 +1,5 @@
 #include "BluetoothAdapter.h"
-#include "jni/Set.h"
+#include "Set.h"
 
 namespace SimpleBLE {
 namespace Android {

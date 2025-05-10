@@ -4,8 +4,7 @@
 
 #include "BluetoothGattCharacteristic.h"
 #include "UUID.h"
-#include "jni/List.h"
-#include "jni/Types.h"
+#include "List.h"
 
 namespace SimpleBLE {
 namespace Android {
@@ -128,12 +127,15 @@ void BluetoothGattCharacteristic::setWriteType(int writeType) {
 bool BluetoothGattCharacteristic::setValue(const std::vector<uint8_t>& value) {
     if (!_obj) throw std::runtime_error("BluetoothGattCharacteristic is not initialized");
 
-    SimpleJNI::Env env;
-    jbyteArray array = JNI::Types::toJByteArray(value);
+    SimpleJNI::ByteArray<SimpleJNI::LocalRef> jni_array_wrapper(value);
 
-    bool result = _obj.call_boolean_method(_method_setValue, array);
-    env->DeleteLocalRef(array);
-    return result;
+    if (!jni_array_wrapper) {
+        throw std::runtime_error("Failed to create Java byte array for setValue using SimpleJNI::ByteArray");
+    }
+
+    bool success = _obj.call_boolean_method(_method_setValue, jni_array_wrapper.get());
+
+    return success;
 }
 
 }  // namespace Android
