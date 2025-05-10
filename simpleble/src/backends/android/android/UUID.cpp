@@ -3,31 +3,22 @@
 namespace SimpleBLE {
 namespace Android {
 
-JNI::Class UUID::_cls;
+SimpleJNI::GlobalRef<jclass> UUID::_cls;
 jmethodID UUID::_method_toString = nullptr;
 
-void UUID::initialize() {
-    JNI::Env env;
+const SimpleJNI::JNIDescriptor UUID::descriptor{"java/util/UUID",  // Java class name
+                                                &_cls,             // Pointer to store the jclass
+                                                {                  // Methods to preload
+                                                 {"toString", "()Ljava/lang/String;", &_method_toString}}};
 
-    if (_cls.get() == nullptr) {
-        _cls = env.find_class("java/util/UUID");
-    }
+const SimpleJNI::AutoRegister<UUID> UUID::registrar{&descriptor};
 
-    if (!_method_toString) {
-        _method_toString = env->GetMethodID(_cls.get(), "toString", "()Ljava/lang/String;");
-    }
-}
+UUID::UUID() : _obj() {}
 
-UUID::UUID() {}
-
-UUID::UUID(JNI::Object obj) : _obj(obj) {}
-
-void UUID::check_initialized() const {
-    if (!_obj) throw std::runtime_error("UUID is not initialized");
-}
+UUID::UUID(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj) : _obj(obj) {}
 
 std::string UUID::toString() {
-    check_initialized();
+    if (!_obj) throw std::runtime_error("UUID is not initialized");
     return _obj.call_string_method(_method_toString);
 }
 

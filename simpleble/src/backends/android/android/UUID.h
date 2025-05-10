@@ -1,28 +1,28 @@
 #pragma once
 
-#include "jni/Common.hpp"
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 
 namespace SimpleBLE {
 namespace Android {
 
-class ClassHandler;
-
 class UUID {
   public:
-    static void initialize();
     UUID();
-    UUID(JNI::Object obj);
+    UUID(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj);
 
     std::string toString();
 
+    jobject get() const { return _obj.get(); }  // TODO: Remove once nothing uses this
+
   private:
-    static JNI::Class _cls;
+    SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> _obj;
+
+    static SimpleJNI::GlobalRef<jclass> _cls;
     static jmethodID _method_toString;
 
-    void check_initialized() const;
-    JNI::Object _obj;
-
-    friend class ClassHandler;
+    static const SimpleJNI::JNIDescriptor descriptor;
+    static const SimpleJNI::AutoRegister<UUID> registrar;
 };
 
 }  // namespace Android

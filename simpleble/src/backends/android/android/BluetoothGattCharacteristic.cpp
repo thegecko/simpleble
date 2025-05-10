@@ -112,7 +112,7 @@ std::string BluetoothGattCharacteristic::getUuid() {
     SimpleJNI::Object<SimpleJNI::LocalRef, jobject> uuidObj = _obj.call_object_method(_method_getUuid);
     if (!uuidObj) throw std::runtime_error("Failed to get UUID");
 
-    return UUID(uuidObj.get()).toString();
+    return UUID(uuidObj.to_global()).toString();
 }
 
 int BluetoothGattCharacteristic::getWriteType() {

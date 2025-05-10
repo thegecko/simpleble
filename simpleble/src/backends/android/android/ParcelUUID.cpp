@@ -3,32 +3,29 @@
 namespace SimpleBLE {
 namespace Android {
 
-JNI::Class ParcelUUID::_cls;
+// Static members definition
+SimpleJNI::GlobalRef<jclass> ParcelUUID::_cls;
 jmethodID ParcelUUID::_method_getUuid = nullptr;
 
-void ParcelUUID::initialize() {
-    JNI::Env env;
+// JNI Descriptor for ParcelUUID
+const SimpleJNI::JNIDescriptor ParcelUUID::descriptor{
+    "android/os/ParcelUuid",                             // Java class name
+    &_cls,                                               // Pointer to store the jclass
+    {                                                    // Methods to preload
+     {"getUuid", "()Ljava/util/UUID;", &_method_getUuid}
+    }};
 
-    if (_cls.get() == nullptr) {
-        _cls = env.find_class("android/os/ParcelUuid");
-    }
+// Auto-register the class with SimpleJNI
+const SimpleJNI::AutoRegister<ParcelUUID> ParcelUUID::registrar{&descriptor};
 
-    if (!_method_getUuid) {
-        _method_getUuid = env->GetMethodID(_cls.get(), "getUuid", "()Ljava/util/UUID;");
-    }
-}
+ParcelUUID::ParcelUUID() : _obj() {}
 
-ParcelUUID::ParcelUUID() {}
-
-ParcelUUID::ParcelUUID(JNI::Object obj) : _obj(obj) {}
-
-void ParcelUUID::check_initialized() const {
-    if (!_obj) throw std::runtime_error("ParcelUUID is not initialized");
-}
+ParcelUUID::ParcelUUID(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj) : _obj(obj) {}
 
 UUID ParcelUUID::getUuid() {
-    check_initialized();
-    return UUID(_obj.call_object_method(_method_getUuid));
+    if (!_obj) throw std::runtime_error("ParcelUUID is not initialized");
+    SimpleJNI::Object<SimpleJNI::LocalRef, jobject> java_uuid_obj = _obj.call_object_method(_method_getUuid);
+    return UUID(java_uuid_obj);
 }
 
 }  // namespace Android
