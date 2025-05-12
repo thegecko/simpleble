@@ -2,7 +2,7 @@
 
 #include <kvn_safe_callback.hpp>
 #include <map>
-#include "android/ScanResult.h"
+#include "types/android/bluetooth/le/ScanResult.h"
 #include "simplejni/Common.hpp"
 #include "simplejni/Registry.hpp"
 

@@ -13,8 +13,8 @@
 #include <string>
 #include <vector>
 
-#include "android/BluetoothAdapter.h"
-#include "android/BluetoothScanner.h"
+#include "types/android/bluetooth/BluetoothAdapter.h"
+#include "types/android/bluetooth/le/BluetoothScanner.h"
 #include "bridge/ScanCallback.h"
 
 namespace SimpleBLE {

@@ -3,8 +3,8 @@
 #include "simplejni/Common.hpp"
 #include "simplejni/Registry.hpp"
 
-#include "BluetoothDevice.h"
-#include "ScanRecord.h"
+#include "types/android/bluetooth/BluetoothDevice.h"
+#include "types/android/bluetooth/le/ScanRecord.h"
 
 namespace SimpleBLE {
 namespace Android {

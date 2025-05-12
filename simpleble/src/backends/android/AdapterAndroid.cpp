@@ -5,8 +5,8 @@
 #include "PeripheralAndroid.h"
 #include "simpleble/Peripheral.h"
 
-#include <android/BluetoothDevice.h>
-#include <android/ScanResult.h>
+#include <types/android/bluetooth/BluetoothDevice.h>
+#include <types/android/bluetooth/le/ScanResult.h>
 #include <android/log.h>
 #include <fmt/core.h>
 #include <jni.h>

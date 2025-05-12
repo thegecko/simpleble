@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UUID.h"
+#include "types/java/util/UUID.h"
 #include "simplejni/Common.hpp"
 #include "simplejni/Registry.hpp"
 
@@ -13,7 +13,7 @@ class ParcelUUID {
     ParcelUUID(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj);
 
     UUID getUuid();
-    
+
     jobject get() const { return _obj.get(); }  // TODO: Remove once nothing uses this
 
   private:

@@ -2,8 +2,8 @@
 
 #include "simplejni/Common.hpp"
 #include "simplejni/Registry.hpp"
-#include "BluetoothDevice.h"
-#include "BluetoothScanner.h"
+#include "types/android/bluetooth/BluetoothDevice.h"
+#include "types/android/bluetooth/le/BluetoothScanner.h"
 
 namespace SimpleBLE {
 namespace Android {

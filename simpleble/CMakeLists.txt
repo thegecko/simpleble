@@ -269,23 +269,23 @@ elseif(SIMPLEBLE_BACKEND_ANDROID)
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/AdapterAndroid.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/PeripheralAndroid.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/BackendAndroid.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/BluetoothAdapter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/BluetoothDevice.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/BluetoothGatt.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/BluetoothGattService.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/BluetoothGattCharacteristic.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/BluetoothGattDescriptor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/BluetoothScanner.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/UUID.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/ParcelUUID.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/ScanRecord.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/ScanResult.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/SparseArray.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/bridge/BluetoothGattCallback.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/bridge/ScanCallback.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/Iterator.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/List.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/android/Set.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/bluetooth/BluetoothAdapter.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/bluetooth/BluetoothDevice.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/bluetooth/BluetoothGatt.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/bluetooth/BluetoothGattService.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/bluetooth/BluetoothGattCharacteristic.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/bluetooth/BluetoothGattDescriptor.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/bluetooth/le/BluetoothScanner.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/java/util/UUID.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/os/ParcelUUID.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/bluetooth/le/ScanRecord.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/bluetooth/le/ScanResult.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/android/util/SparseArray.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/java/util/Iterator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/java/util/List.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/java/util/Set.cpp)
     target_link_libraries(simpleble PUBLIC android nativehelper log)
 endif()
 

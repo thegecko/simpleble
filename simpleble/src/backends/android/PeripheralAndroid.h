@@ -7,7 +7,7 @@
 #include <kvn_safe_callback.hpp>
 #include "../common/PeripheralBase.h"
 
-#include <android/ScanResult.h>
+#include <types/android/bluetooth/le/ScanResult.h>
 #include <bridge/BluetoothGattCallback.h>
 
 #include <condition_variable>

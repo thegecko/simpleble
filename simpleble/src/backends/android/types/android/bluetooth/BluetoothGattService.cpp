@@ -3,8 +3,8 @@
 //
 
 #include "BluetoothGattService.h"
-#include "UUID.h"
-#include "List.h"
+#include "types/java/util/UUID.h"
+#include "types/java/util/List.h"
 
 namespace SimpleBLE {
 namespace Android {

@@ -2,7 +2,7 @@
 #include "AdapterAndroid.h"
 #include "BuildVec.h"
 #include "CommonUtils.h"
-#include "android/BluetoothAdapter.h"
+#include "types/android/bluetooth/BluetoothAdapter.h"
 #include "simplejni/Registry.hpp"
 
 #include <android/log.h>

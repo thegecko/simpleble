@@ -1,5 +1,5 @@
 #include "BluetoothGattDescriptor.h"
-#include "UUID.h"
+#include "types/java/util/UUID.h"
 
 namespace SimpleBLE {
 namespace Android {

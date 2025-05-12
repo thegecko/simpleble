@@ -3,12 +3,12 @@
 #include "simplejni/Common.hpp"
 #include "simplejni/Registry.hpp"
 
-#include "UUID.h"
+#include "types/java/util/UUID.h"
 #include <map>
 #include <vector>
 #include "kvn/kvn_bytearray.h"
-#include "ParcelUUID.h"
-#include "SparseArray.h"
+#include "types/android/os/ParcelUUID.h"
+#include "types/android/util/SparseArray.h"
 
 namespace SimpleBLE {
 namespace Android {
