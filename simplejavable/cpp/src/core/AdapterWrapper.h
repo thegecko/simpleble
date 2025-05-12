@@ -1,7 +1,7 @@
 #pragma once
 #include <simpleble/SimpleBLE.h>
-#include "jni/Common.hpp"
-#include "jni/Registry.hpp"
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 #include "org/simplejavable/AdapterCallback.h"
 
 class AdapterWrapper {

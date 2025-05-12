@@ -40,7 +40,11 @@ class VM {
             case JNI_OK:
                 break;
             case JNI_EDETACHED: {
+#ifdef __ANDROID__
                 auto result = jvm->AttachCurrentThread(&env, nullptr);
+#else
+                auto result = jvm->AttachCurrentThread(reinterpret_cast<void**>(&env), nullptr);
+#endif
                 if (result != JNI_OK) {
                     throw std::runtime_error("Failed to attach the current thread to the JVM");
                 }
@@ -57,7 +61,11 @@ class VM {
     static void attach() {
         JNIEnv* env = nullptr;
         JavaVM* jvm = VM::jvm();
+#ifdef __ANDROID__
         auto result = jvm->AttachCurrentThread(&env, nullptr);
+#else
+        auto result = jvm->AttachCurrentThread(reinterpret_cast<void**>(&env), nullptr);
+#endif
         if (result != JNI_OK) {
             throw std::runtime_error("Failed to attach the current thread to the JVM");
         }

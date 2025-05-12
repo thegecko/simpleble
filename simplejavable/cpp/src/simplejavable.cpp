@@ -15,8 +15,8 @@
 #include "java/lang/HashMap.h"
 #include "java/lang/Integer.h"
 #include "java/lang/Iterator.h"
-#include "jni/Common.hpp"
-#include "jni/Registry.hpp"
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 #include "org/simplejavable/AdapterCallback.h"
 #include "org/simplejavable/Characteristic.h"
 #include "org/simplejavable/DataCallback.h"
@@ -39,8 +39,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 
 extern "C" JNIEXPORT jboolean JNICALL
 Java_org_simplejavable_Adapter_00024Companion_nativeIsBluetoothEnabled(JNIEnv* env, jobject thiz) {
-    // return SimpleBLE::Safe::Adapter::bluetooth_enabled().value_or(false);
-    return true;
+    return SimpleBLE::Adapter::bluetooth_enabled();
 }
 
 extern "C" JNIEXPORT jlongArray JNICALL Java_org_simplejavable_Adapter_nativeGetAdapters(JNIEnv* env, jclass clazz) {

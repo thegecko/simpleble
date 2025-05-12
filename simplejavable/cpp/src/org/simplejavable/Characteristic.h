@@ -2,8 +2,8 @@
 
 #include "Descriptor.h"
 #include "java/lang/ArrayList.h"
-#include "jni/Common.hpp"
-#include "jni/Registry.hpp"
+#include "simplejni/Common.hpp"
+#include "simplejni/Registry.hpp"
 
 namespace Org {
 namespace SimpleJavaBLE {
