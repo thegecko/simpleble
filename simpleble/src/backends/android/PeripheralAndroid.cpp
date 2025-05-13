@@ -21,6 +21,8 @@ PeripheralAndroid::PeripheralAndroid(Android::BluetoothDevice device) : _device(
             // If a connection has been established, request service discovery.
             _gatt.discoverServices();
         } else {
+            // If a connection has been lost, close the GATT object.
+            _gatt.close();
             SAFE_CALLBACK_CALL(callback_on_disconnected_);
             _disconnection_cv.notify_all();
         }

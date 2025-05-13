@@ -28,10 +28,11 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 **Changed**
 
 - (Windows) Calls to the WinRT backend are now executed in a separate MTA apartment by default.
+- (Android) Migrated to using the `simplejni` library for JNI bindings.
 
 **Fixed**
 
--
+- (Android) Fixed a bug where the GATT object would not be closed if a connection was lost. *(Thanks Nicole S.!)*
 
 **Removed**
 
