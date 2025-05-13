@@ -24,6 +24,8 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Windows) Added support for retrieving paired peripherals.
 - (Windows) Added support for retrieving connected peripherals.
 - (Python) Exposed the `Adapter::power_on()`, `Adapter::power_off()` and `Adapter::is_powered()` methods.
+- (Android) Calls to Java methods are now checked for exceptions.
+- (Java) Calls to Java methods are now checked for exceptions.
 
 **Changed**
 

@@ -20,6 +20,40 @@ namespace SimpleJNI {
 // TODO: Implement a base class that handles common functionality of complicated Objects (see the ones in
 // org/simplejavable)
 
+class Exception : public std::runtime_error {
+  public:
+    Exception(jthrowable obj) : std::runtime_error("Java Exception"), _ref(), _cls() {
+        _ref = LocalRef<jthrowable>(obj);
+
+        JNIEnv* env = SimpleJNI::VM::env();
+        _cls = LocalRef<jclass>(env->GetObjectClass(_ref.get()));
+
+        jmethodID method_get_name = env->GetMethodID(_cls.get(), "getName", "()Ljava/lang/String;");
+        jmethodID method_get_message = env->GetMethodID(_cls.get(), "getMessage", "()Ljava/lang/String;");
+
+        std::string exception_name = call_string_method(env, _ref.get(), method_get_name);
+        std::string exception_message = call_string_method(env, _ref.get(), method_get_message);
+
+        _what = "Java Exception: " + exception_name + ": " + exception_message;
+    }
+
+    const char* what() const noexcept override { return _what.c_str(); }
+
+  private:
+    std::string _what;
+    LocalRef<jthrowable> _ref;
+    LocalRef<jclass> _cls;
+
+    static std::string call_string_method(JNIEnv* env, jthrowable obj, jmethodID method) {
+        auto jstr = static_cast<jstring>(env->CallObjectMethod(obj, method));
+        if (!jstr) return "";
+        const char* c_str = env->GetStringUTFChars(jstr, nullptr);
+        std::string result(c_str);
+        env->ReleaseStringUTFChars(jstr, c_str);
+        return result;
+    }
+};
+
 template <template <typename> class RefType, typename JniType = jobject>
 class Object {
   public:
@@ -111,13 +145,16 @@ class Object {
 
     jmethodID get_method(const char* name, const char* signature) const {
         JNIEnv* env = VM::env();
-        return env->GetMethodID(_cls.get(), name, signature);
+        jmethodID method = env->GetMethodID(_cls.get(), name, signature);
+        check_exception(env);
+        return method;
     }
 
     template <typename... Args>
     Object<LocalRef, JniType> call_object_method(jmethodID method, Args&&... args) const {
         JNIEnv* env = VM::env();
         JniType result = env->CallObjectMethod(_ref.get(), method, std::forward<Args>(args)...);
+        check_exception(env);
         return Object<LocalRef, JniType>(result);
     }
 
@@ -125,18 +162,23 @@ class Object {
     void call_void_method(jmethodID method, Args&&... args) const {
         JNIEnv* env = VM::env();
         env->CallVoidMethod(_ref.get(), method, std::forward<Args>(args)...);
+        check_exception(env);
     }
 
     template <typename... Args>
     bool call_boolean_method(jmethodID method, Args&&... args) const {
         JNIEnv* env = VM::env();
-        return env->CallBooleanMethod(_ref.get(), method, std::forward<Args>(args)...);
+        bool result = env->CallBooleanMethod(_ref.get(), method, std::forward<Args>(args)...);
+        check_exception(env);
+        return result;
     }
 
     template <typename... Args>
     int call_int_method(jmethodID method, Args&&... args) const {
         JNIEnv* env = VM::env();
-        return env->CallIntMethod(_ref.get(), method, std::forward<Args>(args)...);
+        int result = env->CallIntMethod(_ref.get(), method, std::forward<Args>(args)...);
+        check_exception(env);
+        return result;
     }
 
     template <typename... Args>
@@ -154,6 +196,7 @@ class Object {
     kvn::bytearray call_byte_array_method(jmethodID method, Args&&... args) const {
         JNIEnv* env = VM::env();
         auto jarr = static_cast<jbyteArray>(env->CallObjectMethod(_ref.get(), method, std::forward<Args>(args)...));
+        check_exception(env);
         if (!jarr) return {};
         jsize len = env->GetArrayLength(jarr);
         jbyte* arr = env->GetByteArrayElements(jarr, nullptr);
@@ -166,7 +209,16 @@ class Object {
     static Object<LocalRef, JniType> call_new_object(jclass cls, jmethodID method, Args&&... args) {
         JNIEnv* env = VM::env();
         JniType result = env->NewObject(cls, method, std::forward<Args>(args)...);
+        check_exception(env);
         return Object<LocalRef, JniType>(result);
+    }
+
+    static void check_exception(JNIEnv* env) {
+        if (env->ExceptionCheck()) {
+            Object<LocalRef, jthrowable> exception(env->ExceptionOccurred());
+            env->ExceptionClear();
+            throw Exception(exception.get());
+        }
     }
 
   protected:
