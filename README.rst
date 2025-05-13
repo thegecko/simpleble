@@ -8,10 +8,11 @@ The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE),
 Announcements
 -------------
 
+* **(2025-05-01)** We're excited to announce that we've partnered with `Software.com.br`_ to offer SimpleBLE across LATAM. Stay tuned for more details!
 * **(2025-04-24)** The SimpleBLE Android bridge project has been renamed to **simpledroidbridge**. The old name will be deprecated in a future release.
 * **(2025-04-13)** SimpleBLE C bindings are being ported to a separate library called **simplecble**. The old C bindings will be deprecated in a future release.
 * **(2025-03-16)** ☕ Java bindings are now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
-* **(2025-03-16)** Based in Asia or LATAM? **Looking for partners for more targeted regional sales and support.**
+* **(2025-03-16)** Based in Asia **Looking for partners for more targeted regional sales and support.**
 * **(2025-02-25)** 🤖 Android backend support is now in Preview.
 * **(2025-01-20)** SimpleBLE is now available under the Business Source License 1.1 (BUSL-1.1). Please see the `LICENSE`_ file for more details.
 * **(2024-12-02)** Peripheral functionality for Linux is now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
