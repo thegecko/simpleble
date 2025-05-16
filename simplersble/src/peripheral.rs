@@ -1,0 +1,253 @@
+use std::collections::HashMap;
+use std::mem;
+use std::pin::Pin;
+
+use super::ffi;
+use crate::service::Service;
+use crate::types::{BluetoothAddressType, Error};
+
+pub struct Peripheral {
+    internal: cxx::UniquePtr<ffi::RustyPeripheral>,
+
+    on_connected: Box<dyn Fn() + Send + Sync + 'static>,
+    on_disconnected: Box<dyn Fn() + Send + Sync + 'static>,
+
+    on_characteristic_update_map: HashMap<String, Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>>,
+}
+
+impl Peripheral {
+    pub(crate) fn new(wrapper: &mut ffi::RustyPeripheralWrapper) -> Pin<Box<Self>> {
+        let this = Self {
+            internal: cxx::UniquePtr::<ffi::RustyPeripheral>::null(),
+            on_connected: Box::new(|| {}),
+            on_disconnected: Box::new(|| {}),
+            on_characteristic_update_map: HashMap::new(),
+        };
+
+        let mut this_boxed = Box::pin(this);
+        wrapper.internal.link(this_boxed.as_mut()).unwrap();
+        mem::swap(&mut this_boxed.internal, &mut wrapper.internal);
+
+        return this_boxed;
+    }
+
+    pub fn identifier(&self) -> Result<String, Error> {
+        self.internal
+            .identifier()
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn address(&self) -> Result<String, Error> {
+        self.internal.address().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn address_type(&self) -> Result<BluetoothAddressType, Error> {
+        let address_type = self
+            .internal
+            .address_type()
+            .map_err(Error::from_cxx_exception)?;
+
+        return match address_type {
+            ffi::BluetoothAddressType::PUBLIC => Ok(BluetoothAddressType::Public),
+            ffi::BluetoothAddressType::RANDOM => Ok(BluetoothAddressType::Random),
+            ffi::BluetoothAddressType::UNSPECIFIED => Ok(BluetoothAddressType::Unspecified),
+            _ => Ok(BluetoothAddressType::Unspecified), // Or handle error appropriately
+        };
+    }
+
+    pub fn rssi(&self) -> Result<i16, Error> {
+        self.internal.rssi().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn tx_power(&self) -> Result<i16, Error> {
+        self.internal.tx_power().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn mtu(&self) -> Result<u16, Error> {
+        self.internal.mtu().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn connect(&self) -> Result<(), Error> {
+        self.internal.connect().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn disconnect(&self) -> Result<(), Error> {
+        self.internal
+            .disconnect()
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn is_connected(&self) -> Result<bool, Error> {
+        self.internal
+            .is_connected()
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn is_connectable(&self) -> Result<bool, Error> {
+        self.internal
+            .is_connectable()
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn is_paired(&self) -> Result<bool, Error> {
+        self.internal.is_paired().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn unpair(&self) -> Result<(), Error> {
+        self.internal.unpair().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn services(&self) -> Result<Vec<Pin<Box<Service>>>, Error> {
+        let mut raw_services = self
+            .internal
+            .services()
+            .map_err(Error::from_cxx_exception)?;
+
+        let mut services = Vec::<Pin<Box<Service>>>::new();
+        for service_wrapper in raw_services.iter_mut() {
+            services.push(Service::new(service_wrapper));
+        }
+
+        Ok(services)
+    }
+
+    pub fn manufacturer_data(&self) -> Result<HashMap<u16, Vec<u8>>, Error> {
+        let raw_manufacturer_data = self
+            .internal
+            .manufacturer_data()
+            .map_err(Error::from_cxx_exception)?;
+
+        let mut manufacturer_data = HashMap::<u16, Vec<u8>>::new();
+        for raw_manuf_data in raw_manufacturer_data.iter() {
+            manufacturer_data.insert(raw_manuf_data.company_id, raw_manuf_data.data.clone());
+        }
+
+        Ok(manufacturer_data)
+    }
+
+    pub fn read(&self, service: &String, characteristic: &String) -> Result<Vec<u8>, Error> {
+        self.internal
+            .read(service, characteristic)
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn write_request(
+        &self,
+        service: &String,
+        characteristic: &String,
+        data: &Vec<u8>,
+    ) -> Result<(), Error> {
+        self.internal
+            .write_request(service, characteristic, data)
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn write_command(
+        &self,
+        service: &String,
+        characteristic: &String,
+        data: &Vec<u8>,
+    ) -> Result<(), Error> {
+        self.internal
+            .write_command(service, characteristic, data)
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn notify(
+        &mut self,
+        service: &String,
+        characteristic: &String,
+        cb: Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>,
+    ) -> Result<(), Error> {
+        let key = format!("{}{}", service, characteristic);
+        self.on_characteristic_update_map.insert(key, cb);
+
+        self.internal
+            .notify(service, characteristic)
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn indicate(
+        &mut self,
+        service: &String,
+        characteristic: &String,
+        cb: Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>,
+    ) -> Result<(), Error> {
+        let key = format!("{}{}", service, characteristic);
+        self.on_characteristic_update_map.insert(key, cb);
+
+        self.internal
+            .indicate(service, characteristic)
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn unsubscribe(&mut self, service: &String, characteristic: &String) -> Result<(), Error> {
+        let key = format!("{}{}", service, characteristic);
+        self.on_characteristic_update_map.remove(&key);
+
+        self.internal
+            .unsubscribe(service, characteristic)
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn descriptor_read(
+        &self,
+        service: &String,
+        characteristic: &String,
+        descriptor: &String,
+    ) -> Result<Vec<u8>, Error> {
+        self.internal
+            .read_descriptor(service, characteristic, descriptor)
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn descriptor_write(
+        &self,
+        service: &String,
+        characteristic: &String,
+        descriptor: &String,
+        data: &Vec<u8>,
+    ) -> Result<(), Error> {
+        self.internal
+            .write_descriptor(service, characteristic, descriptor, data)
+            .map_err(Error::from_cxx_exception)
+    }
+
+    pub fn set_callback_on_connected(&mut self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
+        self.on_connected = cb;
+    }
+
+    pub fn set_callback_on_disconnected(&mut self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
+        self.on_disconnected = cb;
+    }
+
+    pub fn on_callback_connected(&self) {
+        (self.on_connected)();
+    }
+
+    pub fn on_callback_disconnected(&self) {
+        (self.on_disconnected)();
+    }
+
+    pub fn on_callback_characteristic_updated(
+        &self,
+        service: &String,
+        characteristic: &String,
+        data: &Vec<u8>,
+    ) {
+        let key = format!("{}{}", service, characteristic);
+
+        if let Some(cb) = self.on_characteristic_update_map.get(&key) {
+            (cb)(data.clone());
+        }
+    }
+}
+
+impl Drop for Peripheral {
+    fn drop(&mut self) {
+        self.internal.unlink().unwrap();
+    }
+}
+
+unsafe impl Sync for Peripheral {}
+unsafe impl Send for Peripheral {}
