@@ -35,6 +35,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 **Fixed**
 
 - (Android) Fixed a bug where the GATT object would not be closed if a connection was lost. *(Thanks Nicole S.!)*
+- (Rust) Fixed a race condition in the Rust bindings that would cause a crash if the adapter was deleted while a callback was in progress.
 
 **Removed**
 

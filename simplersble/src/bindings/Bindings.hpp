@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <iostream>
 #include <memory>
+#include <mutex>
 
 namespace SimpleRsBLE {
 
@@ -27,13 +28,12 @@ struct RustyManufacturerDataWrapper;
 rust::Vec<Bindings::RustyAdapterWrapper> RustyAdapter_get_adapters();
 bool RustyAdapter_bluetooth_enabled();
 
-class RustyAdapter : private SimpleBLE::Adapter {
+class RustyAdapter {
   public:
     RustyAdapter() = default;
     virtual ~RustyAdapter() { _internal.reset(); }
 
-    RustyAdapter(SimpleBLE::Adapter adapter)
-        : _internal(new SimpleBLE::Adapter(adapter)), _adapter(std::make_unique<SimpleRsBLE::Adapter*>()) {};
+    RustyAdapter(SimpleBLE::Adapter adapter) : _internal(new SimpleBLE::Adapter(std::move(adapter))) {};
 
     void link(SimpleRsBLE::Adapter& target) const;
     void unlink() const;
@@ -55,16 +55,16 @@ class RustyAdapter : private SimpleBLE::Adapter {
     // This might require us to store pointers to pointers, so it's
     // important to be careful when handling these.
     std::unique_ptr<SimpleBLE::Adapter> _internal;
-    std::unique_ptr<SimpleRsBLE::Adapter*> _adapter;
+    mutable SimpleRsBLE::Adapter* _adapter = nullptr;
+    mutable std::mutex _adapter_mutex;
 };
 
-class RustyPeripheral : private SimpleBLE::Peripheral {
+class RustyPeripheral {
   public:
     RustyPeripheral() = default;
     virtual ~RustyPeripheral() { _internal.reset(); }
 
-    RustyPeripheral(SimpleBLE::Peripheral peripheral)
-        : _internal(new SimpleBLE::Peripheral(peripheral)), _peripheral(std::make_unique<SimpleRsBLE::Peripheral*>()) {}
+    RustyPeripheral(SimpleBLE::Peripheral peripheral) : _internal(new SimpleBLE::Peripheral(peripheral)) {}
 
     void link(SimpleRsBLE::Peripheral& target) const;
     void unlink() const;
@@ -107,15 +107,16 @@ class RustyPeripheral : private SimpleBLE::Peripheral {
     // This might require us to store pointers to pointers, so it's
     // important to be careful when handling these.
     std::unique_ptr<SimpleBLE::Peripheral> _internal;
-    std::unique_ptr<SimpleRsBLE::Peripheral*> _peripheral;
+    mutable SimpleRsBLE::Peripheral* _peripheral = nullptr;
+    mutable std::mutex _peripheral_mutex;
 };
 
-class RustyService : private SimpleBLE::Service {
+class RustyService {
   public:
     RustyService() = default;
     virtual ~RustyService() = default;
 
-    RustyService(SimpleBLE::Service service) : _internal(new SimpleBLE::Service(service)) {}
+    RustyService(SimpleBLE::Service service) : _internal(new SimpleBLE::Service(std::move(service))) {}
 
     rust::String uuid() const { return rust::String(_internal->uuid()); }
 
@@ -131,13 +132,13 @@ class RustyService : private SimpleBLE::Service {
     std::shared_ptr<SimpleBLE::Service> _internal;
 };
 
-class RustyCharacteristic : private SimpleBLE::Characteristic {
+class RustyCharacteristic {
   public:
     RustyCharacteristic() = default;
     virtual ~RustyCharacteristic() = default;
 
     RustyCharacteristic(SimpleBLE::Characteristic characteristic)
-        : _internal(new SimpleBLE::Characteristic(characteristic)) {}
+        : _internal(new SimpleBLE::Characteristic(std::move(characteristic))) {}
 
     rust::String uuid() const { return rust::String(_internal->uuid()); }
 
@@ -157,12 +158,12 @@ class RustyCharacteristic : private SimpleBLE::Characteristic {
     std::shared_ptr<SimpleBLE::Characteristic> _internal;
 };
 
-class RustyDescriptor : private SimpleBLE::Descriptor {
+class RustyDescriptor {
   public:
     RustyDescriptor() = default;
     virtual ~RustyDescriptor() = default;
 
-    RustyDescriptor(SimpleBLE::Descriptor descriptor) : _internal(new SimpleBLE::Descriptor(descriptor)) {}
+    RustyDescriptor(SimpleBLE::Descriptor descriptor) : _internal(new SimpleBLE::Descriptor(std::move(descriptor))) {}
 
     rust::String uuid() const { return rust::String(_internal->uuid()); }
 
