@@ -1,7 +1,21 @@
-use std::collections::HashMap;
-use std::fmt;
-use std::mem;
-use std::pin::Pin;
+pub mod types;
+pub mod adapter;
+pub mod peripheral;
+pub mod service;
+pub mod characteristic;
+pub mod descriptor;
+
+pub use types::{Error, BluetoothAddressType, CharacteristicCapability};
+pub use adapter::Adapter;
+pub use adapter::PublicAdapter;
+pub use peripheral::Peripheral;
+pub use peripheral::PublicPeripheral;
+pub use service::Service;
+pub use service::PublicService;
+pub use characteristic::Characteristic;
+pub use characteristic::PublicCharacteristic;
+pub use descriptor::Descriptor;
+pub use descriptor::PublicDescriptor;
 
 #[cxx::bridge]
 mod ffi {
@@ -209,16 +223,4 @@ mod ffi {
     }
 }
 
-pub mod types;
-pub mod adapter;
-pub mod peripheral;
-pub mod service;
-pub mod characteristic;
-pub mod descriptor;
 
-pub use types::{Error, BluetoothAddressType, CharacteristicCapability};
-pub use adapter::Adapter;
-pub use peripheral::Peripheral;
-pub use service::Service;
-pub use characteristic::Characteristic;
-pub use descriptor::Descriptor;

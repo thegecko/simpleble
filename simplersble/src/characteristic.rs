@@ -1,8 +1,10 @@
+use std::sync::Arc;
 use std::pin::Pin;
 use std::mem;
 
 use super::ffi;
 use crate::descriptor::Descriptor;
+use crate::descriptor::PublicDescriptor;
 use crate::types::CharacteristicCapability;
 
 pub struct Characteristic {
@@ -26,10 +28,21 @@ impl Characteristic {
     }
 
     pub fn descriptors(&self) -> Vec<Pin<Box<Descriptor>>> {
+        // TODO: Remove once full migration to public classes is done.
         let mut descriptors = Vec::<Pin<Box<Descriptor>>>::new();
 
         for descriptor_wrapper in self.internal.descriptors().iter_mut() {
             descriptors.push(Descriptor::new(descriptor_wrapper));
+        }
+
+        return descriptors;
+    }
+
+    pub fn public_descriptors(&self) -> Vec<PublicDescriptor> {
+        let mut descriptors = Vec::<PublicDescriptor>::new();
+
+        for descriptor_wrapper in self.internal.descriptors().iter_mut() {
+            descriptors.push(Descriptor::new(descriptor_wrapper).into());
         }
 
         return descriptors;
@@ -84,3 +97,53 @@ impl Characteristic {
 
 unsafe impl Sync for Characteristic {}
 unsafe impl Send for Characteristic {}
+
+#[derive(Clone)]
+pub struct PublicCharacteristic {
+    inner: Arc<Pin<Box<Characteristic>>>,
+}
+
+impl PublicCharacteristic {
+    pub fn uuid(&self) -> String {
+        return self.inner.uuid();
+    }
+
+    pub fn descriptors(&self) -> Vec<PublicDescriptor> {
+        return self.inner.public_descriptors();
+    }
+
+    pub fn capabilities(&self) -> Vec<CharacteristicCapability> {
+        return self.inner.capabilities();
+    }
+
+    pub fn can_read(&self) -> bool {
+        return self.inner.can_read();
+    }
+
+    pub fn can_write_request(&self) -> bool {
+        return self.inner.can_write_request();
+    }
+
+    pub fn can_write_command(&self) -> bool {
+        return self.inner.can_write_command();
+    }
+
+    pub fn can_notify(&self) -> bool {
+        return self.inner.can_notify();
+    }
+
+    pub fn can_indicate(&self) -> bool {
+        return self.inner.can_indicate();
+    }
+}
+
+impl From<Pin<Box<Characteristic>>> for PublicCharacteristic {
+    fn from(characteristic: Pin<Box<Characteristic>>) -> Self {
+        return PublicCharacteristic {
+            inner: Arc::new(characteristic),
+        };
+    }
+}
+
+unsafe impl Send for PublicCharacteristic {}
+unsafe impl Sync for PublicCharacteristic {}

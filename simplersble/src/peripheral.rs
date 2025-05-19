@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 use std::mem;
 use std::pin::Pin;
-
+use std::sync::{Arc, Mutex};
 use super::ffi;
+use crate::service::PublicService;
 use crate::service::Service;
 use crate::types::{BluetoothAddressType, Error};
 
@@ -111,6 +112,20 @@ impl Peripheral {
         Ok(services)
     }
 
+    pub fn public_services(&self) -> Result<Vec<PublicService>, Error> {
+        let mut raw_services = self
+            .internal
+            .services()
+            .map_err(Error::from_cxx_exception)?;
+
+        let mut services = Vec::<PublicService>::new();
+        for service_wrapper in raw_services.iter_mut() {
+            services.push(Service::new(service_wrapper).into());
+        }
+
+        Ok(services)
+    }
+
     pub fn manufacturer_data(&self) -> Result<HashMap<u16, Vec<u8>>, Error> {
         let raw_manufacturer_data = self
             .internal
@@ -181,7 +196,11 @@ impl Peripheral {
             .map_err(Error::from_cxx_exception)
     }
 
-    pub fn unsubscribe(&mut self, service: &String, characteristic: &String) -> Result<(), Error> {
+    pub fn unsubscribe(
+        &mut self,
+        service: &String,
+        characteristic: &String,
+    ) -> Result<(), Error> {
         let key = format!("{}{}", service, characteristic);
         self.on_characteristic_update_map.remove(&key);
 
@@ -251,3 +270,165 @@ impl Drop for Peripheral {
 
 unsafe impl Sync for Peripheral {}
 unsafe impl Send for Peripheral {}
+
+#[derive(Clone)]
+pub struct PublicPeripheral {
+    inner: Arc<Mutex<Pin<Box<Peripheral>>>>,
+}
+
+impl PublicPeripheral {
+    pub fn identifier(&self) -> Result<String, Error> {
+        self.inner.lock().unwrap().identifier()
+    }
+
+    pub fn address(&self) -> Result<String, Error> {
+        self.inner.lock().unwrap().address()
+    }
+
+    pub fn address_type(&self) -> Result<BluetoothAddressType, Error> {
+        self.inner.lock().unwrap().address_type()
+    }
+
+    pub fn rssi(&self) -> Result<i16, Error> {
+        self.inner.lock().unwrap().rssi()
+    }
+
+    pub fn tx_power(&self) -> Result<i16, Error> {
+        self.inner.lock().unwrap().tx_power()
+    }
+
+    pub fn mtu(&self) -> Result<u16, Error> {
+        self.inner.lock().unwrap().mtu()
+    }
+
+    pub fn connect(&self) -> Result<(), Error> {
+        self.inner.lock().unwrap().connect()
+    }
+
+    pub fn disconnect(&self) -> Result<(), Error> {
+        self.inner.lock().unwrap().disconnect()
+    }
+
+    pub fn is_connected(&self) -> Result<bool, Error> {
+        self.inner.lock().unwrap().is_connected()
+    }
+
+    pub fn is_connectable(&self) -> Result<bool, Error> {
+        self.inner.lock().unwrap().is_connectable()
+    }
+
+    pub fn is_paired(&self) -> Result<bool, Error> {
+        self.inner.lock().unwrap().is_paired()
+    }
+
+    pub fn unpair(&self) -> Result<(), Error> {
+        self.inner.lock().unwrap().unpair()
+    }
+
+    pub fn services(&self) -> Result<Vec<PublicService>, Error> {
+        self.inner.lock().unwrap().public_services()
+    }
+
+    pub fn manufacturer_data(&self) -> Result<HashMap<u16, Vec<u8>>, Error> {
+        self.inner.lock().unwrap().manufacturer_data()
+    }
+
+    pub fn read(&self, service: &String, characteristic: &String) -> Result<Vec<u8>, Error> {
+        self.inner.lock().unwrap().read(service, characteristic)
+    }
+
+    pub fn write_request(
+        &self,
+        service: &String,
+        characteristic: &String,
+        data: &Vec<u8>,
+    ) -> Result<(), Error> {
+        self.inner.lock().unwrap().write_request(service, characteristic, data)
+    }
+
+    pub fn write_command(
+        &self,
+        service: &String,
+        characteristic: &String,
+        data: &Vec<u8>,
+    ) -> Result<(), Error> {
+        self.inner.lock().unwrap().write_command(service, characteristic, data)
+    }
+
+    pub fn notify(
+        &self,
+        service: &String,
+        characteristic: &String,
+        cb: Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>,
+    ) -> Result<(), Error> {
+        unsafe { Pin::as_mut(&mut *self.inner.lock().unwrap()).get_unchecked_mut() }.notify(service, characteristic, cb)
+    }
+
+    pub fn indicate(
+        &self,
+        service: &String,
+        characteristic: &String,
+        cb: Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>,
+    ) -> Result<(), Error> {
+        unsafe { Pin::as_mut(&mut *self.inner.lock().unwrap()).get_unchecked_mut() }.indicate(service, characteristic, cb)
+    }
+
+    pub fn unsubscribe(&self, service: &String, characteristic: &String) -> Result<(), Error> {
+        unsafe { Pin::as_mut(&mut *self.inner.lock().unwrap()).get_unchecked_mut() }.unsubscribe(service, characteristic)
+    }
+
+    pub fn descriptor_read(
+        &self,
+        service: &String,
+        characteristic: &String,
+        descriptor: &String,
+    ) -> Result<Vec<u8>, Error> {
+        self.inner.lock().unwrap().descriptor_read(service, characteristic, descriptor)
+    }
+
+    pub fn descriptor_write(
+        &self,
+        service: &String,
+        characteristic: &String,
+        descriptor: &String,
+        data: &Vec<u8>,
+    ) -> Result<(), Error> {
+        self.inner.lock().unwrap().descriptor_write(service, characteristic, descriptor, data)
+    }
+
+    pub fn set_callback_on_connected(&self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
+        unsafe { Pin::as_mut(&mut *self.inner.lock().unwrap()).get_unchecked_mut() }.set_callback_on_connected(cb);
+    }
+
+    pub fn set_callback_on_disconnected(&self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
+        unsafe { Pin::as_mut(&mut *self.inner.lock().unwrap()).get_unchecked_mut() }.set_callback_on_disconnected(cb);
+    }
+
+    pub fn on_callback_connected(&self) {
+        self.inner.lock().unwrap().on_callback_connected()
+    }
+
+    pub fn on_callback_disconnected(&self) {
+        self.inner.lock().unwrap().on_callback_disconnected()
+    }
+
+    pub fn on_callback_characteristic_updated(
+        &self,
+        service: &String,
+        characteristic: &String,
+        data: &Vec<u8>,
+    ) {
+        self.inner.lock().unwrap().on_callback_characteristic_updated(service, characteristic, data)
+    }
+}
+
+impl From<Pin<Box<Peripheral>>> for PublicPeripheral {
+    fn from(peripheral: Pin<Box<Peripheral>>) -> Self {
+        Self {
+            inner: Arc::new(Mutex::new(peripheral)),
+        }
+    }
+}
+
+unsafe impl Send for PublicPeripheral {}
+unsafe impl Sync for PublicPeripheral {}
