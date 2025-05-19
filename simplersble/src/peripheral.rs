@@ -18,12 +18,16 @@ pub enum ConnectionEvent {
     Disconnected,
 }
 
+#[derive(Clone)]
+pub enum ValueChangedEvent {
+    ValueUpdated(Vec<u8>),
+}
+
 pub struct InnerPeripheral {
     internal: cxx::UniquePtr<ffi::RustyPeripheral>,
 
     on_connection_event: broadcast::Sender<ConnectionEvent>,
-
-    on_characteristic_update_map: HashMap<String, Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>>,
+    on_characteristic_update_map: Mutex<HashMap<String, broadcast::Sender<ValueChangedEvent>>>,
 }
 
 impl InnerPeripheral {
@@ -33,7 +37,7 @@ impl InnerPeripheral {
         let this = Self {
             internal: cxx::UniquePtr::<ffi::RustyPeripheral>::null(),
             on_connection_event: event_sender,
-            on_characteristic_update_map: HashMap::new(),
+            on_characteristic_update_map: Mutex::new(HashMap::new()),
         };
 
         let mut this_boxed = Box::pin(this);
@@ -168,29 +172,41 @@ impl InnerPeripheral {
     pub fn notify(
         &mut self,
         service: &String,
-        characteristic: &String,
-        cb: Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>,
-    ) -> Result<(), Error> {
+        characteristic: &String
+    ) -> Result<impl Stream<Item = Result<ValueChangedEvent, Error>>, Error> {
         let key = format!("{}{}", service, characteristic);
-        self.on_characteristic_update_map.insert(key, cb);
+
+        if !self.on_characteristic_update_map.lock().unwrap().contains_key(&key) {
+            let (event_sender, _) = broadcast::channel(128);
+            self.on_characteristic_update_map.lock().unwrap().insert(key.clone(), event_sender);
+        }
 
         self.internal
             .notify(service, characteristic)
-            .map_err(Error::from_cxx_exception)
+            .map_err(Error::from_cxx_exception)?;
+
+        let stream = BroadcastStream::new(self.on_characteristic_update_map.lock().unwrap()[&key].subscribe());
+        Ok(stream.map_err(|e| Error::from_string(e.to_string())))
     }
 
     pub fn indicate(
         &mut self,
         service: &String,
-        characteristic: &String,
-        cb: Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>,
-    ) -> Result<(), Error> {
+        characteristic: &String
+    ) -> Result<impl Stream<Item = Result<ValueChangedEvent, Error>>, Error> {
         let key = format!("{}{}", service, characteristic);
-        self.on_characteristic_update_map.insert(key, cb);
+
+        if !self.on_characteristic_update_map.lock().unwrap().contains_key(&key) {
+            let (event_sender, _) = broadcast::channel(128);
+            self.on_characteristic_update_map.lock().unwrap().insert(key.clone(), event_sender);
+        }
 
         self.internal
             .indicate(service, characteristic)
-            .map_err(Error::from_cxx_exception)
+            .map_err(Error::from_cxx_exception)?;
+
+        let stream = BroadcastStream::new(self.on_characteristic_update_map.lock().unwrap()[&key].subscribe());
+        Ok(stream.map_err(|e| Error::from_string(e.to_string())))
     }
 
     pub fn unsubscribe(
@@ -199,7 +215,7 @@ impl InnerPeripheral {
         characteristic: &String,
     ) -> Result<(), Error> {
         let key = format!("{}{}", service, characteristic);
-        self.on_characteristic_update_map.remove(&key);
+        self.on_characteristic_update_map.lock().unwrap().remove(&key);
 
         self.internal
             .unsubscribe(service, characteristic)
@@ -247,8 +263,9 @@ impl InnerPeripheral {
     ) {
         let key = format!("{}{}", service, characteristic);
 
-        if let Some(cb) = self.on_characteristic_update_map.get(&key) {
-            (cb)(data.clone());
+        if let Some(cb) = self.on_characteristic_update_map.lock().unwrap().get(&key) {
+            // TODO: Review how to handle errors here.
+            let _ = cb.send(ValueChangedEvent::ValueUpdated(data.clone()));
         }
     }
 }
@@ -349,19 +366,17 @@ impl Peripheral {
     pub fn notify(
         &self,
         service: &String,
-        characteristic: &String,
-        cb: Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>,
-    ) -> Result<(), Error> {
-        unsafe { Pin::as_mut(&mut *self.inner.lock().unwrap()).get_unchecked_mut() }.notify(service, characteristic, cb)
+        characteristic: &String
+    ) -> Result<impl Stream<Item = Result<ValueChangedEvent, Error>>, Error> {
+        self.inner.lock().unwrap().notify(service, characteristic)
     }
 
     pub fn indicate(
         &self,
         service: &String,
-        characteristic: &String,
-        cb: Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>,
-    ) -> Result<(), Error> {
-        unsafe { Pin::as_mut(&mut *self.inner.lock().unwrap()).get_unchecked_mut() }.indicate(service, characteristic, cb)
+        characteristic: &String
+    ) -> Result<impl Stream<Item = Result<ValueChangedEvent, Error>>, Error> {
+        self.inner.lock().unwrap().indicate(service, characteristic)
     }
 
     pub fn unsubscribe(&self, service: &String, characteristic: &String) -> Result<(), Error> {
@@ -390,15 +405,6 @@ impl Peripheral {
     pub fn on_connection_event(&self) -> impl Stream<Item = Result<ConnectionEvent, Error>> {
         BroadcastStream::new(self.inner.lock().unwrap().on_connection_event.subscribe())
             .map_err(|e| Error::from_string(e.to_string()))
-    }
-
-    pub fn on_callback_characteristic_updated(
-        &self,
-        service: &String,
-        characteristic: &String,
-        data: &Vec<u8>,
-    ) {
-        self.inner.lock().unwrap().on_callback_characteristic_updated(service, characteristic, data)
     }
 }
 

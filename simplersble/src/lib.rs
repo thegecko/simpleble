@@ -13,6 +13,7 @@ pub use adapter::Adapter;
 pub use adapter::ScanEvent;
 pub use peripheral::Peripheral;
 pub use peripheral::ConnectionEvent;
+pub use peripheral::ValueChangedEvent;
 pub use service::Service;
 pub use characteristic::Characteristic;
 pub use descriptor::Descriptor;

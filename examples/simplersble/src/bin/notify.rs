@@ -97,9 +97,14 @@ async fn main() {
 
     // Subscribe to the characteristic
     println!("Subscribing to characteristic...");
-    peripheral.notify(&service, &characteristic, Box::new(|data| {
-        println!("Received data: {:?}", data);
-    })).unwrap();
+    let mut stream = peripheral.notify(&service, &characteristic).unwrap();
+    tokio::spawn(async move {
+        while let Some(Ok(event)) = stream.next().await {
+            match event {
+                simplersble::ValueChangedEvent::ValueUpdated(data) => println!("Received data: {:?}", data),
+            }
+        }
+    });
 
     // Sleep for 5 seconds
     std::thread::sleep(std::time::Duration::from_secs(5));
