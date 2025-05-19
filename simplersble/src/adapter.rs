@@ -2,17 +2,26 @@ use std::pin::Pin;
 use std::mem;
 use std::sync::{Arc, Mutex};
 
+use tokio::sync::broadcast;
+use tokio_stream::wrappers::BroadcastStream;
+use futures::{Stream, TryStreamExt};
+
 use super::ffi;
 use crate::peripheral::InnerPeripheral;
 use crate::peripheral::Peripheral;
 use crate::types::Error;
 
+#[derive(Clone)]
+pub enum ScanEvent {
+    Start,
+    Stop,
+    Found(Peripheral),
+    Updated(Peripheral),
+}
+
 pub struct InnerAdapter {
     internal: cxx::UniquePtr<ffi::RustyAdapter>,
-    on_scan_start: Box<dyn Fn() + Send + Sync + 'static>,
-    on_scan_stop: Box<dyn Fn() + Send + Sync + 'static>,
-    on_scan_found: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>,
-    on_scan_updated: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>,
+    on_scan_event: broadcast::Sender<ScanEvent>,
 }
 
 impl InnerAdapter {
@@ -31,12 +40,11 @@ impl InnerAdapter {
     }
 
     fn new(wrapper: &mut ffi::RustyAdapterWrapper) -> Pin<Box<Self>> {
+        let (event_sender, _) = broadcast::channel(128);
+
         let this = Self {
             internal: cxx::UniquePtr::<ffi::RustyAdapter>::null(),
-            on_scan_start: Box::new(|| {}),
-            on_scan_stop: Box::new(|| {}),
-            on_scan_found: Box::new(|_| {}),
-            on_scan_updated: Box::new(|_| {}),
+            on_scan_event: event_sender
         };
 
         let mut this_boxed = Box::pin(this);
@@ -93,43 +101,26 @@ impl InnerAdapter {
         return Ok(peripherals);
     }
 
-
-    pub fn set_callback_on_scan_start(&mut self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
-        self.on_scan_start = cb;
-    }
-
-    pub fn set_callback_on_scan_stop(&mut self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
-        self.on_scan_stop = cb;
-    }
-
-    pub fn set_callback_on_scan_updated(
-        &mut self,
-        cb: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>,
-    ) {
-        self.on_scan_updated = cb;
-    }
-
-    pub fn set_callback_on_scan_found(
-        &mut self,
-        cb: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>,
-    ) {
-        self.on_scan_found = cb;
-    }
-
     pub fn on_callback_scan_start(&self) {
-        (self.on_scan_start)();
+        // TODO: Review how to handle errors here.
+        let _ = self.on_scan_event.send(ScanEvent::Start);
     }
 
     pub fn on_callback_scan_stop(&self) {
-        (self.on_scan_stop)();
+        // TODO: Review how to handle errors here.
+        let _ = self.on_scan_event.send(ScanEvent::Stop);
     }
 
     pub fn on_callback_scan_updated(&self, peripheral: &mut ffi::RustyPeripheralWrapper) {
-        (self.on_scan_updated)(InnerPeripheral::new(peripheral));
+        // TODO: Review how to handle errors here.
+        let peripheral: Peripheral = InnerPeripheral::new(peripheral).into();
+        let _ = self.on_scan_event.send(ScanEvent::Updated(peripheral));
     }
 
     pub fn on_callback_scan_found(&self, peripheral: &mut ffi::RustyPeripheralWrapper) {
-        (self.on_scan_found)(InnerPeripheral::new(peripheral));
+        // TODO: Review how to handle errors here.
+        let peripheral: Peripheral = InnerPeripheral::new(peripheral).into();
+        let _ = self.on_scan_event.send(ScanEvent::Found(peripheral));
     }
 }
 
@@ -196,20 +187,9 @@ impl Adapter {
         self.inner.lock().unwrap().get_paired_peripherals()
     }
 
-    pub fn set_callback_on_scan_start(&self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
-        self.inner.lock().unwrap().set_callback_on_scan_start(cb);
-    }
-
-    pub fn set_callback_on_scan_stop(&self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
-        self.inner.lock().unwrap().set_callback_on_scan_stop(cb);
-    }
-
-    pub fn set_callback_on_scan_updated(&self, cb: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>) {
-        self.inner.lock().unwrap().set_callback_on_scan_updated(cb);
-    }
-
-    pub fn set_callback_on_scan_found(&self, cb: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>) {
-        self.inner.lock().unwrap().set_callback_on_scan_found(cb);
+    pub fn on_scan_event(&self) -> impl Stream<Item = Result<ScanEvent, Error>> {
+        BroadcastStream::new(self.inner.lock().unwrap().on_scan_event.subscribe())
+            .map_err(|e| Error::from_string(e.to_string()))
     }
 
 }

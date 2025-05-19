@@ -1,6 +1,8 @@
 use simplersble;
+use futures::stream::StreamExt;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let mut adapters = simplersble::Adapter::get_adapters().unwrap();
 
     // If the adapter list is empty, print a message and exit
@@ -12,31 +14,17 @@ fn main() {
     // Pick the first adapter
     let adapter = adapters.pop().unwrap();
 
-    adapter.set_callback_on_scan_start(Box::new(|| {
-        println!("Scan started.");
-    }));
-
-    adapter.set_callback_on_scan_stop(Box::new(|| {
-        println!("Scan stopped.");
-    }));
-
-    adapter.set_callback_on_scan_found(Box::new(|peripheral| {
-        println!(
-            "Found device: {} [{}] {} dBm",
-            peripheral.identifier().unwrap(),
-            peripheral.address().unwrap(),
-            peripheral.rssi().unwrap()
-        );
-    }));
-
-    adapter.set_callback_on_scan_updated(Box::new(|peripheral| {
-        println!(
-            "Updated device: {} [{}] {} dBm",
-            peripheral.identifier().unwrap(),
-            peripheral.address().unwrap(),
-            peripheral.rssi().unwrap()
-        );
-    }));
+    let mut scan_event = adapter.on_scan_event();
+    tokio::spawn(async move {
+        while let Some(Ok(event)) = scan_event.next().await {
+            match event {
+                simplersble::ScanEvent::Start => println!("Scan started."),
+                simplersble::ScanEvent::Stop => println!("Scan stopped."),
+                simplersble::ScanEvent::Found(peripheral) => println!("Found device: {} [{}] {} dBm", peripheral.identifier().unwrap(), peripheral.address().unwrap(), peripheral.rssi().unwrap()),
+                _ => {}
+            }
+        }
+    });
 
     adapter.scan_for(5000).unwrap();
     println!("Scan complete.");

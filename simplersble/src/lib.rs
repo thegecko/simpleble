@@ -10,6 +10,7 @@ use peripheral::InnerPeripheral;
 
 pub use types::{Error, BluetoothAddressType, CharacteristicCapability};
 pub use adapter::Adapter;
+pub use adapter::ScanEvent;
 pub use peripheral::Peripheral;
 pub use service::Service;
 pub use characteristic::Characteristic;
