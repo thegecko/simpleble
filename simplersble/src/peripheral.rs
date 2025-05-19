@@ -4,10 +4,10 @@ use std::pin::Pin;
 use std::sync::{Arc, Mutex};
 use super::ffi;
 use crate::service::PublicService;
-use crate::service::Service;
+use crate::service::InnerService;
 use crate::types::{BluetoothAddressType, Error};
 
-pub struct Peripheral {
+pub struct InnerPeripheral {
     internal: cxx::UniquePtr<ffi::RustyPeripheral>,
 
     on_connected: Box<dyn Fn() + Send + Sync + 'static>,
@@ -16,7 +16,7 @@ pub struct Peripheral {
     on_characteristic_update_map: HashMap<String, Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>>,
 }
 
-impl Peripheral {
+impl InnerPeripheral {
     pub(crate) fn new(wrapper: &mut ffi::RustyPeripheralWrapper) -> Pin<Box<Self>> {
         let this = Self {
             internal: cxx::UniquePtr::<ffi::RustyPeripheral>::null(),
@@ -98,15 +98,15 @@ impl Peripheral {
         self.internal.unpair().map_err(Error::from_cxx_exception)
     }
 
-    pub fn services(&self) -> Result<Vec<Pin<Box<Service>>>, Error> {
+    pub fn services(&self) -> Result<Vec<Pin<Box<InnerService>>>, Error> {
         let mut raw_services = self
             .internal
             .services()
             .map_err(Error::from_cxx_exception)?;
 
-        let mut services = Vec::<Pin<Box<Service>>>::new();
+        let mut services = Vec::<Pin<Box<InnerService>>>::new();
         for service_wrapper in raw_services.iter_mut() {
-            services.push(Service::new(service_wrapper));
+            services.push(InnerService::new(service_wrapper));
         }
 
         Ok(services)
@@ -120,7 +120,7 @@ impl Peripheral {
 
         let mut services = Vec::<PublicService>::new();
         for service_wrapper in raw_services.iter_mut() {
-            services.push(Service::new(service_wrapper).into());
+            services.push(InnerService::new(service_wrapper).into());
         }
 
         Ok(services)
@@ -262,18 +262,18 @@ impl Peripheral {
     }
 }
 
-impl Drop for Peripheral {
+impl Drop for InnerPeripheral {
     fn drop(&mut self) {
         self.internal.unlink().unwrap();
     }
 }
 
-unsafe impl Sync for Peripheral {}
-unsafe impl Send for Peripheral {}
+unsafe impl Sync for InnerPeripheral {}
+unsafe impl Send for InnerPeripheral {}
 
 #[derive(Clone)]
 pub struct PublicPeripheral {
-    inner: Arc<Mutex<Pin<Box<Peripheral>>>>,
+    inner: Arc<Mutex<Pin<Box<InnerPeripheral>>>>,
 }
 
 impl PublicPeripheral {
@@ -422,8 +422,8 @@ impl PublicPeripheral {
     }
 }
 
-impl From<Pin<Box<Peripheral>>> for PublicPeripheral {
-    fn from(peripheral: Pin<Box<Peripheral>>) -> Self {
+impl From<Pin<Box<InnerPeripheral>>> for PublicPeripheral {
+    fn from(peripheral: Pin<Box<InnerPeripheral>>) -> Self {
         Self {
             inner: Arc::new(Mutex::new(peripheral)),
         }

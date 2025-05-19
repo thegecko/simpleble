@@ -17,17 +17,17 @@ rust::Vec<Bindings::RustyAdapterWrapper> Bindings::RustyAdapter_get_adapters() {
 
 bool Bindings::RustyAdapter_bluetooth_enabled() { return SimpleBLE::Adapter::bluetooth_enabled(); }
 
-// Adapter Bindings
+// InnerAdapter Bindings
 
-void Bindings::RustyAdapter::link(SimpleRsBLE::Adapter& target) const {
+void Bindings::RustyAdapter::link(SimpleRsBLE::InnerAdapter& target) const {
     // Time to explain the weird shenanigan we're doing here:
-    // The TL;DR is that we're making the Adapter(Rust) and the RustyAdapter(C++)
+    // The TL;DR is that we're making the InnerAdapter(Rust) and the RustyAdapter(C++)
     // point to each other in a safe way.
-    // To achieve this, the Adapter(Rust) owns a RustyAdapter(C++) via a UniquePtr,
+    // To achieve this, the InnerAdapter(Rust) owns a RustyAdapter(C++) via a UniquePtr,
     // which ensures that calls will always be made to a valid C++ object.
-    // We now give the RustyAdapter(C++) a pointer back to the Adapter(Rust),
+    // We now give the RustyAdapter(C++) a pointer back to the InnerAdapter(Rust),
     // so that callbacks can be forwarded back to the Rust domain.
-    // In order to ensure that the Adapter(Rust) is always valid (given
+    // In order to ensure that the InnerAdapter(Rust) is always valid (given
     // that Rust is keen on moving stuff around) the object is created as a
     // Pin<Box<T>>
 
@@ -112,17 +112,17 @@ rust::Vec<Bindings::RustyPeripheralWrapper> Bindings::RustyAdapter::get_paired_p
     return result;
 }
 
-// Peripheral Bindings
+// InnerPeripheral Bindings
 
-void Bindings::RustyPeripheral::link(SimpleRsBLE::Peripheral& target) const {
+void Bindings::RustyPeripheral::link(SimpleRsBLE::InnerPeripheral& target) const {
     // Time to explain the weird shenanigan we're doing here:
-    // The TL;DR is that we're making the Peripheral(Rust) and the RustyPeripheral(C++)
+    // The TL;DR is that we're making the InnerPeripheral(Rust) and the RustyPeripheral(C++)
     // point to each other in a safe way.
-    // To achieve this, the Peripheral(Rust) owns a RustyPeripheral(C++) via a UniquePtr,
+    // To achieve this, the InnerPeripheral(Rust) owns a RustyPeripheral(C++) via a UniquePtr,
     // which ensures that calls will always be made to a valid C++ object.
-    // We now give the RustyPeripheral(C++) a pointer back to the Peripheral(Rust),
+    // We now give the RustyPeripheral(C++) a pointer back to the InnerPeripheral(Rust),
     // so that callbacks can be forwarded back to the Rust domain.
-    // In order to ensure that the Peripheral(Rust) is always valid (given
+    // In order to ensure that the InnerPeripheral(Rust) is always valid (given
     // that Rust is keen on moving stuff around) the object is created as a
     // Pin<Box<T>>
 

@@ -6,15 +6,15 @@ pub mod characteristic;
 pub mod descriptor;
 
 pub use types::{Error, BluetoothAddressType, CharacteristicCapability};
-pub use adapter::Adapter;
+pub use adapter::InnerAdapter;
 pub use adapter::PublicAdapter;
-pub use peripheral::Peripheral;
+pub use peripheral::InnerPeripheral;
 pub use peripheral::PublicPeripheral;
-pub use service::Service;
+pub use service::InnerService;
 pub use service::PublicService;
-pub use characteristic::Characteristic;
+pub use characteristic::InnerCharacteristic;
 pub use characteristic::PublicCharacteristic;
-pub use descriptor::Descriptor;
+pub use descriptor::InnerDescriptor;
 pub use descriptor::PublicDescriptor;
 
 #[cxx::bridge]
@@ -70,19 +70,19 @@ mod ffi {
 
     #[namespace = "SimpleRsBLE"]
     extern "Rust" {
-        type Adapter;
+        type InnerAdapter;
 
-        pub fn on_callback_scan_start(self: &mut Adapter);
-        pub fn on_callback_scan_stop(self: &mut Adapter);
-        pub fn on_callback_scan_updated(self: &mut Adapter, peripheral: &mut RustyPeripheralWrapper);
-        pub fn on_callback_scan_found(self: &mut Adapter, peripheral: &mut RustyPeripheralWrapper);
+        pub fn on_callback_scan_start(self: &mut InnerAdapter);
+        pub fn on_callback_scan_stop(self: &mut InnerAdapter);
+        pub fn on_callback_scan_updated(self: &mut InnerAdapter, peripheral: &mut RustyPeripheralWrapper);
+        pub fn on_callback_scan_found(self: &mut InnerAdapter, peripheral: &mut RustyPeripheralWrapper);
 
-        type Peripheral;
+        type InnerPeripheral;
 
-        pub fn on_callback_connected(self: &mut Peripheral);
-        pub fn on_callback_disconnected(self: &mut Peripheral);
+        pub fn on_callback_connected(self: &mut InnerPeripheral);
+        pub fn on_callback_disconnected(self: &mut InnerPeripheral);
         pub fn on_callback_characteristic_updated(
-            self: &mut Peripheral,
+            self: &mut InnerPeripheral,
             service: &String,
             Characteristic: &String,
             data: &Vec<u8>,
@@ -120,7 +120,7 @@ mod ffi {
 
         // RustyAdapter functions
 
-        fn link(self: &RustyAdapter, target: Pin<&mut Adapter>) -> Result<()>;
+        fn link(self: &RustyAdapter, target: Pin<&mut InnerAdapter>) -> Result<()>;
         fn unlink(self: &RustyAdapter) -> Result<()>;
 
         fn identifier(self: &RustyAdapter) -> Result<String>;
@@ -136,7 +136,7 @@ mod ffi {
 
         // RustyPeripheral functions
 
-        fn link(self: &RustyPeripheral, target: Pin<&mut Peripheral>) -> Result<()>;
+        fn link(self: &RustyPeripheral, target: Pin<&mut InnerPeripheral>) -> Result<()>;
         fn unlink(self: &RustyPeripheral) -> Result<()>;
 
         fn identifier(self: &RustyPeripheral) -> Result<String>;

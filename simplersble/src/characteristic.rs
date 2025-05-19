@@ -3,15 +3,15 @@ use std::pin::Pin;
 use std::mem;
 
 use super::ffi;
-use crate::descriptor::Descriptor;
+use crate::descriptor::InnerDescriptor;
 use crate::descriptor::PublicDescriptor;
 use crate::types::CharacteristicCapability;
 
-pub struct Characteristic {
+pub struct InnerCharacteristic {
     internal: cxx::UniquePtr<ffi::RustyCharacteristic>,
 }
 
-impl Characteristic {
+impl InnerCharacteristic {
     pub(crate) fn new(wrapper: &mut ffi::RustyCharacteristicWrapper) -> Pin<Box<Self>> {
         let this = Self {
             internal: cxx::UniquePtr::<ffi::RustyCharacteristic>::null(),
@@ -27,12 +27,12 @@ impl Characteristic {
         return self.internal.uuid();
     }
 
-    pub fn descriptors(&self) -> Vec<Pin<Box<Descriptor>>> {
+    pub fn descriptors(&self) -> Vec<Pin<Box<InnerDescriptor>>> {
         // TODO: Remove once full migration to public classes is done.
-        let mut descriptors = Vec::<Pin<Box<Descriptor>>>::new();
+        let mut descriptors = Vec::<Pin<Box<InnerDescriptor>>>::new();
 
         for descriptor_wrapper in self.internal.descriptors().iter_mut() {
-            descriptors.push(Descriptor::new(descriptor_wrapper));
+            descriptors.push(InnerDescriptor::new(descriptor_wrapper));
         }
 
         return descriptors;
@@ -42,7 +42,7 @@ impl Characteristic {
         let mut descriptors = Vec::<PublicDescriptor>::new();
 
         for descriptor_wrapper in self.internal.descriptors().iter_mut() {
-            descriptors.push(Descriptor::new(descriptor_wrapper).into());
+            descriptors.push(InnerDescriptor::new(descriptor_wrapper).into());
         }
 
         return descriptors;
@@ -95,12 +95,12 @@ impl Characteristic {
     }
 }
 
-unsafe impl Sync for Characteristic {}
-unsafe impl Send for Characteristic {}
+unsafe impl Sync for InnerCharacteristic {}
+unsafe impl Send for InnerCharacteristic {}
 
 #[derive(Clone)]
 pub struct PublicCharacteristic {
-    inner: Arc<Pin<Box<Characteristic>>>,
+    inner: Arc<Pin<Box<InnerCharacteristic>>>,
 }
 
 impl PublicCharacteristic {
@@ -137,8 +137,8 @@ impl PublicCharacteristic {
     }
 }
 
-impl From<Pin<Box<Characteristic>>> for PublicCharacteristic {
-    fn from(characteristic: Pin<Box<Characteristic>>) -> Self {
+impl From<Pin<Box<InnerCharacteristic>>> for PublicCharacteristic {
+    fn from(characteristic: Pin<Box<InnerCharacteristic>>) -> Self {
         return PublicCharacteristic {
             inner: Arc::new(characteristic),
         };

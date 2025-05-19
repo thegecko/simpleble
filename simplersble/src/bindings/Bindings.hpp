@@ -11,8 +11,8 @@
 
 namespace SimpleRsBLE {
 
-struct Adapter;
-struct Peripheral;
+struct InnerAdapter;
+struct InnerPeripheral;
 
 };  // namespace SimpleRsBLE
 
@@ -35,7 +35,7 @@ class RustyAdapter {
 
     RustyAdapter(SimpleBLE::Adapter adapter) : _internal(new SimpleBLE::Adapter(std::move(adapter))) {};
 
-    void link(SimpleRsBLE::Adapter& target) const;
+    void link(SimpleRsBLE::InnerAdapter& target) const;
     void unlink() const;
 
     rust::String identifier() const;
@@ -55,7 +55,7 @@ class RustyAdapter {
     // This might require us to store pointers to pointers, so it's
     // important to be careful when handling these.
     std::unique_ptr<SimpleBLE::Adapter> _internal;
-    mutable SimpleRsBLE::Adapter* _adapter = nullptr;
+    mutable SimpleRsBLE::InnerAdapter* _adapter = nullptr;
     mutable std::mutex _adapter_mutex;
 };
 
@@ -66,7 +66,7 @@ class RustyPeripheral {
 
     RustyPeripheral(SimpleBLE::Peripheral peripheral) : _internal(new SimpleBLE::Peripheral(peripheral)) {}
 
-    void link(SimpleRsBLE::Peripheral& target) const;
+    void link(SimpleRsBLE::InnerPeripheral& target) const;
     void unlink() const;
 
     rust::String identifier() const;
@@ -107,7 +107,7 @@ class RustyPeripheral {
     // This might require us to store pointers to pointers, so it's
     // important to be careful when handling these.
     std::unique_ptr<SimpleBLE::Peripheral> _internal;
-    mutable SimpleRsBLE::Peripheral* _peripheral = nullptr;
+    mutable SimpleRsBLE::InnerPeripheral* _peripheral = nullptr;
     mutable std::mutex _peripheral_mutex;
 };
 

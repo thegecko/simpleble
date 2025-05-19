@@ -3,29 +3,29 @@ use std::mem;
 use std::sync::{Arc, Mutex};
 
 use super::ffi;
-use crate::peripheral::Peripheral;
+use crate::peripheral::InnerPeripheral;
 use crate::peripheral::PublicPeripheral;
 use crate::types::Error;
 
-pub struct Adapter {
+pub struct InnerAdapter {
     internal: cxx::UniquePtr<ffi::RustyAdapter>,
     on_scan_start: Box<dyn Fn() + Send + Sync + 'static>,
     on_scan_stop: Box<dyn Fn() + Send + Sync + 'static>,
-    on_scan_found: Box<dyn Fn(Pin<Box<Peripheral>>) + Send + Sync + 'static>,
-    on_scan_updated: Box<dyn Fn(Pin<Box<Peripheral>>) + Send + Sync + 'static>,
+    on_scan_found: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>,
+    on_scan_updated: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>,
 }
 
-impl Adapter {
+impl InnerAdapter {
     pub fn bluetooth_enabled() -> Result<bool, Error> {
         ffi::RustyAdapter_bluetooth_enabled().map_err(Error::from_cxx_exception)
     }
 
-    pub fn get_adapters() -> Result<Vec<Pin<Box<Adapter>>>, Error> {
+    pub fn get_adapters() -> Result<Vec<Pin<Box<InnerAdapter>>>, Error> {
         let mut raw_adapter_list = ffi::RustyAdapter_get_adapters().map_err(Error::from_cxx_exception)?;
 
-        let mut adapters = Vec::<Pin<Box<Adapter>>>::new();
+        let mut adapters = Vec::<Pin<Box<InnerAdapter>>>::new();
         for adapter_wrapper in raw_adapter_list.iter_mut() {
-            adapters.push(Adapter::new(adapter_wrapper));
+            adapters.push(InnerAdapter::new(adapter_wrapper));
         }
         Ok(adapters)
     }
@@ -35,7 +35,7 @@ impl Adapter {
 
         let mut adapters = Vec::<PublicAdapter>::new();
         for adapter_wrapper in raw_adapter_list.iter_mut() {
-            adapters.push(Adapter::new(adapter_wrapper).into());
+            adapters.push(InnerAdapter::new(adapter_wrapper).into());
         }
 
         return Ok(adapters);
@@ -82,12 +82,12 @@ impl Adapter {
         self.internal.scan_is_active().map_err(Error::from_cxx_exception)
     }
 
-    pub fn scan_get_results(&self) -> Result<Vec<Pin<Box<Peripheral>>>, Error> {
+    pub fn scan_get_results(&self) -> Result<Vec<Pin<Box<InnerPeripheral>>>, Error> {
         let mut raw_peripheral_list = self.internal.scan_get_results().map_err(Error::from_cxx_exception)?;
 
-        let mut peripherals = Vec::<Pin<Box<Peripheral>>>::new();
+        let mut peripherals = Vec::<Pin<Box<InnerPeripheral>>>::new();
         for peripheral_wrapper in raw_peripheral_list.iter_mut() {
-            peripherals.push(Peripheral::new(peripheral_wrapper));
+            peripherals.push(InnerPeripheral::new(peripheral_wrapper));
         }
 
         return Ok(peripherals);
@@ -98,19 +98,19 @@ impl Adapter {
 
         let mut peripherals = Vec::<PublicPeripheral>::new();
         for peripheral_wrapper in raw_peripheral_list.iter_mut() {
-            peripherals.push(Peripheral::new(peripheral_wrapper).into());
+            peripherals.push(InnerPeripheral::new(peripheral_wrapper).into());
         }
 
         return Ok(peripherals);
     }
 
-    pub fn get_paired_peripherals(&self) -> Result<Vec<Pin<Box<Peripheral>>>, Error> {
+    pub fn get_paired_peripherals(&self) -> Result<Vec<Pin<Box<InnerPeripheral>>>, Error> {
         let mut raw_peripheral_list =
             self.internal.get_paired_peripherals().map_err(Error::from_cxx_exception)?;
 
-        let mut peripherals = Vec::<Pin<Box<Peripheral>>>::new();
+        let mut peripherals = Vec::<Pin<Box<InnerPeripheral>>>::new();
         for peripheral_wrapper in raw_peripheral_list.iter_mut() {
-            peripherals.push(Peripheral::new(peripheral_wrapper));
+            peripherals.push(InnerPeripheral::new(peripheral_wrapper));
         }
 
         return Ok(peripherals);
@@ -122,7 +122,7 @@ impl Adapter {
 
         let mut peripherals = Vec::<PublicPeripheral>::new();
         for peripheral_wrapper in raw_peripheral_list.iter_mut() {
-            peripherals.push(Peripheral::new(peripheral_wrapper).into());
+            peripherals.push(InnerPeripheral::new(peripheral_wrapper).into());
         }
 
         return Ok(peripherals);
@@ -139,14 +139,14 @@ impl Adapter {
 
     pub fn set_callback_on_scan_updated(
         &mut self,
-        cb: Box<dyn Fn(Pin<Box<Peripheral>>) + Send + Sync + 'static>,
+        cb: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>,
     ) {
         self.on_scan_updated = cb;
     }
 
     pub fn set_callback_on_scan_found(
         &mut self,
-        cb: Box<dyn Fn(Pin<Box<Peripheral>>) + Send + Sync + 'static>,
+        cb: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>,
     ) {
         self.on_scan_found = cb;
     }
@@ -160,26 +160,26 @@ impl Adapter {
     }
 
     pub fn on_callback_scan_updated(&self, peripheral: &mut ffi::RustyPeripheralWrapper) {
-        (self.on_scan_updated)(Peripheral::new(peripheral));
+        (self.on_scan_updated)(InnerPeripheral::new(peripheral));
     }
 
     pub fn on_callback_scan_found(&self, peripheral: &mut ffi::RustyPeripheralWrapper) {
-        (self.on_scan_found)(Peripheral::new(peripheral));
+        (self.on_scan_found)(InnerPeripheral::new(peripheral));
     }
 }
 
-impl Drop for Adapter {
+impl Drop for InnerAdapter {
     fn drop(&mut self) {
         self.internal.unlink().unwrap();
     }
 }
 
-unsafe impl Sync for Adapter {}
-unsafe impl Send for Adapter {}
+unsafe impl Sync for InnerAdapter {}
+unsafe impl Send for InnerAdapter {}
 
 #[derive(Clone)]
 pub struct PublicAdapter {
-    inner: Arc<Mutex<Pin<Box<Adapter>>>>,
+    inner: Arc<Mutex<Pin<Box<InnerAdapter>>>>,
 }
 
 impl PublicAdapter {
@@ -223,19 +223,19 @@ impl PublicAdapter {
         self.inner.lock().unwrap().set_callback_on_scan_stop(cb);
     }
 
-    pub fn set_callback_on_scan_updated(&self, cb: Box<dyn Fn(Pin<Box<Peripheral>>) + Send + Sync + 'static>) {
+    pub fn set_callback_on_scan_updated(&self, cb: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>) {
         self.inner.lock().unwrap().set_callback_on_scan_updated(cb);
     }
 
-    pub fn set_callback_on_scan_found(&self, cb: Box<dyn Fn(Pin<Box<Peripheral>>) + Send + Sync + 'static>) {
+    pub fn set_callback_on_scan_found(&self, cb: Box<dyn Fn(Pin<Box<InnerPeripheral>>) + Send + Sync + 'static>) {
         self.inner.lock().unwrap().set_callback_on_scan_found(cb);
     }
 
 }
 
 
-impl From<Pin<Box<Adapter>>> for PublicAdapter {
-    fn from(adapter: Pin<Box<Adapter>>) -> Self {
+impl From<Pin<Box<InnerAdapter>>> for PublicAdapter {
+    fn from(adapter: Pin<Box<InnerAdapter>>) -> Self {
         Self {
             inner: Arc::new(Mutex::new(adapter)),
         }

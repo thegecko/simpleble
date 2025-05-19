@@ -4,11 +4,11 @@ use std::mem;
 
 use super::ffi;
 
-pub struct Descriptor {
+pub struct InnerDescriptor {
     internal: cxx::UniquePtr<ffi::RustyDescriptor>,
 }
 
-impl Descriptor {
+impl InnerDescriptor {
     pub(crate) fn new(wrapper: &mut ffi::RustyDescriptorWrapper) -> Pin<Box<Self>> {
         let this = Self {
             internal: cxx::UniquePtr::<ffi::RustyDescriptor>::null(),
@@ -25,12 +25,12 @@ impl Descriptor {
     }
 }
 
-unsafe impl Sync for Descriptor {}
-unsafe impl Send for Descriptor {}
+unsafe impl Sync for InnerDescriptor {}
+unsafe impl Send for InnerDescriptor {}
 
 #[derive(Clone)]
 pub struct PublicDescriptor {
-    inner: Arc<Pin<Box<Descriptor>>>,
+    inner: Arc<Pin<Box<InnerDescriptor>>>,
 }
 
 impl PublicDescriptor {
@@ -42,8 +42,8 @@ impl PublicDescriptor {
 }
 
 
-impl From<Pin<Box<Descriptor>>> for PublicDescriptor {
-    fn from(descriptor: Pin<Box<Descriptor>>) -> Self {
+impl From<Pin<Box<InnerDescriptor>>> for PublicDescriptor {
+    fn from(descriptor: Pin<Box<InnerDescriptor>>) -> Self {
         return PublicDescriptor {
             inner: Arc::new(descriptor),
         };

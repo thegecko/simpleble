@@ -3,13 +3,13 @@ use std::pin::Pin;
 use std::mem;
 
 use super::ffi;
-use crate::characteristic::Characteristic;
+use crate::characteristic::InnerCharacteristic;
 use crate::characteristic::PublicCharacteristic;
-pub struct Service {
+pub struct InnerService {
     internal: cxx::UniquePtr<ffi::RustyService>,
 }
 
-impl Service {
+impl InnerService {
     pub(crate) fn new(wrapper: &mut ffi::RustyServiceWrapper) -> Pin<Box<Self>> {
         let this = Self {
             internal: cxx::UniquePtr::<ffi::RustyService>::null(),
@@ -29,12 +29,12 @@ impl Service {
         return self.internal.data();
     }
 
-    pub fn characteristics(&self) -> Vec<Pin<Box<Characteristic>>> {
+    pub fn characteristics(&self) -> Vec<Pin<Box<InnerCharacteristic>>> {
         // TODO: Remove once full migration to public classes is done.
-        let mut characteristics = Vec::<Pin<Box<Characteristic>>>::new();
+        let mut characteristics = Vec::<Pin<Box<InnerCharacteristic>>>::new();
 
         for characteristic_wrapper in self.internal.characteristics().iter_mut() {
-            characteristics.push(Characteristic::new(characteristic_wrapper));
+            characteristics.push(InnerCharacteristic::new(characteristic_wrapper));
         }
 
         return characteristics;
@@ -44,19 +44,19 @@ impl Service {
         let mut characteristics = Vec::<PublicCharacteristic>::new();
 
         for characteristic_wrapper in self.internal.characteristics().iter_mut() {
-            characteristics.push(Characteristic::new(characteristic_wrapper).into());
+            characteristics.push(InnerCharacteristic::new(characteristic_wrapper).into());
         }
 
         return characteristics;
     }
 }
 
-unsafe impl Sync for Service {}
-unsafe impl Send for Service {}
+unsafe impl Sync for InnerService {}
+unsafe impl Send for InnerService {}
 
 #[derive(Clone)]
 pub struct PublicService {
-    inner: Arc<Pin<Box<Service>>>,
+    inner: Arc<Pin<Box<InnerService>>>,
 }
 
 impl PublicService {
@@ -74,8 +74,8 @@ impl PublicService {
 
 }
 
-impl From<Pin<Box<Service>>> for PublicService {
-    fn from(service: Pin<Box<Service>>) -> Self {
+impl From<Pin<Box<InnerService>>> for PublicService {
+    fn from(service: Pin<Box<InnerService>>) -> Self {
         return PublicService {
             inner: Arc::new(service),
         };

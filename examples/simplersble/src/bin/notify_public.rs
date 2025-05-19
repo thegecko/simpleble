@@ -1,7 +1,7 @@
 use simplersble;
 
 fn main() {
-    let mut adapters = simplersble::Adapter::public_get_adapters().unwrap();
+    let mut adapters = simplersble::InnerAdapter::public_get_adapters().unwrap();
 
     // If the adapter list is empty, print a message and exit
     if adapters.is_empty() {
