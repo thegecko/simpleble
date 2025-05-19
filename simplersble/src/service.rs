@@ -4,7 +4,7 @@ use std::mem;
 
 use super::ffi;
 use crate::characteristic::InnerCharacteristic;
-use crate::characteristic::PublicCharacteristic;
+use crate::characteristic::Characteristic;
 pub struct InnerService {
     internal: cxx::UniquePtr<ffi::RustyService>,
 }
@@ -40,8 +40,8 @@ impl InnerService {
         return characteristics;
     }
 
-    pub fn public_characteristics(&self) -> Vec<PublicCharacteristic> {
-        let mut characteristics = Vec::<PublicCharacteristic>::new();
+    pub fn public_characteristics(&self) -> Vec<Characteristic> {
+        let mut characteristics = Vec::<Characteristic>::new();
 
         for characteristic_wrapper in self.internal.characteristics().iter_mut() {
             characteristics.push(InnerCharacteristic::new(characteristic_wrapper).into());
@@ -55,11 +55,11 @@ unsafe impl Sync for InnerService {}
 unsafe impl Send for InnerService {}
 
 #[derive(Clone)]
-pub struct PublicService {
+pub struct Service {
     inner: Arc<Pin<Box<InnerService>>>,
 }
 
-impl PublicService {
+impl Service {
     pub fn uuid(&self) -> String {
         return self.inner.uuid();
     }
@@ -68,19 +68,19 @@ impl PublicService {
         return self.inner.data();
     }
 
-    pub fn characteristics(&self) -> Vec<PublicCharacteristic> {
+    pub fn characteristics(&self) -> Vec<Characteristic> {
         return self.inner.public_characteristics();
     }
 
 }
 
-impl From<Pin<Box<InnerService>>> for PublicService {
+impl From<Pin<Box<InnerService>>> for Service {
     fn from(service: Pin<Box<InnerService>>) -> Self {
-        return PublicService {
+        return Service {
             inner: Arc::new(service),
         };
     }
 }
 
-unsafe impl Send for PublicService {}
-unsafe impl Sync for PublicService {}
+unsafe impl Send for Service {}
+unsafe impl Sync for Service {}

@@ -4,7 +4,7 @@ use std::mem;
 
 use super::ffi;
 use crate::descriptor::InnerDescriptor;
-use crate::descriptor::PublicDescriptor;
+use crate::descriptor::Descriptor;
 use crate::types::CharacteristicCapability;
 
 pub struct InnerCharacteristic {
@@ -38,8 +38,8 @@ impl InnerCharacteristic {
         return descriptors;
     }
 
-    pub fn public_descriptors(&self) -> Vec<PublicDescriptor> {
-        let mut descriptors = Vec::<PublicDescriptor>::new();
+    pub fn public_descriptors(&self) -> Vec<Descriptor> {
+        let mut descriptors = Vec::<Descriptor>::new();
 
         for descriptor_wrapper in self.internal.descriptors().iter_mut() {
             descriptors.push(InnerDescriptor::new(descriptor_wrapper).into());
@@ -99,16 +99,16 @@ unsafe impl Sync for InnerCharacteristic {}
 unsafe impl Send for InnerCharacteristic {}
 
 #[derive(Clone)]
-pub struct PublicCharacteristic {
+pub struct Characteristic {
     inner: Arc<Pin<Box<InnerCharacteristic>>>,
 }
 
-impl PublicCharacteristic {
+impl Characteristic {
     pub fn uuid(&self) -> String {
         return self.inner.uuid();
     }
 
-    pub fn descriptors(&self) -> Vec<PublicDescriptor> {
+    pub fn descriptors(&self) -> Vec<Descriptor> {
         return self.inner.public_descriptors();
     }
 
@@ -137,13 +137,13 @@ impl PublicCharacteristic {
     }
 }
 
-impl From<Pin<Box<InnerCharacteristic>>> for PublicCharacteristic {
+impl From<Pin<Box<InnerCharacteristic>>> for Characteristic {
     fn from(characteristic: Pin<Box<InnerCharacteristic>>) -> Self {
-        return PublicCharacteristic {
+        return Characteristic {
             inner: Arc::new(characteristic),
         };
     }
 }
 
-unsafe impl Send for PublicCharacteristic {}
-unsafe impl Sync for PublicCharacteristic {}
+unsafe impl Send for Characteristic {}
+unsafe impl Sync for Characteristic {}

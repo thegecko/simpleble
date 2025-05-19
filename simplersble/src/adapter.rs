@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex};
 
 use super::ffi;
 use crate::peripheral::InnerPeripheral;
-use crate::peripheral::PublicPeripheral;
+use crate::peripheral::Peripheral;
 use crate::types::Error;
 
 pub struct InnerAdapter {
@@ -30,10 +30,10 @@ impl InnerAdapter {
         Ok(adapters)
     }
 
-    pub fn public_get_adapters() -> Result<Vec<PublicAdapter>, Error> {
+    pub fn public_get_adapters() -> Result<Vec<Adapter>, Error> {
         let mut raw_adapter_list = ffi::RustyAdapter_get_adapters().map_err(Error::from_cxx_exception)?;
 
-        let mut adapters = Vec::<PublicAdapter>::new();
+        let mut adapters = Vec::<Adapter>::new();
         for adapter_wrapper in raw_adapter_list.iter_mut() {
             adapters.push(InnerAdapter::new(adapter_wrapper).into());
         }
@@ -93,10 +93,10 @@ impl InnerAdapter {
         return Ok(peripherals);
     }
 
-    pub fn public_scan_get_results(&self) -> Result<Vec<PublicPeripheral>, Error> {
+    pub fn public_scan_get_results(&self) -> Result<Vec<Peripheral>, Error> {
         let mut raw_peripheral_list = self.internal.scan_get_results().map_err(Error::from_cxx_exception)?;
 
-        let mut peripherals = Vec::<PublicPeripheral>::new();
+        let mut peripherals = Vec::<Peripheral>::new();
         for peripheral_wrapper in raw_peripheral_list.iter_mut() {
             peripherals.push(InnerPeripheral::new(peripheral_wrapper).into());
         }
@@ -116,11 +116,11 @@ impl InnerAdapter {
         return Ok(peripherals);
     }
 
-    pub fn public_get_paired_peripherals(&self) -> Result<Vec<PublicPeripheral>, Error> {
+    pub fn public_get_paired_peripherals(&self) -> Result<Vec<Peripheral>, Error> {
         let mut raw_peripheral_list =
             self.internal.get_paired_peripherals().map_err(Error::from_cxx_exception)?;
 
-        let mut peripherals = Vec::<PublicPeripheral>::new();
+        let mut peripherals = Vec::<Peripheral>::new();
         for peripheral_wrapper in raw_peripheral_list.iter_mut() {
             peripherals.push(InnerPeripheral::new(peripheral_wrapper).into());
         }
@@ -178,11 +178,11 @@ unsafe impl Sync for InnerAdapter {}
 unsafe impl Send for InnerAdapter {}
 
 #[derive(Clone)]
-pub struct PublicAdapter {
+pub struct Adapter {
     inner: Arc<Mutex<Pin<Box<InnerAdapter>>>>,
 }
 
-impl PublicAdapter {
+impl Adapter {
     pub fn identifier(&self) -> Result<String, Error> {
         self.inner.lock().unwrap().identifier()
     }
@@ -207,11 +207,11 @@ impl PublicAdapter {
         self.inner.lock().unwrap().scan_is_active()
     }
 
-    pub fn scan_get_results(&self) -> Result<Vec<PublicPeripheral>, Error> {
+    pub fn scan_get_results(&self) -> Result<Vec<Peripheral>, Error> {
         self.inner.lock().unwrap().public_scan_get_results()
     }
 
-    pub fn get_paired_peripherals(&self) -> Result<Vec<PublicPeripheral>, Error> {
+    pub fn get_paired_peripherals(&self) -> Result<Vec<Peripheral>, Error> {
         self.inner.lock().unwrap().public_get_paired_peripherals()
     }
 
@@ -234,7 +234,7 @@ impl PublicAdapter {
 }
 
 
-impl From<Pin<Box<InnerAdapter>>> for PublicAdapter {
+impl From<Pin<Box<InnerAdapter>>> for Adapter {
     fn from(adapter: Pin<Box<InnerAdapter>>) -> Self {
         Self {
             inner: Arc::new(Mutex::new(adapter)),
@@ -242,5 +242,5 @@ impl From<Pin<Box<InnerAdapter>>> for PublicAdapter {
     }
 }
 
-unsafe impl Send for PublicAdapter {}
-unsafe impl Sync for PublicAdapter {}
+unsafe impl Send for Adapter {}
+unsafe impl Sync for Adapter {}

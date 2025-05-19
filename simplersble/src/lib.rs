@@ -7,15 +7,15 @@ pub mod descriptor;
 
 pub use types::{Error, BluetoothAddressType, CharacteristicCapability};
 pub use adapter::InnerAdapter;
-pub use adapter::PublicAdapter;
+pub use adapter::Adapter;
 pub use peripheral::InnerPeripheral;
-pub use peripheral::PublicPeripheral;
+pub use peripheral::Peripheral;
 pub use service::InnerService;
-pub use service::PublicService;
+pub use service::Service;
 pub use characteristic::InnerCharacteristic;
-pub use characteristic::PublicCharacteristic;
+pub use characteristic::Characteristic;
 pub use descriptor::InnerDescriptor;
-pub use descriptor::PublicDescriptor;
+pub use descriptor::Descriptor;
 
 #[cxx::bridge]
 mod ffi {

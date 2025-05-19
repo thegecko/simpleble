@@ -29,11 +29,11 @@ unsafe impl Sync for InnerDescriptor {}
 unsafe impl Send for InnerDescriptor {}
 
 #[derive(Clone)]
-pub struct PublicDescriptor {
+pub struct Descriptor {
     inner: Arc<Pin<Box<InnerDescriptor>>>,
 }
 
-impl PublicDescriptor {
+impl Descriptor {
     // TODO: Decide how to implement `new`
 
     pub fn uuid(&self) -> String {
@@ -42,13 +42,13 @@ impl PublicDescriptor {
 }
 
 
-impl From<Pin<Box<InnerDescriptor>>> for PublicDescriptor {
+impl From<Pin<Box<InnerDescriptor>>> for Descriptor {
     fn from(descriptor: Pin<Box<InnerDescriptor>>) -> Self {
-        return PublicDescriptor {
+        return Descriptor {
             inner: Arc::new(descriptor),
         };
     }
 }
 
-unsafe impl Send for PublicDescriptor {}
-unsafe impl Sync for PublicDescriptor {}
+unsafe impl Send for Descriptor {}
+unsafe impl Sync for Descriptor {}

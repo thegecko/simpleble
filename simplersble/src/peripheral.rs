@@ -3,7 +3,7 @@ use std::mem;
 use std::pin::Pin;
 use std::sync::{Arc, Mutex};
 use super::ffi;
-use crate::service::PublicService;
+use crate::service::Service;
 use crate::service::InnerService;
 use crate::types::{BluetoothAddressType, Error};
 
@@ -112,13 +112,13 @@ impl InnerPeripheral {
         Ok(services)
     }
 
-    pub fn public_services(&self) -> Result<Vec<PublicService>, Error> {
+    pub fn public_services(&self) -> Result<Vec<Service>, Error> {
         let mut raw_services = self
             .internal
             .services()
             .map_err(Error::from_cxx_exception)?;
 
-        let mut services = Vec::<PublicService>::new();
+        let mut services = Vec::<Service>::new();
         for service_wrapper in raw_services.iter_mut() {
             services.push(InnerService::new(service_wrapper).into());
         }
@@ -272,11 +272,11 @@ unsafe impl Sync for InnerPeripheral {}
 unsafe impl Send for InnerPeripheral {}
 
 #[derive(Clone)]
-pub struct PublicPeripheral {
+pub struct Peripheral {
     inner: Arc<Mutex<Pin<Box<InnerPeripheral>>>>,
 }
 
-impl PublicPeripheral {
+impl Peripheral {
     pub fn identifier(&self) -> Result<String, Error> {
         self.inner.lock().unwrap().identifier()
     }
@@ -325,7 +325,7 @@ impl PublicPeripheral {
         self.inner.lock().unwrap().unpair()
     }
 
-    pub fn services(&self) -> Result<Vec<PublicService>, Error> {
+    pub fn services(&self) -> Result<Vec<Service>, Error> {
         self.inner.lock().unwrap().public_services()
     }
 
@@ -422,7 +422,7 @@ impl PublicPeripheral {
     }
 }
 
-impl From<Pin<Box<InnerPeripheral>>> for PublicPeripheral {
+impl From<Pin<Box<InnerPeripheral>>> for Peripheral {
     fn from(peripheral: Pin<Box<InnerPeripheral>>) -> Self {
         Self {
             inner: Arc::new(Mutex::new(peripheral)),
@@ -430,5 +430,5 @@ impl From<Pin<Box<InnerPeripheral>>> for PublicPeripheral {
     }
 }
 
-unsafe impl Send for PublicPeripheral {}
-unsafe impl Sync for PublicPeripheral {}
+unsafe impl Send for Peripheral {}
+unsafe impl Sync for Peripheral {}

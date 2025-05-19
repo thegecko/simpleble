@@ -7,6 +7,7 @@ pub struct Error {
 
 impl Error {
     // Helper function to create an error from a C++ exception string
+    #[allow(dead_code)]
     pub(crate) fn from_string(s: String) -> Self {
         Error { msg: s }
     }
