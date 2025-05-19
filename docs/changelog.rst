@@ -31,6 +31,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 - (Windows) Calls to the WinRT backend are now executed in a separate MTA apartment by default.
 - (Android) Migrated to using the `simplejni` library for JNI bindings.
+-  **API CHANGE**: (Rust) Migrated to event-based streams for scan and connection events.
 
 **Fixed**
 

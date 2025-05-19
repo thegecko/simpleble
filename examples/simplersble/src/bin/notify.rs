@@ -53,13 +53,15 @@ async fn main() {
     // Get the selected device by moving it out of the scan results
     let peripheral = adapter.scan_get_results().unwrap().remove(input);
 
-    peripheral.set_callback_on_connected(Box::new(|| {
-        println!("Connected to device.");
-    }));
-
-    peripheral.set_callback_on_disconnected(Box::new(|| {
-        println!("Disconnected from device.");
-    }));
+    let mut connection_event = peripheral.on_connection_event();
+    tokio::spawn(async move {
+        while let Some(Ok(event)) = connection_event.next().await {
+            match event {
+                simplersble::ConnectionEvent::Connected => println!("Connected to device."),
+                simplersble::ConnectionEvent::Disconnected => println!("Disconnected from device."),
+            }
+        }
+    });
 
     // Connect to the device
     println!("Connecting to device...");

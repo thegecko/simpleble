@@ -138,10 +138,6 @@ Check your project’s documentation for available variables. Common ones includ
 
     cmake -S <path-to-source> -B <your-build-directory> -DCMAKE_BUILD_TYPE=Release
 
-- ``CMAKE_CXX_STANDARD``: Sets the C++ standard (e.g., ``17`` for C++17)::
-
-    cmake -S <path-to-source> -B <your-build-directory> -DCMAKE_CXX_STANDARD=17
-
 Troubleshooting Tips
 ===================
 

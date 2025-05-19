@@ -2,26 +2,37 @@ use std::collections::HashMap;
 use std::mem;
 use std::pin::Pin;
 use std::sync::{Arc, Mutex};
+
+use tokio::sync::broadcast;
+use tokio_stream::wrappers::BroadcastStream;
+use futures::{Stream, TryStreamExt};
+
 use super::ffi;
 use crate::service::Service;
 use crate::service::InnerService;
 use crate::types::{BluetoothAddressType, Error};
 
+#[derive(Clone)]
+pub enum ConnectionEvent {
+    Connected,
+    Disconnected,
+}
+
 pub struct InnerPeripheral {
     internal: cxx::UniquePtr<ffi::RustyPeripheral>,
 
-    on_connected: Box<dyn Fn() + Send + Sync + 'static>,
-    on_disconnected: Box<dyn Fn() + Send + Sync + 'static>,
+    on_connection_event: broadcast::Sender<ConnectionEvent>,
 
     on_characteristic_update_map: HashMap<String, Box<dyn Fn(Vec<u8>) + Send + Sync + 'static>>,
 }
 
 impl InnerPeripheral {
     pub(crate) fn new(wrapper: &mut ffi::RustyPeripheralWrapper) -> Pin<Box<Self>> {
+        let (event_sender, _) = broadcast::channel(128);
+
         let this = Self {
             internal: cxx::UniquePtr::<ffi::RustyPeripheral>::null(),
-            on_connected: Box::new(|| {}),
-            on_disconnected: Box::new(|| {}),
+            on_connection_event: event_sender,
             on_characteristic_update_map: HashMap::new(),
         };
 
@@ -218,20 +229,14 @@ impl InnerPeripheral {
             .map_err(Error::from_cxx_exception)
     }
 
-    pub fn set_callback_on_connected(&mut self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
-        self.on_connected = cb;
-    }
-
-    pub fn set_callback_on_disconnected(&mut self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
-        self.on_disconnected = cb;
-    }
-
     pub fn on_callback_connected(&self) {
-        (self.on_connected)();
+        // TODO: Review how to handle errors here.
+        let _ = self.on_connection_event.send(ConnectionEvent::Connected);
     }
 
     pub fn on_callback_disconnected(&self) {
-        (self.on_disconnected)();
+        // TODO: Review how to handle errors here.
+        let _ = self.on_connection_event.send(ConnectionEvent::Disconnected);
     }
 
     pub fn on_callback_characteristic_updated(
@@ -382,20 +387,9 @@ impl Peripheral {
         self.inner.lock().unwrap().descriptor_write(service, characteristic, descriptor, data)
     }
 
-    pub fn set_callback_on_connected(&self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
-        unsafe { Pin::as_mut(&mut *self.inner.lock().unwrap()).get_unchecked_mut() }.set_callback_on_connected(cb);
-    }
-
-    pub fn set_callback_on_disconnected(&self, cb: Box<dyn Fn() + Send + Sync + 'static>) {
-        unsafe { Pin::as_mut(&mut *self.inner.lock().unwrap()).get_unchecked_mut() }.set_callback_on_disconnected(cb);
-    }
-
-    pub fn on_callback_connected(&self) {
-        self.inner.lock().unwrap().on_callback_connected()
-    }
-
-    pub fn on_callback_disconnected(&self) {
-        self.inner.lock().unwrap().on_callback_disconnected()
+    pub fn on_connection_event(&self) -> impl Stream<Item = Result<ConnectionEvent, Error>> {
+        BroadcastStream::new(self.inner.lock().unwrap().on_connection_event.subscribe())
+            .map_err(|e| Error::from_string(e.to_string()))
     }
 
     pub fn on_callback_characteristic_updated(
