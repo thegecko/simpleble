@@ -29,18 +29,7 @@ impl InnerService {
         return self.internal.data();
     }
 
-    pub fn characteristics(&self) -> Vec<Pin<Box<InnerCharacteristic>>> {
-        // TODO: Remove once full migration to public classes is done.
-        let mut characteristics = Vec::<Pin<Box<InnerCharacteristic>>>::new();
-
-        for characteristic_wrapper in self.internal.characteristics().iter_mut() {
-            characteristics.push(InnerCharacteristic::new(characteristic_wrapper));
-        }
-
-        return characteristics;
-    }
-
-    pub fn public_characteristics(&self) -> Vec<Characteristic> {
+    pub fn characteristics(&self) -> Vec<Characteristic> {
         let mut characteristics = Vec::<Characteristic>::new();
 
         for characteristic_wrapper in self.internal.characteristics().iter_mut() {
@@ -69,7 +58,7 @@ impl Service {
     }
 
     pub fn characteristics(&self) -> Vec<Characteristic> {
-        return self.inner.public_characteristics();
+        return self.inner.characteristics();
     }
 
 }

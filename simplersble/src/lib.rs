@@ -5,16 +5,14 @@ pub mod service;
 pub mod characteristic;
 pub mod descriptor;
 
+use adapter::InnerAdapter;
+use peripheral::InnerPeripheral;
+
 pub use types::{Error, BluetoothAddressType, CharacteristicCapability};
-pub use adapter::InnerAdapter;
 pub use adapter::Adapter;
-pub use peripheral::InnerPeripheral;
 pub use peripheral::Peripheral;
-pub use service::InnerService;
 pub use service::Service;
-pub use characteristic::InnerCharacteristic;
 pub use characteristic::Characteristic;
-pub use descriptor::InnerDescriptor;
 pub use descriptor::Descriptor;
 
 #[cxx::bridge]

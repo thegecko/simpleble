@@ -30,18 +30,6 @@ impl InnerAdapter {
         Ok(adapters)
     }
 
-    pub fn public_get_adapters() -> Result<Vec<Adapter>, Error> {
-        let mut raw_adapter_list = ffi::RustyAdapter_get_adapters().map_err(Error::from_cxx_exception)?;
-
-        let mut adapters = Vec::<Adapter>::new();
-        for adapter_wrapper in raw_adapter_list.iter_mut() {
-            adapters.push(InnerAdapter::new(adapter_wrapper).into());
-        }
-
-        return Ok(adapters);
-    }
-
-
     fn new(wrapper: &mut ffi::RustyAdapterWrapper) -> Pin<Box<Self>> {
         let this = Self {
             internal: cxx::UniquePtr::<ffi::RustyAdapter>::null(),
@@ -82,18 +70,7 @@ impl InnerAdapter {
         self.internal.scan_is_active().map_err(Error::from_cxx_exception)
     }
 
-    pub fn scan_get_results(&self) -> Result<Vec<Pin<Box<InnerPeripheral>>>, Error> {
-        let mut raw_peripheral_list = self.internal.scan_get_results().map_err(Error::from_cxx_exception)?;
-
-        let mut peripherals = Vec::<Pin<Box<InnerPeripheral>>>::new();
-        for peripheral_wrapper in raw_peripheral_list.iter_mut() {
-            peripherals.push(InnerPeripheral::new(peripheral_wrapper));
-        }
-
-        return Ok(peripherals);
-    }
-
-    pub fn public_scan_get_results(&self) -> Result<Vec<Peripheral>, Error> {
+    pub fn scan_get_results(&self) -> Result<Vec<Peripheral>, Error> {
         let mut raw_peripheral_list = self.internal.scan_get_results().map_err(Error::from_cxx_exception)?;
 
         let mut peripherals = Vec::<Peripheral>::new();
@@ -104,19 +81,7 @@ impl InnerAdapter {
         return Ok(peripherals);
     }
 
-    pub fn get_paired_peripherals(&self) -> Result<Vec<Pin<Box<InnerPeripheral>>>, Error> {
-        let mut raw_peripheral_list =
-            self.internal.get_paired_peripherals().map_err(Error::from_cxx_exception)?;
-
-        let mut peripherals = Vec::<Pin<Box<InnerPeripheral>>>::new();
-        for peripheral_wrapper in raw_peripheral_list.iter_mut() {
-            peripherals.push(InnerPeripheral::new(peripheral_wrapper));
-        }
-
-        return Ok(peripherals);
-    }
-
-    pub fn public_get_paired_peripherals(&self) -> Result<Vec<Peripheral>, Error> {
+    pub fn get_paired_peripherals(&self) -> Result<Vec<Peripheral>, Error> {
         let mut raw_peripheral_list =
             self.internal.get_paired_peripherals().map_err(Error::from_cxx_exception)?;
 
@@ -183,6 +148,22 @@ pub struct Adapter {
 }
 
 impl Adapter {
+
+    pub fn bluetooth_enabled() -> Result<bool, Error> {
+        ffi::RustyAdapter_bluetooth_enabled().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn get_adapters() -> Result<Vec<Adapter>, Error> {
+        let mut raw_adapter_list = ffi::RustyAdapter_get_adapters().map_err(Error::from_cxx_exception)?;
+
+        let mut adapters = Vec::<Adapter>::new();
+        for adapter_wrapper in raw_adapter_list.iter_mut() {
+            adapters.push(InnerAdapter::new(adapter_wrapper).into());
+        }
+
+        return Ok(adapters);
+    }
+
     pub fn identifier(&self) -> Result<String, Error> {
         self.inner.lock().unwrap().identifier()
     }
@@ -208,11 +189,11 @@ impl Adapter {
     }
 
     pub fn scan_get_results(&self) -> Result<Vec<Peripheral>, Error> {
-        self.inner.lock().unwrap().public_scan_get_results()
+        self.inner.lock().unwrap().scan_get_results()
     }
 
     pub fn get_paired_peripherals(&self) -> Result<Vec<Peripheral>, Error> {
-        self.inner.lock().unwrap().public_get_paired_peripherals()
+        self.inner.lock().unwrap().get_paired_peripherals()
     }
 
     pub fn set_callback_on_scan_start(&self, cb: Box<dyn Fn() + Send + Sync + 'static>) {

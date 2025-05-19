@@ -27,18 +27,7 @@ impl InnerCharacteristic {
         return self.internal.uuid();
     }
 
-    pub fn descriptors(&self) -> Vec<Pin<Box<InnerDescriptor>>> {
-        // TODO: Remove once full migration to public classes is done.
-        let mut descriptors = Vec::<Pin<Box<InnerDescriptor>>>::new();
-
-        for descriptor_wrapper in self.internal.descriptors().iter_mut() {
-            descriptors.push(InnerDescriptor::new(descriptor_wrapper));
-        }
-
-        return descriptors;
-    }
-
-    pub fn public_descriptors(&self) -> Vec<Descriptor> {
+    pub fn descriptors(&self) -> Vec<Descriptor> {
         let mut descriptors = Vec::<Descriptor>::new();
 
         for descriptor_wrapper in self.internal.descriptors().iter_mut() {
@@ -109,7 +98,7 @@ impl Characteristic {
     }
 
     pub fn descriptors(&self) -> Vec<Descriptor> {
-        return self.inner.public_descriptors();
+        return self.inner.descriptors();
     }
 
     pub fn capabilities(&self) -> Vec<CharacteristicCapability> {

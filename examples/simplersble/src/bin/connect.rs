@@ -1,7 +1,7 @@
 use simplersble;
 
 fn main() {
-    let mut adapters = simplersble::InnerAdapter::get_adapters().unwrap();
+    let mut adapters = simplersble::Adapter::get_adapters().unwrap();
 
     // If the adapter list is empty, print a message and exit
     if adapters.is_empty() {
@@ -10,7 +10,7 @@ fn main() {
     }
 
     // Pick the first adapter
-    let mut adapter = adapters.pop().unwrap();
+    let adapter = adapters.pop().unwrap();
 
     adapter.set_callback_on_scan_start(Box::new(|| {
         println!("Scan started.");
@@ -63,7 +63,7 @@ fn main() {
     let input = input.parse::<usize>().unwrap();
 
     // Get the selected device by moving it out of the scan results
-    let mut peripheral = adapter.scan_get_results().unwrap().remove(input);
+    let peripheral = adapter.scan_get_results().unwrap().remove(input);
 
     peripheral.set_callback_on_connected(Box::new(|| {
         println!("Connected to device.");

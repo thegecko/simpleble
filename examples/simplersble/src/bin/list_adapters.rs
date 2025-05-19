@@ -4,10 +4,10 @@ fn main() {
 
     println!(
         "Bluetooth enabled: {}",
-        simplersble::InnerAdapter::bluetooth_enabled().unwrap()
+        simplersble::Adapter::bluetooth_enabled().unwrap()
     );
 
-    let mut adapters = simplersble::InnerAdapter::get_adapters().unwrap();
+    let adapters = simplersble::Adapter::get_adapters().unwrap();
 
     // If the adapter list is empty, print a message and exit
     if adapters.is_empty() {
@@ -15,7 +15,7 @@ fn main() {
         return;
     }
 
-    for adapter in adapters.iter_mut() {
+    for adapter in adapters.iter() {
         println!("Adapter: {} [{}]", adapter.identifier().unwrap(), adapter.address().unwrap());
     }
 }

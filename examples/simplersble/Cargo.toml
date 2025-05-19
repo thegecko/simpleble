@@ -15,8 +15,5 @@ name = "connect"
 [[bin]]
 name = "notify"
 
-[[bin]]
-name = "notify_public"
-
 [dependencies]
 simplersble = { path = "../.." }

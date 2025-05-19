@@ -98,21 +98,7 @@ impl InnerPeripheral {
         self.internal.unpair().map_err(Error::from_cxx_exception)
     }
 
-    pub fn services(&self) -> Result<Vec<Pin<Box<InnerService>>>, Error> {
-        let mut raw_services = self
-            .internal
-            .services()
-            .map_err(Error::from_cxx_exception)?;
-
-        let mut services = Vec::<Pin<Box<InnerService>>>::new();
-        for service_wrapper in raw_services.iter_mut() {
-            services.push(InnerService::new(service_wrapper));
-        }
-
-        Ok(services)
-    }
-
-    pub fn public_services(&self) -> Result<Vec<Service>, Error> {
+    pub fn services(&self) -> Result<Vec<Service>, Error> {
         let mut raw_services = self
             .internal
             .services()
@@ -326,7 +312,7 @@ impl Peripheral {
     }
 
     pub fn services(&self) -> Result<Vec<Service>, Error> {
-        self.inner.lock().unwrap().public_services()
+        self.inner.lock().unwrap().services()
     }
 
     pub fn manufacturer_data(&self) -> Result<HashMap<u16, Vec<u8>>, Error> {
