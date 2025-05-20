@@ -2,7 +2,7 @@
 
 The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE), designed for simplicity and ease of use.
 
-**IMPORTANT:** SimpleRsBLE is currently in the process of being rewritten from scratch to follow proper idiomatic Rust patterns.
+**IMPORTANT:** SimpleRsBLE has a new API! Check it out and leave your feedback!
 
 ## Key Features
 
