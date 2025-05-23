@@ -12,6 +12,12 @@ namespace Android {
 
 class BluetoothGatt {
   public:
+
+    static constexpr int CONNECTION_PRIORITY_BALANCED = 0;
+    static constexpr int CONNECTION_PRIORITY_HIGH = 1;
+    static constexpr int CONNECTION_PRIORITY_LOW_POWER = 2;
+    static constexpr int CONNECTION_PRIORITY_DCK = 3;
+
     BluetoothGatt();
     BluetoothGatt(SimpleJNI::Object<SimpleJNI::GlobalRef, jobject> obj);
 
@@ -35,7 +41,7 @@ class BluetoothGatt {
     bool readDescriptor(BluetoothGattDescriptor descriptor);
     // void readPhy();
     // bool readRemoteRssi();
-    // bool requestConnectionPriority(int connectionPriority);
+    bool requestConnectionPriority(int connectionPriority);
     // bool requestMtu(int mtu);
     bool setCharacteristicNotification(BluetoothGattCharacteristic characteristic, bool enable);
     // void setPreferredPhy(int txPhy, int rxPhy, int phyOptions);
@@ -59,7 +65,7 @@ class BluetoothGatt {
     static jmethodID _method_setCharacteristicNotification;
     static jmethodID _method_writeCharacteristic;
     static jmethodID _method_writeDescriptor;
-
+    static jmethodID _method_requestConnectionPriority;
     // JNI descriptor for auto-registration
     static const SimpleJNI::JNIDescriptor descriptor;
     static const SimpleJNI::AutoRegister<BluetoothGatt> registrar;

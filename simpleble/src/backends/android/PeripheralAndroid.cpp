@@ -7,6 +7,7 @@
 #include "ServiceBase.h"
 
 #include <simpleble/Exceptions.h>
+#include <simpleble/Config.h>
 #include <algorithm>
 #include "CommonUtils.h"
 #include "LoggingInternal.h"
@@ -18,6 +19,10 @@ using namespace std::chrono_literals;
 PeripheralAndroid::PeripheralAndroid(Android::BluetoothDevice device) : _device(device) {
     _btGattCallback.set_callback_onConnectionStateChange([this](bool connected) {
         if (connected) {
+            if (Config::Android::connection_priority_request != Config::Android::ConnectionPriorityRequest::DISABLED) {
+                _gatt.requestConnectionPriority(static_cast<int>(Config::Android::connection_priority_request));
+            }
+
             // If a connection has been established, request service discovery.
             _gatt.discoverServices();
         } else {

@@ -18,7 +18,7 @@ jmethodID BluetoothGatt::_method_readDescriptor = nullptr;
 jmethodID BluetoothGatt::_method_setCharacteristicNotification = nullptr;
 jmethodID BluetoothGatt::_method_writeCharacteristic = nullptr;
 jmethodID BluetoothGatt::_method_writeDescriptor = nullptr;
-
+jmethodID BluetoothGatt::_method_requestConnectionPriority = nullptr;
 // Define the JNI descriptor
 const SimpleJNI::JNIDescriptor BluetoothGatt::descriptor{
     "android/bluetooth/BluetoothGatt", // Java class name
@@ -33,7 +33,8 @@ const SimpleJNI::JNIDescriptor BluetoothGatt::descriptor{
      {"readDescriptor", "(Landroid/bluetooth/BluetoothGattDescriptor;)Z", &_method_readDescriptor},
      {"setCharacteristicNotification", "(Landroid/bluetooth/BluetoothGattCharacteristic;Z)Z", &_method_setCharacteristicNotification},
      {"writeCharacteristic", "(Landroid/bluetooth/BluetoothGattCharacteristic;)Z", &_method_writeCharacteristic},
-     {"writeDescriptor", "(Landroid/bluetooth/BluetoothGattDescriptor;)Z", &_method_writeDescriptor}
+     {"writeDescriptor", "(Landroid/bluetooth/BluetoothGattDescriptor;)Z", &_method_writeDescriptor},
+     {"requestConnectionPriority", "(I)Z", &_method_requestConnectionPriority}
     }};
 
 const SimpleJNI::AutoRegister<BluetoothGatt> BluetoothGatt::registrar{&descriptor};
@@ -103,6 +104,11 @@ bool BluetoothGatt::writeCharacteristic(BluetoothGattCharacteristic characterist
 bool BluetoothGatt::writeDescriptor(BluetoothGattDescriptor descriptor) {
     if (!_obj) throw std::runtime_error("BluetoothGatt is not initialized");
     return _obj.call_boolean_method(_method_writeDescriptor, descriptor.getObject().get());
+}
+
+bool BluetoothGatt::requestConnectionPriority(int connectionPriority) {
+    if (!_obj) throw std::runtime_error("BluetoothGatt is not initialized");
+    return _obj.call_boolean_method(_method_requestConnectionPriority, connectionPriority);
 }
 
 }  // namespace Android

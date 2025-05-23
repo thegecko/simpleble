@@ -19,7 +19,19 @@ namespace Config {
     }
 
     namespace Android {
-        static void reset() {}
+        enum class ConnectionPriorityRequest {
+            DISABLED = -1,
+            BALANCED = 0,
+            HIGH = 1,
+            LOW_POWER = 2,
+            DCK = 3
+        };
+
+        inline static ConnectionPriorityRequest connection_priority_request = ConnectionPriorityRequest::DISABLED;
+
+        static void reset() {
+            connection_priority_request = ConnectionPriorityRequest::DISABLED;
+        }
     }
 
     namespace Base {

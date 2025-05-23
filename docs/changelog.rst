@@ -27,6 +27,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Python) Exposed the `Adapter::power_on()`, `Adapter::power_off()` and `Adapter::is_powered()` methods.
 - (Android) Calls to Java methods are now checked for exceptions.
 - (Java) Calls to Java methods are now checked for exceptions.
+- (Android) Added support for requesting a specific connection priority via configuration.
 
 **Changed**
 
