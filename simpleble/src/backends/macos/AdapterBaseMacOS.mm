@@ -29,8 +29,7 @@
         }                                                                             \
     } while (0)
 
-
-#ifdef TARGET_OS_OSX
+#if TARGET_OS_OSX
 extern "C" {
 // Credit to the Chromium project for finding and documenting this undocumented API.
 //
@@ -88,7 +87,7 @@ void IOBluetoothPreferenceSetControllerPowerState(int state);
 }
 
 - (void)powerOn {
-#ifdef TARGET_OS_OSX
+#if TARGET_OS_OSX
     IOBluetoothPreferenceSetControllerPowerState(1);
 
     // Wait for the central manager state to be updated for up to 5 seconds.
@@ -100,7 +99,7 @@ void IOBluetoothPreferenceSetControllerPowerState(int state);
 }
 
 - (void)powerOff {
-#ifdef TARGET_OS_OSX
+#if TARGET_OS_OSX
     IOBluetoothPreferenceSetControllerPowerState(0);
 
     // Wait for the central manager state to be updated for up to 5 seconds.
