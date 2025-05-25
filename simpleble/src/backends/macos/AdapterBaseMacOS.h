@@ -2,6 +2,7 @@
 
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <Foundation/Foundation.h>
+#import <IOBluetooth/IOBluetooth.h>
 
 #include <functional>
 #import "AdapterMac.h"
@@ -16,6 +17,8 @@
 
 - (void*)underlying;
 
+- (void)powerOn;
+- (void)powerOff;
 - (bool)isPowered;
 
 - (void)scanStart;

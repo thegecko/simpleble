@@ -5,6 +5,45 @@
 #import "LoggingInternal.h"
 #import "Utils.h"
 
+#define WAIT_UNTIL_FALSE(obj, var)                \
+    do {                                          \
+        BOOL _tmpVar = YES;                       \
+        while (_tmpVar) {                         \
+            [NSThread sleepForTimeInterval:0.01]; \
+            @synchronized(obj) {                  \
+                _tmpVar = (var);                  \
+            }                                     \
+        }                                         \
+    } while (0)
+
+#define WAIT_UNTIL_FALSE_WITH_TIMEOUT(obj, var, timeout)                              \
+    do {                                                                              \
+        BOOL _tmpVar = YES;                                                           \
+        NSDate* endDate = [NSDate dateWithTimeInterval:timeout sinceDate:NSDate.now]; \
+        while (_tmpVar && [NSDate.now compare:endDate] == NSOrderedAscending) {       \
+            [NSThread sleepForTimeInterval:0.01];                                     \
+            @synchronized(obj) {                                                      \
+                _tmpVar = (var);                                                      \
+            }                                                                         \
+        }                                                                             \
+    } while (0)
+
+extern "C" {
+// Credit to the Chromium project for finding and documenting this undocumented API.
+//
+// Undocumented IOBluetooth Preference API [1]. Used by `blueutil` [2] and
+// `Karabiner` [3] to programmatically control the Bluetooth state. Calling the
+// method with `1` powers the adapter on, calling it with `0` powers it off.
+// Using this API has the same effect as turning Bluetooth on or off using the
+// macOS System Preferences [4], and will effect all adapters.
+//
+// [1] https://goo.gl/Gbjm1x
+// [2] http://www.frederikseiffert.de/blueutil/
+// [3] https://pqrs.org/osx/karabiner/
+// [4] https://support.apple.com/kb/PH25091
+void IOBluetoothPreferenceSetControllerPowerState(int state);
+}
+
 @interface AdapterBaseMacOS () {
 }
 
@@ -43,6 +82,26 @@
 
 - (void*)underlying {
     return (__bridge void*)self.centralManager;
+}
+
+- (void)powerOn {
+    IOBluetoothPreferenceSetControllerPowerState(1);
+
+    // Wait for the central manager state to be updated for up to 5 seconds.
+    NSDate* endDate = [NSDate dateWithTimeInterval:5.0 sinceDate:NSDate.now];
+    while (_centralManager.state != CBManagerStatePoweredOn && [NSDate.now compare:endDate] == NSOrderedAscending) {
+        [NSThread sleepForTimeInterval:0.01];
+    }
+}
+
+- (void)powerOff {
+    IOBluetoothPreferenceSetControllerPowerState(0);
+
+    // Wait for the central manager state to be updated for up to 5 seconds.
+    NSDate* endDate = [NSDate dateWithTimeInterval:5.0 sinceDate:NSDate.now];
+    while (_centralManager.state != CBManagerStatePoweredOff && [NSDate.now compare:endDate] == NSOrderedAscending) {
+        [NSThread sleepForTimeInterval:0.01];
+    }
 }
 
 - (bool)isPowered {
@@ -154,11 +213,17 @@
 }
 
 - (void)centralManager:(CBCentralManager*)central didDisconnectPeripheral:(CBPeripheral*)peripheral error:(NSError*)error {
+    // NSLog(@"didDisconnectPeripheral (A): %@, error: %@", peripheral, error);
     _adapter->delegate_did_disconnect_peripheral((__bridge void*)peripheral, (__bridge void*)error);
 }
 
 - (void)centralManager:(CBCentralManager*)central didFailToConnectPeripheral:(CBPeripheral*)peripheral error:(NSError*)error {
     _adapter->delegate_did_fail_to_connect_peripheral((__bridge void*)peripheral, (__bridge void*)error);
+}
+
+- (void)centralManager:(CBCentralManager*)central didDisconnectPeripheral:(CBPeripheral*)peripheral timestamp:(CFAbsoluteTime)timestamp isReconnecting:(BOOL)isReconnecting error:(NSError*)error {
+    // NSLog(@"didDisconnectPeripheral (B): %@, error: %@", peripheral, error);
+    _adapter->delegate_did_disconnect_peripheral((__bridge void*)peripheral, (__bridge void*)error);
 }
 
 @end

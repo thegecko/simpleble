@@ -49,11 +49,13 @@ BluetoothAddress AdapterMac::address() const {
 }
 
 void AdapterMac::power_on() {
-    // NOTE: CoreBluetooth does not support powering on the adapter.
+    AdapterBaseMacOS* internal = (__bridge AdapterBaseMacOS*)opaque_internal_;
+    [internal powerOn];
 }
 
 void AdapterMac::power_off() {
-    // NOTE: CoreBluetooth does not support powering off the adapter.
+    AdapterBaseMacOS* internal = (__bridge AdapterBaseMacOS*)opaque_internal_;
+    [internal powerOff];
 }
 
 bool AdapterMac::is_powered() {

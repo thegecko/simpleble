@@ -12,7 +12,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 **Notes**
 
 - The Rust bindings have undergone a major rewrite of their API, towards a more idiomatic Rust style and stream-based API.
-- iOS, MacOS and Android do not support powering on and off the adapter. Calling these methods will not have any effect on the adapter.
+- iOS and Android do not support powering on and off the adapter. Calling these methods will not have any effect on the adapter.
 - Linux does have support for powering on and off the adapter, but further architecture changes are needed to properly expose this.
 - Callbacks for power on and off events are currently only supported on Windows.
 - Retrieving connected peripherals is currently only supported on Windows. (More backends coming soon.)
@@ -27,7 +27,8 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Python) Exposed the `Adapter::power_on()`, `Adapter::power_off()` and `Adapter::is_powered()` methods.
 - (Android) Calls to Java methods are now checked for exceptions.
 - (Java) Calls to Java methods are now checked for exceptions.
-- (Android) Added support for requesting a specific connection priority via configuration.
+- (Android) Added support for requesting a specific connection priority via configuration. *(Thanks Nicole S.!)*
+- (MacOS) Added support for powering adapters on and off.
 
 **Changed**
 

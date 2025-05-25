@@ -233,7 +233,7 @@
 - (void)disconnect {
     @synchronized(_task) {
         @synchronized(self) {
-            _task.error = nil;
+            self->_disconnectionError = nil;
             _task.pending = YES;
             [self.centralManager cancelPeripheralConnection:self.peripheral];
         }
@@ -241,7 +241,7 @@
         WAIT_UNTIL_FALSE(self, _task.pending);
 
         if (self.peripheral.state != CBPeripheralStateDisconnected) {
-            [self throwBasedOnError:_task.error withFormat:@"Peripheral Disconnection"];
+            [self throwBasedOnError:_disconnectionError withFormat:@"Peripheral Disconnection"];
         }
     }
 }
