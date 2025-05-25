@@ -1,5 +1,5 @@
 #include <simpleble/Utils.h>
-#if defined(SIMPLEBLE_BACKEND_MACOS)
+#if SIMPLEBLE_BACKEND_MACOS
 #include "TargetConditionals.h"
 #endif
 
@@ -8,9 +8,9 @@ namespace SimpleBLE {
 OperatingSystem get_operating_system() {
 #ifdef _WIN32
     return OperatingSystem::WINDOWS;
-#elif defined(TARGET_OS_OSX)
+#elif TARGET_OS_OSX
     return OperatingSystem::MACOS;
-#elif defined(TARGET_OS_IOS)
+#elif TARGET_OS_IOS
     return OperatingSystem::IOS;
 #elif __linux__
     return OperatingSystem::LINUX;
