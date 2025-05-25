@@ -25,7 +25,7 @@ static std::shared_ptr<BackendBase> _get_enabled_backend() {
     } else if constexpr (SIMPLEBLE_BACKEND_ANDROID) {
         extern BackendPtr BACKEND_ANDROID;
         return BACKEND_ANDROID();
-    } else if constexpr (SIMPLEBLE_BACKEND_MACOS) {
+    } else if constexpr (SIMPLEBLE_BACKEND_MACOS OR SIMPLEBLE_BACKEND_IOS) {
         extern BackendPtr BACKEND_MACOS;
         return BACKEND_MACOS();
     } else if constexpr (SIMPLEBLE_BACKEND_PLAIN) {

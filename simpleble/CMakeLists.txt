@@ -250,12 +250,17 @@ elseif(SIMPLEBLE_BACKEND_WINDOWS)
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/windows/MtaManager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/windows/Utils.cpp)
 
-elseif(SIMPLEBLE_BACKEND_MACOS)
+elseif(SIMPLEBLE_BACKEND_MACOS OR SIMPLEBLE_BACKEND_IOS)
     message(STATUS "Darwin / iOS Host Detected")
 
     list(APPEND PRIVATE_COMPILE_OPTIONS -fobjc-arc)
 
-    target_link_libraries(simpleble PUBLIC "-framework Foundation" "-framework CoreBluetooth" "-framework IOBluetooth" ObjC)
+    target_link_libraries(simpleble PUBLIC "-framework Foundation" "-framework CoreBluetooth" ObjC)
+
+    if(SIMPLEBLE_BACKEND_MACOS)
+        target_link_libraries(simpleble PUBLIC "-framework IOBluetooth")
+    endif()
+
     target_sources(simpleble PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/macos/Utils.mm
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/macos/AdapterMac.mm
