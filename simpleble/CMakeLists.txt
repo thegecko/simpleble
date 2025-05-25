@@ -117,6 +117,12 @@ if(NOT SIMPLEBLE_TEST AND NOT SIMPLEBLE_PLAIN)
         set(SIMPLEBLE_BACKEND_MACOS OFF)
     endif()
 
+    if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
+        set(SIMPLEBLE_BACKEND_IOS ON)
+    else()
+        set(SIMPLEBLE_BACKEND_IOS OFF)
+    endif()
+
     if(CMAKE_SYSTEM_NAME STREQUAL "Android")
         set(SIMPLEBLE_BACKEND_ANDROID ON)
     else()
@@ -126,6 +132,7 @@ else()
     set(SIMPLEBLE_BACKEND_LINUX OFF)
     set(SIMPLEBLE_BACKEND_WINDOWS OFF)
     set(SIMPLEBLE_BACKEND_MACOS OFF)
+    set(SIMPLEBLE_BACKEND_IOS OFF)
     set(SIMPLEBLE_BACKEND_ANDROID OFF)
 endif()
 
@@ -134,6 +141,7 @@ target_compile_definitions(simpleble PRIVATE
                         SIMPLEBLE_BACKEND_LINUX=$<BOOL:${SIMPLEBLE_BACKEND_LINUX}>
                         SIMPLEBLE_BACKEND_WINDOWS=$<BOOL:${SIMPLEBLE_BACKEND_WINDOWS}>
                         SIMPLEBLE_BACKEND_MACOS=$<BOOL:${SIMPLEBLE_BACKEND_MACOS}>
+                        SIMPLEBLE_BACKEND_IOS=$<BOOL:${SIMPLEBLE_BACKEND_IOS}>
                         SIMPLEBLE_BACKEND_ANDROID=$<BOOL:${SIMPLEBLE_BACKEND_ANDROID}>)
 
 # Detect the operating system and load the necessary dependencies

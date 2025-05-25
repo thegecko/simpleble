@@ -27,7 +27,9 @@ using ByteArray = kvn::bytearray;
 enum class OperatingSystem {
     WINDOWS,
     MACOS,
+    IOS,
     LINUX,
+    ANDROID,
 };
 
 // TODO: Add to_string functions for all enums.
