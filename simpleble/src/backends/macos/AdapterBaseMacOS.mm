@@ -1,4 +1,5 @@
 #import "AdapterBaseMacOS.h"
+#import "TargetConditionals.h"
 
 #import <fmt/core.h>
 #import <simpleble/Exceptions.h>
@@ -28,6 +29,8 @@
         }                                                                             \
     } while (0)
 
+
+#ifdef TARGET_OS_OSX
 extern "C" {
 // Credit to the Chromium project for finding and documenting this undocumented API.
 //
@@ -43,7 +46,7 @@ extern "C" {
 // [4] https://support.apple.com/kb/PH25091
 void IOBluetoothPreferenceSetControllerPowerState(int state);
 }
-
+#endif
 @interface AdapterBaseMacOS () {
 }
 
@@ -85,6 +88,7 @@ void IOBluetoothPreferenceSetControllerPowerState(int state);
 }
 
 - (void)powerOn {
+#ifdef TARGET_OS_OSX
     IOBluetoothPreferenceSetControllerPowerState(1);
 
     // Wait for the central manager state to be updated for up to 5 seconds.
@@ -92,9 +96,11 @@ void IOBluetoothPreferenceSetControllerPowerState(int state);
     while (_centralManager.state != CBManagerStatePoweredOn && [NSDate.now compare:endDate] == NSOrderedAscending) {
         [NSThread sleepForTimeInterval:0.01];
     }
+#endif
 }
 
 - (void)powerOff {
+#ifdef TARGET_OS_OSX
     IOBluetoothPreferenceSetControllerPowerState(0);
 
     // Wait for the central manager state to be updated for up to 5 seconds.
@@ -102,6 +108,7 @@ void IOBluetoothPreferenceSetControllerPowerState(int state);
     while (_centralManager.state != CBManagerStatePoweredOff && [NSDate.now compare:endDate] == NSOrderedAscending) {
         [NSThread sleepForTimeInterval:0.01];
     }
+#endif
 }
 
 - (bool)isPowered {

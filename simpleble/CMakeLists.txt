@@ -129,7 +129,8 @@ else()
     set(SIMPLEBLE_BACKEND_ANDROID OFF)
 endif()
 
-add_compile_definitions(SIMPLEBLE_BACKEND_PLAIN=$<BOOL:${SIMPLEBLE_PLAIN}>
+target_compile_definitions(simpleble PRIVATE
+                        SIMPLEBLE_BACKEND_PLAIN=$<BOOL:${SIMPLEBLE_PLAIN}>
                         SIMPLEBLE_BACKEND_LINUX=$<BOOL:${SIMPLEBLE_BACKEND_LINUX}>
                         SIMPLEBLE_BACKEND_WINDOWS=$<BOOL:${SIMPLEBLE_BACKEND_WINDOWS}>
                         SIMPLEBLE_BACKEND_MACOS=$<BOOL:${SIMPLEBLE_BACKEND_MACOS}>
