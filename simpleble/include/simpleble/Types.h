@@ -24,6 +24,12 @@ using BluetoothUUID = std::string;
  */
 using ByteArray = kvn::bytearray;
 
+#ifdef ANDROID
+#pragma push_macro("ANDROID")
+#undef ANDROID
+#define ANDROID_WAS_DEFINED
+#endif
+
 enum class OperatingSystem {
     WINDOWS,
     MACOS,
@@ -31,6 +37,11 @@ enum class OperatingSystem {
     LINUX,
     ANDROID,
 };
+
+#ifdef ANDROID_WAS_DEFINED
+#pragma pop_macro("ANDROID")
+#undef ANDROID_WAS_DEFINED
+#endif
 
 // TODO: Add to_string functions for all enums.
 enum BluetoothAddressType : int32_t { PUBLIC = 0, RANDOM = 1, UNSPECIFIED = 2 };
