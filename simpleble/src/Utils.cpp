@@ -1,5 +1,5 @@
 #include <simpleble/Utils.h>
-#if SIMPLEBLE_BACKEND_MACOS
+#if SIMPLEBLE_BACKEND_MACOS || SIMPLEBLE_BACKEND_IOS
 #include "TargetConditionals.h"
 #endif
 
