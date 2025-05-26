@@ -127,7 +127,7 @@ and very flexible commercial licensing options for larger projects.
 
 ----
 
-**SimpleBLE** is a project powered by **`The California Open Source Company`_.**
+**SimpleBLE** is a project powered by `**The California Open Source Company**`_.
 
 .. Links
 
