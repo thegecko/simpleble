@@ -8,6 +8,7 @@ The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE),
 Announcements
 -------------
 
+* **(2025-05-25)** 🚨 Rust bindings are now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
 * **(2025-05-01)** We're excited to announce that we've partnered with `Software.com.br`_ to offer SimpleBLE across LATAM. Stay tuned for more details!
 * **(2025-04-24)** The SimpleBLE Android bridge project has been renamed to **simpledroidbridge**. The old name will be deprecated in a future release.
 * **(2025-04-13)** SimpleBLE C bindings are being ported to a separate library called **simplecble**. The old C bindings will be deprecated in a future release.
@@ -32,7 +33,7 @@ Language Bindings
 * **C/C++**: Core implementation with full platform support
 * **Python (SimplePyBLE)**: Python bindings. See the `SimplePyBLE`_ PyPI page for more details.
 * **Java (SimpleJavaBLE) - Early Preview**: Java bindings. **Looking for design partners who'd like to test it out and provide feedback.**
-* **Rust (SimpleRsBLE) - Alpha**: Rust bindings (under major refactor). See the `SimpleRsBLE`_ Crates.io page for more details.
+* **Rust (SimpleRsBLE) - Early Preview**: Rust bindings with a **NEW API**. See the `SimpleRsBLE`_ Crates.io page for more details.
 * **Android (SimpleDroidBLE) - Alpha**: Android-only bindings (alpha).
 * More languages coming soon!
 
@@ -79,9 +80,9 @@ version 3 after four years of its initial release.
 - Priority technical support included
 - Clear terms for integrating into MIT-licensed projects
 
-**You can find more information on pricing and commercial terms of service at www.simpleble.org**
+You can find more information on pricing and commercial terms of service at `www.simpleble.org <https://www.simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_.
 
-For further enquiries, please contact us at ``contact at simpleble dot org``.
+For further enquiries, please contact us at ``contact at simpleble dot org`` or `www.simpleble.org/contact <https://www.simpleble.org/contact?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_.
 
 **We also offer FREE commercial licenses for small projects and early-stage companies - reach out to discuss your use case!**
 
