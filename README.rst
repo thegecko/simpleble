@@ -127,7 +127,7 @@ and very flexible commercial licensing options for larger projects.
 
 ----
 
-**SimpleBLE** is a project powered by `|The California Open Source Company Bold|`_.
+**SimpleBLE** is a project powered by |californiaopensource|.
 
 .. Links
 
@@ -144,8 +144,8 @@ and very flexible commercial licensing options for larger projects.
 .. |Latest Documentation Status| image:: https://readthedocs.org/projects/simpleble/badge?version=latest
    :target: http://simpleble.readthedocs.io/en/latest
 
-.. |The California Open Source Company Bold| replace:: **The California Open Source Company**
-.. _The California Open Source Company: https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble
+.. |californiaopensource| replace:: **The California Open Source Company**
+.. _californiaopensource: https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble
 
 .. _Software.com.br: https://software.com.br/
 
