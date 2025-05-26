@@ -122,7 +122,7 @@ Nothing changes. You can continue using SimpleBLE under the terms of your commer
 
 **I'm using SimpleBLE commercially, but don't have a commercial license. What should I do?**
 
-Please reach out at ``contact at simpleble dot org`` and we can discuss the specifics of your
+Please |email| or |leavemessage| and we can discuss the specifics of your
 situation. We have a free commercial license option for small projects and early-stage companies
 and very flexible commercial licensing options for larger projects.
 
@@ -131,6 +131,10 @@ and very flexible commercial licensing options for larger projects.
 **SimpleBLE** is a project powered by `The California Open Source Company <https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_.
 
 .. Links
+
+.. _email: replace:: `email us <mailto:contact@simpleble.org>`_
+
+.. _leavemessage: replace:: `leave us a message on our website <https://www.simpleble.org/contact?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_
 
 .. _website: https://simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble
 
