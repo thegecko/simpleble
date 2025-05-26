@@ -80,9 +80,9 @@ version 3 after four years of its initial release.
 - Priority technical support included
 - Clear terms for integrating into MIT-licensed projects
 
-You can find more information on pricing and commercial terms of service at `www.simpleble.org <https://www.simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_.
+**Looking for information on pricing and commercial terms of service?** Visit `www.simpleble.org <https://www.simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_ for more details.
 
-For further enquiries, please contact us at ``contact at simpleble dot org`` or `www.simpleble.org/contact <https://www.simpleble.org/contact?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_.
+For further enquiries, please `email us <mailto:contact@simpleble.org>`_ or `leave us a message on our website <https://www.simpleble.org/contact?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_.
 
 **We also offer FREE commercial licenses for small projects and early-stage companies - reach out to discuss your use case!**
 
