@@ -49,7 +49,7 @@ Support & Resources
 We're here to help you succeed with SimpleBLE:
 
 * **Documentation**: Visit our `ReadTheDocs`_ page for comprehensive guides
-* **Commercial Support**: Check our `website`_ or `email us <mailto:contact@simpleble.org>`_ for licensing and professional services
+* **Commercial Support**: Check out |website|_ or |email|_ for licensing and professional services
 * **Community**: Join our `Discord`_ server for discussions and help
 
 Don't hesitate to reach out - we're happy to help!
@@ -80,9 +80,9 @@ version 3 after four years of its initial release.
 - Priority technical support included
 - Clear terms for integrating into MIT-licensed projects
 
-**Looking for information on pricing and commercial terms of service?** Visit `www.simpleble.org <https://www.simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_ for more details.
+**Looking for information on pricing and commercial terms of service?** Visit |website-url|_ for more details.
 
-For further enquiries, please `email us <mailto:contact@simpleble.org>`_ or `leave us a message on our website <https://www.simpleble.org/contact?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_.
+For further enquiries, please |email|_ or |leavemessage|_ and we can discuss the specifics of your situation.
 
 **We also offer FREE commercial licenses for small projects and early-stage companies - reach out to discuss your use case!**
 
@@ -122,7 +122,7 @@ Nothing changes. You can continue using SimpleBLE under the terms of your commer
 
 **I'm using SimpleBLE commercially, but don't have a commercial license. What should I do?**
 
-Please |email|_ or |leavemessage| and we can discuss the specifics of your
+Please |email|_ or |leavemessage|_ and we can discuss the specifics of your
 situation. We have a free commercial license option for small projects and early-stage companies
 and very flexible commercial licensing options for larger projects.
 
@@ -135,9 +135,14 @@ and very flexible commercial licensing options for larger projects.
 .. |email| replace:: email us
 .. _email: mailto:contact@simpleble.org
 
-.. _leavemessage: replace:: `leave us a message on our website <https://www.simpleble.org/contact?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_
+.. |leavemessage| replace:: leave us a message on our website
+.. _leavemessage: https://www.simpleble.org/contact?utm_source=github&utm_medium=referral&utm_campaign=simpleble
 
+.. |website| replace:: our website
 .. _website: https://simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble
+
+.. |website-url| replace:: www.simpleble.org
+.. _website-url: https://simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble
 
 .. _SimplePyBLE: https://pypi.org/project/simplepyble/
 
