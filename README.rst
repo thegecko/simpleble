@@ -144,7 +144,7 @@ and very flexible commercial licensing options for larger projects.
 .. |Latest Documentation Status| image:: https://readthedocs.org/projects/simpleble/badge?version=latest
    :target: http://simpleble.readthedocs.io/en/latest
 
-.. |californiaopensource| replace:: `**The California Open Source Company** <https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_.
+.. |californiaopensource| replace:: **The California Open Source Company** <https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble>.
 
 .. _Software.com.br: https://software.com.br/
 
