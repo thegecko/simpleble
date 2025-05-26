@@ -145,7 +145,7 @@ and very flexible commercial licensing options for larger projects.
    :target: http://simpleble.readthedocs.io/en/latest
 
 .. |californiaopensource| replace:: **The California Open Source Company**
-.. _californiaopensource: https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble
+   :target: https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble
 
 .. _Software.com.br: https://software.com.br/
 
