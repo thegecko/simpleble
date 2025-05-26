@@ -128,7 +128,7 @@ and very flexible commercial licensing options for larger projects.
 
 ----
 
-**SimpleBLE** is a project powered by `The California Open Source Company <https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_.
+**SimpleBLE** is a project powered by |caos|_.
 
 .. Links
 
@@ -143,6 +143,9 @@ and very flexible commercial licensing options for larger projects.
 
 .. |website-url| replace:: www.simpleble.org
 .. _website-url: https://simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble
+
+.. |caos| replace:: **The California Open Source Company**
+.. _caos: https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble
 
 .. _SimplePyBLE: https://pypi.org/project/simplepyble/
 
