@@ -22,7 +22,7 @@ root = here.parent.resolve()
 # -- Project information -----------------------------------------------------
 
 project = 'SimpleBLE'
-copyright = '2022, Kevin Dewald'
+copyright = '2022-2025, The California Open Source Company'
 author = 'Kevin Dewald'
 
 

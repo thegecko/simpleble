@@ -125,10 +125,13 @@ Please reach out at ``contact at simpleble dot org`` and we can discuss the spec
 situation. We have a free commercial license option for small projects and early-stage companies
 and very flexible commercial licensing options for larger projects.
 
+----
+
+SimpleBLE is a project powered by `The California Open Source Company`_.
 
 .. Links
 
-.. _website: https://simpleble.org
+.. _website: https://simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble
 
 .. _SimplePyBLE: https://pypi.org/project/simplepyble/
 
@@ -139,9 +142,11 @@ and very flexible commercial licensing options for larger projects.
 .. _ReadTheDocs: https://simpleble.readthedocs.io/en/latest/
 
 .. |Latest Documentation Status| image:: https://readthedocs.org/projects/simpleble/badge?version=latest
-   :target: http://simpleble.readthedocs.org/en/latest
+   :target: http://simpleble.readthedocs.io/en/latest
 
-.. |Software.com.br| https://software.com.br/
+.. _The California Open Source Company: https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble
+
+.. _Software.com.br: https://software.com.br/
 
 .. Other projects using SimpleBLE
 
