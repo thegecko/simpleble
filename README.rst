@@ -122,7 +122,7 @@ Nothing changes. You can continue using SimpleBLE under the terms of your commer
 
 **I'm using SimpleBLE commercially, but don't have a commercial license. What should I do?**
 
-Please |email| or |leavemessage| and we can discuss the specifics of your
+Please |email|_ or |leavemessage| and we can discuss the specifics of your
 situation. We have a free commercial license option for small projects and early-stage companies
 and very flexible commercial licensing options for larger projects.
 
@@ -132,7 +132,8 @@ and very flexible commercial licensing options for larger projects.
 
 .. Links
 
-.. _email: replace:: `email us <mailto:contact@simpleble.org>`_
+.. |email| replace:: email us
+.. _email: mailto:contact@simpleble.org
 
 .. _leavemessage: replace:: `leave us a message on our website <https://www.simpleble.org/contact?utm_source=github&utm_medium=referral&utm_campaign=simpleble>`_
 
