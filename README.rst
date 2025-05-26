@@ -141,6 +141,8 @@ and very flexible commercial licensing options for larger projects.
 .. |Latest Documentation Status| image:: https://readthedocs.org/projects/simpleble/badge?version=latest
    :target: http://simpleble.readthedocs.org/en/latest
 
+.. |Software.com.br| https://software.com.br/
+
 .. Other projects using SimpleBLE
 
 .. _GDSimpleBLE: https://github.com/jferdelyi/GDSimpleBLE
