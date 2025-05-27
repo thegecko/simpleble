@@ -6,6 +6,7 @@
 #include "DescriptorBase.h"
 #include "ServiceBase.h"
 
+#include <simpleble/Config.h>
 #include <simpleble/Characteristic.h>
 #include <simpleble/Descriptor.h>
 #include <simpleble/Exceptions.h>
@@ -256,8 +257,8 @@ void PeripheralLinux::unsubscribe(BluetoothUUID const& service, BluetoothUUID co
 
     // Wait for the characteristic to stop notifying.
     // TODO: Upgrade SimpleDBus to provide a way to wait for this signal.
-    auto timeout = std::chrono::system_clock::now() + 5s;
-    while (characteristic_object->notifying() && std::chrono::system_clock::now() < timeout) {
+    auto timeout = std::chrono::steady_clock::now() + 5s;
+    while (characteristic_object->notifying() && std::chrono::steady_clock::now() < timeout) {
         std::this_thread::sleep_for(50ms);
     }
 }
@@ -339,7 +340,7 @@ bool PeripheralLinux::_attempt_connect() {
     // Wait for the connection to be confirmed.
     // The condition variable will return false if the connection was not established.
     std::unique_lock<std::mutex> lock(connection_mutex_);
-    return connection_cv_.wait_for(lock, 2s, [this]() { return is_connected(); });
+    return connection_cv_.wait_for(lock, Config::SimpleBluez::connection_timeout, [this]() { return is_connected(); });
 }
 
 bool PeripheralLinux::_attempt_disconnect() {
@@ -350,7 +351,7 @@ bool PeripheralLinux::_attempt_disconnect() {
     // Wait for the disconnection to be confirmed.
     // The condition variable will return false if the connection is still active.
     std::unique_lock<std::mutex> lock(disconnection_mutex_);
-    return disconnection_cv_.wait_for(lock, 1s, [this]() { return !is_connected(); });
+    return disconnection_cv_.wait_for(lock, Config::SimpleBluez::disconnection_timeout, [this]() { return !is_connected(); });
 }
 
 std::shared_ptr<SimpleBluez::Characteristic> PeripheralLinux::_get_characteristic(

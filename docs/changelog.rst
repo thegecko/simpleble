@@ -29,6 +29,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Java) Calls to Java methods are now checked for exceptions.
 - (Android) Added support for requesting a specific connection priority via configuration. *(Thanks Nicole S.!)*
 - (MacOS) Added support for powering adapters on and off.
+- (Linux) Added configurable connection and disconnection timeouts. *(Thanks Kober Engineering!)*
 
 **Changed**
 
@@ -42,6 +43,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Android) Fixed a bug where the GATT object would not be closed if a connection was lost. *(Thanks Nicole S.!)*
 - (Rust) Fixed a race condition in the Rust bindings that would cause a crash if the adapter was deleted while a callback was in progress.
 - Added missing operating system definitions for utils.
+- (Linux) Use steady_clock instead of system_clock for timeout calculations. *(Thanks Kober Engineering!)*
 
 **Removed**
 

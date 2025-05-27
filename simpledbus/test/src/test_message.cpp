@@ -264,8 +264,8 @@ TEST_F(MessageTest, ReceiveMethodCallSuccess) {
 
     // Wait for the method call to be received
     bool method_called = false;
-    std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now() + std::chrono::seconds(1);
-    while (std::chrono::system_clock::now() < end) {
+    std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now() + std::chrono::seconds(1);
+    while (std::chrono::steady_clock::now() < end) {
         conn->read_write();
         auto method_call = conn->pop_message();
         if (method_call.is_valid()) {
@@ -300,8 +300,8 @@ TEST_F(MessageTest, ReceiveMethodCallFailure) {
 
     // Wait for the method call to be received
     bool method_called = false;
-    std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now() + std::chrono::seconds(1);
-    while (std::chrono::system_clock::now() < end) {
+    std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now() + std::chrono::seconds(1);
+    while (std::chrono::steady_clock::now() < end) {
         conn->read_write();
         auto method_call = conn->pop_message();
         if (method_call.is_valid()) {

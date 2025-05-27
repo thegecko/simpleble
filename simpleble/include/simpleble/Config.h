@@ -1,9 +1,16 @@
 #pragma once
+#include <chrono>
 
 namespace SimpleBLE {
 namespace Config {
     namespace SimpleBluez {
-        static void reset() {}
+        inline static std::chrono::steady_clock::duration connection_timeout = std::chrono::seconds(2);
+        inline static std::chrono::steady_clock::duration disconnection_timeout = std::chrono::seconds(1);
+
+        static void reset() {
+            connection_timeout = std::chrono::seconds(2);
+            disconnection_timeout = std::chrono::seconds(1);
+        }
     }
 
     namespace WinRT {
