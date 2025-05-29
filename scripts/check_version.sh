@@ -48,7 +48,7 @@ check_cargo_version_match() {
     # Extract the version line from Cargo.toml
     local cargo_version=$2
     echo "- Cargo.toml consistent with VERSION file?"
-    if [[ "$cargo_version" == "$version_file" ]]; then
+    if [[ "$cargo_version" == "$version_file"* ]]; then
         echo "  OK"
         return 0
     else
@@ -93,6 +93,8 @@ assert_return_value 'validate_version_format "1.1"' 1  || exit 1
 assert_return_value 'validate_version_format "1.1.1"' 0 || exit 1
 assert_return_value 'check_cargo_version_match "1.1.1" "1.1.2"' 1 || exit 1
 assert_return_value 'check_cargo_version_match "1.1.1" "1.1.1"' 0 || exit 1
+assert_return_value 'check_cargo_version_match "1.1.1" "1.1.1-dev1"' 0 || exit 1
+assert_return_value 'check_cargo_version_match "1.1.1" "1.1.2-dev1"' 1 || exit 1
 assert_return_value 'check_tag_version_match "1.1.1" "1.1.2" "1.1.1"' 1 || exit 1
 assert_return_value 'check_tag_version_match "1.1.1" "1.1.1" "1.1.1"' 0 || exit 1
 assert_return_value 'check_tag_version_match "" "1.1.1" "1.1.1"' 1 || exit 1
