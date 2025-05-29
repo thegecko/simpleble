@@ -6,7 +6,7 @@ include(${PROJECT_ROOT_DIR}/cmake/prelude.cmake)
 
 project(
     "simplejavable"
-    VERSION ${SIMPLEBLE_VERSION}
+    VERSION ${SIMPLEBLE_VERSION_BASE}
     LANGUAGES CXX
 )
 
