@@ -12,7 +12,7 @@ jobs:
       matrix:
         config:
           - { runner-os: ubuntu-22.04, os: linux, architecture: x64, container-image: dockcross/linux-x64 }
-          - { runner-os: ubuntu-22.04, os: linux, architecture: x86, container-image: dockcross/linux-x86 }
+          # - { runner-os: ubuntu-22.04, os: linux, architecture: x86, container-image: dockcross/linux-x86 }
           # - { runner-os: ubuntu-22.04, os: linux, architecture: aarch64, container-image: dockcross/linux-arm64 }
           # - { runner-os: ubuntu-22.04, os: linux, architecture: armv6, container-image: dockcross/linux-armv6-lts }
           - { runner-os: macos-14, os: macos, architecture: x64 } # Containers are not required.
@@ -20,6 +20,9 @@ jobs:
           # - { runner-os: macos-14, os: ios, architecture: aarch64 } # Containers are not required.
           - { runner-os: windows-2022, os: windows, architecture: x64 } # Containers are not required.
           # - { runner-os: windows-2022, os: windows, architecture: x86 } # Containers are not required.
+        build-type-cmd:
+          - ""
+          - "--release"
 
     steps:
       - name: Clone Repository
@@ -29,18 +32,18 @@ jobs:
           fetch-tags: true
 
       - name: Setup Environment (Linux)
-        if: inputs.os == 'linux'
+        if: matrix.config.os == 'linux'
         uses: ./.github/actions/build-dbus-full
         with:
-          os: ${{ inputs.os }}
-          arch: ${{ inputs.target-arch }}
+          os: ${{ matrix.config.os }}
+          arch: ${{ matrix.config.architecture }}
 
       - name: Setup Environment (Windows)
-        if: inputs.os == 'windows'
+        if: matrix.config.os == 'windows'
         uses: microsoft/setup-msbuild@v1.1
 
       - name: Setup CMake (macOS)
-        if: inputs.os == 'macos'
+        if: matrix.config.os == 'macos'
         uses: ./.github/actions/setup-cmake
 
       - name: Add Version Suffix
@@ -48,14 +51,12 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-        with:
-          components: cargo-edit
 
       - name: Compile SimpleBLE
         run: |
-          echo "CMAKE_PREFIX_PATH=/tmp/install" >> $GITHUB_ENV
+          cargo install cargo-edit
           cargo set-version ${{ env.VERSION }}
-          cargo build
+          cargo build ${{ matrix.build-type-cmd }}
 
   # publish:
   #   runs-on: ubuntu-22.04
