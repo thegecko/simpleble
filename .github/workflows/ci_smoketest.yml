@@ -145,3 +145,56 @@ jobs:
 
       - name: List all artifacts
         run: find $GITHUB_WORKSPACE/build_simpledroidbridge -type f -ls
+
+  build-rust:
+    runs-on: ${{ matrix.config.runner-os || 'ubuntu-latest' }}
+    container: ${{ matrix.config.container-image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { runner-os: ubuntu-22.04, os: linux, architecture: x64, container-image: dockcross/linux-x64 }
+          - { runner-os: ubuntu-22.04, os: linux, architecture: x86, container-image: dockcross/linux-x86 }
+          # - { runner-os: ubuntu-22.04, os: linux, architecture: aarch64, container-image: dockcross/linux-arm64 }
+          # - { runner-os: ubuntu-22.04, os: linux, architecture: armv6, container-image: dockcross/linux-armv6-lts }
+          - { runner-os: macos-14, os: macos, architecture: x64 } # Containers are not required.
+          # - { runner-os: macos-14, os: macos, architecture: aarch64 } # Containers are not required.
+          # - { runner-os: macos-14, os: ios, architecture: aarch64 } # Containers are not required.
+          - { runner-os: windows-2022, os: windows, architecture: x64 } # Containers are not required.
+          # - { runner-os: windows-2022, os: windows, architecture: x86 } # Containers are not required.
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup Environment (Linux)
+        if: inputs.os == 'linux'
+        uses: ./.github/actions/build-dbus-full
+        with:
+          os: ${{ inputs.os }}
+          arch: ${{ inputs.target-arch }}
+
+      - name: Setup Environment (Windows)
+        if: inputs.os == 'windows'
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Setup CMake (macOS)
+        if: inputs.os == 'macos'
+        uses: ./.github/actions/setup-cmake
+
+      - name: Add Version Suffix
+        uses: ./.github/actions/setup-version
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: cargo-edit
+
+      - name: Compile SimpleBLE
+        run: |
+          version_str=$(cat VERSION | tr -d ' \t\n\r')
+          cargo set-version $version_str
+          cargo build
