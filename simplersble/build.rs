@@ -10,6 +10,8 @@ fn compile_simpleble() {
     let cargo_manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
     let simplersble_source_path = Path::new(&cargo_manifest_dir).join("simplersble");
 
+    let extra_cmake_install_path = env::var("EXTRA_CMAKE_PREFIX_PATH").unwrap_or_default();
+
     println!("cargo:warning=CWD: {}", env::current_dir().unwrap().display());
     println!("cargo:warning=ENV: {} - {}", "OUT_DIR", env::var("OUT_DIR").unwrap());
     println!("cargo:warning=ENV: {} - {}", "CARGO_MANIFEST_DIR", env::var("CARGO_MANIFEST_DIR").unwrap());
@@ -21,6 +23,9 @@ fn compile_simpleble() {
     let simpleble_build_dest = cmake::Config::new("simpleble").build();
     let simpleble_include_path = Path::new(&simpleble_build_dest).join("include");
 
+    if !extra_cmake_install_path.is_empty() {
+        cxx_build::CFG.include_prefix = &extra_cmake_install_path;
+    }
     cxx_build::CFG.exported_header_dirs.push(&simpleble_include_path);
     cxx_build::CFG.exported_header_dirs.push(&simplersble_source_path);
 
