@@ -171,18 +171,18 @@ jobs:
           fetch-tags: true
 
       - name: Setup Environment (Linux)
-        if: inputs.os == 'linux'
+        if: matrix.config.os == 'linux'
         uses: ./.github/actions/build-dbus-full
         with:
-          os: ${{ inputs.os }}
-          arch: ${{ inputs.target-arch }}
+          os: ${{ matrix.config.os }}
+          arch: ${{ matrix.config.architecture }}
 
       - name: Setup Environment (Windows)
-        if: inputs.os == 'windows'
+        if: matrix.config.os == 'windows'
         uses: microsoft/setup-msbuild@v1.1
 
       - name: Setup CMake (macOS)
-        if: inputs.os == 'macos'
+        if: matrix.config.os == 'macos'
         uses: ./.github/actions/setup-cmake
 
       - name: Add Version Suffix
