@@ -193,7 +193,6 @@ jobs:
 
       - name: Compile SimpleBLE
         run: |
-          version_str=$(cat VERSION | tr -d ' \t\n\r')
           cargo install cargo-edit
-          cargo set-version $version_str
+          cargo set-version ${{ env.VERSION }}
           cargo build
