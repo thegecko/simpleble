@@ -20,9 +20,7 @@ fn compile_simpleble() {
 
     // The simpleble library name depends if we're building in debug more or not.
     let simpleble_library_name = if build_debug {"simpleble-debug"} else {"simpleble"};
-    let simpleble_build_dest = cmake::Config::new("simpleble")
-        .define("CMAKE_PREFIX_PATH", extra_cmake_install_path)
-        .build();
+    let simpleble_build_dest = cmake::Config::new("simpleble").build();
     let simpleble_include_path = Path::new(&simpleble_build_dest).join("include");
 
     cxx_build::CFG.exported_header_dirs.push(&simpleble_include_path);

@@ -53,7 +53,7 @@ jobs:
 
       - name: Compile SimpleBLE
         run: |
-          export CMAKE_PREFIX_PATH=/tmp/install
+          echo "CMAKE_PREFIX_PATH=/tmp/install" >> $GITHUB_ENV
           cargo set-version ${{ env.VERSION }}
           cargo build
 
