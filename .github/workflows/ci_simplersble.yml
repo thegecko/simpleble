@@ -53,8 +53,9 @@ jobs:
 
       - name: Compile SimpleBLE
         run: |
-          version_str=$(cat VERSION | tr -d ' \t\n\r')
-          cargo set-version $version_str
+          export CMAKE_PREFIX_PATH=/tmp/install
+          echo VERSION=${{ env.VERSION }}
+          cargo set-version ${{ env.VERSION }}
           cargo build
 
   # publish:

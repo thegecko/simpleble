@@ -31,3 +31,4 @@ runs:
         # Update the VERSION file
         echo "$version_str" > VERSION
         echo "Updated VERSION file to: $version_str"
+        echo "VERSION=$version_str" >> $GITHUB_ENV
