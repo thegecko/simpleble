@@ -10,7 +10,10 @@ fn compile_simpleble() {
     let cargo_manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
     let simplersble_source_path = Path::new(&cargo_manifest_dir).join("simplersble");
 
-    let extra_cmake_install_path = env::var("EXTRA_CMAKE_PREFIX_PATH").unwrap_or_default();
+    println!("cargo:warning=All Environment Variables:");
+    for (key, value) in env::vars() {
+        println!("cargo:warning=  {}: {}", key, value);
+    }
 
     println!("cargo:warning=CWD: {}", env::current_dir().unwrap().display());
     println!("cargo:warning=ENV: {} - {}", "OUT_DIR", env::var("OUT_DIR").unwrap());
