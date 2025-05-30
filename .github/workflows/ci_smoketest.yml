@@ -192,10 +192,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Compile SimpleBLE
-        env:
-          # NOTE: This is a workaround to avoid passing incorrect options to the compiler during the installation of cargo-edit.
-          CRATE_CC_NO_DEFAULTS: ${{ (matrix.config.os == 'linux' && matrix.config.architecture != 'x64' && matrix.config.architecture != 'x86') && '1' || '' }}
         run: |
-          cargo install cargo-edit
+          # NOTE: This is a workaround to avoid passing incorrect options to the compiler during the installation of cargo-edit.
+          if [[ ${{ matrix.config.os }} == "linux" && ${{ matrix.config.architecture }} != "x64" && ${{ matrix.config.architecture }} != "x86" ]]; then
+            CRATE_CC_NO_DEFAULTS=1 cargo install cargo-edit
+          else
+            cargo install cargo-edit
+          fi
           cargo set-version ${{ env.VERSION }}
           cargo build
