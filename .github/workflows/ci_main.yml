@@ -190,11 +190,9 @@ jobs:
           fetch-tags: true
 
       - name: Setup Environment (Linux)
-        if: matrix.config.os == 'linux'
-        uses: ./.github/actions/build-dbus-full
-        with:
-          os: ${{ matrix.config.os }}
-          arch: ${{ matrix.config.architecture }}
+        run: |
+          sudo -H apt-get update -y
+          sudo -H apt-get install -y libdbus-1-dev
 
       - name: Add Version Suffix
         uses: ./.github/actions/setup-version
