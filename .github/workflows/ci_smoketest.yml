@@ -190,4 +190,4 @@ jobs:
         run: |
           cargo install cargo-edit --bin cargo-set-version
           cargo set-version ${{ env.VERSION }}
-          cargo build
+          cargo publish --dry-run
