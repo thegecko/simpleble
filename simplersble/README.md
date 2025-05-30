@@ -55,4 +55,4 @@ For further enquiries, please [email us](mailto:contact@simpleble.org) or [leave
 
 ---
 
-**SimpleBLE** is a project powered by [**The California Open Source Company**][https://californiaopensource.com?utm_source=crates_io&utm_medium=referral&utm_campaign=simplersble_readme].
+**SimpleBLE** is a project powered by [**The California Open Source Company**](https://californiaopensource.com?utm_source=crates_io&utm_medium=referral&utm_campaign=simplersble_readme).
