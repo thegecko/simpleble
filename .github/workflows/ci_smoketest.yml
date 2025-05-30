@@ -191,16 +191,18 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install Cargo Edit (Linux non-standard architecture)
+      - name: Compile SimpleBLE (Linux non-standard architecture)
         if: matrix.config.os == 'linux' && matrix.config.architecture != 'x64' && matrix.config.architecture != 'x86'
+        env:
+          CRATE_CC_NO_DEFAULTS: 1
         run: |
-          CRATE_CC_NO_DEFAULTS=1 cargo install cargo-edit --bin cargo-set-version
+          cargo install cargo-edit --bin cargo-set-version
+          cargo set-version ${{ env.VERSION }}
+          cargo build
 
-      - name: Install Cargo Edit (Everything else)
+      - name: Install SimpleBLE (Everything else)
         if: matrix.config.os != 'linux' || matrix.config.architecture == 'x64' || matrix.config.architecture == 'x86'
-        run: cargo install cargo-edit --bin cargo-set-version
-
-      - name: Compile SimpleBLE
         run: |
+          cargo install cargo-edit --bin cargo-set-version
           cargo set-version ${{ env.VERSION }}
           cargo build
