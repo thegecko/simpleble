@@ -153,15 +153,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          # NOTE: Cross-compilation for non-standard architectures is not worth for testing purposes, as it's a PITA to work around `cc-rs` issues.
           - { runner-os: ubuntu-22.04, os: linux, architecture: x64, container-image: dockcross/linux-x64 }
-          # - { runner-os: ubuntu-22.04, os: linux, architecture: x86, container-image: dockcross/linux-x86 }
-          - { runner-os: ubuntu-22.04, os: linux, architecture: aarch64, container-image: dockcross/linux-arm64 }
-          - { runner-os: ubuntu-22.04, os: linux, architecture: armv6, container-image: dockcross/linux-armv6-lts }
           - { runner-os: macos-14, os: macos, architecture: x64 } # Containers are not required.
-          - { runner-os: macos-14, os: macos, architecture: aarch64 } # Containers are not required.
-          - { runner-os: macos-14, os: ios, architecture: aarch64 } # Containers are not required.
           - { runner-os: windows-2022, os: windows, architecture: x64 } # Containers are not required.
-          - { runner-os: windows-2022, os: windows, architecture: x86 } # Containers are not required.
 
     steps:
       - name: Clone Repository
@@ -191,17 +186,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Compile SimpleBLE (Linux non-standard architecture)
-        if: matrix.config.os == 'linux' && matrix.config.architecture != 'x64' && matrix.config.architecture != 'x86'
-        env:
-          CRATE_CC_NO_DEFAULTS: 1
-        run: |
-          cargo install cargo-edit --bin cargo-set-version
-          cargo set-version ${{ env.VERSION }}
-          cargo build
-
-      - name: Install SimpleBLE (Everything else)
-        if: matrix.config.os != 'linux' || matrix.config.architecture == 'x64' || matrix.config.architecture == 'x86'
+      - name: Compile SimpleBLE
         run: |
           cargo install cargo-edit --bin cargo-set-version
           cargo set-version ${{ env.VERSION }}

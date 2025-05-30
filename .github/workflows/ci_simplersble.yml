@@ -11,15 +11,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          # NOTE: Cross-compilation for non-standard architectures is not worth for testing purposes, as it's a PITA to work around `cc-rs` issues.
           - { runner-os: ubuntu-22.04, os: linux, architecture: x64, container-image: dockcross/linux-x64 }
-          # - { runner-os: ubuntu-22.04, os: linux, architecture: x86, container-image: dockcross/linux-x86 }
-          # - { runner-os: ubuntu-22.04, os: linux, architecture: aarch64, container-image: dockcross/linux-arm64 }
-          # - { runner-os: ubuntu-22.04, os: linux, architecture: armv6, container-image: dockcross/linux-armv6-lts }
+          - { runner-os: ubuntu-22.04, os: linux, architecture: x86, container-image: dockcross/linux-x86 }
+          #- { runner-os: ubuntu-22.04, os: linux, architecture: aarch64, container-image: dockcross/linux-arm64 }
+          #- { runner-os: ubuntu-22.04, os: linux, architecture: armv6, container-image: dockcross/linux-armv6-lts }
           - { runner-os: macos-14, os: macos, architecture: x64 } # Containers are not required.
-          # - { runner-os: macos-14, os: macos, architecture: aarch64 } # Containers are not required.
-          # - { runner-os: macos-14, os: ios, architecture: aarch64 } # Containers are not required.
+          - { runner-os: macos-14, os: macos, architecture: aarch64 } # Containers are not required.
+          - { runner-os: macos-14, os: ios, architecture: aarch64 } # Containers are not required.
           - { runner-os: windows-2022, os: windows, architecture: x64 } # Containers are not required.
-          # - { runner-os: windows-2022, os: windows, architecture: x86 } # Containers are not required.
+          - { runner-os: windows-2022, os: windows, architecture: x86 } # Containers are not required.
         build-type-cmd:
           - ""
           - "--release"
@@ -54,7 +55,7 @@ jobs:
 
       - name: Compile SimpleBLE
         run: |
-          cargo install cargo-edit
+          cargo install cargo-edit --bin cargo-set-version
           cargo set-version ${{ env.VERSION }}
           cargo build ${{ matrix.build-type-cmd }}
 
