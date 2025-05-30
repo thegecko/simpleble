@@ -47,6 +47,6 @@ performed:
 
 #. Advance the version number in the following files:
 
-   - ``VERSION``
+   - ``VERSION`` (and include a ``-dev1`` suffix)
    - ``Cargo.toml``
    - ``docs/changelog.rst``
