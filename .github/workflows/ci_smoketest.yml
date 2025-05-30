@@ -194,11 +194,11 @@ jobs:
       - name: Install Cargo Edit (Linux non-standard architecture)
         if: matrix.config.os == 'linux' && matrix.config.architecture != 'x64' && matrix.config.architecture != 'x86'
         run: |
-          CRATE_CC_NO_DEFAULTS=1 cargo install cargo-edit
+          CRATE_CC_NO_DEFAULTS=1 cargo install cargo-edit --bin cargo-set-version
 
       - name: Install Cargo Edit (Everything else)
         if: matrix.config.os != 'linux' || matrix.config.architecture == 'x64' || matrix.config.architecture == 'x86'
-        run: cargo install cargo-edit
+        run: cargo install cargo-edit --bin cargo-set-version
 
       - name: Compile SimpleBLE
         run: |
