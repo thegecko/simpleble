@@ -55,12 +55,14 @@ Table of Contents
    simpledbus/usage
    simpledbus/api
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Tutorials
+
+   cmake_primer
+
 Indices and tables
 ==================
 
 * :ref:`search`
 
-.. Links
-
-.. |Latest Documentation Status| image:: https://readthedocs.org/projects/simpleble/badge?version=latest
-   :target: http://simpleble.readthedocs.org/en/latest

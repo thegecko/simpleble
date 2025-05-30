@@ -2,53 +2,130 @@
 Usage
 =====
 
-SimpleBLE works on Windows, Linux, MacOS and iOS. Please follow the instructions below
-to build and run SimpleBLE in your specific environment.
-
+Please follow the instructions below to build and run SimpleBLE in your specific environment.
 
 System Requirements
 ===================
 
-When building SimpleBLE from source, you will need some dependencies based on your
-current operating system.
-
-**NOTE:** WSL does not support Bluetooth.
+To build SimpleBLE from source, ensure your system meets the following requirements, which vary
+by operating system. These dependencies and version constraints ensure compatibility and optimal performance.
 
 General Requirements
 --------------------
 
-   - `CMake`_ (Version 3.21 or higher)
+To build SimpleBLE, you need:
+
+- `CMake`_ (Version 3.21 or higher). Refer to our `CMake Primer`_ for setup guidance.
+
+.. _CMake: https://cmake.org
+.. _CMake Primer: ../cmake_primer.html
 
 Linux
 -----
 
-APT-based Distros
-~~~~~~~~~~~~~~~~~
+SimpleBLE is designed to work on Linux distributions using BlueZ as the Bluetooth stack.
 
-   - `libdbus-1-dev` (install via ``sudo apt install libdbus-1-dev``)
+**Supported Distributions**
 
-RPM-based Distros
-~~~~~~~~~~~~~~~~~
+- Primary: Ubuntu 20.04 and newer
+- Other major distributions using BlueZ may work but are not officially supported.
 
-   - `dbus-devel`
-      - On Fedora, install via ``sudo dnf install dbus-devel``
-      - On CentOS, install via ``sudo yum install dbus-devel``
+**Dependencies**
+
+- **APT-based Distributions** (e.g., Ubuntu):
+
+  Install `libdbus-1-dev` using:
+
+  .. code-block:: bash
+
+     sudo apt install libdbus-1-dev
+
+- **RPM-based Distributions** (e.g., Fedora, CentOS):
+
+  Install `dbus-devel` using:
+
+  .. code-block:: bash
+
+     # On Fedora
+     sudo dnf install dbus-devel
+
+     # On CentOS
+     sudo yum install dbus-devel
+
+**Notes**
+
+- BlueZ compatibility should ensure broad support, but Ubuntu is the primary tested platform.
 
 Windows
 -------
 
-   - `Windows SDK` (Version 10.0.19041.0 or higher)
+**Supported Versions**
+
+- Windows 10 and newer
+
+**Dependencies**
+
+- `Windows SDK`_ (Version 10.0.19041.0 or higher)
+
+.. _Windows SDK: https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
+
+**Notes**
+
+- Only a single Bluetooth adapter is supported by the OS backend.
+- WSL does not support Bluetooth.
 
 MacOS
 -----
 
-   - `Xcode Command Line Tools` (install via ``xcode-select --install``)
+**Supported Versions**
+
+- macOS 10.15 (Catalina) and newer
+
+**Dependencies**
+
+- `Xcode Command Line Tools`_ (install via ``xcode-select --install``)
+
+.. _Xcode Command Line Tools: https://developer.apple.com/xcode/resources/
+
+**Exceptions**
+
+- macOS 12.0, 12.1, and 12.2 have a known bug where the adapter fails to return peripherals after scanning.
+
+**Notes**
+
+- Only a single Bluetooth adapter is supported by the OS backend.
 
 Android
 -------
 
-   - `Android Studio`
-   - `Android NDK` (Version 25 or higher. Older versions might work but haven't been thoroughly tested.)
+**Supported Versions**
+
+- API 31 and newer
+
+**Dependencies**
+
+- `Android Studio`_
+- `Android NDK`_ (Version 25 or higher; older versions may work but are untested)
+
+.. _Android Studio: https://developer.android.com/studio
+.. _Android NDK: https://developer.android.com/ndk
+
+**Notes**
+
+- Older APIs lack certain JVM API features required by SimpleBLE.
+- Removing bonds is not supported due to limitations in the public API; non-public API workarounds are needed.
+- Address type is unavailable, as it requires API 35 or newer.
+
+iOS
+---
+
+**Supported Versions**
+
+- iOS 15.8 and newer
+
+**Notes**
+
+- Older iOS versions may work but lack formal testing.
 
 
 Building and Installing SimpleBLE (Source)
@@ -169,19 +246,6 @@ One key security feature of SimpleBLE is that it allows the user to specify
 the URLs and tags of all internal dependencies, thus allowing compilation
 from internal or secure sources without the risk of those getting compromised.
 
-Currently, the following libraries are included as part of SimpleBLE, with
-the following CMake options available:
-
-- `fmtlib`_
-
-  - ``LIBFMT_VENDORIZE``: Enable vendorization of fmtlib. *(Default: True)*
-
-  - ``LIBFMT_GIT_REPOSITORY``: The git repository to use for fmtlib.
-
-  - ``LIBFMT_GIT_TAG``: The git tag to use for fmtlib. *(Default: v9.1.0)*
-
-  - ``LIBFMT_LOCAL_PATH``: The local path to use for fmtlib. *(Default: None)*
-
 
 Usage alongside native code in Android
 ======================================
@@ -193,21 +257,21 @@ derived classes, which forces us to bring these definitions in externally.
 
 To include this dependency module, add the following to your `settings.gradle` file:
 
-```groovy
-includeBuild("path/to/simpleble/src/backends/android/simpleble-bridge") {
-    dependencySubstitution {
-        substitute module("org.simpleble.android.bridge:simpleble-bridge") with project(":")
-    }
-}
-```
+.. code-block:: groovy
 
-```kotlin
-includeBuild("path/to/simpleble/src/backends/android/simpleble-bridge") {
+   includeBuild("path/to/simpleble/src/backends/android/simpleble-bridge") {
+       dependencySubstitution {
+           substitute module("org.simpleble.android.bridge:simpleble-bridge") with project(":")
+       }
+   }
+
+.. code-block:: kotlin
+
+   includeBuild("path/to/simpleble/src/backends/android/simpleble-bridge") {
     dependencySubstitution {
         substitute(module("org.simpleble.android.bridge:simpleble-bridge")).using(project(":"))
     }
-}
-```
+   }
 
 **NOTE:** We will provide Maven packages in the future.
 
@@ -266,10 +330,5 @@ To run the thread sanitizer tests, run the following command: ::
 
 .. Links
 
-.. _CMake: https://cmake.org/
-
-.. _Windows SDK: https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk
-
 .. _cmake-init-fetchcontent: https://github.com/friendlyanon/cmake-init-fetchcontent
 
-.. _fmtlib: https://github.com/fmtlib/fmt

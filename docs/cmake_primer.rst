@@ -1,30 +1,30 @@
 .. _cmake-primer:
 
-======================
+=========================
 CMake Fundamentals Primer
-======================
+=========================
 
 This guide introduces the core concepts of CMake for beginners, focusing on the essential commands for configuring and building projects, the difference between building and installing, and how to use installation prefixes. It aims to help you understand CMake's workflow and apply it to any project.
 
 What is CMake?
-=============
+==============
 
 CMake is a cross-platform tool that automates the process of building software. Instead of writing platform-specific build scripts (e.g., Makefiles or Visual Studio project files), you write a single ``CMakeLists.txt`` file. CMake uses this file to generate build files tailored to your system, making your project portable across Windows, Linux, MacOS, and more.
 
 Prerequisites
-============
+=============
 
 - **CMake**: Version 3.21 or higher. Download and install from `cmake.org <https://cmake.org/>`_.
 - A C++ compiler (e.g., GCC, Clang, MSVC) or another compiler supported by your project.
 - A project with a ``CMakeLists.txt`` file (the configuration file for CMake).
 
 Core CMake Workflow
-==================
+===================
 
 CMake operates in two main phases: **configuration** and **building**. A third optional phase, **installation**, makes the built software available for use. Let’s break these down.
 
 1. Configuring the Project
--------------------------
+--------------------------
 
 Configuration is where CMake reads the ``CMakeLists.txt`` file and generates build files (e.g., Makefiles, Ninja files, or IDE project files) based on your system and preferences.
 
@@ -40,7 +40,7 @@ Run the following command from your project’s root directory::
 After running this command, CMake creates ``<your-build-directory>`` containing all the files needed to build your project.
 
 2. Building the Project
-----------------------
+-----------------------
 
 Building compiles the source code into executables, libraries, or other artifacts using the generated build files.
 
@@ -56,7 +56,7 @@ This produces the final output (e.g., ``.exe`` files, ``.a`` or ``.so`` librarie
 **Key Point**: Building creates the software in the build directory, but it’s not yet integrated into your system or ready for use by other projects.
 
 3. Installing the Project
-------------------------
+-------------------------
 
 Installation copies the built files (executables, libraries, headers, etc.) to a location where they can be used by your system or other projects. This is distinct from building because it makes the software accessible outside the build directory.
 
@@ -76,7 +76,7 @@ This installs files to a default location, typically:
 - You want to package the software for distribution.
 
 Customizing the Installation Location with ``CMAKE_INSTALL_PREFIX``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can specify where to install the project using the ``CMAKE_INSTALL_PREFIX`` variable. This is useful for installing to non-standard locations or for testing without affecting system directories.
 
@@ -101,7 +101,7 @@ Example:
     sudo cmake --install <your-build-directory>
 
 Building Shared vs. Static Libraries
-===================================
+====================================
 
 If your project includes libraries, you can choose between **shared** (dynamically linked) and **static** (statically linked) libraries using the ``BUILD_SHARED_LIBS`` variable.
 
@@ -123,7 +123,7 @@ If your project includes libraries, you can choose between **shared** (dynamical
 If ``BUILD_SHARED_LIBS`` is not set, the project’s ``CMakeLists.txt`` determines the default behavior.
 
 Passing Configuration Options
-============================
+=============================
 
 CMake allows customization through variables set with the ``-D`` flag during configuration. These variables control project-specific settings defined in the ``CMakeLists.txt``. For example::
 
@@ -139,7 +139,7 @@ Check your project’s documentation for available variables. Common ones includ
     cmake -S <path-to-source> -B <your-build-directory> -DCMAKE_BUILD_TYPE=Release
 
 Troubleshooting Tips
-===================
+====================
 
 - **Verbose Output**: To see detailed build steps, add ``--verbose``::
 

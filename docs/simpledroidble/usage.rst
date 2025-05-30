@@ -16,32 +16,33 @@ If you want to use SimpleDroidBLE as part of your project from a local copy,
 you can do so by adding the following to your `settings.gradle` or `settings.gradle.kts`file.
 Make sure this include is before your `include(":app")` statement.
 
-```groovy
-includeBuild("path/to/simpledroidble") {
-    dependencySubstitution {
-        substitute module("org.simpleble.android:simpledroidble") with project(":simpledroidble")
-    }
-}
+.. code-block:: groovy
 
-```kotlin
-includeBuild("path/to/simpledroidble") {
-    dependencySubstitution {
-        substitute(module("org.simpleble.android:simpledroidble")).using(project(":simpledroidble"))
-    }
-}
-```
+   includeBuild("path/to/simpledroidble") {
+       dependencySubstitution {
+           substitute module("org.simpleble.android:simpledroidble") with project(":simpledroidble")
+       }
+   }
+
+.. code-block:: kotlin
+
+   includeBuild("path/to/simpledroidble") {
+       dependencySubstitution {
+           substitute(module("org.simpleble.android:simpledroidble")).using(project(":simpledroidble"))
+       }
+   }
 
 Then, inside your `build.gradle` or `build.gradle.kts` file, you can add the
 following dependency:
 
-```groovy
-dependencies {
-    implementation "org.simpleble.android:simpledroidble"
-}
-```
+.. code-block:: groovy
+    
+    dependencies {
+        implementation "org.simpleble.android:simpledroidble"
+    }
 
-```kotlin
-dependencies {
-    implementation("org.simpleble.android:simpledroidble")
-}
-```
+.. code-block:: kotlin
+
+   dependencies {
+       implementation("org.simpleble.android:simpledroidble")
+   }

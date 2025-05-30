@@ -8,15 +8,12 @@ The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE),
 Announcements
 -------------
 
-* **(2025-05-25)** 🚨 Rust bindings are now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
-* **(2025-05-01)** We're excited to announce that we've partnered with `Software.com.br`_ to offer SimpleBLE across LATAM. Stay tuned for more details!
-* **(2025-04-24)** The SimpleBLE Android bridge project has been renamed to **simpledroidbridge**. The old name will be deprecated in a future release.
-* **(2025-04-13)** SimpleBLE C bindings are being ported to a separate library called **simplecble**. The old C bindings will be deprecated in a future release.
-* **(2025-03-16)** ☕ Java bindings are now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
-* **(2025-03-16)** Based in Asia **Looking for partners for more targeted regional sales and support.**
+* **(2025-05-25)** 🦀 Rust bindings are now in Early Preview.
+* **(2025-04-24)** 🚨 The SimpleBLE Android bridge project has been renamed to **simpledroidbridge**. The old name will be deprecated in a future release.
+* **(2025-04-13)** 🚨 SimpleBLE C bindings are being ported to a separate library called **simplecble**. The old C bindings will be deprecated in a future release.
+* **(2025-03-16)** ☕ Java bindings are now in Early Preview.
 * **(2025-02-25)** 🤖 Android backend support is now in Preview.
-* **(2025-01-20)** SimpleBLE is now available under the Business Source License 1.1 (BUSL-1.1). Please see the `LICENSE`_ file for more details.
-* **(2024-12-02)** Peripheral functionality for Linux is now in Early Preview. **Looking for design partners who'd like to test it out and provide feedback.**
+* **(2024-12-02)** 🐧 Peripheral functionality for Linux is now in Early Preview.
 
 Key Features
 ------------
@@ -24,7 +21,7 @@ Key Features
 * **Cross-Platform**: Enterprise-grade support for Windows, macOS, Linux, iOS, and Android
 * **Device Roles**: Full Central support, with Peripheral functionality in Early Preview
 * **Easy Integration**: Clean, consistent API across all platforms
-* **Multiple Language Bindings**: Production-ready bindings for C, C++, Python, Java (Early Preview), more coming soon
+* **Multiple Language Bindings**: Production-ready bindings for C, C++, Python, Java and Rust, with more coming soon
 * **Commercial Ready**: Source-available commercial license for proprietary applications
 
 Language Bindings
@@ -32,44 +29,33 @@ Language Bindings
 
 * **C/C++**: Core implementation with full platform support
 * **Python (SimplePyBLE)**: Python bindings. See the `SimplePyBLE`_ PyPI page for more details.
-* **Java (SimpleJavaBLE) - Early Preview**: Java bindings. **Looking for design partners who'd like to test it out and provide feedback.**
+* **Java (SimpleJavaBLE) - Early Preview**: Java bindings.
 * **Rust (SimpleRsBLE) - Early Preview**: Rust bindings with a **NEW API**. See the `SimpleRsBLE`_ Crates.io page for more details.
 * **Android (SimpleDroidBLE) - Alpha**: Android-only bindings (alpha).
 * More languages coming soon!
-
-Extension Libraries
--------------------
-
-* **SimpleBluez**: BlueZ abstraction layer over DBus
-* **SimpleDBus**: DBus object hierarchy handler
 
 Support & Resources
 --------------------
 
 We're here to help you succeed with SimpleBLE:
 
-* **Documentation**: Visit our `ReadTheDocs`_ page for comprehensive guides
-* **Commercial Support**: Check out |website|_ or |email|_ for licensing and professional services
-* **Community**: Join our `Discord`_ server for discussions and help
+* **Documentation**: Visit our `ReadTheDocs`_ page for comprehensive guides.
+* **Community**: Join our `Discord`_ server for discussions and help.
+* **Commercial Support**: Check out |website|_ or |email|_ about licensing and professional services.
+* **Extension Libraries**: Learn about `SimpleBluez`_, our BlueZ abstraction layer, and `SimpleDBus`_, our DBus object hierarchy handler.
 
-Don't hesitate to reach out - we're happy to help!
+Explore projects built with SimpleBLE, including `BrainFlow`_, `InsideBlue`_, and `NodeWebBluetooth`_.
 
-Projects using SimpleBLE
-------------------------
-
-Don't forget to check out the following projects using SimpleBLE:
-
-* `BrainFlow`_
-* `InsideBlue`_
-* `NodeWebBluetooth`_
+**Don't hesitate to reach out if you need assistance - we're happy to help!**
 
 License
 =======
 
-Since January 20th 2025, SimpleBLE is now available under the Business Source License 1.1 (BUSL-1.1).
-This means that the project is now free to use for non-commercial purposes, but requires a commercial
-license for commercial use. Each version of SimpleBLE will convert to the GNU General Public License
-version 3 after four years of its initial release.
+Since January 20th 2025, SimpleBLE is now available under the Business Source License 1.1 (BUSL-1.1). Each
+version of SimpleBLE will convert to the GNU General Public License version 3 after four years of its initial release.
+
+The project is free to use for non-commercial purposes, but requires a commercial license for commercial use. We
+also offer FREE commercial licenses for small projects and early-stage companies - reach out to discuss your use case!
 
 **Why purchase a commercial license?**
 
@@ -84,47 +70,20 @@ version 3 after four years of its initial release.
 
 For further enquiries, please |email|_ or |leavemessage|_ and we can discuss the specifics of your situation.
 
-**We also offer FREE commercial licenses for small projects and early-stage companies - reach out to discuss your use case!**
+Partnership Opportunities
+=========================
 
-Licensing FAQ
--------------
+We're always looking for new partners to help us test and provide feedback on our projects. If you're
+interested in partnering with us, please |email|_ or |leavemessage|_.
 
-**What does the Business Source License 1.1 allow and restrict?**
+🎉 Excited to announce that we've partnered with `Software.com.br`_ to expand SimpleBLE's reach in LATAM!
 
-The Business Source License allows non-production use, such as development and testing in isolated
-environments. However, any use that could be considered production (including internal tools,
-revenue-generating projects, or customer-facing deployments) requires purchasing a commercial license.
+**Technical Partnerships:** We're seeking design partners to test and provide feedback on our Rust bindings,
+Java bindings, and Linux peripheral functionality. Partners will receive exclusive discounts and perks for
+their contributions!
 
-After four years of the initial release of a given version of SimpleBLE, the license automatically
-converts to the GNU General Public License version 3.
-
-**What do you consider "commercial use"?**
-
-Commercial use in the context of SimpleBLE refers to any usage of the library or its derivatives in
-a commercial setting where it contributes, either directly or indirectly, to financial gain. This
-includes, but is not limited to, incorporating SimpleBLE into commercial software products, using it
-in the development of services offered for a fee, or deploying it within internal tools or software
-in a for-profit organization where it adds business value.
-
-**Why do I need to pay for commercial use?**
-
-Commercial licensing enables us to sustainably maintain and enhance SimpleBLE, particularly given
-its growing adoption in critical sectors like medical and industrial applications. The revenue
-from commercial licenses allows us to provide robust support, maintain compatibility with evolving
-underlying APIs, and invest in improvements that benefit all users. This includes expanded
-language support, better testing infrastructure, and more comprehensive documentation. While
-SimpleBLE remains freely available for non-commercial use, the Business Source License ensures we
-can continue providing the level of reliability and support that commercial applications require.
-
-**I already have a commercial license. What happens with this latest license change?**
-
-Nothing changes. You can continue using SimpleBLE under the terms of your commercial license.
-
-**I'm using SimpleBLE commercially, but don't have a commercial license. What should I do?**
-
-Please |email|_ or |leavemessage|_ and we can discuss the specifics of your
-situation. We have a free commercial license option for small projects and early-stage companies
-and very flexible commercial licensing options for larger projects.
+**Business Partnerships:** We're looking for partners in Asia to support targeted regional sales and support.
+Join us to expand SimpleBLE's reach!
 
 ----
 
@@ -136,20 +95,24 @@ and very flexible commercial licensing options for larger projects.
 .. _email: mailto:contact@simpleble.org
 
 .. |leavemessage| replace:: leave us a message on our website
-.. _leavemessage: https://www.simpleble.org/contact?utm_source=github&utm_medium=referral&utm_campaign=simpleble
+.. _leavemessage: https://www.simpleble.org/contact?utm_source=github&utm_medium=referral&utm_campaign=simpleble_readme
 
 .. |website| replace:: our website
-.. _website: https://simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble
+.. _website: https://simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble_readme
 
 .. |website-url| replace:: www.simpleble.org
-.. _website-url: https://simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble
+.. _website-url: https://simpleble.org?utm_source=github&utm_medium=referral&utm_campaign=simpleble_readme
 
 .. |caos| replace:: **The California Open Source Company**
-.. _caos: https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble
+.. _caos: https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble_readme
 
 .. _SimplePyBLE: https://pypi.org/project/simplepyble/
 
 .. _SimpleRsBLE: https://crates.io/crates/simplersble
+
+.. _SimpleBluez: https://github.com/simpleble/simpleble/tree/main/simplebluez
+
+.. _SimpleDBus: https://github.com/simpleble/simpleble/tree/main/simpledbus
 
 .. _Discord: https://discord.gg/N9HqNEcvP3
 
