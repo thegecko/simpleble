@@ -2,20 +2,30 @@
 
 #include <simpledbus/base/Exceptions.h>
 #include <simpledbus/base/Path.h>
+#include <simpledbus/base/Logging.h>
 #include <algorithm>
+
+// #include <simpledbus/interfaces/Properties.h>
 
 using namespace SimpleDBus;
 
 Proxy::Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path)
-    : _conn(conn), _bus_name(bus_name), _path(path), _valid(true) {}
+    : _conn(conn), _bus_name(bus_name), _path(path), _valid(true), _registered(false) {
+    // TODO: UNCOMMENT THIS WHEN MIGRATING TO NEW PROXY FORWARDING LOGIC
+    //register_object_path();
+
+    //_interfaces.emplace(std::make_pair("org.freedesktop.DBus.Properties", std::make_shared<Properties>(conn, bus_name, path)));
+}
 
 Proxy::~Proxy() {
+    // TODO: UNCOMMENT THIS WHEN MIGRATING TO NEW PROXY FORWARDING LOGIC
+    //unregister_object_path();
     on_child_created.unload();
-    on_child_signal_received.unload();
+    on_signal_received.unload();
 }
 
 std::shared_ptr<Interface> Proxy::interfaces_create(const std::string& name) {
-    return std::make_unique<Interface>(_conn, _bus_name, _path, name);
+    return std::make_shared<Interface>(_conn, _bus_name, _path, name);
 }
 
 std::shared_ptr<Proxy> Proxy::path_create(const std::string& path) {
@@ -24,13 +34,37 @@ std::shared_ptr<Proxy> Proxy::path_create(const std::string& path) {
 
 bool Proxy::valid() const { return _valid; }
 
+void Proxy::invalidate() {
+    _valid = false;
+    // TODO: UNCOMMENT THIS WHEN MIGRATING TO NEW PROXY FORWARDING LOGIC
+    //unregister_object_path();
+}
+
 std::string Proxy::path() const { return _path; }
+
+std::string Proxy::bus_name() const { return _bus_name; }
 
 const std::map<std::string, std::shared_ptr<Proxy>>& Proxy::children() { return _children; }
 
 const std::map<std::string, std::shared_ptr<Interface>>& Proxy::interfaces() { return _interfaces; }
 
+// ----- PATH HANDLING -----
+
+void Proxy::register_object_path() {
+    if (!_registered && _conn && _conn->register_object_path(_path, [this](Message& msg) { this->message_handle(msg); })) {
+        _registered = true;
+    }
+}
+
+void Proxy::unregister_object_path() {
+    if (_registered && _conn && _conn->unregister_object_path(_path)) {
+        _registered = false;
+    }
+}
+
+
 // ----- INTROSPECTION -----
+
 std::string Proxy::introspect() {
     auto query_msg = Message::create_method_call(_bus_name, _path, "org.freedesktop.DBus.Introspectable", "Introspect");
     auto reply_msg = _conn->send_with_reply_and_block(query_msg);
@@ -170,7 +204,7 @@ bool Proxy::path_remove(const std::string& path, SimpleDBus::Holder options) {
     // `options` contains an array of strings of the interfaces that need to be removed.
 
     if (path == _path) {
-        _valid = false;
+        invalidate();
         interfaces_unload(options);
         return path_prune();
     }
@@ -223,7 +257,34 @@ bool Proxy::path_prune() {
     return false;
 }
 
+Holder Proxy::path_collect() {
+    SimpleDBus::Holder result = SimpleDBus::Holder::create_dict();
+    SimpleDBus::Holder interfaces = SimpleDBus::Holder::create_dict();
+
+    for (const auto& [interface_name, interface_ptr] : _interfaces) {
+        SimpleDBus::Holder properties = interface_ptr->property_collect();
+        interfaces.dict_append(SimpleDBus::Holder::Type::STRING, interface_name, std::move(properties));
+    }
+
+    if (!interfaces.get_dict_string().empty()) {
+        result.dict_append(SimpleDBus::Holder::Type::OBJ_PATH, _path, std::move(interfaces));
+    }
+
+    for (const auto& [child_path, child] : _children) {
+        SimpleDBus::Holder child_result = child->path_collect();
+        // Merge child_result into result
+        for (auto&& [path, child_interfaces] : child_result.get_dict_object_path()) {
+            result.dict_append(SimpleDBus::Holder::Type::OBJ_PATH, std::move(path), std::move(child_interfaces));
+        }
+    }
+    return std::move(result);
+}
+
+// ----- MANUAL CHILD HANDLING -----
+
 void Proxy::path_append_child(const std::string& path, std::shared_ptr<Proxy> child) {
+    // ! This function is used to manually add children to the proxy.
+
     // If the provided path is not a child of the current path, return silently.
     if (!Path::is_child(_path, path)) {
         // TODO: Should an exception be thrown here?
@@ -235,7 +296,21 @@ void Proxy::path_append_child(const std::string& path, std::shared_ptr<Proxy> ch
     _children.emplace(std::make_pair(path, child));
 }
 
+void Proxy::path_remove_child(const std::string& path) {
+    // ! This function is used to manually add children to the proxy.
+
+    // If the provided path is not a child of the current path, return silently.
+    if (!Path::is_child(_path, path)) {
+        // TODO: Should an exception be thrown here?
+        return;
+    }
+
+    std::scoped_lock lock(_child_access_mutex);
+    _children.erase(path);
+}
+
 // ----- MESSAGE HANDLING -----
+
 void Proxy::message_forward(Message& msg) {
     // If the message is for the current proxy, then forward it to the message handler.
     if (msg.get_path() == _path) {
@@ -268,7 +343,7 @@ void Proxy::message_forward(Message& msg) {
             child->message_forward(msg);
 
             if (msg.get_type() == Message::Type::SIGNAL) {
-                on_child_signal_received(child_path);
+                child->on_signal_received();
             }
 
             return;
@@ -276,5 +351,22 @@ void Proxy::message_forward(Message& msg) {
             child->message_forward(msg);
             return;
         }
+    }
+}
+
+void Proxy::message_handle(Message& msg) {
+    bool handled = false;
+
+   if (interface_exists(msg.get_interface())) {
+        interface_get(msg.get_interface())->message_handle(msg);
+        handled = true;
+    }
+
+    if (msg.get_type() == Message::Type::SIGNAL) {
+        on_signal_received();
+    }
+
+    if (!handled) {
+        LOG_ERROR("Unhandled message: {}", msg.to_string());
     }
 }
