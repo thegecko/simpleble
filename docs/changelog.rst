@@ -19,7 +19,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Changed**
 
--
+- (Windows) Experimental option to skip reinitializing the WinRT apartment on the main thread. Default is now to not reinitialize.
 
 **Fixed**
 

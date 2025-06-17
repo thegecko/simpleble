@@ -15,9 +15,11 @@ namespace Config {
 
     namespace WinRT {
         inline static bool experimental_use_own_mta_apartment = true;
+        inline static bool experimental_reinitialize_winrt_apartment_on_main_thread = false;
 
         static void reset() {
             experimental_use_own_mta_apartment = true;
+            experimental_reinitialize_winrt_apartment_on_main_thread = false;
         }
     }
 

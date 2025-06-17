@@ -12,6 +12,13 @@ namespace PyWrappers {
         static void set_experimental_use_own_mta_apartment(bool value) {
             SimpleBLE::Config::WinRT::experimental_use_own_mta_apartment = value;
         }
+        static bool get_experimental_reinitialize_winrt_apartment_on_main_thread() {
+            return SimpleBLE::Config::WinRT::experimental_reinitialize_winrt_apartment_on_main_thread;
+        }
+        static void set_experimental_reinitialize_winrt_apartment_on_main_thread(bool value) {
+            SimpleBLE::Config::WinRT::experimental_reinitialize_winrt_apartment_on_main_thread = value;
+        }
+
         static void reset() {
             SimpleBLE::Config::WinRT::reset();
         }
@@ -71,6 +78,10 @@ constexpr auto kDocsConfigWinRTExperimentalMTA = R"pbdoc(
     Use own MTA apartment (experimental)
 )pbdoc";
 
+constexpr auto kDocsConfigWinRTExperimentalReinitializeMTAOnMainThread = R"pbdoc(
+    Reinitialize the WinRT apartment on the main thread (experimental)
+)pbdoc";
+
 constexpr auto kDocsConfigWinRTReset = R"pbdoc(
     Reset WinRT configuration options to their default values
 )pbdoc";
@@ -101,6 +112,10 @@ void wrap_config(py::module& m) {
             [](py::object) { return PyWrappers::WinRT::get_experimental_use_own_mta_apartment(); },
             [](py::object, bool value) { PyWrappers::WinRT::set_experimental_use_own_mta_apartment(value); },
             kDocsConfigWinRTExperimentalMTA)
+        .def_property_static("experimental_reinitialize_winrt_apartment_on_main_thread",
+            [](py::object) { return PyWrappers::WinRT::get_experimental_reinitialize_winrt_apartment_on_main_thread(); },
+            [](py::object, bool value) { PyWrappers::WinRT::set_experimental_reinitialize_winrt_apartment_on_main_thread(value); },
+            kDocsConfigWinRTExperimentalReinitializeMTAOnMainThread)
         .def_static("reset", &PyWrappers::WinRT::reset, kDocsConfigWinRTReset);
 
     py::class_<PyWrappers::SimpleBluez> simplebluez_config(config, "simplebluez", kDocsConfigSimpleBluezClass, py::metaclass());

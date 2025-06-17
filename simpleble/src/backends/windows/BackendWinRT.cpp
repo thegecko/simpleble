@@ -8,6 +8,7 @@
 #include "winrt/Windows.Devices.Radios.h"
 #include "winrt/Windows.Foundation.Collections.h"
 
+#include "simpleble/Config.h"
 #include "Utils.h"
 #include "MtaManager.h"
 
@@ -17,7 +18,11 @@ using namespace SimpleBLE::WinRT;
 
 std::shared_ptr<BackendBase> BACKEND_WINDOWS() { return BackendWinRT::get(); }
 
-BackendWinRT::BackendWinRT(buildToken) { initialize_winrt(); }
+BackendWinRT::BackendWinRT(buildToken) {
+    if (Config::WinRT::experimental_reinitialize_winrt_apartment_on_main_thread) {
+        initialize_winrt();
+    }
+ }
 
 bool BackendWinRT::bluetooth_enabled() {
     return MtaManager::get().execute_sync<bool>([this]() {
