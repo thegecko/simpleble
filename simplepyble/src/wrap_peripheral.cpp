@@ -172,6 +172,7 @@ void wrap_peripheral(py::module& m) {
                     cb(py::bytes(payload));
                 });
             },
+            py::call_guard<py::gil_scoped_release>(),
             kDocsPeripheralNotify)
         .def(
             "indicate",
@@ -181,6 +182,7 @@ void wrap_peripheral(py::module& m) {
                     cb(py::bytes(payload));
                 });
             },
+            py::call_guard<py::gil_scoped_release>(),
             kDocsPeripheralIndicate)
         .def("unsubscribe", &SimpleBLE::Peripheral::unsubscribe, kDocsPeripheralUnsubscribe)
 

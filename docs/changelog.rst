@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog`_, and this project adheres to `Semantic Versioning`_.
 
 
-[0.11.0] - XXXX-XX-XX
+[0.10.2] - 2025-06-16
 ---------------------
 
 **Notes**
@@ -23,7 +23,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Fixed**
 
--
+- (Python) Fixed a deadlock in the Python bindings upon calling ``Peripheral.notify()`` or ``Peripheral.indicate()``.
 
 **Removed**
 
