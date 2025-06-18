@@ -145,6 +145,7 @@ void wrap_peripheral(py::module& m) {
             [](SimpleBLE::Peripheral& p, std::string const& service, std::string const& characteristic) {
                 return py::bytes(p.read(service, characteristic));
             },
+            py::call_guard<py::gil_scoped_release>(),
             kDocsPeripheralReadCharacteristic)
         .def(
             "write_request",
@@ -154,6 +155,7 @@ void wrap_peripheral(py::module& m) {
                 py::gil_scoped_release release;
                 p.write_request(service, characteristic, cpp_payload);
             },
+            py::call_guard<py::gil_scoped_release>(),
             kDocsPeripheralWriteRequest)
         .def(
             "write_command",
@@ -163,6 +165,7 @@ void wrap_peripheral(py::module& m) {
                 py::gil_scoped_release release;
                 p.write_command(service, characteristic, cpp_payload);
             },
+            py::call_guard<py::gil_scoped_release>(),
             kDocsPeripheralWriteCommand)
         .def(
             "notify",
@@ -184,13 +187,14 @@ void wrap_peripheral(py::module& m) {
             },
             py::call_guard<py::gil_scoped_release>(),
             kDocsPeripheralIndicate)
-        .def("unsubscribe", &SimpleBLE::Peripheral::unsubscribe, kDocsPeripheralUnsubscribe)
+        .def("unsubscribe", &SimpleBLE::Peripheral::unsubscribe, py::call_guard<py::gil_scoped_release>(), kDocsPeripheralUnsubscribe)
 
         .def(
             "descriptor_read",
             [](SimpleBLE::Peripheral& p, std::string const& service, std::string const& characteristic, std::string const& descriptor) {
                 return py::bytes(p.read(service, characteristic, descriptor));
             },
+            py::call_guard<py::gil_scoped_release>(),
             kDocsPeripheralDescriptorRead)
         .def(
             "descriptor_write",
@@ -198,6 +202,7 @@ void wrap_peripheral(py::module& m) {
                 // Note py::bytes implicitly converts to std::string
                 p.write(service, characteristic, descriptor, SimpleBLE::ByteArray(payload));
             },
+            py::call_guard<py::gil_scoped_release>(),
             kDocsPeripheralDescriptorWrite)
 
         .def("set_callback_on_connected", &SimpleBLE::Peripheral::set_callback_on_connected, py::keep_alive<1, 2>(),

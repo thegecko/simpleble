@@ -23,7 +23,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Fixed**
 
-- (Python) Fixed a deadlock in the Python bindings upon calling ``Peripheral.notify()`` or ``Peripheral.indicate()``.
+- (Python) Fixed several deadlocks in the Python bindings related to new WinRT threading model.
 
 **Removed**
 
