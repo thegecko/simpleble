@@ -6,16 +6,8 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog`_, and this project adheres to `Semantic Versioning`_.
 
 
-[0.10.2] - 2025-06-16
+[0.10.2] - 2025-06-20
 ---------------------
-
-**Notes**
-
--
-
-**Added**
-
--
 
 **Changed**
 
@@ -24,10 +16,6 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 **Fixed**
 
 - (Python) Fixed several deadlocks in the Python bindings related to new WinRT threading model.
-
-**Removed**
-
--
 
 
 [0.10.1] - 2025-05-30
