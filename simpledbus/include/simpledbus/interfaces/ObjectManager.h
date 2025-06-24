@@ -1,6 +1,7 @@
 #pragma once
 
 #include <simpledbus/advanced/Interface.h>
+#include <simpledbus/advanced/InterfaceRegistry.h>
 
 #include <functional>
 
@@ -17,6 +18,9 @@ class ObjectManager : public Interface {
     std::function<void(std::string path, Holder options)> InterfacesRemoved;
 
     void message_handle(Message& msg) override;
+
+  private:
+    static const SimpleDBus::AutoRegisterInterface<ObjectManager> registry;
 };
 
 }  // namespace SimpleDBus
