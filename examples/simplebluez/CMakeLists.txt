@@ -15,6 +15,10 @@ else()
     find_package(simplebluez CONFIG REQUIRED)
 endif()
 
+add_compile_definitions(FMT_HEADER_ONLY)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/external)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/internal)
+
 add_subdirectory(list_adapters)
 add_subdirectory(list_paired)
 add_subdirectory(scan)

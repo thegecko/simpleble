@@ -8,8 +8,7 @@
 
 #include <simpledbus/base/Connection.h>
 #include <simpledbus/base/Holder.h>
-
-#include <fmt/core.h>
+#include <simpledbus/base/Logging.h>
 
 namespace SimpleDBus {
 
@@ -58,7 +57,7 @@ struct AutoRegisterInterface {
     AutoRegisterInterface(const std::string& key, CreatorFunction creator) {
         static_assert(std::is_base_of<Interface, T>::value, "T must inherit from Interface");
         InterfaceRegistry::getInstance().registerClass<T>(key, creator);
-        fmt::print("Registered class with key {}\n", key);
+        LOG_DEBUG("Registered class with key {}", key);
     }
 };
 

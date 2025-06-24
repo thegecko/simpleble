@@ -164,6 +164,10 @@ if(SIMPLEBLUEZ_TEST)
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/helpers/PythonRunner.cpp)
 
+    target_compile_definitions(simplebluez_test PRIVATE FMT_HEADER_ONLY)
+    target_include_directories(simplebluez_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external)
+    target_include_directories(simplebluez_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal)
+
     set_target_properties(simplebluez_test PROPERTIES
         CXX_VISIBILITY_PRESET hidden
         VISIBILITY_INLINES_HIDDEN YES

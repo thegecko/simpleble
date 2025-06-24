@@ -1,8 +1,36 @@
 #include <gtest/gtest.h>
 
 #include <simpledbus/advanced/Proxy.h>
+#include <simpledbus/advanced/InterfaceRegistry.h>
 
 using namespace SimpleDBus;
+
+const AutoRegisterInterface<Interface> registry_i1{
+    "i.1",
+    // clang-format off
+    [](std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path, const Holder& options) -> std::shared_ptr<SimpleDBus::Interface> {
+        return std::make_shared<Interface>(conn, bus_name, path, "i.1");
+    }
+    // clang-format on
+};
+
+const AutoRegisterInterface<Interface> registry_i2{
+    "i.2",
+    // clang-format off
+    [](std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path, const Holder& options) -> std::shared_ptr<SimpleDBus::Interface> {
+        return std::make_shared<Interface>(conn, bus_name, path, "i.2");
+    }
+    // clang-format on
+};
+
+const AutoRegisterInterface<Interface> registry_i3{
+    "i.3",
+    // clang-format off
+    [](std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path, const Holder& options) -> std::shared_ptr<SimpleDBus::Interface> {
+        return std::make_shared<Interface>(conn, bus_name, path, "i.3");
+    }
+    // clang-format on
+};
 
 TEST(ProxyInterfaces, LoadInterfaces) {
     Holder managed_interfaces = Holder::create_dict();

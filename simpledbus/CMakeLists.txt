@@ -125,6 +125,10 @@ if(SIMPLEDBUS_TEST)
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/test_path.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/helpers/PythonRunner.cpp)
 
+    target_compile_definitions(simpledbus_test PRIVATE FMT_HEADER_ONLY)
+    target_include_directories(simpledbus_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external)
+    target_include_directories(simpledbus_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal)
+
     set_target_properties(simpledbus_test PROPERTIES
         CXX_VISIBILITY_PRESET hidden
         VISIBILITY_INLINES_HIDDEN YES

@@ -50,3 +50,5 @@ performed:
    - ``VERSION``
    - ``Cargo.toml`` (and include a ``-dev1`` suffix)
    - ``docs/changelog.rst``
+
+#. Run ``cargo build`` to ensure that Cargo.toml is correct.
