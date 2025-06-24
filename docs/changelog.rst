@@ -18,15 +18,15 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Changed**
 
--
+- (SimpleDBus) Interface creation is now done via a registry.
 
 **Fixed**
 
--
+- (Python) Fixed GIL issues introduced in v0.10.2.
 
 **Removed**
 
-- 
+-
 
 
 [0.10.2] - 2025-06-20
