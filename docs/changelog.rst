@@ -5,16 +5,8 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog`_, and this project adheres to `Semantic Versioning`_.
 
-[0.10.3] - XXXX-XX-XX
+[0.10.3] - 2025-06-24
 ---------------------
-
-**Notes**
-
--
-
-**Added**
-
--
 
 **Changed**
 
@@ -23,10 +15,6 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 **Fixed**
 
 - (Python) Fixed GIL issues introduced in v0.10.2.
-
-**Removed**
-
--
 
 
 [0.10.2] - 2025-06-20
