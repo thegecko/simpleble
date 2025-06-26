@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog`_, and this project adheres to `Semantic Versioning`_.
 
+
+[0.10.4] - XXXX-XX-XX
+---------------------
+
+**Notes**
+
+-
+
+**Added**
+
+-
+
+**Changed**
+
+-
+
+**Fixed**
+
+-
+
+**Removed**
+
+-
+
+
 [0.10.3] - 2025-06-24
 ---------------------
 
