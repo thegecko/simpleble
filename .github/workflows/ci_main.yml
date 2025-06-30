@@ -116,6 +116,7 @@ jobs:
 
   publish-release:
     needs: [simpleble, simplepyble, simplejavable, simpledroidble, simplecble, simplersble]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
     runs-on: ubuntu-22.04
     steps:
 
@@ -140,6 +141,7 @@ jobs:
 
   publish-python:
     needs: [publish-release]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
     runs-on: ubuntu-22.04
     permissions:
       id-token: write
@@ -183,6 +185,7 @@ jobs:
 
   publish-rust:
     needs: [publish-release]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
     runs-on: ubuntu-22.04
 
     steps:
