@@ -1,6 +1,7 @@
 #include <vector>
 
 #include <simpleble/Adapter.h>
+#include <simpleble/Config.h>
 #include <simpleble/Exceptions.h>
 
 #include "BackendBase.h"
@@ -18,7 +19,13 @@ static std::shared_ptr<BackendBase> _get_enabled_backend() {
 
     if constexpr (SIMPLEBLE_BACKEND_LINUX) {
         extern BackendPtr BACKEND_LINUX;
-        return BACKEND_LINUX();
+        extern BackendPtr BACKEND_LINUX_LEGACY;
+
+        if (Config::SimpleBluez::use_legacy_bluez_backend) {
+            return BACKEND_LINUX_LEGACY();
+        } else {
+            return BACKEND_LINUX();
+        }
     } else if constexpr (SIMPLEBLE_BACKEND_WINDOWS) {
         extern BackendPtr BACKEND_WINDOWS;
         return BACKEND_WINDOWS();

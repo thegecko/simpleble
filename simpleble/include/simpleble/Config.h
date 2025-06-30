@@ -4,18 +4,20 @@
 namespace SimpleBLE {
 namespace Config {
     namespace SimpleBluez {
-        inline static std::chrono::steady_clock::duration connection_timeout = std::chrono::seconds(2);
-        inline static std::chrono::steady_clock::duration disconnection_timeout = std::chrono::seconds(1);
+        extern bool use_legacy_bluez_backend;
+        extern std::chrono::steady_clock::duration connection_timeout;
+        extern std::chrono::steady_clock::duration disconnection_timeout;
 
         static void reset() {
+            use_legacy_bluez_backend = true;
             connection_timeout = std::chrono::seconds(2);
             disconnection_timeout = std::chrono::seconds(1);
         }
     }
 
     namespace WinRT {
-        inline static bool experimental_use_own_mta_apartment = true;
-        inline static bool experimental_reinitialize_winrt_apartment_on_main_thread = false;
+        extern bool experimental_use_own_mta_apartment;
+        extern bool experimental_reinitialize_winrt_apartment_on_main_thread;
 
         static void reset() {
             experimental_use_own_mta_apartment = true;
@@ -36,7 +38,7 @@ namespace Config {
             DCK = 3
         };
 
-        inline static ConnectionPriorityRequest connection_priority_request = ConnectionPriorityRequest::DISABLED;
+        extern ConnectionPriorityRequest connection_priority_request;
 
         static void reset() {
             connection_priority_request = ConnectionPriorityRequest::DISABLED;
