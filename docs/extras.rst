@@ -52,3 +52,11 @@ performed:
    - ``docs/changelog.rst``
 
 #. Run ``cargo build`` to ensure that Cargo.toml is correct.
+
+#. TODO: SOCIAL MEDIA
+
+Hardware In The Loop - Recommended Tests
+----------------------------------------
+
+- Attempt connecting while already connected.
+- Attempt disconnecting while not connected.

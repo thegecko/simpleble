@@ -23,7 +23,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Fixed**
 
--
+- (MacOS) Freeze when attempting a double disconnection.
 
 **Removed**
 

@@ -143,6 +143,10 @@
 }
 
 - (void)connect {
+    if (self.peripheral.state == CBPeripheralStateConnected) {
+        return;
+    }
+
     @synchronized(_task) {
         // --- Connect to the peripheral ---
         @synchronized(self) {
@@ -231,6 +235,10 @@
 }
 
 - (void)disconnect {
+    if (self.peripheral.state == CBPeripheralStateDisconnected) {
+        return;
+    }
+
     @synchronized(_task) {
         @synchronized(self) {
             self->_disconnectionError = nil;
