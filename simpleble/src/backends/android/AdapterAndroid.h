@@ -19,13 +19,12 @@
 
 namespace SimpleBLE {
 
-class BackendAndroid;
 class PeripheralAndroid;
 class Peripheral;
 
 class AdapterAndroid : public AdapterBase {
   public:
-    AdapterAndroid(std::shared_ptr<BackendAndroid> backend);
+    AdapterAndroid();
     virtual ~AdapterAndroid();
 
     virtual void* underlying() const override;
@@ -55,8 +54,6 @@ class AdapterAndroid : public AdapterBase {
     void onScanFailedCallback(JNIEnv* env, jobject thiz, jint error_code);
 
   private:
-    std::shared_ptr<BackendAndroid> backend_;
-
     Android::BluetoothAdapter _btAdapter = Android::BluetoothAdapter::getDefaultAdapter();
     Android::BluetoothScanner _btScanner = _btAdapter.getBluetoothLeScanner();
     Android::Bridge::ScanCallback _btScanCallback;

@@ -16,15 +16,16 @@ std::shared_ptr<BackendAndroid> BACKEND_ANDROID() { return BackendAndroid::get()
 
 BackendAndroid::BackendAndroid(buildToken) {
     SimpleJNI::Registrar::get().preload(SimpleJNI::VM::env());
+
+    _adapter = std::make_shared<AdapterAndroid>();
 }
 
 std::string BackendAndroid::name() const noexcept { return "Android"; }
 
 SharedPtrVector<AdapterBase> BackendAndroid::get_adapters() {
-    SharedPtrVector<AdapterBase> adapters;
-    adapters.push_back(std::make_shared<AdapterAndroid>(shared_from_this()));
-
-    return adapters;
+    SharedPtrVector<AdapterBase> adapter_list;
+    adapter_list.push_back(_adapter);
+    return adapter_list;
 }
 
 bool BackendAndroid::bluetooth_enabled() {

@@ -14,9 +14,9 @@
 
 using namespace SimpleBLE;
 
-bool AdapterAndroid::bluetooth_enabled() { return backend_->bluetooth_enabled(); }
+bool AdapterAndroid::bluetooth_enabled() { return BackendAndroid::get()->bluetooth_enabled(); }
 
-AdapterAndroid::AdapterAndroid(std::shared_ptr<BackendAndroid> backend) : backend_(backend) {
+AdapterAndroid::AdapterAndroid() {
     _btScanCallback.set_callback_onScanResult([this](Android::ScanResult scan_result) {
         std::string address = scan_result.getDevice().getAddress();
 
