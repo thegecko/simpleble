@@ -19,7 +19,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Changed**
 
--
+- (MacOS) Use a single Adapter object across all users of the CoreBluetooth backend.
 
 **Fixed**
 
