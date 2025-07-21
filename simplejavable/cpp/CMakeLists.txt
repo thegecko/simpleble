@@ -48,7 +48,7 @@ target_include_directories(
     ${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/external
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/internal
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/internal/include
     ${JNI_INCLUDE_DIRS}
 )
 

@@ -17,7 +17,7 @@ endif()
 
 add_compile_definitions(FMT_HEADER_ONLY)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/external)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/internal)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dependencies/internal/include)
 
 add_subdirectory(list_adapters)
 add_subdirectory(list_paired)

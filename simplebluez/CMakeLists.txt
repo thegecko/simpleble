@@ -102,7 +102,7 @@ target_link_libraries(simplebluez PUBLIC ${DBus1_LIBRARIES})
 
 target_include_directories(simplebluez PRIVATE ${SIMPLEBLUEZ_INCLUDE})
 target_include_directories(simplebluez PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external)
-target_include_directories(simplebluez PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal)
+target_include_directories(simplebluez PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal/include)
 target_include_directories(simplebluez INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external>
@@ -166,7 +166,7 @@ if(SIMPLEBLUEZ_TEST)
 
     target_compile_definitions(simplebluez_test PRIVATE FMT_HEADER_ONLY)
     target_include_directories(simplebluez_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external)
-    target_include_directories(simplebluez_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal)
+    target_include_directories(simplebluez_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal/include)
 
     set_target_properties(simplebluez_test PROPERTIES
         CXX_VISIBILITY_PRESET hidden
