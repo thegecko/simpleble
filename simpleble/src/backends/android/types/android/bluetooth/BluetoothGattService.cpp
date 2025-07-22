@@ -24,14 +24,14 @@ const SimpleJNI::JNIDescriptor BluetoothGattService::descriptor{
     "android/bluetooth/BluetoothGattService", // Java class name
     &_cls,                                    // Where to store the jclass
     {                                         // Methods to preload
-     {"addCharacteristic", "(Landroid/bluetooth/BluetoothGattCharacteristic;)Z", &_method_addCharacteristic},
-     {"addService", "(Landroid/bluetooth/BluetoothGattService;)Z", &_method_addService},
-     {"getCharacteristic", "(Ljava/util/UUID;)Landroid/bluetooth/BluetoothGattCharacteristic;", &_method_getCharacteristic},
-     {"getCharacteristics", "()Ljava/util/List;", &_method_getCharacteristics},
-     {"getIncludedServices", "()Ljava/util/List;", &_method_getIncludedServices},
-     {"getInstanceId", "()I", &_method_getInstanceId},
-     {"getType", "()I", &_method_getType},
-     {"getUuid", "()Ljava/util/UUID;", &_method_getUuid}
+        {"addCharacteristic", "(Landroid/bluetooth/BluetoothGattCharacteristic;)Z", &_method_addCharacteristic},
+        {"addService", "(Landroid/bluetooth/BluetoothGattService;)Z", &_method_addService},
+        {"getCharacteristic", "(Ljava/util/UUID;)Landroid/bluetooth/BluetoothGattCharacteristic;", &_method_getCharacteristic},
+        {"getCharacteristics", "()Ljava/util/List;", &_method_getCharacteristics},
+        {"getIncludedServices", "()Ljava/util/List;", &_method_getIncludedServices},
+        {"getInstanceId", "()I", &_method_getInstanceId},
+        {"getType", "()I", &_method_getType},
+        {"getUuid", "()Ljava/util/UUID;", &_method_getUuid}
     }};
 
 const SimpleJNI::AutoRegister<BluetoothGattService> BluetoothGattService::registrar{&descriptor};

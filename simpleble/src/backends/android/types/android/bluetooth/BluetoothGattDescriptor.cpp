@@ -15,9 +15,9 @@ const SimpleJNI::JNIDescriptor BluetoothGattDescriptor::descriptor{
     "android/bluetooth/BluetoothGattDescriptor", // Java class name
     &_cls,                                       // Where to store the jclass
     {                                            // Methods to preload
-     {"getUuid", "()Ljava/util/UUID;", &_method_getUuid},
-     {"getValue", "()[B", &_method_getValue},
-     {"setValue", "([B)Z", &_method_setValue}
+        {"getUuid", "()Ljava/util/UUID;", &_method_getUuid},
+        {"getValue", "()[B", &_method_getValue},
+        {"setValue", "([B)Z", &_method_setValue}
     }};
 
 const SimpleJNI::AutoRegister<BluetoothGattDescriptor> BluetoothGattDescriptor::registrar{&descriptor};

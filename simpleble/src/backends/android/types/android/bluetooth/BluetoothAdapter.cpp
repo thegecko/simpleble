@@ -19,12 +19,12 @@ const SimpleJNI::JNIDescriptor BluetoothAdapter::instance_descriptor{
     "android/bluetooth/BluetoothAdapter",  // Java class name
     &_cls,                                 // Where to store the jclass
     {                                      // Instance methods to preload
-     {"getName", "()Ljava/lang/String;", &_method_getName},
-     {"getAddress", "()Ljava/lang/String;", &_method_getAddress},
-     {"isEnabled", "()Z", &_method_isEnabled},
-     {"getState", "()I", &_method_getState},
-     {"getBluetoothLeScanner", "()Landroid/bluetooth/le/BluetoothLeScanner;", &_method_getBluetoothLeScanner},
-     {"getBondedDevices", "()Ljava/util/Set;", &_method_getBondedDevices}
+        {"getName", "()Ljava/lang/String;", &_method_getName},
+        {"getAddress", "()Ljava/lang/String;", &_method_getAddress},
+        {"isEnabled", "()Z", &_method_isEnabled},
+        {"getState", "()I", &_method_getState},
+        {"getBluetoothLeScanner", "()Landroid/bluetooth/le/BluetoothLeScanner;", &_method_getBluetoothLeScanner},
+        {"getBondedDevices", "()Ljava/util/Set;", &_method_getBondedDevices}
     }
 };
 
@@ -32,7 +32,7 @@ const SimpleJNI::StaticJNIDescriptor BluetoothAdapter::static_descriptor{
     "android/bluetooth/BluetoothAdapter",  // Java class name
     &_cls,                                 // Where to store the jclass (shared with instance)
     {                                      // Static methods to preload
-     {"getDefaultAdapter", "()Landroid/bluetooth/BluetoothAdapter;", &_method_getDefaultAdapter}
+        {"getDefaultAdapter", "()Landroid/bluetooth/BluetoothAdapter;", &_method_getDefaultAdapter}
     }
 };
 

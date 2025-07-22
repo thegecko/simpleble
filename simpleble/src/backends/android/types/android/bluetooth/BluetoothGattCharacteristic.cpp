@@ -28,17 +28,17 @@ const SimpleJNI::JNIDescriptor BluetoothGattCharacteristic::descriptor{
     "android/bluetooth/BluetoothGattCharacteristic", // Java class name
     &_cls,                                           // Where to store the jclass
     {                                                // Methods to preload
-     {"addDescriptor", "(Landroid/bluetooth/BluetoothGattDescriptor;)Z", &_method_addDescriptor},
-     {"getDescriptor", "(Ljava/util/UUID;)Landroid/bluetooth/BluetoothGattDescriptor;", &_method_getDescriptor},
-     {"getDescriptors", "()Ljava/util/List;", &_method_getDescriptors},
-     {"getInstanceId", "()I", &_method_getInstanceId},
-     {"getPermissions", "()I", &_method_getPermissions},
-     {"getProperties", "()I", &_method_getProperties},
-     {"getService", "()Landroid/bluetooth/BluetoothGattService;", &_method_getService},
-     {"getUuid", "()Ljava/util/UUID;", &_method_getUuid},
-     {"getWriteType", "()I", &_method_getWriteType},
-     {"setWriteType", "(I)V", &_method_setWriteType},
-     {"setValue", "([B)Z", &_method_setValue}
+        {"addDescriptor", "(Landroid/bluetooth/BluetoothGattDescriptor;)Z", &_method_addDescriptor},
+        {"getDescriptor", "(Ljava/util/UUID;)Landroid/bluetooth/BluetoothGattDescriptor;", &_method_getDescriptor},
+        {"getDescriptors", "()Ljava/util/List;", &_method_getDescriptors},
+        {"getInstanceId", "()I", &_method_getInstanceId},
+        {"getPermissions", "()I", &_method_getPermissions},
+        {"getProperties", "()I", &_method_getProperties},
+        {"getService", "()Landroid/bluetooth/BluetoothGattService;", &_method_getService},
+        {"getUuid", "()Ljava/util/UUID;", &_method_getUuid},
+        {"getWriteType", "()I", &_method_getWriteType},
+        {"setWriteType", "(I)V", &_method_setWriteType},
+        {"setValue", "([B)Z", &_method_setValue}
     }};
 
 // Auto-register the descriptor

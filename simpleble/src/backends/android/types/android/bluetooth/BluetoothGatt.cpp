@@ -24,17 +24,17 @@ const SimpleJNI::JNIDescriptor BluetoothGatt::descriptor{
     "android/bluetooth/BluetoothGatt", // Java class name
     &_cls,                             // Where to store the jclass
     {                                  // Methods to preload
-     {"close", "()V", &_method_close},
-     {"connect", "()Z", &_method_connect},
-     {"disconnect", "()V", &_method_disconnect},
-     {"discoverServices", "()Z", &_method_discoverServices},
-     {"getServices", "()Ljava/util/List;", &_method_getServices},
-     {"readCharacteristic", "(Landroid/bluetooth/BluetoothGattCharacteristic;)Z", &_method_readCharacteristic},
-     {"readDescriptor", "(Landroid/bluetooth/BluetoothGattDescriptor;)Z", &_method_readDescriptor},
-     {"setCharacteristicNotification", "(Landroid/bluetooth/BluetoothGattCharacteristic;Z)Z", &_method_setCharacteristicNotification},
-     {"writeCharacteristic", "(Landroid/bluetooth/BluetoothGattCharacteristic;)Z", &_method_writeCharacteristic},
-     {"writeDescriptor", "(Landroid/bluetooth/BluetoothGattDescriptor;)Z", &_method_writeDescriptor},
-     {"requestConnectionPriority", "(I)Z", &_method_requestConnectionPriority}
+        {"close", "()V", &_method_close},
+        {"connect", "()Z", &_method_connect},
+        {"disconnect", "()V", &_method_disconnect},
+        {"discoverServices", "()Z", &_method_discoverServices},
+        {"getServices", "()Ljava/util/List;", &_method_getServices},
+        {"readCharacteristic", "(Landroid/bluetooth/BluetoothGattCharacteristic;)Z", &_method_readCharacteristic},
+        {"readDescriptor", "(Landroid/bluetooth/BluetoothGattDescriptor;)Z", &_method_readDescriptor},
+        {"setCharacteristicNotification", "(Landroid/bluetooth/BluetoothGattCharacteristic;Z)Z", &_method_setCharacteristicNotification},
+        {"writeCharacteristic", "(Landroid/bluetooth/BluetoothGattCharacteristic;)Z", &_method_writeCharacteristic},
+        {"writeDescriptor", "(Landroid/bluetooth/BluetoothGattDescriptor;)Z", &_method_writeDescriptor},
+        {"requestConnectionPriority", "(I)Z", &_method_requestConnectionPriority}
     }};
 
 const SimpleJNI::AutoRegister<BluetoothGatt> BluetoothGatt::registrar{&descriptor};
