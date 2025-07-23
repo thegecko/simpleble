@@ -234,12 +234,16 @@ class ByteArray {
     // NOTE: The user is responsible for ensuring that the jobject is a jbyteArray
     explicit ByteArray(jobject obj) : _ref(static_cast<jbyteArray>(obj)) {
         JNIEnv* env = VM::env();
-        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+        jclass cls = env->FindClass("java/lang/Object");
+        this->_cls = RefType<jclass>(cls);
+        env->DeleteLocalRef(cls);
     }
 
     explicit ByteArray(jbyteArray obj) : _ref(obj) {
         JNIEnv* env = VM::env();
-        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+        jclass cls = env->FindClass("java/lang/Object");
+        this->_cls = RefType<jclass>(cls);
+        env->DeleteLocalRef(cls);
     }
 
     ByteArray(const kvn::bytearray& data) : _ref() {
@@ -248,7 +252,9 @@ class ByteArray {
         env->SetByteArrayRegion(jarr, 0, data.size(), reinterpret_cast<const jbyte*>(data.data()));
 
         this->_ref = RefType<jbyteArray>(jarr);
-        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+        jclass cls = env->FindClass("java/lang/Object");
+        this->_cls = RefType<jclass>(cls);
+        env->DeleteLocalRef(cls);
     }
 
     template <template <typename> class OtherRefType>
@@ -313,7 +319,9 @@ class LongArray {
 
     explicit LongArray(jlongArray obj) : _ref(obj) {
         JNIEnv* env = VM::env();
-        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+        jclass cls = env->FindClass("java/lang/Object");
+        this->_cls = RefType<jclass>(cls);
+        env->DeleteLocalRef(cls);
     }
 
     LongArray(const std::vector<int64_t>& data) : _ref() {
@@ -322,7 +330,9 @@ class LongArray {
         env->SetLongArrayRegion(jarr, 0, data.size(), reinterpret_cast<const jlong*>(data.data()));
 
         this->_ref = RefType<jlongArray>(jarr);
-        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+        jclass cls = env->FindClass("java/lang/Object");
+        this->_cls = RefType<jclass>(cls);
+        env->DeleteLocalRef(cls);
     }
 
     template <template <typename> class OtherRefType>
@@ -393,7 +403,9 @@ class String {
 
     explicit String(jstring obj) : _ref(obj) {
         JNIEnv* env = VM::env();
-        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+        jclass cls = env->FindClass("java/lang/Object");
+        this->_cls = RefType<jclass>(cls);
+        env->DeleteLocalRef(cls);
     }
 
     String(const std::string& data) : _ref() {
@@ -401,7 +413,9 @@ class String {
         jstring jstr = env->NewStringUTF(data.c_str());
 
         this->_ref = RefType<jstring>(jstr);
-        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+        jclass cls = env->FindClass("java/lang/Object");
+        this->_cls = RefType<jclass>(cls);
+        env->DeleteLocalRef(cls);
     }
 
     template <template <typename> class OtherRefType>
@@ -547,7 +561,9 @@ struct ObjectComparator {
 
     ObjectComparator() {
         JNIEnv* env = VM::env();
-        _object_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+        jclass cls = env->FindClass("java/lang/Object");
+        _object_cls = RefType<jclass>(cls);
+        env->DeleteLocalRef(cls);
         _method_hashCode = env->GetMethodID(_object_cls.get(), "hashCode", "()I");
     }
 
