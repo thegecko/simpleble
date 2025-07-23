@@ -317,6 +317,7 @@ elseif(SIMPLEBLE_BACKEND_ANDROID)
     #add_compile_options(-DANDROID -D__ANDROID_API__=${ANDROID_NATIVE_API_LEVEL})
 
     target_sources(simpleble PRIVATE
+        ${SIMPLEJNI_SOURCES}
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/AdapterAndroid.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/PeripheralAndroid.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/BackendAndroid.cpp

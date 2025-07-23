@@ -227,16 +227,22 @@ class Object {
 };
 
 template <template <typename> class RefType>
-class ByteArray : public Object<RefType, jbyteArray> {
+class ByteArray {
   public:
     ByteArray() = default;
 
     // NOTE: The user is responsible for ensuring that the jobject is a jbyteArray
-    explicit ByteArray(jobject obj) : Object<RefType, jbyteArray>(static_cast<jbyteArray>(obj)) {}
+    explicit ByteArray(jobject obj) : _ref(static_cast<jbyteArray>(obj)) {
+        JNIEnv* env = VM::env();
+        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+    }
 
-    explicit ByteArray(jbyteArray obj) : Object<RefType, jbyteArray>(obj) {}
+    explicit ByteArray(jbyteArray obj) : _ref(obj) {
+        JNIEnv* env = VM::env();
+        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+    }
 
-    ByteArray(const kvn::bytearray& data) : Object<RefType, jbyteArray>() {
+    ByteArray(const kvn::bytearray& data) : _ref() {
         JNIEnv* env = VM::env();
         jbyteArray jarr = env->NewByteArray(data.size());
         env->SetByteArrayRegion(jarr, 0, data.size(), reinterpret_cast<const jbyte*>(data.data()));
@@ -246,12 +252,15 @@ class ByteArray : public Object<RefType, jbyteArray> {
     }
 
     template <template <typename> class OtherRefType>
-    ByteArray(const Object<OtherRefType, jbyteArray>& obj) : Object<RefType, jbyteArray>(obj.get()) {}
+    ByteArray(const Object<OtherRefType, jbyteArray>& obj) : _ref(obj.get()) {}
 
     // Add implicit conversion to Object<RefType, jobject>
     operator Object<RefType, jobject>() const {
         return Object<RefType, jobject>(static_cast<jobject>(this->get()), this->_cls.get());
     }
+
+    // Access raw jobject
+    jbyteArray get() const { return _ref.get(); }
 
     // Conversion methods
     ByteArray<LocalRef> to_local() const {
@@ -263,6 +272,8 @@ class ByteArray : public Object<RefType, jbyteArray> {
         if (!*this) return ByteArray<GlobalRef>();
         return ByteArray<GlobalRef>(this->get());
     }
+
+    explicit operator bool() const { return _ref.get() != nullptr; }
 
     // Get the raw byte array data
     kvn::bytearray bytes() const {
@@ -286,16 +297,23 @@ class ByteArray : public Object<RefType, jbyteArray> {
         JNIEnv* env = VM::env();
         return env->GetArrayLength(this->get());
     }
+
+  protected:
+    RefType<jbyteArray> _ref;
+    RefType<jclass> _cls;
 };
 
 template <template <typename> class RefType>
-class LongArray : public Object<RefType, jlongArray> {
+class LongArray {
   public:
     LongArray() = default;
 
-    explicit LongArray(jlongArray obj) : Object<RefType, jlongArray>(obj) {}
+    explicit LongArray(jlongArray obj) : _ref(obj) {
+        JNIEnv* env = VM::env();
+        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+    }
 
-    LongArray(const std::vector<int64_t>& data) : Object<RefType, jlongArray>() {
+    LongArray(const std::vector<int64_t>& data) : _ref() {
         JNIEnv* env = VM::env();
         jlongArray jarr = env->NewLongArray(data.size());
         env->SetLongArrayRegion(jarr, 0, data.size(), reinterpret_cast<const jlong*>(data.data()));
@@ -305,12 +323,15 @@ class LongArray : public Object<RefType, jlongArray> {
     }
 
     template <template <typename> class OtherRefType>
-    LongArray(const Object<OtherRefType, jlongArray>& obj) : Object<RefType, jlongArray>(obj.get()) {}
+    LongArray(const Object<OtherRefType, jlongArray>& obj) : _ref(obj.get()) {}
 
     // Add implicit conversion to Object<RefType, jobject>
     operator Object<RefType, jobject>() const {
         return Object<RefType, jobject>(static_cast<jobject>(this->get()), this->_cls.get());
     }
+
+    // Access raw jobject
+    jlongArray get() const { return _ref.get(); }
 
     // Conversion methods
     LongArray<LocalRef> to_local() const {
@@ -322,6 +343,8 @@ class LongArray : public Object<RefType, jlongArray> {
         if (!*this) return LongArray<GlobalRef>();
         return LongArray<GlobalRef>(this->get());
     }
+
+    explicit operator bool() const { return _ref.get() != nullptr; }
 
     // Get the raw long array data
     std::vector<int64_t> longs() const {
@@ -351,16 +374,23 @@ class LongArray : public Object<RefType, jlongArray> {
 
         return env->GetArrayLength(jarr);
     }
+
+  protected:
+    RefType<jlongArray> _ref;
+    RefType<jclass> _cls;
 };
 
 template <template <typename> class RefType>
-class String : public Object<RefType, jstring> {
+class String {
   public:
     String() = default;
 
-    explicit String(jstring obj) : Object<RefType, jstring>(obj) {}
+    explicit String(jstring obj) : _ref(obj) {
+        JNIEnv* env = VM::env();
+        this->_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+    }
 
-    String(const std::string& data) : Object<RefType, jstring>() {
+    String(const std::string& data) : _ref() {
         JNIEnv* env = VM::env();
         jstring jstr = env->NewStringUTF(data.c_str());
 
@@ -369,12 +399,17 @@ class String : public Object<RefType, jstring> {
     }
 
     template <template <typename> class OtherRefType>
-    String(const Object<OtherRefType, jstring>& obj) : Object<RefType, jstring>(obj.get()) {}
+    String(const Object<OtherRefType, jstring>& obj) : _ref(obj.get()) {}
 
     // Add implicit conversion to Object<RefType, jobject>
     operator Object<RefType, jobject>() const {
         return Object<RefType, jobject>(static_cast<jobject>(this->get()), this->_cls.get());
     }
+
+    explicit operator bool() const { return _ref.get() != nullptr; }
+
+    // Access raw jobject
+    jstring get() const { return _ref.get(); }
 
     // Conversion methods
     String<LocalRef> to_local() const {
@@ -408,6 +443,10 @@ class String : public Object<RefType, jstring> {
         JNIEnv* env = VM::env();
         return env->GetStringUTFLength(this->get());
     }
+
+  protected:
+    RefType<jstring> _ref;
+    RefType<jclass> _cls;
 };
 
 class Env {
@@ -494,49 +533,14 @@ class Runner {
     bool _stop;
 };
 
-// // TODO: Move these to their own namespace
-
-// struct JObjectComparator {
-//     // TODO: Lazy initialize jclass and jmethodID objects.
-
-//     bool operator()(const jobject& lhs, const jobject& rhs) const {
-//         if (lhs == nullptr && rhs == nullptr) {
-//             return false;  // Both are null, considered equal
-//         }
-//         if (lhs == nullptr) {
-//             return true;  // lhs is null, rhs is not null, lhs < rhs
-//         }
-//         if (rhs == nullptr) {
-//             return false;  // rhs is null, lhs is not null, lhs > rhs
-//         }
-
-//         JNIEnv* env = VM::env();
-//         if (env->IsSameObject(lhs, rhs)) {
-//             return false;  // Both objects are the same
-//         }
-
-//         // Use hashCode method to establish a consistent ordering
-//         // TODO: Cache all references statically for this class!
-//         jclass objectClass = env->FindClass("java/lang/Object");
-//         jmethodID hashCodeMethod = env->GetMethodID(objectClass, "hashCode", "()I");
-
-//         const jobject lhsObject = lhs;
-//         const jobject rhsObject = rhs;
-
-//         jint lhsHashCode = env->CallIntMethod(lhsObject, hashCodeMethod);
-//         jint rhsHashCode = env->CallIntMethod(rhsObject, hashCodeMethod);
-
-//         return lhsHashCode < rhsHashCode;
-
-//         // Use a unique identifier or a pointer value as the final comparison for non-equal objects
-//         return lhs < rhs;  // This can still be used for consistent ordering
-//     }
-// };
-
 template <template <typename> class RefType, typename JniType = jobject>
 struct ObjectComparator {
-    // TODO: Use the Registry to get the jclass and jmethodID objects.
-    // TODO: Move to a separate file.
+
+    ObjectComparator() {
+        JNIEnv* env = VM::env();
+        _object_cls = RefType<jclass>(env->FindClass("java/lang/Object"));
+        _method_hashCode = env->GetMethodID(_object_cls.get(), "hashCode", "()I");
+    }
 
     bool operator()(const Object<RefType, JniType>& lhs, const Object<RefType, JniType>& rhs) const {
         // Handle null object comparisons
@@ -561,12 +565,8 @@ struct ObjectComparator {
             return false;  // Both objects are the same
         }
 
-        // Use hashCode method to establish a consistent ordering
-        jclass objectClass = env->FindClass("java/lang/Object");
-        jmethodID hashCodeMethod = env->GetMethodID(objectClass, "hashCode", "()I");
-
-        jint lhsHashCode = env->CallIntMethod(lhsObject, hashCodeMethod);
-        jint rhsHashCode = env->CallIntMethod(rhsObject, hashCodeMethod);
+        jint lhsHashCode = env->CallIntMethod(lhsObject, _method_hashCode);
+        jint rhsHashCode = env->CallIntMethod(rhsObject, _method_hashCode);
 
         if (lhsHashCode != rhsHashCode) {
             return lhsHashCode < rhsHashCode;  // Use hash code for initial comparison
@@ -575,5 +575,8 @@ struct ObjectComparator {
         // Use a direct pointer comparison as a fallback for objects with identical hash codes
         return lhsObject < rhsObject;  // This comparison is consistent within the same execution
     }
+
+    GlobalRef<jclass> _object_cls;
+    jmethodID _method_hashCode;
 };
 }  // namespace SimpleJNI

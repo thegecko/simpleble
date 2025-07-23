@@ -74,3 +74,7 @@ macro(append_sanitize_options MODIFIER)
     endif()
 
 endmacro()
+
+set(SIMPLEJNI_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal/src/simplejni/Common.cpp
+)

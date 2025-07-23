@@ -20,6 +20,7 @@ add_library(
     ${CMAKE_PROJECT_NAME} SHARED
     simpleble_android.cpp
     android_utils.cpp
+    ${SIMPLEJNI_SOURCES}
 )
 
 set_target_properties(

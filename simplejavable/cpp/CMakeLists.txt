@@ -34,6 +34,7 @@ add_library(
     src/java/lang/Iterator.cpp
     src/java/lang/ArrayList.cpp
     src/simplejavable.cpp
+    ${SIMPLEJNI_SOURCES}
 )
 
 set_target_properties(
