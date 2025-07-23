@@ -75,6 +75,16 @@ macro(append_sanitize_options MODIFIER)
 
 endmacro()
 
-set(SIMPLEJNI_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal/src/simplejni/Common.cpp
+# Define the list of source files with relative paths
+set(RAW_SIMPLEJNI_SOURCES
+    "${CMAKE_CURRENT_LIST_DIR}/../dependencies/internal/src/simplejni/Common.cpp"
 )
+
+# Convert each relative path to an absolute path
+set(ABSOLUTE_SIMPLEJNI_SOURCES "")
+foreach(SOURCE ${RAW_SIMPLEJNI_SOURCES})
+    get_filename_component(ABSOLUTE_PATH "${SOURCE}" ABSOLUTE)
+    list(APPEND ABSOLUTE_SIMPLEJNI_SOURCES "${ABSOLUTE_PATH}")
+endforeach()
+
+set(SIMPLEJNI_SOURCES "${ABSOLUTE_SIMPLEJNI_SOURCES}")

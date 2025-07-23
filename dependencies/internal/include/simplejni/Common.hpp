@@ -262,6 +262,9 @@ class ByteArray {
     // Access raw jobject
     jbyteArray get() const { return _ref.get(); }
 
+    // Release ownership of the underlying reference
+    jbyteArray release() noexcept { return _ref.release(); }
+
     // Conversion methods
     ByteArray<LocalRef> to_local() const {
         if (!*this) return ByteArray<LocalRef>();
@@ -332,6 +335,9 @@ class LongArray {
 
     // Access raw jobject
     jlongArray get() const { return _ref.get(); }
+
+    // Release ownership of the underlying reference
+    jlongArray release() noexcept { return _ref.release(); }
 
     // Conversion methods
     LongArray<LocalRef> to_local() const {
@@ -410,6 +416,9 @@ class String {
 
     // Access raw jobject
     jstring get() const { return _ref.get(); }
+
+    // Release ownership of the underlying reference
+    jstring release() noexcept { return _ref.release(); }
 
     // Conversion methods
     String<LocalRef> to_local() const {
