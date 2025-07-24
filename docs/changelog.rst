@@ -15,7 +15,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Added**
 
--
+- Introduced scaffolding for advanced low-level features.
 
 **Changed**
 

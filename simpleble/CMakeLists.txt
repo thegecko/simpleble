@@ -34,6 +34,7 @@ set(SIMPLEBLE_PRIVATE_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal/include)
 
 set(SIMPLEBLE_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/frontends/base/Advanced.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/frontends/base/Adapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/frontends/base/Peripheral.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/frontends/base/Service.cpp
