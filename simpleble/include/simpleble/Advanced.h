@@ -6,10 +6,6 @@
 #include "TargetConditionals.h"
 #endif
 
-namespace SimpleBLE {
-
-namespace Advanced {
-
 /**
  * Advanced Features
  *
@@ -21,30 +17,34 @@ namespace Advanced {
  */
 
 #if defined(_WIN32)
-    // Windows code
+namespace SimpleBLE::Advanced::Windows {}
 
 #endif
 
 #if TARGET_OS_OSX
-    // macOS code
+namespace SimpleBLE::Advanced::MacOS {}
 
 #endif
 
 #if TARGET_OS_IOS
-    // iOS code
+namespace SimpleBLE::Advanced::iOS {}
 
 #endif
 
 #if defined(__ANDROID__)
-    // Android code
+
+#include <jni.h>
+
+namespace SimpleBLE::Advanced::Android {
+
+JavaVM* SIMPLEBLE_EXPORT get_jvm();
+void SIMPLEBLE_EXPORT set_jvm(JavaVM* jvm);
+
+}  // namespace SimpleBLE::Advanced::Android
 
 #endif
 
 #if defined(__linux__) && !defined(__ANDROID__)
-    // Linux code
+namespace SimpleBLE::Advanced::Linux {}
 
 #endif
-
-}  // namespace Advanced
-
-}  // namespace SimpleBLE

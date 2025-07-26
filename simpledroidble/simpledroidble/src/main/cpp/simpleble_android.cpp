@@ -3,6 +3,7 @@
 
 #include "android_utils.h"
 #include <simpleble/SimpleBLE.h>
+#include <simpleble/Advanced.h>
 #include <simpleble/Logging.h>
 #include <fmt/core.h>
 #include <vector>
@@ -33,6 +34,7 @@ JNIEnv* get_env() {
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     jvm = vm;
     threadRunner.set_jvm(vm);
+    SimpleBLE::Advanced::Android::set_jvm(vm);
 
 //    // Find your class. JNI_OnLoad is called from the correct class loader context for this to work.
 //    jclass c = env->FindClass("com/example/app/package/MyClass");

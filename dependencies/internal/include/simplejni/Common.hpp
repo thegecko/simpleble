@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "References.hpp"
+#include "Registry.hpp"
 #include "VM.hpp"
 #include "kvn/kvn_bytearray.h"
 
@@ -559,14 +560,6 @@ class Runner {
 template <template <typename> class RefType, typename JniType = jobject>
 struct ObjectComparator {
 
-    ObjectComparator() {
-        JNIEnv* env = VM::env();
-        jclass cls = env->FindClass("java/lang/Object");
-        _object_cls = RefType<jclass>(cls);
-        env->DeleteLocalRef(cls);
-        _method_hashCode = env->GetMethodID(_object_cls.get(), "hashCode", "()I");
-    }
-
     bool operator()(const Object<RefType, JniType>& lhs, const Object<RefType, JniType>& rhs) const {
         // Handle null object comparisons
         if (!lhs && !rhs) {
@@ -590,8 +583,9 @@ struct ObjectComparator {
             return false;  // Both objects are the same
         }
 
-        jint lhsHashCode = env->CallIntMethod(lhsObject, _method_hashCode);
-        jint rhsHashCode = env->CallIntMethod(rhsObject, _method_hashCode);
+        jmethodID method_hashCode = Registrar::get().get_method("java/lang/Object", "hashCode");
+        jint lhsHashCode = env->CallIntMethod(lhsObject, method_hashCode);
+        jint rhsHashCode = env->CallIntMethod(rhsObject, method_hashCode);
 
         if (lhsHashCode != rhsHashCode) {
             return lhsHashCode < rhsHashCode;  // Use hash code for initial comparison
@@ -600,8 +594,5 @@ struct ObjectComparator {
         // Use a direct pointer comparison as a fallback for objects with identical hash codes
         return lhsObject < rhsObject;  // This comparison is consistent within the same execution
     }
-
-    GlobalRef<jclass> _object_cls;
-    jmethodID _method_hashCode;
 };
 }  // namespace SimpleJNI

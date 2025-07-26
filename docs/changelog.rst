@@ -16,6 +16,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 **Added**
 
 - Introduced scaffolding for advanced low-level features.
+- (Android) Added support to set and retrieve the JavaVM pointer.
 
 **Changed**
 
@@ -26,6 +27,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 - (MacOS) Freeze when attempting a double disconnection.
 - (Android) Solved "local reference table overflow" error. *(Thanks Nicole S.!)*
+- (Android) Fixed unexpected initialization of SimpleJNI.
 
 **Removed**
 

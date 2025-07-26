@@ -10,15 +10,20 @@ namespace SimpleJNI {
 class VM {
   public:
     // TODO: Make the VM class transparent to the JavaVM pointer.
-    static JavaVM* jvm() {
-        static std::mutex get_mutex;  // Static mutex to ensure thread safety when accessing the VM
-        static VM instance;           // Static instance of the VM to ensure proper lifecycle management
+    static JavaVM* jvm(JavaVM* jvm_override = nullptr) {
+        static std::mutex mutex;  // Function-local for tied lifecycle
+        static VM instance;       // Function-local for lazy init and auto-cleanup
 
-        if (instance._jvm == nullptr) {
-            std::scoped_lock lock(get_mutex);  // Unlock the mutex on function return
+        std::scoped_lock lock(mutex);  // Lock entire access for safety
+        if (jvm_override != nullptr) {
+            if (instance._jvm != nullptr && instance._jvm != jvm_override) {
+                throw std::runtime_error("JavaVM pointer already set");
+            }
+            instance._jvm = jvm_override;
+        } else if (instance._jvm == nullptr) {
             jsize count;
             if (JNI_GetCreatedJavaVMs(&instance._jvm, 1, &count) != JNI_OK || count == 0) {
-                throw std::runtime_error("Failed to get the Java Virtual Machine");
+                throw std::runtime_error("Failed to retrieve the Java Virtual Machine");
             }
         }
         return instance._jvm;

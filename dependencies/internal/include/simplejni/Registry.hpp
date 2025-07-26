@@ -1,7 +1,11 @@
 #pragma once
+
+#include "References.hpp"
+
 #include <string>
 #include <vector>
-#include "Common.hpp"
+#include <unordered_map>
+
 
 namespace SimpleJNI {
 
@@ -30,7 +34,7 @@ struct MethodDescriptor {
  */
 struct JNIDescriptor {
     std::string class_name;  ///< Fully qualified Java class name (e.g., "android/bluetooth/le/BluetoothLeScanner").
-    SimpleJNI::GlobalRef<jclass>* class_target;  ///< Pointer to where the resolved jclass will be stored.
+    GlobalRef<jclass>* class_target;  ///< Pointer to where the resolved jclass will be stored.
     std::vector<MethodDescriptor> methods;       ///< List of methods to preload for this class.
 
     JNIDescriptor(const std::string& name, SimpleJNI::GlobalRef<jclass>* cls_target,
@@ -47,7 +51,7 @@ struct JNIDescriptor {
  */
 struct StaticJNIDescriptor {
     std::string class_name;  ///< Fully qualified Java class name (e.g., "android/bluetooth/le/BluetoothLeScanner").
-    SimpleJNI::GlobalRef<jclass>* class_target;  ///< Pointer to where the resolved jclass will be stored.
+    GlobalRef<jclass>* class_target;  ///< Pointer to where the resolved jclass will be stored.
     std::vector<MethodDescriptor> static_methods;  ///< List of static methods to preload for this class.
 
     StaticJNIDescriptor(const std::string& name, SimpleJNI::GlobalRef<jclass>* cls_target,
@@ -68,6 +72,18 @@ class Registrar {
     /// @brief Get the singleton instance of the Registrar.
     static Registrar& get() {
         static Registrar instance;
+
+        // Register common classes that are used in many places.
+        static const JNIDescriptor desc{
+            "java/lang/Object",  // Java class name
+            nullptr,             // Where to store the jclass
+            {                    // Instance methods to preload
+                {"hashCode", "()I", nullptr},
+            }
+        };
+
+        instance.register_descriptor(&desc);
+
         return instance;
     }
 
@@ -87,9 +103,7 @@ class Registrar {
      * to an internal list that will be processed in preload().
      * @param descriptor Pointer to the StaticJNIDescriptor to register.
      */
-    void register_static_descriptor(const StaticJNIDescriptor* descriptor) {
-        static_descriptors.push_back(descriptor);
-    }
+    void register_static_descriptor(const StaticJNIDescriptor* descriptor) { static_descriptors.push_back(descriptor); }
 
     /**
      * @brief Preload all registered JNI resources.
@@ -108,18 +122,33 @@ class Registrar {
             if (!local_cls) {
                 throw std::runtime_error("Failed to load class: " + desc->class_name);
             }
-            *desc->class_target = SimpleJNI::GlobalRef<jclass>(local_cls);
+
+            GlobalRef<jclass> class_target(local_cls);
             env->DeleteLocalRef(local_cls);  // Clean up the local reference
+
+            // If *desc->class_target is null, we don't set it.
+            if (desc->class_target != nullptr) {
+                *desc->class_target = class_target;
+            }
+            class_targets[desc->class_name] = class_target;
 
             // Load each method
             for (const MethodDescriptor& method : desc->methods) {
-                *method.target = env->GetMethodID(desc->class_target->get(), method.name.c_str(),
-                                                  method.signature.c_str());
-                if (!*method.target) {
+                jmethodID method_id = env->GetMethodID(class_target.get(), method.name.c_str(), method.signature.c_str());
+                if (!method_id) {
                     throw std::runtime_error("Failed to get method: " + desc->class_name + "." + method.name);
                 }
+
+                // If *method.target is null, we don't set it.
+                if (method.target != nullptr) {
+                    *method.target = method_id;
+                }
+                method_targets[desc->class_name][method.name] = method_id;
             }
         }
+
+        // Clear descriptors once they are preloaded
+        descriptors.clear();
 
         // Preload static method descriptors
         for (const StaticJNIDescriptor* desc : static_descriptors) {
@@ -128,18 +157,49 @@ class Registrar {
             if (!local_cls) {
                 throw std::runtime_error("Failed to load class: " + desc->class_name);
             }
-            *desc->class_target = SimpleJNI::GlobalRef<jclass>(local_cls);
+
+            GlobalRef<jclass> class_target(local_cls);
             env->DeleteLocalRef(local_cls);  // Clean up the local reference
+
+            // If *desc->class_target is null, we don't set it.
+            if (desc->class_target != nullptr) {
+                *desc->class_target = class_target;
+            }
+            static_class_targets[desc->class_name] = class_target;
 
             // Load each static method
             for (const MethodDescriptor& method : desc->static_methods) {
-                *method.target = env->GetStaticMethodID(desc->class_target->get(), method.name.c_str(),
-                                                        method.signature.c_str());
-                if (!*method.target) {
+                jmethodID method_id = env->GetStaticMethodID(class_target.get(), method.name.c_str(), method.signature.c_str());
+                if (!method_id) {
                     throw std::runtime_error("Failed to get static method: " + desc->class_name + "." + method.name);
                 }
+
+                // If *method.target is null, we don't set it.
+                if (method.target != nullptr) {
+                    *method.target = method_id;
+                }
+                static_method_targets[desc->class_name][method.name] = method_id;
             }
         }
+
+        // Clear static descriptors once they are preloaded
+        static_descriptors.clear();
+    }
+
+    GlobalRef<jclass> get_class(const std::string& name) {
+        return class_targets[name];
+    }
+
+    jmethodID get_method(const std::string& class_name, const std::string& method_name) {
+        return method_targets[class_name][method_name];
+    }
+
+    GlobalRef<jclass> get_static_class(const std::string& name) {
+        return static_class_targets[name];
+    }
+
+    jmethodID get_static_method(const std::string& class_name, const std::string& method_name) {
+        return static_method_targets[class_name][method_name];
     }
 
   private:
@@ -147,6 +207,12 @@ class Registrar {
     ~Registrar() = default;
     Registrar(const Registrar&) = delete;
     Registrar& operator=(const Registrar&) = delete;
+
+    std::unordered_map<std::string, GlobalRef<jclass>> class_targets;
+    std::unordered_map<std::string, std::unordered_map<std::string, jmethodID>> method_targets;
+
+    std::unordered_map<std::string, GlobalRef<jclass>> static_class_targets;
+    std::unordered_map<std::string, std::unordered_map<std::string, jmethodID>> static_method_targets;
 
     std::vector<const JNIDescriptor*> descriptors;  ///< List of registered descriptors.
     std::vector<const StaticJNIDescriptor*> static_descriptors;  ///< List of registered static descriptors.
