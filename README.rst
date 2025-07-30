@@ -5,16 +5,6 @@ SimpleBLE
 
 The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE), designed for simplicity and ease of use.
 
-Announcements
--------------
-
-* **(2025-05-25)** 🦀 Rust bindings are now in Early Preview.
-* **(2025-04-24)** 🚨 The SimpleBLE Android bridge project has been renamed to **simpledroidbridge**. The old name will be deprecated in a future release.
-* **(2025-04-13)** 🚨 SimpleBLE C bindings are being ported to a separate library called **simplecble**. The old C bindings will be deprecated in a future release.
-* **(2025-03-16)** ☕ Java bindings are now in Early Preview.
-* **(2025-02-25)** 🤖 Android backend support is now in Preview.
-* **(2024-12-02)** 🐧 Peripheral functionality for Linux is now in Early Preview.
-
 Key Features
 ------------
 
@@ -39,6 +29,7 @@ Support & Resources
 
 We're here to help you succeed with SimpleBLE:
 
+* **News and Announcements**: Follow our `Announcements`_ section for announcements and updates.
 * **Documentation**: Visit our `ReadTheDocs`_ page for comprehensive guides.
 * **Community**: Join our `Discord`_ server for discussions and help.
 * **Commercial Support**: Check out |website|_ or |email|_ about licensing and professional services.
@@ -105,6 +96,9 @@ Join us to expand SimpleBLE's reach!
 
 .. |caos| replace:: **The California Open Source Company**
 .. _caos: https://californiaopensource.com?utm_source=github&utm_medium=referral&utm_campaign=simpleble_readme
+
+.. |Announcements| replace:: Announcements
+.. _Announcements: https://simpleble.org/blog/news?utm_source=github&utm_medium=referral&utm_campaign=simpleble_readme
 
 .. _SimplePyBLE: https://pypi.org/project/simplepyble/
 
