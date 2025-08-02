@@ -17,6 +17,8 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 - Introduced scaffolding for advanced low-level features.
 - (Android) Added support to set and retrieve the JavaVM pointer.
+- (Linux) Added frozen BlueZ backend in preparation for upcoming changes.
+- Configuration option to select which BlueZ backend to use.
 
 **Changed**
 
@@ -28,6 +30,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (MacOS) Freeze when attempting a double disconnection.
 - (Android) Solved "local reference table overflow" error. *(Thanks Nicole S.!)*
 - (Android) Fixed unexpected initialization of SimpleJNI.
+- Improper handling of configuration settings when consuming SimpleBLE as a shared library.
 
 **Removed**
 
