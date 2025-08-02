@@ -91,7 +91,7 @@ class Proxy {
         std::vector<std::shared_ptr<T>> result;
         std::scoped_lock lock(_child_access_mutex);
         for (auto& [path, child] : _children) {
-            const std::string next_child = SimpleDBus::Path::next_child_strip(_path, path);
+            const std::string next_child = SimpleDBus::PathUtils::next_child_strip(_path, path);
             if (next_child.find(prefix) == 0) {
                 result.push_back(std::dynamic_pointer_cast<T>(child));
             }
