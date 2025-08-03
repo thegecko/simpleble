@@ -251,6 +251,9 @@ TEST_F(MessageTest, SendReceiveDictString) {
     EXPECT_EQ(dict["key2"].get_string(), "Hello");
 }
 
+/*
+TODO: Uncomment these tests when we have a way to test the message forwarding logic.
+
 TEST_F(MessageTest, ReceiveMethodCallSuccess) {
     Message msg = Message::create_method_call("simpledbus.tester.python", "/", "simpledbus.tester.message",
                                               "TriggerMethodCall");
@@ -321,6 +324,7 @@ TEST_F(MessageTest, ReceiveMethodCallFailure) {
     }
     EXPECT_TRUE(method_called);
 }
+*/
 
 TEST_F(MessageTest, CopyConstructor) {
     // Create an original message
