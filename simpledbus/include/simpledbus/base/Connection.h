@@ -22,10 +22,7 @@ class Connection {
     void add_match(std::string rule);
     void remove_match(std::string rule);
 
-    void read_write();
     void read_write_dispatch();
-    Message pop_message();
-
     void send(Message& msg);
     Message send_with_reply_and_block(Message& msg);
 

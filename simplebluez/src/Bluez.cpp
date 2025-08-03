@@ -26,16 +26,7 @@ void Bluez::init() {
 }
 
 void Bluez::run_async() {
-    // TODO: UNCOMMENT THIS WHEN MIGRATING TO NEW PROXY FORWARDING LOGIC
-    //_conn->read_write_dispatch();
-
-    // BELOW IS THE LEGACY LOGIC
-    _conn->read_write();
-    SimpleDBus::Message message = _conn->pop_message();
-    while (message.is_valid()) {
-        _bluez_root->message_forward(message);
-        message = _conn->pop_message();
-    }
+    _conn->read_write_dispatch();
 }
 
 std::vector<std::shared_ptr<Adapter>> Bluez::get_adapters() { return _bluez_root->get_adapters(); }

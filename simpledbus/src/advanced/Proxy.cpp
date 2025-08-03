@@ -5,6 +5,7 @@
 #include <simpledbus/base/Logging.h>
 #include <simpledbus/base/Path.h>
 #include <algorithm>
+#include <iostream>
 
 // #include <simpledbus/interfaces/Properties.h>
 
@@ -12,16 +13,14 @@ using namespace SimpleDBus;
 
 Proxy::Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path)
     : _conn(conn), _bus_name(bus_name), _path(path), _valid(true), _registered(false) {
-    // TODO: UNCOMMENT THIS WHEN MIGRATING TO NEW PROXY FORWARDING LOGIC
-    // register_object_path();
+    register_object_path();
 
-    //_interfaces.emplace(std::make_pair("org.freedesktop.DBus.Properties", std::make_shared<Properties>(conn, bus_name,
-    //path)));
+    // TODO: At some point in the future, proxy objects will own their own Properties interface.
+    //_interfaces.emplace(std::make_pair("org.freedesktop.DBus.Properties", std::make_shared<Properties>(conn, bus_name, path)));
 }
 
 Proxy::~Proxy() {
-    // TODO: UNCOMMENT THIS WHEN MIGRATING TO NEW PROXY FORWARDING LOGIC
-    // unregister_object_path();
+    unregister_object_path();
     on_child_created.unload();
     on_signal_received.unload();
 }
@@ -34,8 +33,7 @@ bool Proxy::valid() const { return _valid; }
 
 void Proxy::invalidate() {
     _valid = false;
-    // TODO: UNCOMMENT THIS WHEN MIGRATING TO NEW PROXY FORWARDING LOGIC
-    // unregister_object_path();
+    unregister_object_path();
 }
 
 std::string Proxy::path() const { return _path; }
@@ -314,52 +312,79 @@ void Proxy::path_remove_child(const std::string& path) {
 
 // ----- MESSAGE HANDLING -----
 
-void Proxy::message_forward(Message& msg) {
-    // If the message is for the current proxy, then forward it to the message handler.
-    if (msg.get_path() == _path) {
-        // If the message is involves a property change, forward it to the correct interface.
-        if (msg.is_signal("org.freedesktop.DBus.Properties", "PropertiesChanged")) {
-            Holder interface_h = msg.extract();
-            std::string iface_name = interface_h.get_string();
-            msg.extract_next();
-            Holder changed_properties = msg.extract();
-            msg.extract_next();
-            Holder invalidated_properties = msg.extract();
-
-            // If the interface is not loaded, then ignore the message.
-            if (!interface_exists(iface_name)) {
-                return;
-            }
-
-            interface_get(iface_name)->signal_property_changed(changed_properties, invalidated_properties);
-
-        } else if (interface_exists(msg.get_interface())) {
-            interface_get(msg.get_interface())->message_handle(msg);
-        }
-
-        return;
-    }
-
-    // If the message is for a child proxy or a descendant, forward it to that child proxy.
-    for (auto& [child_path, child] : _children) {
-        if (child_path == msg.get_path()) {
-            child->message_forward(msg);
-
-            if (msg.get_type() == Message::Type::SIGNAL) {
-                child->on_signal_received();
-            }
-
-            return;
-        } else if (PathUtils::is_descendant(child_path, msg.get_path())) {
-            child->message_forward(msg);
-            return;
-        }
-    }
-}
-
 void Proxy::message_handle(Message& msg) {
     bool handled = false;
 
+    // ! The following block emulates the presence of a Properties interface.
+    // TODO: Remove this block when the Properties interface is implemented.
+
+    const std::string properties_interface_name = "org.freedesktop.DBus.Properties";
+
+    if (msg.is_method_call(properties_interface_name, "GetAll")) {
+        Holder interface_h = msg.extract();
+        std::string iface_name = interface_h.get_string();
+
+        // TODO: Handle the case where the interface does not exist, returning an error.
+        std::shared_ptr<Interface> interface = interface_get(iface_name);
+        Holder result = interface->property_collect();
+
+        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        reply.append_argument(result, "a{sv}");
+        _conn->send(reply);
+        handled = true;
+
+    } else if (msg.is_method_call(properties_interface_name, "Get")) {
+        Holder interface_h = msg.extract();
+        std::string iface_name = interface_h.get_string();
+        msg.extract_next();
+
+        Holder property_h = msg.extract();
+        std::string property_name = property_h.get_string();
+
+        // TODO: Handle the case where the interface does not exist, returning an error.
+        std::shared_ptr<Interface> interface = interface_get(iface_name);
+
+        Holder result = interface->property_collect_single(property_name);
+
+        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        reply.append_argument(result, "v");
+        _conn->send(reply);
+        handled = true;
+
+    } else if (msg.is_method_call(properties_interface_name, "Set")) {
+        Holder interface_h = msg.extract();
+        std::string iface_name = interface_h.get_string();
+        msg.extract_next();
+
+        Holder property_h = msg.extract();
+        std::string property_name = property_h.get_string();
+        msg.extract_next();
+
+        Holder value_h = msg.extract();
+
+        // TODO: Handle the case where the interface does not exist, returning an error.
+        std::shared_ptr<Interface> interface = interface_get(iface_name);
+        interface->property_modify(property_name, value_h);
+
+        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        _conn->send(reply);
+        handled = true;
+
+    } else if (msg.is_signal(properties_interface_name, "PropertiesChanged")) {
+        Holder interface_h = msg.extract();
+        std::string iface_name = interface_h.get_string();
+        msg.extract_next();
+        Holder changed_properties = msg.extract();
+        msg.extract_next();
+        Holder invalidated_properties = msg.extract();
+
+        if (interface_exists(iface_name)) {
+            interface_get(iface_name)->signal_property_changed(changed_properties, invalidated_properties);
+            handled = true;
+        }
+    } else
+
+    // ! This is the only block that should be used to forward messages to interfaces.
     if (interface_exists(msg.get_interface())) {
         interface_get(msg.get_interface())->message_handle(msg);
         handled = true;

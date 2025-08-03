@@ -49,8 +49,7 @@ void Connection::uninit() {
     SimpleDBus::Message message;
     do {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        read_write();
-        message = pop_message();
+        read_write_dispatch();
     } while (message.is_valid());
 
     dbus_connection_unref(_conn);
@@ -99,18 +98,6 @@ void Connection::remove_match(std::string rule) {
     }
 }
 
-void Connection::read_write() {
-    // TODO: DEPRECATE
-    if (!_initialized) {
-        throw Exception::NotInitialized();
-    }
-
-    std::lock_guard<std::recursive_mutex> lock(_mutex);
-
-    // Non blocking read of the next available message
-    dbus_connection_read_write(_conn, 0);
-}
-
 void Connection::read_write_dispatch() {
     if (!_initialized) {
         throw Exception::NotInitialized();
@@ -123,18 +110,6 @@ void Connection::read_write_dispatch() {
 
     // Dispatch incoming messages
     while (dbus_connection_dispatch(_conn) == DBUS_DISPATCH_DATA_REMAINS) {}
-}
-
-Message Connection::pop_message() {
-    // TODO: DEPRECATE
-    if (!_initialized) {
-        throw Exception::NotInitialized();
-    }
-
-    std::lock_guard<std::recursive_mutex> lock(_mutex);
-
-    DBusMessage* msg = dbus_connection_pop_message(_conn);
-    return Message::from_acquired(msg);
 }
 
 void Connection::send(Message& msg) {

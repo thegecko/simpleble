@@ -66,7 +66,6 @@ class Proxy {
     void path_append_child(const std::string& path, std::shared_ptr<Proxy> child);
     void path_remove_child(const std::string& path);
     // ----- MESSAGE HANDLING -----
-    void message_forward(Message& msg);
     void message_handle(Message& msg);
 
     // ----- CALLBACKS -----

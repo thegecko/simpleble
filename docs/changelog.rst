@@ -16,21 +16,23 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 **Added**
 
 - Introduced scaffolding for advanced low-level features.
+- Configuration option to select which BlueZ backend to use.
 - (Android) Added support to set and retrieve the JavaVM pointer.
 - (Linux) Added frozen BlueZ backend in preparation for upcoming changes.
-- Configuration option to select which BlueZ backend to use.
 
 **Changed**
 
 - (MacOS) Use a single Adapter object across all users of the CoreBluetooth backend.
 - (Android) Use a single Adapter object across all users of the Android backend.
+- (SimpleDBus) Messages are now directly forwarded to the appropriate proxy object, no more chaining required.
 
 **Fixed**
 
+- Improper handling of configuration settings when consuming SimpleBLE as a shared library.
 - (MacOS) Freeze when attempting a double disconnection.
 - (Android) Solved "local reference table overflow" error. *(Thanks Nicole S.!)*
 - (Android) Fixed unexpected initialization of SimpleJNI.
-- Improper handling of configuration settings when consuming SimpleBLE as a shared library.
+- (SimpleDBus) Fixed race condition when handling property updates of DBus objects.
 
 **Removed**
 
