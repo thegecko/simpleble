@@ -98,6 +98,17 @@ void Connection::remove_match(std::string rule) {
     }
 }
 
+void Connection::read_write() {
+    if (!_initialized) {
+        throw Exception::NotInitialized();
+    }
+
+    std::lock_guard<std::recursive_mutex> lock(_mutex);
+
+    // Non blocking read of the next available message
+    dbus_connection_read_write(_conn, 0);
+}
+
 void Connection::read_write_dispatch() {
     if (!_initialized) {
         throw Exception::NotInitialized();
@@ -110,6 +121,17 @@ void Connection::read_write_dispatch() {
 
     // Dispatch incoming messages
     while (dbus_connection_dispatch(_conn) == DBUS_DISPATCH_DATA_REMAINS) {}
+}
+
+Message Connection::pop_message() {
+    if (!_initialized) {
+        throw Exception::NotInitialized();
+    }
+
+    std::lock_guard<std::recursive_mutex> lock(_mutex);
+
+    DBusMessage* msg = dbus_connection_pop_message(_conn);
+    return Message::from_acquired(msg);
 }
 
 void Connection::send(Message& msg) {
