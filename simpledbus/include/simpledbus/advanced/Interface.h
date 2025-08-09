@@ -53,6 +53,7 @@ class Interface {
     std::string _bus_name;
     std::string _interface_name;
     std::shared_ptr<Connection> _conn;
+    std::weak_ptr<Proxy> _proxy;
 
     std::recursive_mutex _property_update_mutex;
     std::map<std::string, bool> _property_valid_map;
@@ -63,6 +64,8 @@ class Interface {
      * @note: When accessing this object, the _property_update_mutex must be locked.
      */
     std::map<std::string, Holder> _properties;
+
+    std::shared_ptr<Proxy> proxy() const;
 };
 
 }  // namespace SimpleDBus

@@ -1,4 +1,5 @@
 #include <simpledbus/interfaces/ObjectManager.h>
+#include <simpledbus/advanced/Proxy.h>
 
 using namespace SimpleDBus;
 
@@ -48,11 +49,10 @@ void ObjectManager::message_handle(Message& msg) {
         // TODO: Make a call directly to the proxy to do this?
 
     } else if (msg.is_method_call(_interface_name, "GetManagedObjects")) {
-        // TODO: Implement this.
-        // SimpleDBus::Holder result = _proxy->path_collect();
+        SimpleDBus::Holder result = proxy()->path_collect();
 
-        // SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
-        // reply.append_argument(result, "a{oa{sa{sv}}}");
-        // _conn->send(reply);
+        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        reply.append_argument(result, "a{oa{sa{sv}}}");
+        _conn->send(reply);
     }
 }

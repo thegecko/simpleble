@@ -5,7 +5,9 @@
 using namespace SimpleDBus;
 
 Interface::Interface(std::shared_ptr<Connection> conn, std::shared_ptr<Proxy> proxy, const std::string& interface_name)
-    : _conn(conn), _bus_name(proxy->bus_name()), _path(proxy->path()), _interface_name(interface_name), _loaded(true) {}
+    : _conn(conn), _proxy(proxy), _bus_name(proxy->bus_name()), _path(proxy->path()), _interface_name(interface_name), _loaded(true) {}
+
+std::shared_ptr<Proxy> Interface::proxy() const { return _proxy.lock(); }
 
 // ----- LIFE CYCLE -----
 

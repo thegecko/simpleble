@@ -26,6 +26,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Android) Use a single Adapter object across all users of the Android backend.
 - (SimpleDBus) Messages are now directly forwarded to the appropriate proxy object, no more chaining required.
 - (SimpleDBus) Require Proxy factory method to handle proxy creation and registration.
+- (SimpleDBus) Interface objects now store a weak reference to their proxy.
 
 **Fixed**
 
