@@ -107,7 +107,7 @@ jobs:
 
   build:
     runs-on: ubuntu-22.04
-    needs: [tests, examples]
+    needs: [examples]
     if: ${{ inputs.libraries != '[]' && inputs.libraries != '' }}
     strategy:
       fail-fast: false
