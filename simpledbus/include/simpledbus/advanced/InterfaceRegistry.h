@@ -13,9 +13,9 @@
 namespace SimpleDBus {
 
 class Interface;
+class Proxy;
 
-using CreatorFunction = std::shared_ptr<Interface> (*)(std::shared_ptr<Connection>, const std::string&,
-                                                       const std::string&, const Holder&);
+using CreatorFunction = std::shared_ptr<Interface> (*)(std::shared_ptr<Connection>, std::shared_ptr<Proxy>);
 
 class InterfaceRegistry {
   public:
@@ -25,22 +25,19 @@ class InterfaceRegistry {
     }
 
     template <typename T>
-    void registerClass(const std::string& key, CreatorFunction creator) {
+    void registerClass(const std::string& iface_name, CreatorFunction creator) {
         static_assert(std::is_base_of<Interface, T>::value, "T must inherit from Interface");
-        creators[key] = creator;
+        creators[iface_name] = creator;
     }
 
-    bool isRegistered(const std::string& key) const {
-        return creators.find(key) != creators.end();
-    }
+    bool isRegistered(const std::string& iface_name) const { return creators.find(iface_name) != creators.end(); }
 
     // NOTES; We need a method inside Interfaces that will automatically retrieve the Interface name for the class.
-    std::shared_ptr<Interface> create(const std::string& key, std::shared_ptr<Connection> conn,
-                                      const std::string& bus_name, const std::string& path,
-                                      const Holder& options) const {
-        auto it = creators.find(key);
+    std::shared_ptr<Interface> create(const std::string& iface_name, std::shared_ptr<Connection> conn,
+                                      std::shared_ptr<Proxy> proxy, const Holder& options) const {
+        auto it = creators.find(iface_name);
         if (it != creators.end()) {
-            auto iface = it->second(conn, bus_name, path, options);
+            auto iface = it->second(conn, proxy);
             iface->load(options);
             return iface;
         }
@@ -54,10 +51,10 @@ class InterfaceRegistry {
 
 template <typename T>
 struct AutoRegisterInterface {
-    AutoRegisterInterface(const std::string& key, CreatorFunction creator) {
+    AutoRegisterInterface(const std::string& iface_name, CreatorFunction creator) {
         static_assert(std::is_base_of<Interface, T>::value, "T must inherit from Interface");
-        InterfaceRegistry::getInstance().registerClass<T>(key, creator);
-        LOG_DEBUG("Registered class with key {}", key);
+        InterfaceRegistry::getInstance().registerClass<T>(iface_name, creator);
+        LOG_DEBUG("Registered class with iface_name {}", iface_name);
     }
 };
 

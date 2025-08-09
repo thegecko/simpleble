@@ -5,14 +5,14 @@ using namespace SimpleBluez;
 const SimpleDBus::AutoRegisterInterface<AgentManager1> AgentManager1::registry{
     "org.bluez.AgentManager1",
     // clang-format off
-    [](std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path, const SimpleDBus::Holder& options) -> std::shared_ptr<SimpleDBus::Interface> {
-        return std::static_pointer_cast<SimpleDBus::Interface>(std::make_shared<AgentManager1>(conn, path));
+    [](std::shared_ptr<SimpleDBus::Connection> conn, std::shared_ptr<SimpleDBus::Proxy> proxy) -> std::shared_ptr<SimpleDBus::Interface> {
+        return std::static_pointer_cast<SimpleDBus::Interface>(std::make_shared<AgentManager1>(conn, proxy));
     }
     // clang-format on
 };
 
-AgentManager1::AgentManager1(std::shared_ptr<SimpleDBus::Connection> conn, std::string path)
-    : SimpleDBus::Interface(conn, "org.bluez", path, "org.bluez.AgentManager1") {}
+AgentManager1::AgentManager1(std::shared_ptr<SimpleDBus::Connection> conn, std::shared_ptr<SimpleDBus::Proxy> proxy)
+    : SimpleDBus::Interface(conn, proxy, "org.bluez.AgentManager1") {}
 
 void AgentManager1::RegisterAgent(std::string agent, std::string capability) {
     auto msg = create_method_call("RegisterAgent");

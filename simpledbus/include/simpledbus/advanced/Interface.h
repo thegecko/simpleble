@@ -10,10 +10,11 @@
 
 namespace SimpleDBus {
 
+class Proxy;
+
 class Interface {
   public:
-    Interface(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path,
-              const std::string& interface_name);
+    Interface(std::shared_ptr<Connection> conn, std::shared_ptr<Proxy> proxy, const std::string& interface_name);
 
     virtual ~Interface() = default;
 

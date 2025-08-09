@@ -5,14 +5,14 @@ using namespace SimpleBluez;
 const SimpleDBus::AutoRegisterInterface<Agent1> Agent1::registry{
     "org.bluez.Agent1",
     // clang-format off
-    [](std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path, const SimpleDBus::Holder& options) -> std::shared_ptr<SimpleDBus::Interface> {
-        return std::static_pointer_cast<SimpleDBus::Interface>(std::make_shared<Agent1>(conn, path));
+    [](std::shared_ptr<SimpleDBus::Connection> conn, std::shared_ptr<SimpleDBus::Proxy> proxy) -> std::shared_ptr<SimpleDBus::Interface> {
+        return std::static_pointer_cast<SimpleDBus::Interface>(std::make_shared<Agent1>(conn, proxy));
     }
     // clang-format on
 };
 
-Agent1::Agent1(std::shared_ptr<SimpleDBus::Connection> conn, std::string path)
-    : SimpleDBus::Interface(conn, "org.bluez", path, "org.bluez.Agent1") {}
+Agent1::Agent1(std::shared_ptr<SimpleDBus::Connection> conn, std::shared_ptr<SimpleDBus::Proxy> proxy)
+    : SimpleDBus::Interface(conn, proxy, "org.bluez.Agent1") {}
 
 void Agent1::message_handle(SimpleDBus::Message& msg) {
     if (msg.get_type() == SimpleDBus::Message::Type::METHOD_CALL) {

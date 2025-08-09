@@ -14,6 +14,7 @@ using namespace SimpleDBus;
 Proxy::Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path)
     : _conn(conn), _bus_name(bus_name), _path(path), _valid(true), _registered(false) {
 
+    // TODO: We need a mechanism to register interfaces with the proxy during construction.
     // TODO: At some point in the future, proxy objects will own their own Properties interface.
     //_interfaces.emplace(std::make_pair("org.freedesktop.DBus.Properties", std::make_shared<Properties>(conn, bus_name, path)));
 }
@@ -101,7 +102,7 @@ void Proxy::interfaces_load(Holder managed_interfaces) {
         if (!interface_exists(iface_name)) {
             if (InterfaceRegistry::getInstance().isRegistered(iface_name)) {
                 _interfaces.emplace(std::make_pair(
-                    iface_name, InterfaceRegistry::getInstance().create(iface_name, _conn, _bus_name, _path, options)));
+                    iface_name, InterfaceRegistry::getInstance().create(iface_name, _conn, shared_from_this(), options)));
             } else {
                 LOG_WARN("Interface {} not registered within SimpleDBus", iface_name);
             }

@@ -3,9 +3,8 @@
 
 using namespace SimpleDBus;
 
-Interface::Interface(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path,
-                     const std::string& interface_name)
-    : _conn(conn), _bus_name(bus_name), _path(path), _interface_name(interface_name), _loaded(true) {}
+Interface::Interface(std::shared_ptr<Connection> conn, std::shared_ptr<Proxy> proxy, const std::string& interface_name)
+    : _conn(conn), _bus_name(proxy->bus_name()), _path(proxy->path()), _interface_name(interface_name), _loaded(true) {}
 
 // ----- LIFE CYCLE -----
 
