@@ -22,20 +22,27 @@ val nativeLibPath: String? by project // -PnativeLibPath=...
 val buildFromCMake: String? by project // -PbuildFromCMake (presence is what matters)
 
 // Build native libraries using CMake
-tasks.register<Exec>("buildNativeCMake") {
+tasks.register<Exec>("generateCMake") {
     val cmakePath = "../cpp" // Default CMake location
     val cmakeBuildPath = layout.buildDirectory.dir("build_cpp").get().asFile
     workingDir(cmakePath)
-    commandLine("cmake",
+    commandLine(
+        "cmake",
         "-B", cmakeBuildPath.absolutePath,
-        "-DCMAKE_BUILD_TYPE=Release")
+        "-DCMAKE_BUILD_TYPE=Release"
+    )
+}
 
-    doLast {
-        exec {
-            workingDir(cmakePath)
-            commandLine("cmake", "--build", cmakeBuildPath.absolutePath, "--config", "Release")
-        }
-    }
+tasks.register<Exec>("buildNativeCMake") {
+    dependsOn("generateCMake")
+    val cmakePath = "../cpp" // Default CMake location
+    val cmakeBuildPath = layout.buildDirectory.dir("build_cpp").get().asFile
+    workingDir(cmakePath)
+    commandLine(
+        "cmake",
+        "--build", cmakeBuildPath.absolutePath,
+        "--config", "Release"
+    )
 }
 
 // Add native libraries to jar based on the selected mode
