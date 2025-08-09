@@ -21,7 +21,7 @@ void Bluez::init() {
     _conn->init();
     _conn->add_match("type='signal',sender='org.bluez'");
 
-    _bluez_root = std::make_shared<BluezRoot>(_conn, "org.bluez", "/");
+    _bluez_root = SimpleDBus::Proxy::create<BluezRoot>(_conn, "org.bluez", "/");
     _bluez_root->load_managed_objects();
 }
 

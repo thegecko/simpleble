@@ -25,6 +25,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (MacOS) Use a single Adapter object across all users of the CoreBluetooth backend.
 - (Android) Use a single Adapter object across all users of the Android backend.
 - (SimpleDBus) Messages are now directly forwarded to the appropriate proxy object, no more chaining required.
+- (SimpleDBus) Require Proxy factory method to handle proxy creation and registration.
 
 **Fixed**
 
@@ -33,6 +34,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Android) Solved "local reference table overflow" error. *(Thanks Nicole S.!)*
 - (Android) Fixed unexpected initialization of SimpleJNI.
 - (SimpleDBus) Fixed race condition when handling property updates of DBus objects.
+- (Linux) Fixed potential race condition when handling disconnection events.
 
 **Removed**
 

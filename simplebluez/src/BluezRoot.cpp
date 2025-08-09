@@ -15,7 +15,7 @@ BluezRoot::BluezRoot(std::shared_ptr<SimpleDBus::Connection> conn, const std::st
     };
 
     // Create the agent that will handle pairing.
-    _agent = std::make_shared<Agent>(_conn, "org.bluez", "/agent");
+    _agent = Proxy::create<Agent>(_conn, "org.bluez", "/agent");
     path_append_child("/agent", std::static_pointer_cast<SimpleDBus::Proxy>(_agent));
 }
 

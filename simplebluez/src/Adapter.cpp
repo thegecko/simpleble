@@ -11,9 +11,9 @@ Adapter::Adapter(std::shared_ptr<SimpleDBus::Connection> conn, const std::string
 Adapter::~Adapter() {}
 
 std::shared_ptr<SimpleDBus::Proxy> Adapter::path_create(const std::string& path) {
-    auto child = std::make_shared<Device>(_conn, _bus_name, path);
+    auto child = Proxy::create<Device>(_conn, _bus_name, path);
     child->on_signal_received.load([this, child]() { _on_device_updated(child); });
-    return std::static_pointer_cast<SimpleDBus::Proxy>(child);
+    return child;
 }
 
 std::shared_ptr<Adapter1> Adapter::adapter1() {

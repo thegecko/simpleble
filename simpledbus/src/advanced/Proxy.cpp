@@ -13,7 +13,6 @@ using namespace SimpleDBus;
 
 Proxy::Proxy(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path)
     : _conn(conn), _bus_name(bus_name), _path(path), _valid(true), _registered(false) {
-    register_object_path();
 
     // TODO: At some point in the future, proxy objects will own their own Properties interface.
     //_interfaces.emplace(std::make_pair("org.freedesktop.DBus.Properties", std::make_shared<Properties>(conn, bus_name, path)));

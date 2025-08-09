@@ -11,8 +11,7 @@ Characteristic::Characteristic(std::shared_ptr<SimpleDBus::Connection> conn, con
 Characteristic::~Characteristic() {}
 
 std::shared_ptr<SimpleDBus::Proxy> Characteristic::path_create(const std::string& path) {
-    auto child = std::make_shared<Descriptor>(_conn, _bus_name, path);
-    return std::static_pointer_cast<SimpleDBus::Proxy>(child);
+    return Proxy::create<Descriptor>(_conn, _bus_name, path);
 }
 
 std::vector<std::shared_ptr<Descriptor>> Characteristic::descriptors() { return children_casted<Descriptor>(); }

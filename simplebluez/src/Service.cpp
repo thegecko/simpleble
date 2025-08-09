@@ -8,8 +8,7 @@ Service::Service(std::shared_ptr<SimpleDBus::Connection> conn, const std::string
     : Proxy(conn, bus_name, path) {}
 
 std::shared_ptr<SimpleDBus::Proxy> Service::path_create(const std::string& path) {
-    auto child = std::make_shared<Characteristic>(_conn, _bus_name, path);
-    return std::static_pointer_cast<SimpleDBus::Proxy>(child);
+    return Proxy::create<Characteristic>(_conn, _bus_name, path);
 }
 
 std::shared_ptr<GattService1> Service::gattservice1() {

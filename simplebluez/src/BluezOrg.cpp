@@ -15,6 +15,5 @@ void BluezOrg::register_agent(std::shared_ptr<Agent> agent) {
 }
 
 std::shared_ptr<SimpleDBus::Proxy> BluezOrg::path_create(const std::string& path) {
-    auto child = std::make_shared<BluezOrgBluez>(_conn, _bus_name, path);
-    return std::static_pointer_cast<SimpleDBus::Proxy>(child);
+    return Proxy::create<BluezOrgBluez>(_conn, _bus_name, path);
 }

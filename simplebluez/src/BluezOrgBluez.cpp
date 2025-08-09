@@ -8,8 +8,7 @@ BluezOrgBluez::BluezOrgBluez(std::shared_ptr<SimpleDBus::Connection> conn, const
     : Proxy(conn, bus_name, path) {}
 
 std::shared_ptr<SimpleDBus::Proxy> BluezOrgBluez::path_create(const std::string& path) {
-    auto child = std::make_shared<Adapter>(_conn, _bus_name, path);
-    return std::static_pointer_cast<SimpleDBus::Proxy>(child);
+    return Proxy::create<Adapter>(_conn, _bus_name, path);
 }
 
 std::shared_ptr<AgentManager1> BluezOrgBluez::agentmanager1() {

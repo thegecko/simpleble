@@ -73,6 +73,10 @@ uint16_t PeripheralLinux::mtu() {
 }
 
 void PeripheralLinux::connect() {
+    if (is_connected()) {
+        return;
+    }
+
     device_->clear_on_disconnected();
     device_->set_on_services_resolved([this]() { this->connection_cv_.notify_all(); });
 
@@ -100,6 +104,20 @@ void PeripheralLinux::connect() {
 }
 
 void PeripheralLinux::disconnect() {
+    if (!is_connected()) {
+        return;
+    }
+
+    // Clear the disconnection callback, as most cleanup will be handled manually.
+    device_->clear_on_disconnected();
+
+    // Ensure that all characteristics are stopped and cleaned up.
+    _cleanup_characteristics();
+
+    device_->set_on_disconnected([this]() {
+        this->disconnection_cv_.notify_all();
+    });
+
     // Attempt to connect to the device.
     for (size_t i = 0; i < 5; i++) {
         if (_attempt_disconnect()) {
@@ -110,6 +128,8 @@ void PeripheralLinux::disconnect() {
     if (is_connected()) {
         throw Exception::OperationFailed();
     }
+
+    SAFE_CALLBACK_CALL(this->callback_on_disconnected_);
 }
 
 bool PeripheralLinux::is_connected() {
@@ -344,8 +364,6 @@ bool PeripheralLinux::_attempt_connect() {
 }
 
 bool PeripheralLinux::_attempt_disconnect() {
-    _cleanup_characteristics();
-
     device_->disconnect();
 
     // Wait for the disconnection to be confirmed.
