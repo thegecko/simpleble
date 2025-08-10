@@ -12,7 +12,6 @@ namespace SimpleBluez {
 
 class BluezRoot : public SimpleDBus::Proxy {
   public:
-
     BluezRoot(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path);
     virtual ~BluezRoot() = default;
 
@@ -22,11 +21,14 @@ class BluezRoot : public SimpleDBus::Proxy {
     std::shared_ptr<Agent> get_agent();
     void register_agent();
 
+    // ----- INTERNAL CALLBACKS -----
+    void on_registration() override;
+
   private:
+    std::shared_ptr<Agent> _agent;
+
     std::shared_ptr<SimpleDBus::Proxy> path_create(const std::string& path) override;
     std::shared_ptr<SimpleDBus::ObjectManager> object_manager();
-
-    std::shared_ptr<Agent> _agent;
 };
 
 }  // namespace SimpleBluez

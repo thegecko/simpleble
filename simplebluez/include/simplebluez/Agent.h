@@ -44,6 +44,9 @@ class Agent : public SimpleDBus::Proxy {
     void set_on_authorize_service(std::function<bool(const std::string&)> callback);
     void clear_on_authorize_service();
 
+    // ----- INTERNAL CALLBACKS -----
+    void on_registration() override;
+
   private:
     std::shared_ptr<Agent1> agent1();
     Capabilities _capabilities;

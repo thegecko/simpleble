@@ -1,7 +1,6 @@
 #pragma once
 
 #include <simpledbus/advanced/Proxy.h>
-#include <simpledbus/interfaces/ObjectManager.h>
 
 #include <simplebluez/BluezRoot.h>
 #include <simplebluez/Adapter.h>

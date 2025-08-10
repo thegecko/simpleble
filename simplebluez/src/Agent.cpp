@@ -5,9 +5,9 @@
 using namespace SimpleBluez;
 
 Agent::Agent(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path)
-    : Proxy(conn, bus_name, path) {
+    : Proxy(conn, bus_name, path) {}
 
-    // TODO: We need a mechanism to register interfaces with the proxy during construction.
+void Agent::on_registration() {
     _interfaces.emplace(std::make_pair(
         "org.bluez.Agent1", std::static_pointer_cast<SimpleDBus::Interface>(std::make_shared<Agent1>(_conn, shared_from_this()))));
 }

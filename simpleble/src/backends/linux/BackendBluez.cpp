@@ -9,6 +9,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <fmt/core.h>
 
 namespace SimpleBLE {
 
@@ -38,6 +39,8 @@ BackendBluez::BackendBluez(buildToken) {
     bluez.init();
     async_thread_active = true;
     async_thread = new std::thread(&BackendBluez::async_thread_function, this);
+
+    fmt::print("WARNING: This is an experimental version of the new Bluez backend. Please report any issues to the SimpleBLE developers.\n");
 }
 
 BackendBluez::~BackendBluez() {

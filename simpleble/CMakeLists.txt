@@ -209,6 +209,7 @@ elseif(SIMPLEBLE_BACKEND_LINUX)
         ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/base/Message.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/base/Path.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/interfaces/ObjectManager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/interfaces/Properties.cpp
 
         # Legacy BlueZ backend
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/linux_legacy/BackendBluezLegacy.cpp

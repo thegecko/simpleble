@@ -97,9 +97,13 @@ class Proxy : public std::enable_shared_from_this<Proxy> {
     template <typename T>
     static std::shared_ptr<T> create(std::shared_ptr<Connection> conn, const std::string& bus_name, const std::string& path) {
         auto child = std::make_shared<T>(conn, bus_name, path);
+        child->on_registration();
         child->register_object_path();
         return std::dynamic_pointer_cast<T>(child);
     }
+
+    // ----- INTERNAL CALLBACKS -----
+    virtual void on_registration();
 
   protected:
     bool _valid;
