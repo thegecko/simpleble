@@ -34,10 +34,8 @@ class Interface {
     Holder property_collect_single(const std::string& property_name);
     void property_modify(const std::string& property_name, const Holder& value);
 
-    // ! TODO: We need to figure out a good architecture to let any generic interface access the Properties object of its Proxy.
-    Holder property_get_all();
-    Holder property_get(const std::string& property_name);
-    void property_set(const std::string& property_name, const Holder& value);
+    // ! TODO: We need to figure out a good architecture to let any generic interface access the Properties object of
+    // its Proxy.
     void property_refresh(const std::string& property_name);
 
     // ----- SIGNALS -----

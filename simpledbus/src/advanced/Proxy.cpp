@@ -262,6 +262,7 @@ bool Proxy::path_prune() {
 }
 
 Holder Proxy::path_collect() {
+    // TODO: This function logic should be moved to the ObjectManager interface.
     SimpleDBus::Holder result = SimpleDBus::Holder::create_dict();
     SimpleDBus::Holder interfaces = SimpleDBus::Holder::create_dict();
 
