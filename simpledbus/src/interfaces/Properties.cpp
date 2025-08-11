@@ -95,10 +95,16 @@ void Properties::message_handle(Message& msg) {
         std::string iface_name = interface_h.get_string();
 
         std::shared_ptr<Interface> interface = proxy()->interface_get(iface_name);
-        Holder result = interface->property_collect();
+        SimpleDBus::Holder properties = SimpleDBus::Holder::create_dict();
+        {
+            std::scoped_lock lock(interface->_property_update_mutex);
+            for (const auto& [key, value] : interface->_properties) {
+                properties.dict_append(SimpleDBus::Holder::Type::STRING, key, value);
+            }
+        }
 
         SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
-        reply.append_argument(result, "a{sv}");
+        reply.append_argument(properties, "a{sv}");
         _conn->send(reply);
 
     } else if (msg.is_method_call(_interface_name, "Get")) {
@@ -111,10 +117,24 @@ void Properties::message_handle(Message& msg) {
 
         std::shared_ptr<Interface> interface = proxy()->interface_get(iface_name);
 
-        Holder result = interface->property_collect_single(property_name);
+        bool property_exists = false;
+        Holder property_value;
+        {
+            std::scoped_lock lock(interface->_property_update_mutex);
+            property_exists = interface->_properties.find(property_name) != interface->_properties.end();
+            if (property_exists) {
+                property_value = interface->_properties[property_name];
+            }
+        }
+
+        if (!property_exists) {
+            SimpleDBus::Message reply = SimpleDBus::Message::create_error(msg, "org.freedesktop.DBus.Error.InvalidArgs", "Property not found");
+            _conn->send(reply);
+            return;
+        }
 
         SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
-        reply.append_argument(result, "v");
+        reply.append_argument(property_value, "v");
         _conn->send(reply);
 
     } else if (msg.is_method_call(_interface_name, "Set")) {
@@ -129,7 +149,14 @@ void Properties::message_handle(Message& msg) {
         Holder value_h = msg.extract();
 
         std::shared_ptr<Interface> interface = proxy()->interface_get(iface_name);
-        interface->property_modify(property_name, value_h);
+        {
+            std::scoped_lock lock(interface->_property_update_mutex);
+            // Only update the property if it exists.
+            // TODO: Should we send an error message if the property doesn't exist?
+            if (interface->_properties.find(property_name) != interface->_properties.end()) {
+                interface->_properties[property_name] = value_h;
+            }
+        }
 
         SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
         _conn->send(reply);

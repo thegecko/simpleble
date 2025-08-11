@@ -1,6 +1,7 @@
 #include <simpledbus/advanced/Interface.h>
 #include <simpledbus/advanced/Proxy.h>
 #include <simpledbus/base/Exceptions.h>
+#include <simpledbus/interfaces/Properties.h>
 
 using namespace SimpleDBus;
 
@@ -45,30 +46,6 @@ Message Interface::create_method_call(const std::string& method_name) {
 
 // ----- PROPERTIES -----
 
-Holder Interface::property_collect() {
-    // TODO: This function logic should be moved to the ObjectManager interface.
-    std::scoped_lock lock(_property_update_mutex);
-    SimpleDBus::Holder properties = SimpleDBus::Holder::create_dict();
-    for (const auto& [key, value] : _properties) {
-        properties.dict_append(SimpleDBus::Holder::Type::STRING, key, value);
-    }
-    return properties;
-}
-
-Holder Interface::property_collect_single(const std::string& property_name) {
-    // TODO: This function logic should be moved to the Properties interface.
-    std::scoped_lock lock(_property_update_mutex);
-    // TODO: Check if property exists
-    return _properties[property_name];
-}
-
-void Interface::property_modify(const std::string& property_name, const Holder& value) {
-    // TODO: This function logic should be moved to the Properties interface.
-    std::scoped_lock lock(_property_update_mutex);
-    _properties[property_name] = value;
-    property_changed(property_name);
-}
-
 void Interface::property_refresh(const std::string& property_name) {
     if (!_loaded || !_property_valid_map[property_name]) {
         return;
@@ -81,7 +58,9 @@ void Interface::property_refresh(const std::string& property_name) {
         //       they can be removed before the callback reaches back (race condition),
         //       `property_get` can sometimes fail. Because of this, the update
         //       statement is surrounded by a try-catch statement.
-        Holder property_latest = property_get(property_name);
+        auto properties_interface = std::dynamic_pointer_cast<SimpleDBus::Interfaces::Properties>(proxy()->interface_get("org.freedesktop.DBus.Properties"));
+        Holder property_latest = properties_interface->Get(_interface_name, property_name);
+
         _property_update_mutex.lock();
         _property_valid_map[property_name] = true;
         if (_properties[property_name] != property_latest) {

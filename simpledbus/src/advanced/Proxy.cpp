@@ -267,7 +267,13 @@ Holder Proxy::path_collect() {
     SimpleDBus::Holder interfaces = SimpleDBus::Holder::create_dict();
 
     for (const auto& [interface_name, interface_ptr] : _interfaces) {
-        SimpleDBus::Holder properties = interface_ptr->property_collect();
+        SimpleDBus::Holder properties = SimpleDBus::Holder::create_dict();
+        {
+            std::scoped_lock lock(interface_ptr->_property_update_mutex);
+            for (const auto& [key, value] : interface_ptr->_properties) {
+                properties.dict_append(SimpleDBus::Holder::Type::STRING, key, value);
+            }
+        }
         interfaces.dict_append(SimpleDBus::Holder::Type::STRING, interface_name, std::move(properties));
     }
 
