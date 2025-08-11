@@ -8,7 +8,7 @@ BluezRoot::BluezRoot(std::shared_ptr<SimpleDBus::Connection> conn, const std::st
     : Proxy(conn, bus_name, path) {}
 
 void BluezRoot::on_registration() {
-    _interfaces.emplace(std::make_pair("org.freedesktop.DBus.ObjectManager", std::make_shared<SimpleDBus::ObjectManager>(_conn, shared_from_this())));
+    _interfaces.emplace(std::make_pair("org.freedesktop.DBus.ObjectManager", std::make_shared<SimpleDBus::Interfaces::ObjectManager>(_conn, shared_from_this())));
 
     object_manager()->InterfacesAdded = [&](std::string path, SimpleDBus::Holder options) { path_add(path, options); };
     object_manager()->InterfacesRemoved = [&](std::string path, SimpleDBus::Holder options) {
@@ -40,6 +40,6 @@ std::shared_ptr<SimpleDBus::Proxy> BluezRoot::path_create(const std::string& pat
     return std::static_pointer_cast<SimpleDBus::Proxy>(child);
 }
 
-std::shared_ptr<SimpleDBus::ObjectManager> BluezRoot::object_manager() {
-    return std::dynamic_pointer_cast<SimpleDBus::ObjectManager>(interface_get("org.freedesktop.DBus.ObjectManager"));
+std::shared_ptr<SimpleDBus::Interfaces::ObjectManager> BluezRoot::object_manager() {
+    return std::dynamic_pointer_cast<SimpleDBus::Interfaces::ObjectManager>(interface_get("org.freedesktop.DBus.ObjectManager"));
 }

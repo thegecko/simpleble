@@ -2,6 +2,7 @@
 #include <simpledbus/interfaces/Properties.h>
 
 using namespace SimpleDBus;
+using namespace SimpleDBus::Interfaces;
 
 const AutoRegisterInterface<Properties> Properties::registry {
     "org.freedesktop.DBus.Properties",

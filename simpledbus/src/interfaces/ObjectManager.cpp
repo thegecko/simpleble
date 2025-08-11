@@ -2,6 +2,7 @@
 #include <simpledbus/advanced/Proxy.h>
 
 using namespace SimpleDBus;
+using namespace SimpleDBus::Interfaces;
 
 const AutoRegisterInterface<ObjectManager> ObjectManager::registry{
     "org.freedesktop.DBus.ObjectManager",

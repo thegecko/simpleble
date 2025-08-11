@@ -3,7 +3,7 @@
 #include <simpledbus/advanced/Interface.h>
 #include <simpledbus/advanced/InterfaceRegistry.h>
 
-namespace SimpleDBus {
+namespace SimpleDBus::Interfaces {
 
 class Properties : public Interface {
   public:
@@ -27,4 +27,4 @@ class Properties : public Interface {
     static const SimpleDBus::AutoRegisterInterface<Properties> registry;
 };
 
-}  // namespace SimpleDBus
+}  // namespace SimpleDBus::Interfaces

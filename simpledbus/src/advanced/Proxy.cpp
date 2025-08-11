@@ -25,7 +25,7 @@ void Proxy::on_registration() {
     // TODO: This is a hack to make sure the Properties interface is always available and
     // not removed by the linker. We'll remove this once the Properties interface is used
     // a lot more.
-    auto prop = std::make_shared<Properties>(_conn, shared_from_this());
+    auto prop = std::make_shared<Interfaces::Properties>(_conn, shared_from_this());
 }
 
 std::shared_ptr<Proxy> Proxy::path_create(const std::string& path) {

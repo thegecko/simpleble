@@ -5,7 +5,7 @@
 
 #include <functional>
 
-namespace SimpleDBus {
+namespace SimpleDBus::Interfaces {
 
 class ObjectManager : public Interface {
   public:
@@ -23,4 +23,4 @@ class ObjectManager : public Interface {
     static const SimpleDBus::AutoRegisterInterface<ObjectManager> registry;
 };
 
-}  // namespace SimpleDBus
+}  // namespace SimpleDBus::Interfaces
