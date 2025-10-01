@@ -7,7 +7,7 @@ More information will be made available here soon.
 
 **What platforms are supported by SimpleBLE?**
 SimpleBLE supports Windows 10+, Linux (Ubuntu 20.04+ and other distros using Bluez),
-MacOS 10.15+ (Catalina and newer), iOS 15.0+, and Android API 31+.
+MacOS 13.0+ (Ventura and newer), iOS 15.0+, and Android API 31+.
 
 Please check the overview page on more information about platform-specific limitations.
 

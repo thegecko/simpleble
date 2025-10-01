@@ -79,7 +79,7 @@ MacOS
 
 **Supported Versions**
 
-- macOS 10.15 (Catalina) and newer
+- macOS 13.0 (Ventura) and newer
 
 **Dependencies**
 

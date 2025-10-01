@@ -38,10 +38,11 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Android) Fixed unexpected initialization of SimpleJNI.
 - (SimpleDBus) Fixed race condition when handling property updates of DBus objects.
 - (Linux) Fixed potential race condition when handling disconnection events.
+- (Python) Fixed missing files in source distribution.
 
 **Removed**
 
--
+- (MacOS) Removed support for MacOS Catalina, Big Sur and Monterey.
 
 
 [0.10.3] - 2025-06-24
