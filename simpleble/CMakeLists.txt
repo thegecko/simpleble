@@ -312,14 +312,20 @@ elseif(SIMPLEBLE_BACKEND_MACOS OR SIMPLEBLE_BACKEND_IOS)
     endif()
 
     target_sources(simpleble PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperApple.cpp
-
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/macos/Utils.mm
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/macos/AdapterMac.mm
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/macos/AdapterBaseMacOS.mm
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/macos/PeripheralMac.mm
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/macos/PeripheralBaseMacOS.mm
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/macos/BackendCoreBluetooth.mm)
+
+    if(SIMPLEBLE_BACKEND_MACOS)
+        target_sources(simpleble PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperApple.cpp)
+    elseif(SIMPLEBLE_BACKEND_IOS)
+        target_sources(simpleble PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperNull.cpp)
+    endif()
 
     set_property(TARGET simpleble PROPERTY INSTALL_RPATH @loader_path)
 
