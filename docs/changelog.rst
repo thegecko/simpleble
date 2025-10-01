@@ -20,6 +20,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Android) Added support to set and retrieve the JavaVM pointer.
 - (Linux) Added frozen BlueZ backend in preparation for upcoming changes.
 - (SimpleDBus) Added dedicated Properties interface.
+- (Dongl) Added scaffolding for Dongl backend.
 
 **Changed**
 

@@ -17,6 +17,11 @@ namespace SimpleBLE {
 static std::shared_ptr<BackendBase> _get_enabled_backend() {
     using BackendPtr = std::shared_ptr<BackendBase>(void);
 
+    if (Config::Dongl::use_dongl_backend) {
+        extern BackendPtr BACKEND_DONGL;
+        return BACKEND_DONGL();
+    }
+
     if constexpr (SIMPLEBLE_BACKEND_LINUX) {
         extern BackendPtr BACKEND_LINUX;
         extern BackendPtr BACKEND_LINUX_LEGACY;

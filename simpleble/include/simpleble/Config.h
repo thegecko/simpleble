@@ -45,6 +45,13 @@ namespace Config {
         }
     }
 
+    namespace Dongl {
+        extern bool use_dongl_backend;
+        static void reset() {
+            use_dongl_backend = false;
+        }
+    }
+
     namespace Base {
         static void reset_all() {
             SimpleBluez::reset();

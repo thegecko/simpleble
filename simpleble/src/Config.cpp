@@ -17,5 +17,9 @@ namespace Config {
         ConnectionPriorityRequest connection_priority_request = ConnectionPriorityRequest::DISABLED;
     }  // namespace Android
 
+    namespace Dongl {
+        bool use_dongl_backend = false;
+    }  // namespace Dongl
+
 }  // namespace Config
 }  // namespace SimpleBLE
