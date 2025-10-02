@@ -77,7 +77,7 @@ jobs:
           CIBW_ARCHS: ${{ matrix.config.arch }}
           CIBW_SKIP: "*musllinux_* pp* cp36-* cp37-*"
           CIBW_TEST_SKIP: "*"
-          MACOSX_DEPLOYMENT_TARGET: "11.0"
+          MACOSX_DEPLOYMENT_TARGET: "13.0"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
