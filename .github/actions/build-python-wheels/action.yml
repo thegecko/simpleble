@@ -24,7 +24,7 @@ inputs:
   macosx-deployment-target:
     description: 'Minimum macOS version to target'
     required: false
-    default: '11.0'
+    default: '13.0'
   cibw-skip:
     description: 'Patterns for skipping certain builds'
     required: false
