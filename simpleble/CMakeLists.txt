@@ -308,7 +308,7 @@ elseif(SIMPLEBLE_BACKEND_MACOS OR SIMPLEBLE_BACKEND_IOS)
     target_link_libraries(simpleble PUBLIC "-framework Foundation" "-framework CoreBluetooth" ObjC)
 
     if(SIMPLEBLE_BACKEND_MACOS)
-        target_link_libraries(simpleble PUBLIC "-framework IOBluetooth")
+        target_link_libraries(simpleble PUBLIC "-framework IOBluetooth" "-framework IOKit")
     endif()
 
     target_sources(simpleble PRIVATE
