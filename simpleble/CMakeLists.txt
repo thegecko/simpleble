@@ -156,6 +156,7 @@ if(SIMPLEBLE_PLAIN)
     message(STATUS "Plain Flavor Requested")
 
     target_sources(simpleble PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperNull.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/plain/AdapterPlain.cpp
@@ -182,6 +183,7 @@ elseif(SIMPLEBLE_BACKEND_LINUX)
     endif()
 
     target_sources(simpleble PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperLinux.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/linux/AdapterLinux.cpp
@@ -292,6 +294,7 @@ elseif(SIMPLEBLE_BACKEND_WINDOWS)
     endif()
 
     target_sources(simpleble PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperWindows.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/windows/AdapterWindows.cpp
@@ -321,9 +324,11 @@ elseif(SIMPLEBLE_BACKEND_MACOS OR SIMPLEBLE_BACKEND_IOS)
 
     if(SIMPLEBLE_BACKEND_MACOS)
         target_sources(simpleble PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperApple.cpp)
     elseif(SIMPLEBLE_BACKEND_IOS)
         target_sources(simpleble PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperNull.cpp)
     endif()
 
@@ -339,6 +344,7 @@ elseif(SIMPLEBLE_BACKEND_ANDROID)
 
     target_sources(simpleble PRIVATE
         ${SIMPLEJNI_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperNull.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/AdapterAndroid.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/PeripheralAndroid.cpp

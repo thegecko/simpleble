@@ -1,4 +1,4 @@
-#include "UsbHelper.h"
+#include "UsbHelperApple.h"
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <IOKit/IOKitLib.h>
@@ -39,7 +39,20 @@ struct IOReleaser {
 using ScopedCFRef = ScopedResource<CFTypeRef, CFReleaser>;
 using ScopedIOObject = ScopedResource<io_object_t, IOReleaser>;
 
-std::vector<std::string> UsbHelper::get_dongl_devices() {
+// Apple-specific implementation of Impl methods
+UsbHelperApple::UsbHelperApple(const std::string& device_path) : UsbHelperImpl(device_path) {}
+
+UsbHelperApple::~UsbHelperApple() = default;
+
+void UsbHelperApple::tx(const kvn::bytearray& data) {
+    // Apple-specific implementation
+}
+
+void UsbHelperApple::set_rx_callback(std::function<void(const kvn::bytearray&)> callback) {
+    _rx_callback.load(callback);
+}
+
+std::vector<std::string> UsbHelperApple::get_dongl_devices() {
     std::vector<std::string> dongle_devices;
 
     // Create iterator with automatic cleanup
@@ -55,17 +68,16 @@ std::vector<std::string> UsbHelper::get_dongl_devices() {
         ScopedIOObject service_guard(service);
 
         // Get the callout device path (/dev/cu.*) with automatic cleanup
-        ScopedCFRef pathCF((CFStringRef)IORegistryEntryCreateCFProperty(service, CFSTR(kIOCalloutDeviceKey),
-                                                                       kCFAllocatorDefault, 0));
+        ScopedCFRef pathCF(
+            (CFStringRef)IORegistryEntryCreateCFProperty(service, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, 0));
         if (!pathCF) {
             continue;  // service_guard will automatically release service
         }
 
         // Check if this serial port matches the vendor/product by walking up the parent chain
         io_iterator_t raw_parent_iterator = 0;
-        kr = IORegistryEntryCreateIterator(service, kIOServicePlane,
-                                           kIORegistryIterateRecursively | kIORegistryIterateParents,
-                                           &raw_parent_iterator);
+        kr = IORegistryEntryCreateIterator(
+            service, kIOServicePlane, kIORegistryIterateRecursively | kIORegistryIterateParents, &raw_parent_iterator);
         if (kr == kIOReturnSuccess) {
             ScopedIOObject parent_iterator(raw_parent_iterator);
 
@@ -74,16 +86,16 @@ std::vector<std::string> UsbHelper::get_dongl_devices() {
                 ScopedIOObject parent_guard(parent);
 
                 // Create CFNumber objects with automatic cleanup
-                ScopedCFRef vidCF((CFNumberRef)IORegistryEntryCreateCFProperty(parent, CFSTR(kUSBVendorID),
-                                                                              kCFAllocatorDefault, 0));
-                ScopedCFRef pidCF((CFNumberRef)IORegistryEntryCreateCFProperty(parent, CFSTR(kUSBProductID),
-                                                                              kCFAllocatorDefault, 0));
+                ScopedCFRef vidCF(
+                    (CFNumberRef)IORegistryEntryCreateCFProperty(parent, CFSTR(kUSBVendorID), kCFAllocatorDefault, 0));
+                ScopedCFRef pidCF(
+                    (CFNumberRef)IORegistryEntryCreateCFProperty(parent, CFSTR(kUSBProductID), kCFAllocatorDefault, 0));
 
                 if (vidCF && pidCF) {
                     uint16_t vid, pid;
                     CFNumberGetValue((CFNumberRef)vidCF.get(), kCFNumberSInt16Type, &vid);
                     CFNumberGetValue((CFNumberRef)pidCF.get(), kCFNumberSInt16Type, &pid);
-                    if (vid == DONGL_VENDOR_ID && pid == DONGL_PRODUCT_ID) {
+                    if (vid == UsbHelperImpl::DONGL_VENDOR_ID && pid == UsbHelperImpl::DONGL_PRODUCT_ID) {
                         char path[PATH_MAX];
                         if (CFStringGetCString((CFStringRef)pathCF.get(), path, sizeof(path), kCFStringEncodingUTF8)) {
                             dongle_devices.push_back(std::string(path));
