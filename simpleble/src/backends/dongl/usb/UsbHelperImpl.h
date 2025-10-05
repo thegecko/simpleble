@@ -16,8 +16,8 @@ class UsbHelperImpl {
     virtual void tx(const kvn::bytearray& data) = 0;
     virtual void set_rx_callback(std::function<void(const kvn::bytearray&)> callback) = 0;
 
-    static const uint16_t DONGL_VENDOR_ID = 0x0403;
-    static const uint16_t DONGL_PRODUCT_ID = 0x6001;
+    static const uint16_t DONGL_VENDOR_ID = 0xDEDE; // 0x0403 for legacy dongles
+    static const uint16_t DONGL_PRODUCT_ID = 0x1234; // 0x6001 for legacy dongles
 
   protected:
     std::string _device_path;

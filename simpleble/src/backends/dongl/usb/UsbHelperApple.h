@@ -1,6 +1,8 @@
 #pragma once
 
 #include "UsbHelperImpl.h"
+#include <thread>
+#include <atomic>
 
 namespace SimpleBLE {
 namespace Dongl {
@@ -15,6 +17,16 @@ class UsbHelperApple : public UsbHelperImpl {
     void set_rx_callback(std::function<void(const kvn::bytearray&)> callback);
 
     static std::vector<std::string> get_dongl_devices();
+
+  private:
+    void _run();
+    std::atomic_bool _running;
+    std::thread _thread;
+
+    int _serial_fd;
+    bool _open_serial_port();
+    void _close_serial_port();
+    void _configure_serial_port();
 };
 
 }  // namespace USB

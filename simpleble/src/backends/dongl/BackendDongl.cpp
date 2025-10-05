@@ -25,14 +25,10 @@ std::string BackendDongl::name() const noexcept { return "Dongl"; }
 bool BackendDongl::bluetooth_enabled() { return true; }
 
 SharedPtrVector<AdapterBase> BackendDongl::get_adapters() {
-
-    for (const auto& device_path : Dongl::USB::UsbHelper::get_dongl_devices()) {
-        fmt::print("Dongl device path: {}\n", device_path);
-    }
-
-
     SharedPtrVector<AdapterBase> adapters;
-    adapters.push_back(std::make_shared<AdapterDongl>());
+    for (const auto& device_path : Dongl::USB::UsbHelper::get_dongl_devices()) {
+        adapters.push_back(std::make_shared<AdapterDongl>(device_path));
+    }
     return adapters;
 }
 

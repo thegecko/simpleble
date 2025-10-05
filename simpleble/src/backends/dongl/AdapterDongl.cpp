@@ -13,7 +13,19 @@ using namespace SimpleBLE;
 
 bool AdapterDongl::bluetooth_enabled() { return true; }
 
-AdapterDongl::AdapterDongl() {}
+AdapterDongl::AdapterDongl(const std::string& device_path) : _usb_helper(std::make_unique<Dongl::USB::UsbHelper>(device_path)) {
+    fmt::print("Dongl adapter created with device path: {}\n", device_path);
+
+    _usb_helper->set_rx_callback([this](const kvn::bytearray& data) {
+        fmt::print("Received data: {}\n", data.toHex(true));
+    });
+
+
+    const std::vector<uint8_t> readVersionCommand = {0x05, 0x01, 0x00, 0x00, 0x51, 0x28};
+    _usb_helper->tx(readVersionCommand);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+}
 
 AdapterDongl::~AdapterDongl() {}
 
