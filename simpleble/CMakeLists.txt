@@ -151,14 +151,37 @@ target_compile_definitions(simpleble PRIVATE
                         SIMPLEBLE_BACKEND_IOS=$<BOOL:${SIMPLEBLE_BACKEND_IOS}>
                         SIMPLEBLE_BACKEND_ANDROID=$<BOOL:${SIMPLEBLE_BACKEND_ANDROID}>)
 
+# Dongl Source File Selection
+set(SIMPLEBLE_DONGL_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/cmd/Commands.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/cmd/Utils.cpp)
+
+if(SIMPLEBLE_PLAIN)
+    list(APPEND SIMPLEBLE_DONGL_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperNull.cpp)
+elseif(SIMPLEBLE_BACKEND_LINUX)
+    list(APPEND SIMPLEBLE_DONGL_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperLinux.cpp)
+elseif(SIMPLEBLE_BACKEND_WINDOWS)
+    list(APPEND SIMPLEBLE_DONGL_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperWindows.cpp)
+elseif(SIMPLEBLE_BACKEND_MACOS)
+    list(APPEND SIMPLEBLE_DONGL_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperApple.cpp)
+elseif(SIMPLEBLE_BACKEND_IOS)
+    list(APPEND SIMPLEBLE_DONGL_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperNull.cpp)
+elseif(SIMPLEBLE_BACKEND_ANDROID)
+    list(APPEND SIMPLEBLE_DONGL_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperNull.cpp)
+endif()
+
 # Detect the operating system and load the necessary dependencies
 if(SIMPLEBLE_PLAIN)
     message(STATUS "Plain Flavor Requested")
 
     target_sources(simpleble PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperNull.cpp
-
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/plain/AdapterPlain.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/plain/PeripheralPlain.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/plain/BackendPlain.cpp)
@@ -183,9 +206,6 @@ elseif(SIMPLEBLE_BACKEND_LINUX)
     endif()
 
     target_sources(simpleble PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperLinux.cpp
-
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/linux/AdapterLinux.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/linux/PeripheralLinux.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/linux/BackendBluez.cpp
@@ -294,9 +314,6 @@ elseif(SIMPLEBLE_BACKEND_WINDOWS)
     endif()
 
     target_sources(simpleble PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperWindows.cpp
-
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/windows/AdapterWindows.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/windows/PeripheralWindows.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/windows/BackendWinRT.cpp
@@ -322,16 +339,6 @@ elseif(SIMPLEBLE_BACKEND_MACOS OR SIMPLEBLE_BACKEND_IOS)
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/macos/PeripheralBaseMacOS.mm
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/macos/BackendCoreBluetooth.mm)
 
-    if(SIMPLEBLE_BACKEND_MACOS)
-        target_sources(simpleble PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperApple.cpp)
-    elseif(SIMPLEBLE_BACKEND_IOS)
-        target_sources(simpleble PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperNull.cpp)
-    endif()
-
     set_property(TARGET simpleble PROPERTY INSTALL_RPATH @loader_path)
 
 elseif(SIMPLEBLE_BACKEND_ANDROID)
@@ -344,8 +351,6 @@ elseif(SIMPLEBLE_BACKEND_ANDROID)
 
     target_sources(simpleble PRIVATE
         ${SIMPLEJNI_SOURCES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelperNull.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/AdapterAndroid.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/PeripheralAndroid.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/BackendAndroid.cpp
@@ -368,6 +373,12 @@ elseif(SIMPLEBLE_BACKEND_ANDROID)
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/android/types/java/util/Set.cpp)
     target_link_libraries(simpleble PUBLIC android nativehelper log)
 endif()
+
+target_sources(simpleble PRIVATE
+    ${SIMPLEBLE_DONGL_SOURCES})
+
+target_include_directories(simpleble PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/include)
 
 apply_build_options(simpleble
     "${PRIVATE_COMPILE_DEFINITIONS}"

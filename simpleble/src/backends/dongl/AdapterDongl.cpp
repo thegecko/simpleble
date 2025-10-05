@@ -6,6 +6,7 @@
 #include "PeripheralBase.h"
 #include "PeripheralDongl.h"
 
+#include "cmd/Commands.h"
 #include <memory>
 #include <thread>
 
@@ -20,9 +21,9 @@ AdapterDongl::AdapterDongl(const std::string& device_path) : _usb_helper(std::ma
         fmt::print("Received data: {}\n", data.toHex(true));
     });
 
+    auto readVersionCommand = Dongl::CMD::UartReadDeviceIdCommand();
+    _usb_helper->tx(readVersionCommand.to_bytes());
 
-    const std::vector<uint8_t> readVersionCommand = {0x05, 0x01, 0x00, 0x00, 0x51, 0x28};
-    _usb_helper->tx(readVersionCommand);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 }

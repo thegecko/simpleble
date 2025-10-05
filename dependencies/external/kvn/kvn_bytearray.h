@@ -8,6 +8,7 @@
 #include <memory>
 #include <sstream>
 #include <stdexcept>
+#include <type_traits>
 #include <vector>
 
 namespace kvn {
@@ -209,8 +210,82 @@ class bytearray {
     uint8_t& operator[](size_t index) { return data_[index]; }
     const uint8_t& operator[](size_t index) const { return data_[index]; }
     void push_back(uint8_t byte) { data_.push_back(byte); }
+
+    /**
+     * @brief Appends a uint16_t value as 2 little-endian bytes.
+     * @param value The uint16_t value to append.
+     */
+    void push_back(uint16_t value) {
+        for (size_t i = 0; i < 2; ++i) {
+            data_.push_back(static_cast<uint8_t>(value >> (i * 8)));
+        }
+    }
+
+    /**
+     * @brief Appends a uint32_t value as 4 little-endian bytes.
+     * @param value The uint32_t value to append.
+     */
+    void push_back(uint32_t value) {
+        for (size_t i = 0; i < 4; ++i) {
+            data_.push_back(static_cast<uint8_t>(value >> (i * 8)));
+        }
+    }
+
+    /**
+     * @brief Appends a uint64_t value as 8 little-endian bytes.
+     * @param value The uint64_t value to append.
+     */
+    void push_back(uint64_t value) {
+        for (size_t i = 0; i < 8; ++i) {
+            data_.push_back(static_cast<uint8_t>(value >> (i * 8)));
+        }
+    }
+    auto begin() { return data_.begin(); }
     auto begin() const { return data_.begin(); }
+    auto end() { return data_.end(); }
     auto end() const { return data_.end(); }
+
+    /**
+     * @brief Inserts a single byte at the specified position.
+     * @param pos Iterator to the position where the element is inserted.
+     * @param value The byte to insert.
+     * @return Iterator pointing to the inserted element.
+     */
+    auto insert(typename std::vector<uint8_t>::iterator pos, uint8_t value) { return data_.insert(pos, value); }
+    auto insert(typename std::vector<uint8_t>::const_iterator pos, uint8_t value) { return data_.insert(pos, value); }
+
+    /**
+     * @brief Inserts multiple copies of a byte at the specified position.
+     * @param pos Iterator to the position where the elements are inserted.
+     * @param count Number of copies to insert.
+     * @param value The byte to insert.
+     * @return Iterator pointing to the first inserted element.
+     */
+    auto insert(typename std::vector<uint8_t>::iterator pos, size_t count, uint8_t value) { return data_.insert(pos, count, value); }
+    auto insert(typename std::vector<uint8_t>::const_iterator pos, size_t count, uint8_t value) { return data_.insert(pos, count, value); }
+
+    /**
+     * @brief Inserts elements from a range at the specified position.
+     * @tparam InputIt Iterator type.
+     * @param pos Iterator to the position where the elements are inserted.
+     * @param first Iterator to the first element of the range.
+     * @param last Iterator to one past the last element of the range.
+     * @return Iterator pointing to the first inserted element.
+     */
+    template <typename InputIt>
+    auto insert(typename std::vector<uint8_t>::iterator pos, InputIt first, InputIt last) { return data_.insert(pos, first, last); }
+    template <typename InputIt>
+    auto insert(typename std::vector<uint8_t>::const_iterator pos, InputIt first, InputIt last) { return data_.insert(pos, first, last); }
+
+    /**
+     * @brief Inserts another bytearray at the specified position.
+     * @param pos Iterator to the position where the elements are inserted.
+     * @param other The bytearray to insert.
+     * @return Iterator pointing to the first inserted element.
+     */
+    auto insert(typename std::vector<uint8_t>::iterator pos, const bytearray& other) { return data_.insert(pos, other.begin(), other.end()); }
+    auto insert(typename std::vector<uint8_t>::const_iterator pos, const bytearray& other) { return data_.insert(pos, other.begin(), other.end()); }
+
     //! @endcond
 
   private:
