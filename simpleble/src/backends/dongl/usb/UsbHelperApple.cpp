@@ -27,7 +27,6 @@ class ScopedResource {
     Deleter deleter_;
 };
 
-// Usage:
 struct CFReleaser {
     void operator()(CFTypeRef obj) const { CFRelease(obj); }
 };
@@ -39,7 +38,6 @@ struct IOReleaser {
 using ScopedCFRef = ScopedResource<CFTypeRef, CFReleaser>;
 using ScopedIOObject = ScopedResource<io_object_t, IOReleaser>;
 
-// Apple-specific implementation of Impl methods
 UsbHelperApple::UsbHelperApple(const std::string& device_path) : UsbHelperImpl(device_path) {}
 
 UsbHelperApple::~UsbHelperApple() = default;
@@ -55,57 +53,51 @@ void UsbHelperApple::set_rx_callback(std::function<void(const kvn::bytearray&)> 
 std::vector<std::string> UsbHelperApple::get_dongl_devices() {
     std::vector<std::string> dongle_devices;
 
-    // Create iterator with automatic cleanup
     io_iterator_t raw_iterator = 0;
-    kern_return_t kr = IOServiceGetMatchingServices(kIOMainPortDefault, IOServiceMatching(kIOSerialBSDServiceValue),
-                                                    &raw_iterator);
-    if (kr != kIOReturnSuccess) return {};
+    if (IOServiceGetMatchingServices(kIOMainPortDefault, IOServiceMatching(kIOSerialBSDServiceValue), &raw_iterator) !=
+        kIOReturnSuccess) {
+        return {};
+    }
     ScopedIOObject iterator(raw_iterator);
 
-    io_service_t service;
-    while ((service = IOIteratorNext(iterator.get()))) {
-        // Create service with automatic cleanup
-        ScopedIOObject service_guard(service);
+    io_service_t raw_service;
+    while ((raw_service = IOIteratorNext(iterator.get()))) {
+        ScopedIOObject service_guard(raw_service);
 
-        // Get the callout device path (/dev/cu.*) with automatic cleanup
-        ScopedCFRef pathCF(
-            (CFStringRef)IORegistryEntryCreateCFProperty(service, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, 0));
+        // Get the callout device raw_path (/dev/cu.*)
+        char raw_path[PATH_MAX];
+        ScopedCFRef pathCF((CFStringRef)IORegistryEntryCreateCFProperty(raw_service, CFSTR(kIOCalloutDeviceKey),
+                                                                        kCFAllocatorDefault, 0));
         if (!pathCF) {
-            continue;  // service_guard will automatically release service
+            continue;
         }
 
-        // Check if this serial port matches the vendor/product by walking up the parent chain
-        io_iterator_t raw_parent_iterator = 0;
-        kr = IORegistryEntryCreateIterator(
-            service, kIOServicePlane, kIORegistryIterateRecursively | kIORegistryIterateParents, &raw_parent_iterator);
-        if (kr == kIOReturnSuccess) {
-            ScopedIOObject parent_iterator(raw_parent_iterator);
+        if (!CFStringGetCString((CFStringRef)pathCF.get(), raw_path, sizeof(raw_path), kCFStringEncodingUTF8)) {
+            continue;
+        }
 
-            io_registry_entry_t parent;
-            while ((parent = IOIteratorNext(parent_iterator.get()))) {
-                ScopedIOObject parent_guard(parent);
+        std::string path(raw_path);
 
-                // Create CFNumber objects with automatic cleanup
-                ScopedCFRef vidCF(
-                    (CFNumberRef)IORegistryEntryCreateCFProperty(parent, CFSTR(kUSBVendorID), kCFAllocatorDefault, 0));
-                ScopedCFRef pidCF(
-                    (CFNumberRef)IORegistryEntryCreateCFProperty(parent, CFSTR(kUSBProductID), kCFAllocatorDefault, 0));
+        // Search up parents for idVendor and idProduct
+        ScopedCFRef vidCF((CFNumberRef)IORegistryEntrySearchCFProperty(
+            raw_service, kIOServicePlane, CFSTR(kUSBVendorID), kCFAllocatorDefault,
+            kIORegistryIterateParents | kIORegistryIterateRecursively));
+        ScopedCFRef pidCF((CFNumberRef)IORegistryEntrySearchCFProperty(
+            raw_service, kIOServicePlane, CFSTR(kUSBProductID), kCFAllocatorDefault,
+            kIORegistryIterateParents | kIORegistryIterateRecursively));
 
-                if (vidCF && pidCF) {
-                    uint16_t vid, pid;
-                    CFNumberGetValue((CFNumberRef)vidCF.get(), kCFNumberSInt16Type, &vid);
-                    CFNumberGetValue((CFNumberRef)pidCF.get(), kCFNumberSInt16Type, &pid);
-                    if (vid == UsbHelperImpl::DONGL_VENDOR_ID && pid == UsbHelperImpl::DONGL_PRODUCT_ID) {
-                        char path[PATH_MAX];
-                        if (CFStringGetCString((CFStringRef)pathCF.get(), path, sizeof(path), kCFStringEncodingUTF8)) {
-                            dongle_devices.push_back(std::string(path));
-                        }
-                    }
-                }
-            }
+        if (!vidCF || !pidCF) {
+            continue;
+        }
+
+        uint16_t vid, pid;
+        CFNumberGetValue((CFNumberRef)vidCF.get(), kCFNumberSInt16Type, &vid);
+        CFNumberGetValue((CFNumberRef)pidCF.get(), kCFNumberSInt16Type, &pid);
+
+        if (vid == UsbHelperImpl::DONGL_VENDOR_ID && pid == UsbHelperImpl::DONGL_PRODUCT_ID) {
+            dongle_devices.push_back(path);
         }
     }
-    // iterator automatically releases here
     return dongle_devices;
 }
 
