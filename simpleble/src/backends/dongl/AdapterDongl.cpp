@@ -7,6 +7,7 @@
 #include "PeripheralDongl.h"
 
 #include "cmd/Commands.h"
+#include "cmd/Events.h"
 #include <memory>
 #include <thread>
 
@@ -19,10 +20,13 @@ AdapterDongl::AdapterDongl(const std::string& device_path) : _usb_helper(std::ma
 
     _usb_helper->set_rx_callback([this](const kvn::bytearray& data) {
         fmt::print("Received data: {}\n", data.toHex(true));
+
+        auto event = Dongl::CMD::UartEvent::from_bytes(data);
+        fmt::print("Received event: {}\n", event->to_string());
     });
 
-    auto readVersionCommand = Dongl::CMD::UartReadDeviceIdCommand();
-    _usb_helper->tx(readVersionCommand.to_bytes());
+    auto command = Dongl::CMD::UartReadVersionCommand();
+    _usb_helper->tx(command.to_bytes());
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 

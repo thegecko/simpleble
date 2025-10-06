@@ -155,6 +155,7 @@ target_compile_definitions(simpleble PRIVATE
 set(SIMPLEBLE_DONGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/cmd/Commands.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/cmd/Events.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/cmd/Utils.cpp)
 
 if(SIMPLEBLE_PLAIN)
