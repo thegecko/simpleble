@@ -24,37 +24,6 @@ static void verify_checksum(const kvn::bytearray& raw_bytes) {
     }
 }
 
-static const std::map<uint8_t, std::function<std::unique_ptr<UartEvent>(const kvn::bytearray&)>> EVENT_MAPPING = {
-    {UartStatusEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartStatusEvent>(payload); }},
-    {UartVersionEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartVersionEvent>(payload); }},
-    {UartTransmitBufferEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartTransmitBufferEvent>(payload); }},
-    {UartDeviceIdEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartDeviceIdEvent>(payload); }},
-    {UartConfigEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartConfigEvent>(payload); }},
-    {UartDeviceNameEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartDeviceNameEvent>(payload); }},
-    {UartDataConnectionParametersEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartDataConnectionParametersEvent>(payload); }},
-    {UartRealTimeConnectionParametersEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartRealTimeConnectionParametersEvent>(payload); }},
-    {UartSecurityModeEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartSecurityModeEvent>(payload); }},
-    {UartScanResultEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartScanResultEvent>(payload); }},
-    {UartDataConnectionStatusEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartDataConnectionStatusEvent>(payload); }},
-    {UartRealTimeConnectionStatusEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartRealTimeConnectionStatusEvent>(payload); }},
-    {UartRxDataEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartRxDataEvent>(payload); }},
-    {UartFwInfoEvent::op_code,
-     [](const kvn::bytearray& payload) { return std::make_unique<UartFwInfoEvent>(payload); }},
-    {UartEchoEvent::op_code, [](const kvn::bytearray& payload) { return std::make_unique<UartEchoEvent>(payload); }}};
-
 UartEventStartByteException::UartEventStartByteException(const kvn::bytearray& raw_bytes) : raw_bytes(raw_bytes) {}
 
 std::string UartEventStartByteException::what() const noexcept {
@@ -84,6 +53,38 @@ std::unique_ptr<UartEvent> UartEvent::from_bytes(const kvn::bytearray& raw_bytes
     verify_checksum(raw_bytes);
     uint8_t op_code = raw_bytes[1];
     kvn::bytearray payload(raw_bytes.begin() + 4, raw_bytes.end() - 2);
+
+    static const std::map<uint8_t, std::function<std::unique_ptr<UartEvent>(const kvn::bytearray&)>> EVENT_MAPPING = {
+        {UartStatusEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartStatusEvent>(payload); }},
+        {UartVersionEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartVersionEvent>(payload); }},
+        {UartTransmitBufferEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartTransmitBufferEvent>(payload); }},
+        {UartDeviceIdEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartDeviceIdEvent>(payload); }},
+        {UartConfigEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartConfigEvent>(payload); }},
+        {UartDeviceNameEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartDeviceNameEvent>(payload); }},
+        {UartDataConnectionParametersEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartDataConnectionParametersEvent>(payload); }},
+        {UartRealTimeConnectionParametersEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartRealTimeConnectionParametersEvent>(payload); }},
+        {UartSecurityModeEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartSecurityModeEvent>(payload); }},
+        {UartScanResultEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartScanResultEvent>(payload); }},
+        {UartDataConnectionStatusEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartDataConnectionStatusEvent>(payload); }},
+        {UartRealTimeConnectionStatusEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartRealTimeConnectionStatusEvent>(payload); }},
+        {UartRxDataEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartRxDataEvent>(payload); }},
+        {UartFwInfoEvent::op_code,
+         [](const kvn::bytearray& payload) { return std::make_unique<UartFwInfoEvent>(payload); }},
+        {UartEchoEvent::op_code, [](const kvn::bytearray& payload) { return std::make_unique<UartEchoEvent>(payload); }}};
+
     auto it = EVENT_MAPPING.find(op_code);
     if (it == EVENT_MAPPING.end()) {
         throw UartEventPayloadException(op_code, payload);

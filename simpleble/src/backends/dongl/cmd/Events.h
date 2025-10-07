@@ -4,6 +4,9 @@
 #include <optional>
 #include <string>
 #include <map>
+#include <array>
+#include <functional>
+#include <memory>
 #include "Commands.h"
 
 namespace SimpleBLE {
