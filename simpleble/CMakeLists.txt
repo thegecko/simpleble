@@ -7,7 +7,7 @@ project(
     VERSION ${SIMPLEBLE_VERSION_BASE}
     DESCRIPTION "The ultimate fully-fledged cross-platform library for Bluetooth Low Energy (BLE)."
     HOMEPAGE_URL "https://github.com/simpleble/simpleble"
-    LANGUAGES CXX
+    LANGUAGES CXX C
 )
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/epilogue.cmake)
@@ -47,10 +47,6 @@ set(SIMPLEBLE_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/common/ServiceBase.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/common/CharacteristicBase.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/common/DescriptorBase.cpp
-
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/BackendDongl.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/AdapterDongl.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/PeripheralDongl.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Config.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Exceptions.cpp
@@ -154,9 +150,27 @@ target_compile_definitions(simpleble PRIVATE
 # Dongl Source File Selection
 set(SIMPLEBLE_DONGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/usb/UsbHelper.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/cmd/Commands.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/cmd/Events.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/cmd/Utils.cpp)
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/BackendDongl.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/AdapterDongl.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/PeripheralDongl.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/serial/Protocol.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/serial/Wire.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal/src/nanopb/pb_common.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal/src/nanopb/pb_decode.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal/src/nanopb/pb_encode.c
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/protocol/d2h.pb.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/protocol/h2d.pb.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/protocol/basic.pb.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/protocol/simpleble.pb.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/protocol/softdevice.pb.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/protocol/softdevice_gap.pb.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/protocol/softdevice_gattc.pb.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/protocol/softdevice_gatts.pb.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/protocol/softdevice_types.pb.c)
 
 if(SIMPLEBLE_PLAIN)
     list(APPEND SIMPLEBLE_DONGL_SOURCES
@@ -379,7 +393,7 @@ target_sources(simpleble PRIVATE
     ${SIMPLEBLE_DONGL_SOURCES})
 
 target_include_directories(simpleble PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/include)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl)
 
 apply_build_options(simpleble
     "${PRIVATE_COMPILE_DEFINITIONS}"

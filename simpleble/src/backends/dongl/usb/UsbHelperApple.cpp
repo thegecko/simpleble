@@ -165,7 +165,7 @@ void UsbHelperApple::_configure_serial_port() {
     tty.c_cflag &= ~CSTOPB;         // One stop bit
     tty.c_cflag &= ~CSIZE;          // Clear data size bits
     tty.c_cflag |= CS8;             // 8 data bits
-    tty.c_cflag |= CRTSCTS;         // Enable RTS/CTS hardware flow control
+    tty.c_cflag &= ~CRTSCTS;        // Disable RTS/CTS hardware flow control
     tty.c_cflag |= CREAD | CLOCAL;  // Enable receiver, ignore modem control lines
 
     tty.c_lflag &= ~ICANON;  // Disable canonical mode

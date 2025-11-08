@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "usb/UsbHelper.h"
+#include "serial/Protocol.h"
 
 namespace SimpleBLE {
 
@@ -45,7 +45,7 @@ class AdapterDongl : public AdapterBase {
     virtual bool bluetooth_enabled() override;
 
   private:
-    std::unique_ptr<Dongl::USB::UsbHelper> _usb_helper;
+    std::unique_ptr<Dongl::Serial::Protocol> _serial_protocol;
 };
 
 }  // namespace SimpleBLE
