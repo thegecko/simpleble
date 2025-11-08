@@ -30,7 +30,7 @@ public:
      */
     using ErrorCallback = std::function<void(Wire::Error)>;
 
-    Protocol(std::unique_ptr<Wire> wire);
+    Protocol(const std::string& device_path);
     ~Protocol();
 
     /**

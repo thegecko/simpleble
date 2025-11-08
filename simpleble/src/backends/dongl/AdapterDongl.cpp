@@ -18,8 +18,7 @@ bool AdapterDongl::bluetooth_enabled() { return true; }
 
 AdapterDongl::AdapterDongl(const std::string& device_path)
     : _serial_protocol(
-          std::make_unique<Dongl::Serial::Protocol>(
-              std::make_unique<Dongl::Serial::Wire>(std::make_unique<Dongl::USB::UsbHelper>(device_path)))) {
+          std::make_unique<Dongl::Serial::Protocol>(device_path)) {
     fmt::print("Dongl adapter created with device path: {}\n", device_path);
 
     // _serial_protocol->set_response_callback([this](const dongl_Response& response) {

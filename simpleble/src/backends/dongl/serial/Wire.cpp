@@ -5,8 +5,8 @@
 
 using namespace SimpleBLE::Dongl::Serial;
 
-Wire::Wire(std::unique_ptr<USB::UsbHelper> usb_helper)
-    : _usb_helper(std::move(usb_helper))
+Wire::Wire(const std::string& device_path)
+    : _usb_helper(std::make_unique<USB::UsbHelper>(device_path))
     , _state(State::IDLE)
     , _length(0)
     , _checksum(0)

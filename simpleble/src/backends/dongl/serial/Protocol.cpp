@@ -5,7 +5,7 @@ using namespace SimpleBLE::Dongl::Serial;
 #include "nanopb/pb_decode.h"
 #include "nanopb/pb_encode.h"
 
-Protocol::Protocol(std::unique_ptr<Wire> wire) : _wire(std::move(wire)) {
+Protocol::Protocol(const std::string& device_path) : _wire(std::make_unique<Wire>(device_path)) {
     // Set up the Wire packet callback to handle incoming packets
     _wire->set_packet_callback([this](const std::vector<uint8_t>& packet) {
         if (!_response_callback && !_event_callback) {

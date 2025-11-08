@@ -52,7 +52,7 @@ public:
      */
     static constexpr uint8_t SYNC_BYTE = 0xAA;
 
-    Wire(std::unique_ptr<USB::UsbHelper> usb_helper);
+    Wire(const std::string& device_path);
     ~Wire();
 
     /**
