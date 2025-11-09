@@ -23,13 +23,13 @@ Wire::Wire(const std::string& device_path)
 
 Wire::~Wire() {}
 
-bool Wire::send_packet(const std::vector<uint8_t>& payload) {
-    return send_packet(payload.data(), payload.size());
+void Wire::send_packet(const std::vector<uint8_t>& payload) {
+    send_packet(payload.data(), payload.size());
 }
 
-bool Wire::send_packet(const uint8_t* data, size_t length) {
+void Wire::send_packet(const uint8_t* data, size_t length) {
     if (length > MAX_PAYLOAD_SIZE) {
-        return false;
+        throw std::runtime_error("Payload length exceeds maximum allowed");
     }
 
     // Create the encoded packet
@@ -48,8 +48,6 @@ bool Wire::send_packet(const uint8_t* data, size_t length) {
     // Send via USB
     kvn::bytearray usb_data(packet.data(), packet.size());
     _usb_helper->tx(usb_data);
-
-    return true;
 }
 
 void Wire::set_packet_callback(PacketCallback callback) {

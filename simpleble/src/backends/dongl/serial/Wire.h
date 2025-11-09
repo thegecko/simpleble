@@ -59,18 +59,16 @@ public:
      * @brief Sends a payload as an encoded packet.
      *
      * @param payload The data to send.
-     * @return true if the packet was sent successfully, false otherwise.
      */
-    bool send_packet(const std::vector<uint8_t>& payload);
+    void send_packet(const std::vector<uint8_t>& payload);
 
     /**
      * @brief Sends a payload as an encoded packet.
      *
      * @param data Pointer to the data to send.
      * @param length Length of the data.
-     * @return true if the packet was sent successfully, false otherwise.
      */
-    bool send_packet(const uint8_t* data, size_t length);
+    void send_packet(const uint8_t* data, size_t length);
 
     /**
      * @brief Sets the callback for received packets.

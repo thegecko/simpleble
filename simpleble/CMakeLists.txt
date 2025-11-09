@@ -156,6 +156,7 @@ set(SIMPLEBLE_DONGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/PeripheralDongl.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/serial/Protocol.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/serial/ProtocolBase.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/dongl/serial/Wire.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/internal/src/nanopb/pb_common.c
