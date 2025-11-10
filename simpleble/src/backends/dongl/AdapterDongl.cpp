@@ -17,8 +17,7 @@ using namespace SimpleBLE;
 bool AdapterDongl::bluetooth_enabled() { return true; }
 
 AdapterDongl::AdapterDongl(const std::string& device_path)
-    : _serial_protocol(
-          std::make_unique<Dongl::Serial::Protocol>(device_path)) {
+    : _serial_protocol(std::make_unique<Dongl::Serial::Protocol>(device_path)) {
     fmt::print("Dongl adapter created with device path: {}\n", device_path);
 
     // _serial_protocol->set_response_callback([this](const dongl_Response& response) {
@@ -44,6 +43,9 @@ AdapterDongl::AdapterDongl(const std::string& device_path)
     // TODO: Send initialization commands
     // auto command = Dongl::CMD::UartReadVersionCommand();
     // _serial_protocol->send_packet(command.to_bytes());
+
+    auto response = _serial_protocol->basic_whoami();
+    fmt::print("Whoami: {}\n", response.whoami);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }

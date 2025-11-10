@@ -5,6 +5,8 @@ using namespace SimpleBLE::Dongl::Serial;
 #include "nanopb/pb_decode.h"
 #include "nanopb/pb_encode.h"
 
+#include <fmt/core.h>
+
 ProtocolBase::ProtocolBase(const std::string& device_path) : _wire(std::make_unique<Wire>(device_path)) {
     // Set up the Wire packet callback to handle incoming packets
     _wire->set_packet_callback([this](const std::vector<uint8_t>& packet) {
@@ -12,6 +14,7 @@ ProtocolBase::ProtocolBase(const std::string& device_path) : _wire(std::make_uni
         pb_istream_t stream = pb_istream_from_buffer(packet.data(), packet.size());
         if (!pb_decode(&stream, dongl_D2H_fields, &d2h)) {
             // TODO: Handle decoding failure
+            fmt::print("Failed to decode D2H: {}\n", PB_GET_ERROR(&stream));
             return;
         }
 
@@ -30,6 +33,10 @@ ProtocolBase::ProtocolBase(const std::string& device_path) : _wire(std::make_uni
                 _event_callback(d2h.type.evt);
             }
         }
+    });
+
+    _wire->set_error_callback([this](const Wire::Error& error) {
+        fmt::print("Error: {}\n", (int)error);
     });
 }
 
