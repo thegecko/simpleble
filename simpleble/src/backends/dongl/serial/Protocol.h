@@ -61,7 +61,7 @@ class Protocol : public ProtocolBase {
     sd_GapConnSecGetRsp sd_gap_conn_sec_get(uint16_t conn_handle);
     sd_GapRssiStartRsp sd_gap_rssi_start(uint16_t conn_handle, uint8_t threshold_dbm, uint8_t skip_count);
     sd_GapRssiStopRsp sd_gap_rssi_stop(uint16_t conn_handle);
-    sd_GapScanStartRsp sd_gap_scan_start(bool has_scan_params, sd_types_BleGapScanParams scan_params, bool has_adv_report_buffer, sd_types_BleData adv_report_buffer);
+    sd_GapScanStartRsp sd_gap_scan_start(sd_types_BleGapScanParams scan_params);
     sd_GapScanStopRsp sd_gap_scan_stop();
     sd_GapConnectRsp sd_gap_connect(bool has_peer_addr, sd_types_BleGapAddr peer_addr, bool has_scan_params, sd_types_BleGapScanParams scan_params, bool has_conn_params, sd_types_BleGapConnParams conn_params, uint8_t conn_cfg_tag);
     sd_GapConnectCancelRsp sd_gap_connect_cancel();

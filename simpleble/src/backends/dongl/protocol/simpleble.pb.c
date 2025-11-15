@@ -6,16 +6,30 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
+PB_BIND(simpleble_ManufacturerDataEntry, simpleble_ManufacturerDataEntry, AUTO)
+
+
+PB_BIND(simpleble_ServiceDataEntry, simpleble_ServiceDataEntry, AUTO)
+
+
 PB_BIND(simpleble_InitCmd, simpleble_InitCmd, AUTO)
 
 
 PB_BIND(simpleble_InitRsp, simpleble_InitRsp, AUTO)
 
 
+PB_BIND(simpleble_AdvEvt, simpleble_AdvEvt, 2)
+
+
 PB_BIND(simpleble_Command, simpleble_Command, AUTO)
 
 
 PB_BIND(simpleble_Response, simpleble_Response, AUTO)
+
+
+PB_BIND(simpleble_Event, simpleble_Event, 2)
+
+
 
 
 

@@ -13,11 +13,13 @@
 #include <memory>
 #include <mutex>
 
+#include "AdapterBaseTypes.h"
+
 namespace SimpleBLE {
 
 class PeripheralDongl : public PeripheralBase {
   public:
-    PeripheralDongl();
+    PeripheralDongl(advertising_data_t advertising_data);
     virtual ~PeripheralDongl();
 
     void* underlying() const override;
@@ -56,9 +58,21 @@ class PeripheralDongl : public PeripheralBase {
     virtual void set_callback_on_connected(std::function<void()> on_connected) override;
     virtual void set_callback_on_disconnected(std::function<void()> on_disconnected) override;
 
+    // Internal methods not exposed to the user.
+    void update_advertising_data(advertising_data_t advertising_data);
+
   private:
-    kvn::safe_callback<void()> callback_on_connected_;
-    kvn::safe_callback<void()> callback_on_disconnected_;
+    std::string _identifier;
+    BluetoothAddress _address;
+    BluetoothAddressType _address_type;
+    int16_t _rssi;
+    int16_t _tx_power;
+    bool _connectable;
+    std::map<uint16_t, ByteArray> _manufacturer_data;
+    std::map<BluetoothUUID, ByteArray> _service_data;
+
+    kvn::safe_callback<void()> _callback_on_connected;
+    kvn::safe_callback<void()> _callback_on_disconnected;
   };
 
 }  // namespace SimpleBLE

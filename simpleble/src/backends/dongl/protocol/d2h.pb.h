@@ -27,6 +27,7 @@ typedef struct _dongl_Event {
     pb_size_t which_evt;
     union {
         sd_Event softdevice;
+        simpleble_Event simpleble;
     } evt;
 } dongl_Event;
 
@@ -56,6 +57,7 @@ extern "C" {
 #define dongl_Response_simpleble_tag             2
 #define dongl_Response_softdevice_tag            3
 #define dongl_Event_softdevice_tag               2
+#define dongl_Event_simpleble_tag                3
 #define dongl_D2H_rsp_tag                        1
 #define dongl_D2H_evt_tag                        2
 
@@ -71,10 +73,12 @@ X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,softdevice,rsp.softdevice),   3)
 #define dongl_Response_rsp_softdevice_MSGTYPE sd_Response
 
 #define dongl_Event_FIELDLIST(X, a) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (evt,softdevice,evt.softdevice),   2)
+X(a, STATIC,   ONEOF,    MESSAGE,  (evt,softdevice,evt.softdevice),   2) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (evt,simpleble,evt.simpleble),   3)
 #define dongl_Event_CALLBACK NULL
 #define dongl_Event_DEFAULT NULL
 #define dongl_Event_evt_softdevice_MSGTYPE sd_Event
+#define dongl_Event_evt_simpleble_MSGTYPE simpleble_Event
 
 #define dongl_D2H_FIELDLIST(X, a) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (type,rsp,type.rsp),   1) \
@@ -95,15 +99,16 @@ extern const pb_msgdesc_t dongl_D2H_msg;
 
 /* Maximum encoded size of messages (where known) */
 #if defined(sd_Event_size)
+union dongl_Event_evt_size_union {char f2[(6 + sd_Event_size)]; char f0[395];};
 #endif
 #if defined(sd_Event_size)
-union dongl_D2H_type_size_union {char f2[(12 + sd_Event_size)]; char f0[549];};
+union dongl_D2H_type_size_union {char f2[(6 + sizeof(union dongl_Event_evt_size_union))]; char f0[549];};
 #endif
 #define DONGL_D2H_PB_H_MAX_SIZE                  dongl_Response_size
 #define dongl_Response_size                      546
 #if defined(sd_Event_size)
 #define dongl_D2H_size                           (0 + sizeof(union dongl_D2H_type_size_union))
-#define dongl_Event_size                         (6 + sd_Event_size)
+#define dongl_Event_size                         (0 + sizeof(union dongl_Event_evt_size_union))
 #endif
 
 #ifdef __cplusplus

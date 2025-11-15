@@ -14,21 +14,26 @@
 using namespace SimpleBLE;
 using namespace std::chrono_literals;
 
-PeripheralDongl::PeripheralDongl() {}
+PeripheralDongl::PeripheralDongl(advertising_data_t advertising_data) {
+    _address_type = advertising_data.address_type;
+    _identifier = advertising_data.identifier;
+    _address = advertising_data.mac_address;
+    update_advertising_data(advertising_data);
+}
 
 PeripheralDongl::~PeripheralDongl() {}
 
 void* PeripheralDongl::underlying() const { return nullptr; }
 
-std::string PeripheralDongl::identifier() { return "Dongl Peripheral"; }
+std::string PeripheralDongl::identifier() { return _identifier; }
 
-BluetoothAddress PeripheralDongl::address() { return "11:22:33:44:55:66"; }
+BluetoothAddress PeripheralDongl::address() { return _address; }
 
-BluetoothAddressType PeripheralDongl::address_type() { return BluetoothAddressType::PUBLIC; };
+BluetoothAddressType PeripheralDongl::address_type() { return _address_type; }
 
-int16_t PeripheralDongl::rssi() { return -60; }
+int16_t PeripheralDongl::rssi() { return _rssi; }
 
-int16_t PeripheralDongl::tx_power() { return 5; }
+int16_t PeripheralDongl::tx_power() { return _tx_power; }
 
 uint16_t PeripheralDongl::mtu() { return 0; }
 
@@ -37,7 +42,7 @@ void PeripheralDongl::connect() {}
 void PeripheralDongl::disconnect() {}
 bool PeripheralDongl::is_connected() { return false; }
 
-bool PeripheralDongl::is_connectable() { return true; }
+bool PeripheralDongl::is_connectable() { return _connectable; }
 
 bool PeripheralDongl::is_paired() { return false; }
 
@@ -45,9 +50,16 @@ void PeripheralDongl::unpair() {}
 
 SharedPtrVector<ServiceBase> PeripheralDongl::available_services() { return {}; }
 
-SharedPtrVector<ServiceBase> PeripheralDongl::advertised_services() { return {}; }
+SharedPtrVector<ServiceBase> PeripheralDongl::advertised_services() {
+    SharedPtrVector<ServiceBase> service_list;
+    for (auto& [service_uuid, data] : _service_data) {
+        service_list.push_back(std::make_shared<ServiceBase>(service_uuid, data));
+    }
 
-std::map<uint16_t, ByteArray> PeripheralDongl::manufacturer_data() { return {}; }
+    return service_list;
+}
+
+std::map<uint16_t, ByteArray> PeripheralDongl::manufacturer_data() { return _manufacturer_data; }
 
 ByteArray PeripheralDongl::read(BluetoothUUID const& service, BluetoothUUID const& characteristic) { return {}; }
 
@@ -75,16 +87,28 @@ void PeripheralDongl::write(BluetoothUUID const& service, BluetoothUUID const& c
 
 void PeripheralDongl::set_callback_on_connected(std::function<void()> on_connected) {
     if (on_connected) {
-        callback_on_connected_.load(std::move(on_connected));
+        _callback_on_connected.load(std::move(on_connected));
     } else {
-        callback_on_connected_.unload();
+        _callback_on_connected.unload();
     }
 }
 
 void PeripheralDongl::set_callback_on_disconnected(std::function<void()> on_disconnected) {
     if (on_disconnected) {
-        callback_on_disconnected_.load(std::move(on_disconnected));
+        _callback_on_disconnected.load(std::move(on_disconnected));
     } else {
-        callback_on_disconnected_.unload();
+        _callback_on_disconnected.unload();
     }
+}
+
+void PeripheralDongl::update_advertising_data(advertising_data_t advertising_data) {
+    if (advertising_data.identifier != "") {
+        _identifier = advertising_data.identifier;
+    }
+    _rssi = advertising_data.rssi;
+    _tx_power = advertising_data.tx_power;
+    _manufacturer_data = advertising_data.manufacturer_data;
+
+    advertising_data.service_data.merge(_service_data);
+    _service_data = advertising_data.service_data;
 }

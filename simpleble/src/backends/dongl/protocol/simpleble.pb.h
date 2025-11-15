@@ -9,14 +9,46 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
+/* Enum definitions */
+typedef enum _simpleble_BluetoothAddressType {
+    simpleble_BluetoothAddressType_PUBLIC = 0,
+    simpleble_BluetoothAddressType_RANDOM = 1,
+    simpleble_BluetoothAddressType_UNSPECIFIED = 2
+} simpleble_BluetoothAddressType;
+
 /* Struct definitions */
+typedef PB_BYTES_ARRAY_T(27) simpleble_ManufacturerDataEntry_data_t;
+typedef struct _simpleble_ManufacturerDataEntry {
+    uint16_t company_id;
+    simpleble_ManufacturerDataEntry_data_t data; /* Max manufacturer data size */
+} simpleble_ManufacturerDataEntry;
+
+typedef PB_BYTES_ARRAY_T(27) simpleble_ServiceDataEntry_data_t;
+typedef struct _simpleble_ServiceDataEntry {
+    pb_byte_t uuid[16]; /* BluetoothUUID, 16 bytes */
+    simpleble_ServiceDataEntry_data_t data; /* Max service data size */
+} simpleble_ServiceDataEntry;
+
 typedef struct _simpleble_InitCmd {
     char dummy_field;
 } simpleble_InitCmd;
 
 typedef struct _simpleble_InitRsp {
-    char dummy_field;
+    uint32_t ret_code;
 } simpleble_InitRsp;
+
+typedef struct _simpleble_AdvEvt {
+    char identifier[32];
+    simpleble_BluetoothAddressType address_type;
+    pb_byte_t address[6]; /* BLE_GAP_ADDR_LEN = 6 */
+    bool connectable;
+    int16_t rssi;
+    int16_t tx_power;
+    pb_size_t manufacturer_data_count;
+    simpleble_ManufacturerDataEntry manufacturer_data[4];
+    pb_size_t service_data_count;
+    simpleble_ServiceDataEntry service_data[4];
+} simpleble_AdvEvt;
 
 typedef struct _simpleble_Command {
     pb_size_t which_cmd;
@@ -32,35 +64,105 @@ typedef struct _simpleble_Response {
     } rsp;
 } simpleble_Response;
 
+typedef struct _simpleble_Event {
+    pb_size_t which_evt;
+    union {
+        simpleble_AdvEvt adv_evt;
+    } evt;
+} simpleble_Event;
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/* Helper constants for enums */
+#define _simpleble_BluetoothAddressType_MIN simpleble_BluetoothAddressType_PUBLIC
+#define _simpleble_BluetoothAddressType_MAX simpleble_BluetoothAddressType_UNSPECIFIED
+#define _simpleble_BluetoothAddressType_ARRAYSIZE ((simpleble_BluetoothAddressType)(simpleble_BluetoothAddressType_UNSPECIFIED+1))
+
+
+
+
+
+#define simpleble_AdvEvt_address_type_ENUMTYPE simpleble_BluetoothAddressType
+
+
+
+
+
 /* Initializer values for message structs */
+#define simpleble_ManufacturerDataEntry_init_default {0, {0, {0}}}
+#define simpleble_ServiceDataEntry_init_default  {{0}, {0, {0}}}
 #define simpleble_InitCmd_init_default           {0}
 #define simpleble_InitRsp_init_default           {0}
+#define simpleble_AdvEvt_init_default            {"", _simpleble_BluetoothAddressType_MIN, {0}, 0, 0, 0, 0, {simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default}, 0, {simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default}}
 #define simpleble_Command_init_default           {0, {simpleble_InitCmd_init_default}}
 #define simpleble_Response_init_default          {0, {simpleble_InitRsp_init_default}}
+#define simpleble_Event_init_default             {0, {simpleble_AdvEvt_init_default}}
+#define simpleble_ManufacturerDataEntry_init_zero {0, {0, {0}}}
+#define simpleble_ServiceDataEntry_init_zero     {{0}, {0, {0}}}
 #define simpleble_InitCmd_init_zero              {0}
 #define simpleble_InitRsp_init_zero              {0}
+#define simpleble_AdvEvt_init_zero               {"", _simpleble_BluetoothAddressType_MIN, {0}, 0, 0, 0, 0, {simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero}, 0, {simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero}}
 #define simpleble_Command_init_zero              {0, {simpleble_InitCmd_init_zero}}
 #define simpleble_Response_init_zero             {0, {simpleble_InitRsp_init_zero}}
+#define simpleble_Event_init_zero                {0, {simpleble_AdvEvt_init_zero}}
 
 /* Field tags (for use in manual encoding/decoding) */
+#define simpleble_ManufacturerDataEntry_company_id_tag 1
+#define simpleble_ManufacturerDataEntry_data_tag 2
+#define simpleble_ServiceDataEntry_uuid_tag      1
+#define simpleble_ServiceDataEntry_data_tag      2
+#define simpleble_InitRsp_ret_code_tag           1
+#define simpleble_AdvEvt_identifier_tag          1
+#define simpleble_AdvEvt_address_type_tag        2
+#define simpleble_AdvEvt_address_tag             3
+#define simpleble_AdvEvt_connectable_tag         4
+#define simpleble_AdvEvt_rssi_tag                5
+#define simpleble_AdvEvt_tx_power_tag            6
+#define simpleble_AdvEvt_manufacturer_data_tag   7
+#define simpleble_AdvEvt_service_data_tag        8
 #define simpleble_Command_init_tag               1
 #define simpleble_Response_init_tag              1
+#define simpleble_Event_adv_evt_tag              1
 
 /* Struct field encoding specification for nanopb */
+#define simpleble_ManufacturerDataEntry_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   company_id,        1) \
+X(a, STATIC,   SINGULAR, BYTES,    data,              2)
+#define simpleble_ManufacturerDataEntry_CALLBACK NULL
+#define simpleble_ManufacturerDataEntry_DEFAULT NULL
+
+#define simpleble_ServiceDataEntry_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, FIXED_LENGTH_BYTES, uuid,              1) \
+X(a, STATIC,   SINGULAR, BYTES,    data,              2)
+#define simpleble_ServiceDataEntry_CALLBACK NULL
+#define simpleble_ServiceDataEntry_DEFAULT NULL
+
 #define simpleble_InitCmd_FIELDLIST(X, a) \
 
 #define simpleble_InitCmd_CALLBACK NULL
 #define simpleble_InitCmd_DEFAULT NULL
 
 #define simpleble_InitRsp_FIELDLIST(X, a) \
-
+X(a, STATIC,   SINGULAR, UINT32,   ret_code,          1)
 #define simpleble_InitRsp_CALLBACK NULL
 #define simpleble_InitRsp_DEFAULT NULL
+
+#define simpleble_AdvEvt_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, STRING,   identifier,        1) \
+X(a, STATIC,   SINGULAR, UENUM,    address_type,      2) \
+X(a, STATIC,   SINGULAR, FIXED_LENGTH_BYTES, address,           3) \
+X(a, STATIC,   SINGULAR, BOOL,     connectable,       4) \
+X(a, STATIC,   SINGULAR, SINT32,   rssi,              5) \
+X(a, STATIC,   SINGULAR, SINT32,   tx_power,          6) \
+X(a, STATIC,   REPEATED, MESSAGE,  manufacturer_data,   7) \
+X(a, STATIC,   REPEATED, MESSAGE,  service_data,      8)
+#define simpleble_AdvEvt_CALLBACK NULL
+#define simpleble_AdvEvt_DEFAULT NULL
+#define simpleble_AdvEvt_manufacturer_data_MSGTYPE simpleble_ManufacturerDataEntry
+#define simpleble_AdvEvt_service_data_MSGTYPE simpleble_ServiceDataEntry
 
 #define simpleble_Command_FIELDLIST(X, a) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,init,cmd.init),   1)
@@ -74,23 +176,41 @@ X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,init,rsp.init),   1)
 #define simpleble_Response_DEFAULT NULL
 #define simpleble_Response_rsp_init_MSGTYPE simpleble_InitRsp
 
+#define simpleble_Event_FIELDLIST(X, a) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (evt,adv_evt,evt.adv_evt),   1)
+#define simpleble_Event_CALLBACK NULL
+#define simpleble_Event_DEFAULT NULL
+#define simpleble_Event_evt_adv_evt_MSGTYPE simpleble_AdvEvt
+
+extern const pb_msgdesc_t simpleble_ManufacturerDataEntry_msg;
+extern const pb_msgdesc_t simpleble_ServiceDataEntry_msg;
 extern const pb_msgdesc_t simpleble_InitCmd_msg;
 extern const pb_msgdesc_t simpleble_InitRsp_msg;
+extern const pb_msgdesc_t simpleble_AdvEvt_msg;
 extern const pb_msgdesc_t simpleble_Command_msg;
 extern const pb_msgdesc_t simpleble_Response_msg;
+extern const pb_msgdesc_t simpleble_Event_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
+#define simpleble_ManufacturerDataEntry_fields &simpleble_ManufacturerDataEntry_msg
+#define simpleble_ServiceDataEntry_fields &simpleble_ServiceDataEntry_msg
 #define simpleble_InitCmd_fields &simpleble_InitCmd_msg
 #define simpleble_InitRsp_fields &simpleble_InitRsp_msg
+#define simpleble_AdvEvt_fields &simpleble_AdvEvt_msg
 #define simpleble_Command_fields &simpleble_Command_msg
 #define simpleble_Response_fields &simpleble_Response_msg
+#define simpleble_Event_fields &simpleble_Event_msg
 
 /* Maximum encoded size of messages (where known) */
-#define SIMPLEBLE_SIMPLEBLE_PB_H_MAX_SIZE        simpleble_Command_size
+#define SIMPLEBLE_SIMPLEBLE_PB_H_MAX_SIZE        simpleble_Event_size
+#define simpleble_AdvEvt_size                    389
 #define simpleble_Command_size                   2
+#define simpleble_Event_size                     392
 #define simpleble_InitCmd_size                   0
-#define simpleble_InitRsp_size                   0
-#define simpleble_Response_size                  2
+#define simpleble_InitRsp_size                   6
+#define simpleble_ManufacturerDataEntry_size     33
+#define simpleble_Response_size                  8
+#define simpleble_ServiceDataEntry_size          47
 
 #ifdef __cplusplus
 } /* extern "C" */

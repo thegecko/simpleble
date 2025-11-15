@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+#include "AdapterBaseTypes.h"
+#include "PeripheralDongl.h"
 #include "serial/Protocol.h"
 
 namespace SimpleBLE {
@@ -45,7 +47,14 @@ class AdapterDongl : public AdapterBase {
     virtual bool bluetooth_enabled() override;
 
   private:
+    void _scan_received_callback(advertising_data_t data);
+    void _on_softdevice_event(const sd_Event& event);
+    void _on_simpleble_event(const simpleble_Event& event);
+
     std::unique_ptr<Dongl::Serial::Protocol> _serial_protocol;
+    std::map<BluetoothAddress, std::shared_ptr<PeripheralDongl>> peripherals_;
+    std::map<BluetoothAddress, std::shared_ptr<PeripheralDongl>> seen_peripherals_;
+
 };
 
 }  // namespace SimpleBLE

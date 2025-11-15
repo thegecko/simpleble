@@ -189,8 +189,6 @@ typedef struct _sd_GapRssiStopCmd {
 typedef struct _sd_GapScanStartCmd {
     bool has_scan_params;
     sd_types_BleGapScanParams scan_params; /* Optional */
-    bool has_adv_report_buffer;
-    sd_types_BleData adv_report_buffer; /* BLE_GAP_SCAN_BUFFER_EXTENDED_MAX = 1650 */
 } sd_GapScanStartCmd;
 
 typedef struct _sd_GapScanStopCmd { /* No input parameters */
@@ -651,7 +649,7 @@ extern "C" {
 #define sd_GapConnSecGetCmd_init_default         {0}
 #define sd_GapRssiStartCmd_init_default          {0, 0, 0}
 #define sd_GapRssiStopCmd_init_default           {0}
-#define sd_GapScanStartCmd_init_default          {false, sd_types_BleGapScanParams_init_default, false, sd_types_BleData_init_default}
+#define sd_GapScanStartCmd_init_default          {false, sd_types_BleGapScanParams_init_default}
 #define sd_GapScanStopCmd_init_default           {0}
 #define sd_GapConnectCmd_init_default            {false, sd_types_BleGapAddr_init_default, false, sd_types_BleGapScanParams_init_default, false, sd_types_BleGapConnParams_init_default, 0}
 #define sd_GapConnectCancelCmd_init_default      {0}
@@ -761,7 +759,7 @@ extern "C" {
 #define sd_GapConnSecGetCmd_init_zero            {0}
 #define sd_GapRssiStartCmd_init_zero             {0, 0, 0}
 #define sd_GapRssiStopCmd_init_zero              {0}
-#define sd_GapScanStartCmd_init_zero             {false, sd_types_BleGapScanParams_init_zero, false, sd_types_BleData_init_zero}
+#define sd_GapScanStartCmd_init_zero             {false, sd_types_BleGapScanParams_init_zero}
 #define sd_GapScanStopCmd_init_zero              {0}
 #define sd_GapConnectCmd_init_zero               {false, sd_types_BleGapAddr_init_zero, false, sd_types_BleGapScanParams_init_zero, false, sd_types_BleGapConnParams_init_zero, 0}
 #define sd_GapConnectCancelCmd_init_zero         {0}
@@ -899,7 +897,6 @@ extern "C" {
 #define sd_GapRssiStartCmd_skip_count_tag        3
 #define sd_GapRssiStopCmd_conn_handle_tag        1
 #define sd_GapScanStartCmd_scan_params_tag       1
-#define sd_GapScanStartCmd_adv_report_buffer_tag 2
 #define sd_GapConnectCmd_peer_addr_tag           1
 #define sd_GapConnectCmd_scan_params_tag         2
 #define sd_GapConnectCmd_conn_params_tag         3
@@ -1244,12 +1241,10 @@ X(a, STATIC,   SINGULAR, UINT32,   conn_handle,       1)
 #define sd_GapRssiStopCmd_DEFAULT NULL
 
 #define sd_GapScanStartCmd_FIELDLIST(X, a) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  scan_params,       1) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  adv_report_buffer,   2)
+X(a, STATIC,   OPTIONAL, MESSAGE,  scan_params,       1)
 #define sd_GapScanStartCmd_CALLBACK NULL
 #define sd_GapScanStartCmd_DEFAULT NULL
 #define sd_GapScanStartCmd_scan_params_MSGTYPE sd_types_BleGapScanParams
-#define sd_GapScanStartCmd_adv_report_buffer_MSGTYPE sd_types_BleData
 
 #define sd_GapScanStopCmd_FIELDLIST(X, a) \
 
@@ -2071,7 +2066,7 @@ extern const pb_msgdesc_t sd_GapEvtAdvSetTerminated_msg;
 #define sd_GapRssiStartRsp_size                  6
 #define sd_GapRssiStopCmd_size                   4
 #define sd_GapRssiStopRsp_size                   6
-#define sd_GapScanStartCmd_size                  300
+#define sd_GapScanStartCmd_size                  35
 #define sd_GapScanStartRsp_size                  6
 #define sd_GapScanStopCmd_size                   0
 #define sd_GapScanStopRsp_size                   6

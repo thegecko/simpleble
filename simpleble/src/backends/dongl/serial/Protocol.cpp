@@ -382,8 +382,8 @@ sd_GapRssiStopRsp Protocol::sd_gap_rssi_stop(uint16_t conn_handle) {
     return response.rsp.softdevice.rsp.gap_rssi_stop;
 }
 
-sd_GapScanStartRsp Protocol::sd_gap_scan_start(bool has_scan_params, sd_types_BleGapScanParams scan_params, bool has_adv_report_buffer, sd_types_BleData adv_report_buffer) {
-    sd_GapScanStartCmd cmd = {has_scan_params, scan_params, has_adv_report_buffer, adv_report_buffer};
+sd_GapScanStartRsp Protocol::sd_gap_scan_start(sd_types_BleGapScanParams scan_params) {
+    sd_GapScanStartCmd cmd = {true, scan_params};
     dongl_Command command = dongl_Command_init_zero;
     command.which_cmd = dongl_Command_softdevice_tag;
     command.cmd.softdevice.which_cmd = sd_Command_gap_scan_start_tag;

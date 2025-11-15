@@ -96,7 +96,7 @@ PB_BIND(sd_GapRssiStartCmd, sd_GapRssiStartCmd, AUTO)
 PB_BIND(sd_GapRssiStopCmd, sd_GapRssiStopCmd, AUTO)
 
 
-PB_BIND(sd_GapScanStartCmd, sd_GapScanStartCmd, 2)
+PB_BIND(sd_GapScanStartCmd, sd_GapScanStartCmd, AUTO)
 
 
 PB_BIND(sd_GapScanStopCmd, sd_GapScanStopCmd, AUTO)
