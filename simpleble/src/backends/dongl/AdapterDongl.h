@@ -51,7 +51,7 @@ class AdapterDongl : public AdapterBase {
     void _on_softdevice_event(const sd_Event& event);
     void _on_simpleble_event(const simpleble_Event& event);
 
-    std::unique_ptr<Dongl::Serial::Protocol> _serial_protocol;
+    std::shared_ptr<Dongl::Serial::Protocol> _serial_protocol;
     std::map<BluetoothAddress, std::shared_ptr<PeripheralDongl>> peripherals_;
     std::map<BluetoothAddress, std::shared_ptr<PeripheralDongl>> seen_peripherals_;
 

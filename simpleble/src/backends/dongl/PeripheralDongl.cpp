@@ -14,10 +14,12 @@
 using namespace SimpleBLE;
 using namespace std::chrono_literals;
 
-PeripheralDongl::PeripheralDongl(advertising_data_t advertising_data) {
+PeripheralDongl::PeripheralDongl(std::shared_ptr<Dongl::Serial::Protocol> serial_protocol, advertising_data_t advertising_data) {
+    _serial_protocol = serial_protocol;
     _address_type = advertising_data.address_type;
     _identifier = advertising_data.identifier;
     _address = advertising_data.mac_address;
+    _connectable = advertising_data.connectable;
     update_advertising_data(advertising_data);
 }
 
@@ -37,9 +39,18 @@ int16_t PeripheralDongl::tx_power() { return _tx_power; }
 
 uint16_t PeripheralDongl::mtu() { return 0; }
 
-void PeripheralDongl::connect() {}
+void PeripheralDongl::connect() {
+    auto response = _serial_protocol->simpleble_connect(static_cast<simpleble_BluetoothAddressType>(_address_type), _address);
+    fmt::print("Connect: {}\n", response.ret_code);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-void PeripheralDongl::disconnect() {}
+}
+
+void PeripheralDongl::disconnect() {
+    auto response = _serial_protocol->simpleble_disconnect(0);
+    fmt::print("Disconnect: {}\n", response.ret_code);
+}
+
 bool PeripheralDongl::is_connected() { return false; }
 
 bool PeripheralDongl::is_connectable() { return _connectable; }

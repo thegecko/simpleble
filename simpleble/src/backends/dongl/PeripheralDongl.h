@@ -14,12 +14,13 @@
 #include <mutex>
 
 #include "AdapterBaseTypes.h"
+#include "serial/Protocol.h"
 
 namespace SimpleBLE {
 
 class PeripheralDongl : public PeripheralBase {
   public:
-    PeripheralDongl(advertising_data_t advertising_data);
+    PeripheralDongl(std::shared_ptr<Dongl::Serial::Protocol> serial_protocol, advertising_data_t advertising_data);
     virtual ~PeripheralDongl();
 
     void* underlying() const override;
@@ -70,6 +71,8 @@ class PeripheralDongl : public PeripheralBase {
     bool _connectable;
     std::map<uint16_t, ByteArray> _manufacturer_data;
     std::map<BluetoothUUID, ByteArray> _service_data;
+
+    std::shared_ptr<Dongl::Serial::Protocol> _serial_protocol;
 
     kvn::safe_callback<void()> _callback_on_connected;
     kvn::safe_callback<void()> _callback_on_disconnected;

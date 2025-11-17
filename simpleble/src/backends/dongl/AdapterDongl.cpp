@@ -25,7 +25,7 @@ struct DecodedServiceData {
 bool AdapterDongl::bluetooth_enabled() { return true; }
 
 AdapterDongl::AdapterDongl(const std::string& device_path)
-    : _serial_protocol(std::make_unique<Dongl::Serial::Protocol>(device_path)) {
+    : _serial_protocol(std::make_shared<Dongl::Serial::Protocol>(device_path)) {
     fmt::print("Dongl adapter created with device path: {}\n", device_path);
 
     _serial_protocol->set_event_callback([this](const dongl_Event& event) {
@@ -89,24 +89,13 @@ void AdapterDongl::power_off() {}
 bool AdapterDongl::is_powered() { return true; }
 
 void AdapterDongl::scan_start() {
-    sd_types_BleGapScanParams scan_param = {
-        .extended = true,
-        .report_incomplete_evts = false,
-        .active = true,
-        .filter_policy = 0,
-        .scan_phys = sd_types_BleGapPhy_BLE_GAP_PHY_1MBPS,
-        .interval = 160,
-        .window = 160,
-        .timeout = 0,
-    };
-
-    auto response = _serial_protocol->sd_gap_scan_start(scan_param);
+    auto response = _serial_protocol->simpleble_scan_start();
 
     fmt::print("Scan start: {}\n", response.ret_code);
 }
 
 void AdapterDongl::scan_stop() {
-    auto response = _serial_protocol->sd_gap_scan_stop();
+    auto response = _serial_protocol->simpleble_scan_stop();
     fmt::print("Scan stop: {}\n", response.ret_code);
 }
 
@@ -125,7 +114,7 @@ SharedPtrVector<PeripheralBase> AdapterDongl::get_paired_peripherals() { return 
 void AdapterDongl::_scan_received_callback(advertising_data_t data) {
     if (this->peripherals_.count(data.mac_address) == 0) {
         // If the incoming peripheral has never been seen before, create and save a reference to it.
-        auto base_peripheral = std::make_shared<PeripheralDongl>(data);
+        auto base_peripheral = std::make_shared<PeripheralDongl>(_serial_protocol, data);
         this->peripherals_.insert(std::make_pair(data.mac_address, base_peripheral));
     }
 
@@ -150,10 +139,7 @@ void AdapterDongl::_on_simpleble_event(const simpleble_Event& event) {
     switch (event.which_evt) {
         case simpleble_Event_adv_evt_tag: {
             advertising_data_t data = {
-                .mac_address = fmt::format(
-                    "{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}", event.evt.adv_evt.address[5],
-                    event.evt.adv_evt.address[4], event.evt.adv_evt.address[3], event.evt.adv_evt.address[2],
-                    event.evt.adv_evt.address[1], event.evt.adv_evt.address[0]),
+                .mac_address = std::string(event.evt.adv_evt.address),
                 .address_type = static_cast<SimpleBLE::BluetoothAddressType>(event.evt.adv_evt.address_type),
                 .identifier = std::string(event.evt.adv_evt.identifier),
             };
@@ -172,8 +158,6 @@ void AdapterDongl::_on_simpleble_event(const simpleble_Event& event) {
             //     ByteArray service_data(event.evt.adv_evt.service_data[i].data.bytes, event.evt.adv_evt.service_data[i].data.size);
             //     data.service_data[BluetoothUUID(event.evt.adv_evt.service_data[i].uuid)] = service_data;
             // }
-
-            fmt::print("Advertising data: {}\n", data.identifier);
 
             _scan_received_callback(data);
             break;

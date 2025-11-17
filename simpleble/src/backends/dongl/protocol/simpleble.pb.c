@@ -15,7 +15,31 @@ PB_BIND(simpleble_ServiceDataEntry, simpleble_ServiceDataEntry, AUTO)
 PB_BIND(simpleble_InitCmd, simpleble_InitCmd, AUTO)
 
 
+PB_BIND(simpleble_ScanStartCmd, simpleble_ScanStartCmd, AUTO)
+
+
+PB_BIND(simpleble_ScanStopCmd, simpleble_ScanStopCmd, AUTO)
+
+
+PB_BIND(simpleble_ConnectCmd, simpleble_ConnectCmd, AUTO)
+
+
+PB_BIND(simpleble_DisconnectCmd, simpleble_DisconnectCmd, AUTO)
+
+
 PB_BIND(simpleble_InitRsp, simpleble_InitRsp, AUTO)
+
+
+PB_BIND(simpleble_ScanStartRsp, simpleble_ScanStartRsp, AUTO)
+
+
+PB_BIND(simpleble_ScanStopRsp, simpleble_ScanStopRsp, AUTO)
+
+
+PB_BIND(simpleble_ConnectRsp, simpleble_ConnectRsp, AUTO)
+
+
+PB_BIND(simpleble_DisconnectRsp, simpleble_DisconnectRsp, AUTO)
 
 
 PB_BIND(simpleble_AdvEvt, simpleble_AdvEvt, 2)

@@ -55,7 +55,7 @@ extern const pb_msgdesc_t dongl_Command_msg;
 
 /* Maximum encoded size of messages (where known) */
 #if defined(sd_Command_size)
-union dongl_Command_cmd_size_union {char f3[(6 + sd_Command_size)]; char f0[4];};
+union dongl_Command_cmd_size_union {char f3[(6 + sd_Command_size)]; char f0[25];};
 #endif
 #if defined(sd_Command_size)
 #define DONGL_H2D_PB_H_MAX_SIZE                  dongl_Command_size

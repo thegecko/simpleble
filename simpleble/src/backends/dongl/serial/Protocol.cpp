@@ -48,6 +48,49 @@ simpleble_InitRsp Protocol::simpleble_init() {
     return response.rsp.simpleble.rsp.init;
 }
 
+simpleble_ScanStartRsp Protocol::simpleble_scan_start() {
+    dongl_Command command = dongl_Command_init_zero;
+    command.which_cmd = dongl_Command_simpleble_tag;
+    command.cmd.simpleble.which_cmd = simpleble_Command_scan_start_tag;
+    command.cmd.simpleble.cmd.scan_start = simpleble_ScanStartCmd_init_default;
+
+    dongl_Response response = exchange(command);
+    return response.rsp.simpleble.rsp.scan_start;
+}
+
+simpleble_ScanStopRsp Protocol::simpleble_scan_stop() {
+    dongl_Command command = dongl_Command_init_zero;
+    command.which_cmd = dongl_Command_simpleble_tag;
+    command.cmd.simpleble.which_cmd = simpleble_Command_scan_stop_tag;
+    command.cmd.simpleble.cmd.scan_stop = simpleble_ScanStopCmd_init_default;
+
+    dongl_Response response = exchange(command);
+    return response.rsp.simpleble.rsp.scan_stop;
+}
+
+simpleble_ConnectRsp Protocol::simpleble_connect(simpleble_BluetoothAddressType address_type, const std::string& address) {
+    dongl_Command command = dongl_Command_init_zero;
+    command.which_cmd = dongl_Command_simpleble_tag;
+    command.cmd.simpleble.which_cmd = simpleble_Command_connect_tag;
+    command.cmd.simpleble.cmd.connect = simpleble_ConnectCmd_init_default;
+
+    command.cmd.simpleble.cmd.connect.address_type = address_type;
+    strncpy(command.cmd.simpleble.cmd.connect.address, address.c_str(), sizeof(command.cmd.simpleble.cmd.connect.address));
+
+    dongl_Response response = exchange(command);
+    return response.rsp.simpleble.rsp.connect;
+}
+
+simpleble_DisconnectRsp Protocol::simpleble_disconnect(uint16_t conn_handle) {
+    dongl_Command command = dongl_Command_init_zero;
+    command.which_cmd = dongl_Command_simpleble_tag;
+    command.cmd.simpleble.which_cmd = simpleble_Command_disconnect_tag;
+    command.cmd.simpleble.cmd.disconnect = simpleble_DisconnectCmd_init_default;
+
+    dongl_Response response = exchange(command);
+    return response.rsp.simpleble.rsp.disconnect;
+}
+
 // GAP commands
 sd_GapAddrSetRsp Protocol::sd_gap_addr_set(bool has_addr, sd_types_BleGapAddr addr) {
     sd_GapAddrSetCmd cmd = {has_addr, addr};

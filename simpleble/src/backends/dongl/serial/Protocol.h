@@ -29,6 +29,10 @@ class Protocol : public ProtocolBase {
     basic_DfuStartRsp basic_dfu_start();
 
     simpleble_InitRsp simpleble_init();
+    simpleble_ScanStartRsp simpleble_scan_start();
+    simpleble_ScanStopRsp simpleble_scan_stop();
+    simpleble_ConnectRsp simpleble_connect(simpleble_BluetoothAddressType address_type, const std::string& address);
+    simpleble_DisconnectRsp simpleble_disconnect(uint16_t conn_handle);
 
     // GAP commands
     sd_GapAddrSetRsp sd_gap_addr_set(bool has_addr, sd_types_BleGapAddr addr);
