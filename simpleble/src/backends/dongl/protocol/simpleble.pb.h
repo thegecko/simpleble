@@ -83,6 +83,15 @@ typedef struct _simpleble_AdvEvt {
     simpleble_ServiceDataEntry service_data[4];
 } simpleble_AdvEvt;
 
+typedef struct _simpleble_ConnectionEvt {
+    char address[18]; /* 17 characters + null terminator */
+    uint16_t conn_handle;
+} simpleble_ConnectionEvt;
+
+typedef struct _simpleble_DisconnectionEvt {
+    uint16_t conn_handle;
+} simpleble_DisconnectionEvt;
+
 typedef struct _simpleble_Command {
     pb_size_t which_cmd;
     union {
@@ -109,6 +118,8 @@ typedef struct _simpleble_Event {
     pb_size_t which_evt;
     union {
         simpleble_AdvEvt adv_evt;
+        simpleble_ConnectionEvt connection_evt;
+        simpleble_DisconnectionEvt disconnection_evt;
     } evt;
 } simpleble_Event;
 
@@ -141,6 +152,8 @@ extern "C" {
 
 
 
+
+
 /* Initializer values for message structs */
 #define simpleble_ManufacturerDataEntry_init_default {0, {0, {0}}}
 #define simpleble_ServiceDataEntry_init_default  {{0}, {0, {0}}}
@@ -155,6 +168,8 @@ extern "C" {
 #define simpleble_ConnectRsp_init_default        {0}
 #define simpleble_DisconnectRsp_init_default     {0}
 #define simpleble_AdvEvt_init_default            {"", _simpleble_BluetoothAddressType_MIN, "", 0, 0, 0, 0, {simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default}, 0, {simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default}}
+#define simpleble_ConnectionEvt_init_default     {"", 0}
+#define simpleble_DisconnectionEvt_init_default  {0}
 #define simpleble_Command_init_default           {0, {simpleble_InitCmd_init_default}}
 #define simpleble_Response_init_default          {0, {simpleble_InitRsp_init_default}}
 #define simpleble_Event_init_default             {0, {simpleble_AdvEvt_init_default}}
@@ -171,6 +186,8 @@ extern "C" {
 #define simpleble_ConnectRsp_init_zero           {0}
 #define simpleble_DisconnectRsp_init_zero        {0}
 #define simpleble_AdvEvt_init_zero               {"", _simpleble_BluetoothAddressType_MIN, "", 0, 0, 0, 0, {simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero}, 0, {simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero}}
+#define simpleble_ConnectionEvt_init_zero        {"", 0}
+#define simpleble_DisconnectionEvt_init_zero     {0}
 #define simpleble_Command_init_zero              {0, {simpleble_InitCmd_init_zero}}
 #define simpleble_Response_init_zero             {0, {simpleble_InitRsp_init_zero}}
 #define simpleble_Event_init_zero                {0, {simpleble_AdvEvt_init_zero}}
@@ -196,6 +213,9 @@ extern "C" {
 #define simpleble_AdvEvt_tx_power_tag            6
 #define simpleble_AdvEvt_manufacturer_data_tag   7
 #define simpleble_AdvEvt_service_data_tag        8
+#define simpleble_ConnectionEvt_address_tag      1
+#define simpleble_ConnectionEvt_conn_handle_tag  2
+#define simpleble_DisconnectionEvt_conn_handle_tag 1
 #define simpleble_Command_init_tag               1
 #define simpleble_Command_scan_start_tag         2
 #define simpleble_Command_scan_stop_tag          3
@@ -207,6 +227,8 @@ extern "C" {
 #define simpleble_Response_connect_tag           4
 #define simpleble_Response_disconnect_tag        5
 #define simpleble_Event_adv_evt_tag              1
+#define simpleble_Event_connection_evt_tag       2
+#define simpleble_Event_disconnection_evt_tag    3
 
 /* Struct field encoding specification for nanopb */
 #define simpleble_ManufacturerDataEntry_FIELDLIST(X, a) \
@@ -286,6 +308,17 @@ X(a, STATIC,   REPEATED, MESSAGE,  service_data,      8)
 #define simpleble_AdvEvt_manufacturer_data_MSGTYPE simpleble_ManufacturerDataEntry
 #define simpleble_AdvEvt_service_data_MSGTYPE simpleble_ServiceDataEntry
 
+#define simpleble_ConnectionEvt_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, STRING,   address,           1) \
+X(a, STATIC,   SINGULAR, UINT32,   conn_handle,       2)
+#define simpleble_ConnectionEvt_CALLBACK NULL
+#define simpleble_ConnectionEvt_DEFAULT NULL
+
+#define simpleble_DisconnectionEvt_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   conn_handle,       1)
+#define simpleble_DisconnectionEvt_CALLBACK NULL
+#define simpleble_DisconnectionEvt_DEFAULT NULL
+
 #define simpleble_Command_FIELDLIST(X, a) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,init,cmd.init),   1) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,scan_start,cmd.scan_start),   2) \
@@ -315,10 +348,14 @@ X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,disconnect,rsp.disconnect),   5)
 #define simpleble_Response_rsp_disconnect_MSGTYPE simpleble_DisconnectRsp
 
 #define simpleble_Event_FIELDLIST(X, a) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (evt,adv_evt,evt.adv_evt),   1)
+X(a, STATIC,   ONEOF,    MESSAGE,  (evt,adv_evt,evt.adv_evt),   1) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (evt,connection_evt,evt.connection_evt),   2) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (evt,disconnection_evt,evt.disconnection_evt),   3)
 #define simpleble_Event_CALLBACK NULL
 #define simpleble_Event_DEFAULT NULL
 #define simpleble_Event_evt_adv_evt_MSGTYPE simpleble_AdvEvt
+#define simpleble_Event_evt_connection_evt_MSGTYPE simpleble_ConnectionEvt
+#define simpleble_Event_evt_disconnection_evt_MSGTYPE simpleble_DisconnectionEvt
 
 extern const pb_msgdesc_t simpleble_ManufacturerDataEntry_msg;
 extern const pb_msgdesc_t simpleble_ServiceDataEntry_msg;
@@ -333,6 +370,8 @@ extern const pb_msgdesc_t simpleble_ScanStopRsp_msg;
 extern const pb_msgdesc_t simpleble_ConnectRsp_msg;
 extern const pb_msgdesc_t simpleble_DisconnectRsp_msg;
 extern const pb_msgdesc_t simpleble_AdvEvt_msg;
+extern const pb_msgdesc_t simpleble_ConnectionEvt_msg;
+extern const pb_msgdesc_t simpleble_DisconnectionEvt_msg;
 extern const pb_msgdesc_t simpleble_Command_msg;
 extern const pb_msgdesc_t simpleble_Response_msg;
 extern const pb_msgdesc_t simpleble_Event_msg;
@@ -351,6 +390,8 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 #define simpleble_ConnectRsp_fields &simpleble_ConnectRsp_msg
 #define simpleble_DisconnectRsp_fields &simpleble_DisconnectRsp_msg
 #define simpleble_AdvEvt_fields &simpleble_AdvEvt_msg
+#define simpleble_ConnectionEvt_fields &simpleble_ConnectionEvt_msg
+#define simpleble_DisconnectionEvt_fields &simpleble_DisconnectionEvt_msg
 #define simpleble_Command_fields &simpleble_Command_msg
 #define simpleble_Response_fields &simpleble_Response_msg
 #define simpleble_Event_fields &simpleble_Event_msg
@@ -361,8 +402,10 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 #define simpleble_Command_size                   23
 #define simpleble_ConnectCmd_size                21
 #define simpleble_ConnectRsp_size                6
+#define simpleble_ConnectionEvt_size             23
 #define simpleble_DisconnectCmd_size             4
 #define simpleble_DisconnectRsp_size             6
+#define simpleble_DisconnectionEvt_size          4
 #define simpleble_Event_size                     403
 #define simpleble_InitCmd_size                   0
 #define simpleble_InitRsp_size                   6

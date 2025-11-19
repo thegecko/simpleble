@@ -138,28 +138,50 @@ void AdapterDongl::_scan_received_callback(advertising_data_t data) {
 void AdapterDongl::_on_simpleble_event(const simpleble_Event& event) {
     switch (event.which_evt) {
         case simpleble_Event_adv_evt_tag: {
-            advertising_data_t data = {
-                .mac_address = std::string(event.evt.adv_evt.address),
-                .address_type = static_cast<SimpleBLE::BluetoothAddressType>(event.evt.adv_evt.address_type),
-                .identifier = std::string(event.evt.adv_evt.identifier),
-            };
+            advertising_data_t data = {0};
+            data.mac_address = std::string(event.evt.adv_evt.address);
+            data.address_type = static_cast<SimpleBLE::BluetoothAddressType>(event.evt.adv_evt.address_type);
+            data.identifier = std::string(event.evt.adv_evt.identifier);
             data.connectable = event.evt.adv_evt.connectable;
             data.rssi = event.evt.adv_evt.rssi;
             data.tx_power = event.evt.adv_evt.tx_power;
 
             // Extract decoded manufacturer and service data
             for (int i = 0; i < event.evt.adv_evt.manufacturer_data_count; i++) {
-                ByteArray manufacturer_data(event.evt.adv_evt.manufacturer_data[i].data.bytes, event.evt.adv_evt.manufacturer_data[i].data.size);
+                ByteArray manufacturer_data(event.evt.adv_evt.manufacturer_data[i].data.bytes,
+                                            event.evt.adv_evt.manufacturer_data[i].data.size);
                 data.manufacturer_data[event.evt.adv_evt.manufacturer_data[i].company_id] = manufacturer_data;
             }
 
             // TODO: Implement service data extraction
             // for (int i = 0; i < event.evt.adv_evt.service_data_count; i++) {
-            //     ByteArray service_data(event.evt.adv_evt.service_data[i].data.bytes, event.evt.adv_evt.service_data[i].data.size);
+            //     ByteArray service_data(event.evt.adv_evt.service_data[i].data.bytes,
+            //     event.evt.adv_evt.service_data[i].data.size);
             //     data.service_data[BluetoothUUID(event.evt.adv_evt.service_data[i].uuid)] = service_data;
             // }
 
             _scan_received_callback(data);
+            break;
+        }
+
+        case simpleble_Event_connection_evt_tag: {
+            for (auto& [address, peripheral] : this->peripherals_) {
+                if (peripheral->address() == std::string(event.evt.connection_evt.address)) {
+                    peripheral->notify_connected(event.evt.connection_evt.conn_handle);
+                    break;
+                }
+            }
+            break;
+        }
+
+        case simpleble_Event_disconnection_evt_tag: {
+            fmt::print("Received disconnection event: {}\n", event.evt.disconnection_evt.conn_handle);
+            for (auto& [address, peripheral] : this->peripherals_) {
+                if (peripheral->conn_handle() == event.evt.disconnection_evt.conn_handle) {
+                    peripheral->notify_disconnected();
+                    break;
+                }
+            }
             break;
         }
     }

@@ -60,9 +60,15 @@ class PeripheralDongl : public PeripheralBase {
     virtual void set_callback_on_disconnected(std::function<void()> on_disconnected) override;
 
     // Internal methods not exposed to the user.
+    uint16_t conn_handle() const;
     void update_advertising_data(advertising_data_t advertising_data);
+    void notify_connected(uint16_t conn_handle);
+    void notify_disconnected();
+
+    const uint16_t BLE_CONN_HANDLE_INVALID = 0xFFFF;
 
   private:
+    uint16_t _conn_handle = BLE_CONN_HANDLE_INVALID;
     std::string _identifier;
     BluetoothAddress _address;
     BluetoothAddressType _address_type;
@@ -73,6 +79,11 @@ class PeripheralDongl : public PeripheralBase {
     std::map<BluetoothUUID, ByteArray> _service_data;
 
     std::shared_ptr<Dongl::Serial::Protocol> _serial_protocol;
+
+    std::condition_variable connection_cv_;
+    std::mutex connection_mutex_;
+    std::condition_variable disconnection_cv_;
+    std::mutex disconnection_mutex_;
 
     kvn::safe_callback<void()> _callback_on_connected;
     kvn::safe_callback<void()> _callback_on_disconnected;

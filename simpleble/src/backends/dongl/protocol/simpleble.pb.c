@@ -45,6 +45,12 @@ PB_BIND(simpleble_DisconnectRsp, simpleble_DisconnectRsp, AUTO)
 PB_BIND(simpleble_AdvEvt, simpleble_AdvEvt, 2)
 
 
+PB_BIND(simpleble_ConnectionEvt, simpleble_ConnectionEvt, AUTO)
+
+
+PB_BIND(simpleble_DisconnectionEvt, simpleble_DisconnectionEvt, AUTO)
+
+
 PB_BIND(simpleble_Command, simpleble_Command, AUTO)
 
 
