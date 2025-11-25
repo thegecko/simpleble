@@ -138,7 +138,7 @@ void AdapterDongl::_scan_received_callback(advertising_data_t data) {
 void AdapterDongl::_on_simpleble_event(const simpleble_Event& event) {
     switch (event.which_evt) {
         case simpleble_Event_adv_evt_tag: {
-            advertising_data_t data = {0};
+            advertising_data_t data = advertising_data_t();
             data.mac_address = std::string(event.evt.adv_evt.address);
             data.address_type = static_cast<SimpleBLE::BluetoothAddressType>(event.evt.adv_evt.address_type);
             data.identifier = std::string(event.evt.adv_evt.identifier);

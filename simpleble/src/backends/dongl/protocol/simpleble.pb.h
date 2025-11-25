@@ -17,6 +17,27 @@ typedef enum _simpleble_BluetoothAddressType {
 } simpleble_BluetoothAddressType;
 
 /* Struct definitions */
+typedef struct _simpleble_UUID16Bit {
+    uint16_t uuid;
+} simpleble_UUID16Bit;
+
+typedef struct _simpleble_UUID32Bit {
+    uint32_t uuid;
+} simpleble_UUID32Bit;
+
+typedef struct _simpleble_UUID128Bit {
+    pb_byte_t uuid[16]; /* BluetoothUUID, 16 bytes */
+} simpleble_UUID128Bit;
+
+typedef struct _simpleble_UUID {
+    pb_size_t which_uuid;
+    union {
+        simpleble_UUID16Bit uuid16;
+        simpleble_UUID32Bit uuid32;
+        simpleble_UUID128Bit uuid128;
+    } uuid;
+} simpleble_UUID;
+
 typedef PB_BYTES_ARRAY_T(27) simpleble_ManufacturerDataEntry_data_t;
 typedef struct _simpleble_ManufacturerDataEntry {
     uint16_t company_id;
@@ -25,7 +46,8 @@ typedef struct _simpleble_ManufacturerDataEntry {
 
 typedef PB_BYTES_ARRAY_T(27) simpleble_ServiceDataEntry_data_t;
 typedef struct _simpleble_ServiceDataEntry {
-    pb_byte_t uuid[16]; /* BluetoothUUID, 16 bytes */
+    bool has_uuid;
+    simpleble_UUID uuid;
     simpleble_ServiceDataEntry_data_t data; /* Max service data size */
 } simpleble_ServiceDataEntry;
 
@@ -138,6 +160,10 @@ extern "C" {
 
 
 
+
+
+
+
 #define simpleble_ConnectCmd_address_type_ENUMTYPE simpleble_BluetoothAddressType
 
 
@@ -155,8 +181,12 @@ extern "C" {
 
 
 /* Initializer values for message structs */
+#define simpleble_UUID16Bit_init_default         {0}
+#define simpleble_UUID32Bit_init_default         {0}
+#define simpleble_UUID128Bit_init_default        {{0}}
+#define simpleble_UUID_init_default              {0, {simpleble_UUID16Bit_init_default}}
 #define simpleble_ManufacturerDataEntry_init_default {0, {0, {0}}}
-#define simpleble_ServiceDataEntry_init_default  {{0}, {0, {0}}}
+#define simpleble_ServiceDataEntry_init_default  {false, simpleble_UUID_init_default, {0, {0}}}
 #define simpleble_InitCmd_init_default           {0}
 #define simpleble_ScanStartCmd_init_default      {0}
 #define simpleble_ScanStopCmd_init_default       {0}
@@ -173,8 +203,12 @@ extern "C" {
 #define simpleble_Command_init_default           {0, {simpleble_InitCmd_init_default}}
 #define simpleble_Response_init_default          {0, {simpleble_InitRsp_init_default}}
 #define simpleble_Event_init_default             {0, {simpleble_AdvEvt_init_default}}
+#define simpleble_UUID16Bit_init_zero            {0}
+#define simpleble_UUID32Bit_init_zero            {0}
+#define simpleble_UUID128Bit_init_zero           {{0}}
+#define simpleble_UUID_init_zero                 {0, {simpleble_UUID16Bit_init_zero}}
 #define simpleble_ManufacturerDataEntry_init_zero {0, {0, {0}}}
-#define simpleble_ServiceDataEntry_init_zero     {{0}, {0, {0}}}
+#define simpleble_ServiceDataEntry_init_zero     {false, simpleble_UUID_init_zero, {0, {0}}}
 #define simpleble_InitCmd_init_zero              {0}
 #define simpleble_ScanStartCmd_init_zero         {0}
 #define simpleble_ScanStopCmd_init_zero          {0}
@@ -193,6 +227,12 @@ extern "C" {
 #define simpleble_Event_init_zero                {0, {simpleble_AdvEvt_init_zero}}
 
 /* Field tags (for use in manual encoding/decoding) */
+#define simpleble_UUID16Bit_uuid_tag             1
+#define simpleble_UUID32Bit_uuid_tag             1
+#define simpleble_UUID128Bit_uuid_tag            1
+#define simpleble_UUID_uuid16_tag                1
+#define simpleble_UUID_uuid32_tag                2
+#define simpleble_UUID_uuid128_tag               3
 #define simpleble_ManufacturerDataEntry_company_id_tag 1
 #define simpleble_ManufacturerDataEntry_data_tag 2
 #define simpleble_ServiceDataEntry_uuid_tag      1
@@ -231,6 +271,31 @@ extern "C" {
 #define simpleble_Event_disconnection_evt_tag    3
 
 /* Struct field encoding specification for nanopb */
+#define simpleble_UUID16Bit_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   uuid,              1)
+#define simpleble_UUID16Bit_CALLBACK NULL
+#define simpleble_UUID16Bit_DEFAULT NULL
+
+#define simpleble_UUID32Bit_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   uuid,              1)
+#define simpleble_UUID32Bit_CALLBACK NULL
+#define simpleble_UUID32Bit_DEFAULT NULL
+
+#define simpleble_UUID128Bit_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, FIXED_LENGTH_BYTES, uuid,              1)
+#define simpleble_UUID128Bit_CALLBACK NULL
+#define simpleble_UUID128Bit_DEFAULT NULL
+
+#define simpleble_UUID_FIELDLIST(X, a) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (uuid,uuid16,uuid.uuid16),   1) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (uuid,uuid32,uuid.uuid32),   2) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (uuid,uuid128,uuid.uuid128),   3)
+#define simpleble_UUID_CALLBACK NULL
+#define simpleble_UUID_DEFAULT NULL
+#define simpleble_UUID_uuid_uuid16_MSGTYPE simpleble_UUID16Bit
+#define simpleble_UUID_uuid_uuid32_MSGTYPE simpleble_UUID32Bit
+#define simpleble_UUID_uuid_uuid128_MSGTYPE simpleble_UUID128Bit
+
 #define simpleble_ManufacturerDataEntry_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UINT32,   company_id,        1) \
 X(a, STATIC,   SINGULAR, BYTES,    data,              2)
@@ -238,10 +303,11 @@ X(a, STATIC,   SINGULAR, BYTES,    data,              2)
 #define simpleble_ManufacturerDataEntry_DEFAULT NULL
 
 #define simpleble_ServiceDataEntry_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, FIXED_LENGTH_BYTES, uuid,              1) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  uuid,              1) \
 X(a, STATIC,   SINGULAR, BYTES,    data,              2)
 #define simpleble_ServiceDataEntry_CALLBACK NULL
 #define simpleble_ServiceDataEntry_DEFAULT NULL
+#define simpleble_ServiceDataEntry_uuid_MSGTYPE simpleble_UUID
 
 #define simpleble_InitCmd_FIELDLIST(X, a) \
 
@@ -357,6 +423,10 @@ X(a, STATIC,   ONEOF,    MESSAGE,  (evt,disconnection_evt,evt.disconnection_evt)
 #define simpleble_Event_evt_connection_evt_MSGTYPE simpleble_ConnectionEvt
 #define simpleble_Event_evt_disconnection_evt_MSGTYPE simpleble_DisconnectionEvt
 
+extern const pb_msgdesc_t simpleble_UUID16Bit_msg;
+extern const pb_msgdesc_t simpleble_UUID32Bit_msg;
+extern const pb_msgdesc_t simpleble_UUID128Bit_msg;
+extern const pb_msgdesc_t simpleble_UUID_msg;
 extern const pb_msgdesc_t simpleble_ManufacturerDataEntry_msg;
 extern const pb_msgdesc_t simpleble_ServiceDataEntry_msg;
 extern const pb_msgdesc_t simpleble_InitCmd_msg;
@@ -377,6 +447,10 @@ extern const pb_msgdesc_t simpleble_Response_msg;
 extern const pb_msgdesc_t simpleble_Event_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
+#define simpleble_UUID16Bit_fields &simpleble_UUID16Bit_msg
+#define simpleble_UUID32Bit_fields &simpleble_UUID32Bit_msg
+#define simpleble_UUID128Bit_fields &simpleble_UUID128Bit_msg
+#define simpleble_UUID_fields &simpleble_UUID_msg
 #define simpleble_ManufacturerDataEntry_fields &simpleble_ManufacturerDataEntry_msg
 #define simpleble_ServiceDataEntry_fields &simpleble_ServiceDataEntry_msg
 #define simpleble_InitCmd_fields &simpleble_InitCmd_msg
@@ -398,7 +472,7 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 
 /* Maximum encoded size of messages (where known) */
 #define SIMPLEBLE_SIMPLEBLE_PB_H_MAX_SIZE        simpleble_Event_size
-#define simpleble_AdvEvt_size                    400
+#define simpleble_AdvEvt_size                    416
 #define simpleble_Command_size                   23
 #define simpleble_ConnectCmd_size                21
 #define simpleble_ConnectRsp_size                6
@@ -406,7 +480,7 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 #define simpleble_DisconnectCmd_size             4
 #define simpleble_DisconnectRsp_size             6
 #define simpleble_DisconnectionEvt_size          4
-#define simpleble_Event_size                     403
+#define simpleble_Event_size                     419
 #define simpleble_InitCmd_size                   0
 #define simpleble_InitRsp_size                   6
 #define simpleble_ManufacturerDataEntry_size     33
@@ -415,7 +489,11 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 #define simpleble_ScanStartRsp_size              6
 #define simpleble_ScanStopCmd_size               0
 #define simpleble_ScanStopRsp_size               6
-#define simpleble_ServiceDataEntry_size          47
+#define simpleble_ServiceDataEntry_size          51
+#define simpleble_UUID128Bit_size                18
+#define simpleble_UUID16Bit_size                 4
+#define simpleble_UUID32Bit_size                 6
+#define simpleble_UUID_size                      20
 
 #ifdef __cplusplus
 } /* extern "C" */

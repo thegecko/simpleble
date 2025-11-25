@@ -68,6 +68,10 @@ class PeripheralDongl : public PeripheralBase {
     const uint16_t BLE_CONN_HANDLE_INVALID = 0xFFFF;
 
   private:
+
+    bool _attempt_connect();
+
+
     uint16_t _conn_handle = BLE_CONN_HANDLE_INVALID;
     std::string _identifier;
     BluetoothAddress _address;

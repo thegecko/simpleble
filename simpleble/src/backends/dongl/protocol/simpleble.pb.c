@@ -6,6 +6,18 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
+PB_BIND(simpleble_UUID16Bit, simpleble_UUID16Bit, AUTO)
+
+
+PB_BIND(simpleble_UUID32Bit, simpleble_UUID32Bit, AUTO)
+
+
+PB_BIND(simpleble_UUID128Bit, simpleble_UUID128Bit, AUTO)
+
+
+PB_BIND(simpleble_UUID, simpleble_UUID, AUTO)
+
+
 PB_BIND(simpleble_ManufacturerDataEntry, simpleble_ManufacturerDataEntry, AUTO)
 
 
