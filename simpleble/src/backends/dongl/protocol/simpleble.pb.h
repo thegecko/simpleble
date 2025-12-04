@@ -51,6 +51,47 @@ typedef struct _simpleble_ServiceDataEntry {
     simpleble_ServiceDataEntry_data_t data; /* Max service data size */
 } simpleble_ServiceDataEntry;
 
+typedef struct _simpleble_CharacteristicProperties {
+    bool broadcast;
+    bool read;
+    bool write_wo_resp;
+    bool write;
+    bool notify;
+    bool indicate;
+    bool auth_signed_wr;
+} simpleble_CharacteristicProperties;
+
+typedef struct _simpleble_Service {
+    bool has_uuid;
+    simpleble_UUID uuid;
+    uint16_t start_handle;
+    uint16_t end_handle;
+} simpleble_Service;
+
+typedef struct _simpleble_Characteristic {
+    bool has_uuid;
+    simpleble_UUID uuid;
+    bool has_props;
+    simpleble_CharacteristicProperties props;
+    uint16_t handle_decl;
+    uint16_t handle_value;
+} simpleble_Characteristic;
+
+typedef struct _simpleble_Descriptor {
+    bool has_uuid;
+    simpleble_UUID uuid;
+    uint16_t handle;
+} simpleble_Descriptor;
+
+typedef struct _simpleble_Attribute {
+    pb_size_t which_attribute;
+    union {
+        simpleble_Service service;
+        simpleble_Characteristic characteristic;
+        simpleble_Descriptor descriptor;
+    } attribute;
+} simpleble_Attribute;
+
 typedef struct _simpleble_InitCmd {
     char dummy_field;
 } simpleble_InitCmd;
@@ -114,6 +155,13 @@ typedef struct _simpleble_DisconnectionEvt {
     uint16_t conn_handle;
 } simpleble_DisconnectionEvt;
 
+typedef struct _simpleble_AttributeFoundEvt {
+    uint16_t conn_handle;
+    bool is_last;
+    pb_size_t attributes_count;
+    simpleble_Attribute attributes[12];
+} simpleble_AttributeFoundEvt;
+
 typedef struct _simpleble_Command {
     pb_size_t which_cmd;
     union {
@@ -142,6 +190,7 @@ typedef struct _simpleble_Event {
         simpleble_AdvEvt adv_evt;
         simpleble_ConnectionEvt connection_evt;
         simpleble_DisconnectionEvt disconnection_evt;
+        simpleble_AttributeFoundEvt attribute_found_evt;
     } evt;
 } simpleble_Event;
 
@@ -154,6 +203,11 @@ extern "C" {
 #define _simpleble_BluetoothAddressType_MIN simpleble_BluetoothAddressType_PUBLIC
 #define _simpleble_BluetoothAddressType_MAX simpleble_BluetoothAddressType_UNSPECIFIED
 #define _simpleble_BluetoothAddressType_ARRAYSIZE ((simpleble_BluetoothAddressType)(simpleble_BluetoothAddressType_UNSPECIFIED+1))
+
+
+
+
+
 
 
 
@@ -180,6 +234,7 @@ extern "C" {
 
 
 
+
 /* Initializer values for message structs */
 #define simpleble_UUID16Bit_init_default         {0}
 #define simpleble_UUID32Bit_init_default         {0}
@@ -187,6 +242,11 @@ extern "C" {
 #define simpleble_UUID_init_default              {0, {simpleble_UUID16Bit_init_default}}
 #define simpleble_ManufacturerDataEntry_init_default {0, {0, {0}}}
 #define simpleble_ServiceDataEntry_init_default  {false, simpleble_UUID_init_default, {0, {0}}}
+#define simpleble_CharacteristicProperties_init_default {0, 0, 0, 0, 0, 0, 0}
+#define simpleble_Service_init_default           {false, simpleble_UUID_init_default, 0, 0}
+#define simpleble_Characteristic_init_default    {false, simpleble_UUID_init_default, false, simpleble_CharacteristicProperties_init_default, 0, 0}
+#define simpleble_Descriptor_init_default        {false, simpleble_UUID_init_default, 0}
+#define simpleble_Attribute_init_default         {0, {simpleble_Service_init_default}}
 #define simpleble_InitCmd_init_default           {0}
 #define simpleble_ScanStartCmd_init_default      {0}
 #define simpleble_ScanStopCmd_init_default       {0}
@@ -200,6 +260,7 @@ extern "C" {
 #define simpleble_AdvEvt_init_default            {"", _simpleble_BluetoothAddressType_MIN, "", 0, 0, 0, 0, {simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default}, 0, {simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default}}
 #define simpleble_ConnectionEvt_init_default     {"", 0}
 #define simpleble_DisconnectionEvt_init_default  {0}
+#define simpleble_AttributeFoundEvt_init_default {0, 0, 0, {simpleble_Attribute_init_default, simpleble_Attribute_init_default, simpleble_Attribute_init_default, simpleble_Attribute_init_default, simpleble_Attribute_init_default, simpleble_Attribute_init_default, simpleble_Attribute_init_default, simpleble_Attribute_init_default, simpleble_Attribute_init_default, simpleble_Attribute_init_default, simpleble_Attribute_init_default, simpleble_Attribute_init_default}}
 #define simpleble_Command_init_default           {0, {simpleble_InitCmd_init_default}}
 #define simpleble_Response_init_default          {0, {simpleble_InitRsp_init_default}}
 #define simpleble_Event_init_default             {0, {simpleble_AdvEvt_init_default}}
@@ -209,6 +270,11 @@ extern "C" {
 #define simpleble_UUID_init_zero                 {0, {simpleble_UUID16Bit_init_zero}}
 #define simpleble_ManufacturerDataEntry_init_zero {0, {0, {0}}}
 #define simpleble_ServiceDataEntry_init_zero     {false, simpleble_UUID_init_zero, {0, {0}}}
+#define simpleble_CharacteristicProperties_init_zero {0, 0, 0, 0, 0, 0, 0}
+#define simpleble_Service_init_zero              {false, simpleble_UUID_init_zero, 0, 0}
+#define simpleble_Characteristic_init_zero       {false, simpleble_UUID_init_zero, false, simpleble_CharacteristicProperties_init_zero, 0, 0}
+#define simpleble_Descriptor_init_zero           {false, simpleble_UUID_init_zero, 0}
+#define simpleble_Attribute_init_zero            {0, {simpleble_Service_init_zero}}
 #define simpleble_InitCmd_init_zero              {0}
 #define simpleble_ScanStartCmd_init_zero         {0}
 #define simpleble_ScanStopCmd_init_zero          {0}
@@ -222,6 +288,7 @@ extern "C" {
 #define simpleble_AdvEvt_init_zero               {"", _simpleble_BluetoothAddressType_MIN, "", 0, 0, 0, 0, {simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero}, 0, {simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero}}
 #define simpleble_ConnectionEvt_init_zero        {"", 0}
 #define simpleble_DisconnectionEvt_init_zero     {0}
+#define simpleble_AttributeFoundEvt_init_zero    {0, 0, 0, {simpleble_Attribute_init_zero, simpleble_Attribute_init_zero, simpleble_Attribute_init_zero, simpleble_Attribute_init_zero, simpleble_Attribute_init_zero, simpleble_Attribute_init_zero, simpleble_Attribute_init_zero, simpleble_Attribute_init_zero, simpleble_Attribute_init_zero, simpleble_Attribute_init_zero, simpleble_Attribute_init_zero, simpleble_Attribute_init_zero}}
 #define simpleble_Command_init_zero              {0, {simpleble_InitCmd_init_zero}}
 #define simpleble_Response_init_zero             {0, {simpleble_InitRsp_init_zero}}
 #define simpleble_Event_init_zero                {0, {simpleble_AdvEvt_init_zero}}
@@ -237,6 +304,25 @@ extern "C" {
 #define simpleble_ManufacturerDataEntry_data_tag 2
 #define simpleble_ServiceDataEntry_uuid_tag      1
 #define simpleble_ServiceDataEntry_data_tag      2
+#define simpleble_CharacteristicProperties_broadcast_tag 1
+#define simpleble_CharacteristicProperties_read_tag 2
+#define simpleble_CharacteristicProperties_write_wo_resp_tag 3
+#define simpleble_CharacteristicProperties_write_tag 4
+#define simpleble_CharacteristicProperties_notify_tag 5
+#define simpleble_CharacteristicProperties_indicate_tag 6
+#define simpleble_CharacteristicProperties_auth_signed_wr_tag 7
+#define simpleble_Service_uuid_tag               1
+#define simpleble_Service_start_handle_tag       2
+#define simpleble_Service_end_handle_tag         3
+#define simpleble_Characteristic_uuid_tag        1
+#define simpleble_Characteristic_props_tag       2
+#define simpleble_Characteristic_handle_decl_tag 3
+#define simpleble_Characteristic_handle_value_tag 4
+#define simpleble_Descriptor_uuid_tag            1
+#define simpleble_Descriptor_handle_tag          2
+#define simpleble_Attribute_service_tag          1
+#define simpleble_Attribute_characteristic_tag   2
+#define simpleble_Attribute_descriptor_tag       3
 #define simpleble_ConnectCmd_address_type_tag    1
 #define simpleble_ConnectCmd_address_tag         2
 #define simpleble_DisconnectCmd_conn_handle_tag  1
@@ -256,6 +342,9 @@ extern "C" {
 #define simpleble_ConnectionEvt_address_tag      1
 #define simpleble_ConnectionEvt_conn_handle_tag  2
 #define simpleble_DisconnectionEvt_conn_handle_tag 1
+#define simpleble_AttributeFoundEvt_conn_handle_tag 1
+#define simpleble_AttributeFoundEvt_is_last_tag  2
+#define simpleble_AttributeFoundEvt_attributes_tag 3
 #define simpleble_Command_init_tag               1
 #define simpleble_Command_scan_start_tag         2
 #define simpleble_Command_scan_stop_tag          3
@@ -269,6 +358,7 @@ extern "C" {
 #define simpleble_Event_adv_evt_tag              1
 #define simpleble_Event_connection_evt_tag       2
 #define simpleble_Event_disconnection_evt_tag    3
+#define simpleble_Event_attribute_found_evt_tag  4
 
 /* Struct field encoding specification for nanopb */
 #define simpleble_UUID16Bit_FIELDLIST(X, a) \
@@ -308,6 +398,52 @@ X(a, STATIC,   SINGULAR, BYTES,    data,              2)
 #define simpleble_ServiceDataEntry_CALLBACK NULL
 #define simpleble_ServiceDataEntry_DEFAULT NULL
 #define simpleble_ServiceDataEntry_uuid_MSGTYPE simpleble_UUID
+
+#define simpleble_CharacteristicProperties_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, BOOL,     broadcast,         1) \
+X(a, STATIC,   SINGULAR, BOOL,     read,              2) \
+X(a, STATIC,   SINGULAR, BOOL,     write_wo_resp,     3) \
+X(a, STATIC,   SINGULAR, BOOL,     write,             4) \
+X(a, STATIC,   SINGULAR, BOOL,     notify,            5) \
+X(a, STATIC,   SINGULAR, BOOL,     indicate,          6) \
+X(a, STATIC,   SINGULAR, BOOL,     auth_signed_wr,    7)
+#define simpleble_CharacteristicProperties_CALLBACK NULL
+#define simpleble_CharacteristicProperties_DEFAULT NULL
+
+#define simpleble_Service_FIELDLIST(X, a) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  uuid,              1) \
+X(a, STATIC,   SINGULAR, UINT32,   start_handle,      2) \
+X(a, STATIC,   SINGULAR, UINT32,   end_handle,        3)
+#define simpleble_Service_CALLBACK NULL
+#define simpleble_Service_DEFAULT NULL
+#define simpleble_Service_uuid_MSGTYPE simpleble_UUID
+
+#define simpleble_Characteristic_FIELDLIST(X, a) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  uuid,              1) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  props,             2) \
+X(a, STATIC,   SINGULAR, UINT32,   handle_decl,       3) \
+X(a, STATIC,   SINGULAR, UINT32,   handle_value,      4)
+#define simpleble_Characteristic_CALLBACK NULL
+#define simpleble_Characteristic_DEFAULT NULL
+#define simpleble_Characteristic_uuid_MSGTYPE simpleble_UUID
+#define simpleble_Characteristic_props_MSGTYPE simpleble_CharacteristicProperties
+
+#define simpleble_Descriptor_FIELDLIST(X, a) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  uuid,              1) \
+X(a, STATIC,   SINGULAR, UINT32,   handle,            2)
+#define simpleble_Descriptor_CALLBACK NULL
+#define simpleble_Descriptor_DEFAULT NULL
+#define simpleble_Descriptor_uuid_MSGTYPE simpleble_UUID
+
+#define simpleble_Attribute_FIELDLIST(X, a) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (attribute,service,attribute.service),   1) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (attribute,characteristic,attribute.characteristic),   2) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (attribute,descriptor,attribute.descriptor),   3)
+#define simpleble_Attribute_CALLBACK NULL
+#define simpleble_Attribute_DEFAULT NULL
+#define simpleble_Attribute_attribute_service_MSGTYPE simpleble_Service
+#define simpleble_Attribute_attribute_characteristic_MSGTYPE simpleble_Characteristic
+#define simpleble_Attribute_attribute_descriptor_MSGTYPE simpleble_Descriptor
 
 #define simpleble_InitCmd_FIELDLIST(X, a) \
 
@@ -385,6 +521,14 @@ X(a, STATIC,   SINGULAR, UINT32,   conn_handle,       1)
 #define simpleble_DisconnectionEvt_CALLBACK NULL
 #define simpleble_DisconnectionEvt_DEFAULT NULL
 
+#define simpleble_AttributeFoundEvt_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   conn_handle,       1) \
+X(a, STATIC,   SINGULAR, BOOL,     is_last,           2) \
+X(a, STATIC,   REPEATED, MESSAGE,  attributes,        3)
+#define simpleble_AttributeFoundEvt_CALLBACK NULL
+#define simpleble_AttributeFoundEvt_DEFAULT NULL
+#define simpleble_AttributeFoundEvt_attributes_MSGTYPE simpleble_Attribute
+
 #define simpleble_Command_FIELDLIST(X, a) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,init,cmd.init),   1) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,scan_start,cmd.scan_start),   2) \
@@ -416,12 +560,14 @@ X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,disconnect,rsp.disconnect),   5)
 #define simpleble_Event_FIELDLIST(X, a) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (evt,adv_evt,evt.adv_evt),   1) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (evt,connection_evt,evt.connection_evt),   2) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (evt,disconnection_evt,evt.disconnection_evt),   3)
+X(a, STATIC,   ONEOF,    MESSAGE,  (evt,disconnection_evt,evt.disconnection_evt),   3) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (evt,attribute_found_evt,evt.attribute_found_evt),   4)
 #define simpleble_Event_CALLBACK NULL
 #define simpleble_Event_DEFAULT NULL
 #define simpleble_Event_evt_adv_evt_MSGTYPE simpleble_AdvEvt
 #define simpleble_Event_evt_connection_evt_MSGTYPE simpleble_ConnectionEvt
 #define simpleble_Event_evt_disconnection_evt_MSGTYPE simpleble_DisconnectionEvt
+#define simpleble_Event_evt_attribute_found_evt_MSGTYPE simpleble_AttributeFoundEvt
 
 extern const pb_msgdesc_t simpleble_UUID16Bit_msg;
 extern const pb_msgdesc_t simpleble_UUID32Bit_msg;
@@ -429,6 +575,11 @@ extern const pb_msgdesc_t simpleble_UUID128Bit_msg;
 extern const pb_msgdesc_t simpleble_UUID_msg;
 extern const pb_msgdesc_t simpleble_ManufacturerDataEntry_msg;
 extern const pb_msgdesc_t simpleble_ServiceDataEntry_msg;
+extern const pb_msgdesc_t simpleble_CharacteristicProperties_msg;
+extern const pb_msgdesc_t simpleble_Service_msg;
+extern const pb_msgdesc_t simpleble_Characteristic_msg;
+extern const pb_msgdesc_t simpleble_Descriptor_msg;
+extern const pb_msgdesc_t simpleble_Attribute_msg;
 extern const pb_msgdesc_t simpleble_InitCmd_msg;
 extern const pb_msgdesc_t simpleble_ScanStartCmd_msg;
 extern const pb_msgdesc_t simpleble_ScanStopCmd_msg;
@@ -442,6 +593,7 @@ extern const pb_msgdesc_t simpleble_DisconnectRsp_msg;
 extern const pb_msgdesc_t simpleble_AdvEvt_msg;
 extern const pb_msgdesc_t simpleble_ConnectionEvt_msg;
 extern const pb_msgdesc_t simpleble_DisconnectionEvt_msg;
+extern const pb_msgdesc_t simpleble_AttributeFoundEvt_msg;
 extern const pb_msgdesc_t simpleble_Command_msg;
 extern const pb_msgdesc_t simpleble_Response_msg;
 extern const pb_msgdesc_t simpleble_Event_msg;
@@ -453,6 +605,11 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 #define simpleble_UUID_fields &simpleble_UUID_msg
 #define simpleble_ManufacturerDataEntry_fields &simpleble_ManufacturerDataEntry_msg
 #define simpleble_ServiceDataEntry_fields &simpleble_ServiceDataEntry_msg
+#define simpleble_CharacteristicProperties_fields &simpleble_CharacteristicProperties_msg
+#define simpleble_Service_fields &simpleble_Service_msg
+#define simpleble_Characteristic_fields &simpleble_Characteristic_msg
+#define simpleble_Descriptor_fields &simpleble_Descriptor_msg
+#define simpleble_Attribute_fields &simpleble_Attribute_msg
 #define simpleble_InitCmd_fields &simpleble_InitCmd_msg
 #define simpleble_ScanStartCmd_fields &simpleble_ScanStartCmd_msg
 #define simpleble_ScanStopCmd_fields &simpleble_ScanStopCmd_msg
@@ -466,6 +623,7 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 #define simpleble_AdvEvt_fields &simpleble_AdvEvt_msg
 #define simpleble_ConnectionEvt_fields &simpleble_ConnectionEvt_msg
 #define simpleble_DisconnectionEvt_fields &simpleble_DisconnectionEvt_msg
+#define simpleble_AttributeFoundEvt_fields &simpleble_AttributeFoundEvt_msg
 #define simpleble_Command_fields &simpleble_Command_msg
 #define simpleble_Response_fields &simpleble_Response_msg
 #define simpleble_Event_fields &simpleble_Event_msg
@@ -473,14 +631,19 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 /* Maximum encoded size of messages (where known) */
 #define SIMPLEBLE_SIMPLEBLE_PB_H_MAX_SIZE        simpleble_Event_size
 #define simpleble_AdvEvt_size                    416
+#define simpleble_AttributeFoundEvt_size         606
+#define simpleble_Attribute_size                 48
+#define simpleble_CharacteristicProperties_size  14
+#define simpleble_Characteristic_size            46
 #define simpleble_Command_size                   23
 #define simpleble_ConnectCmd_size                21
 #define simpleble_ConnectRsp_size                6
 #define simpleble_ConnectionEvt_size             23
+#define simpleble_Descriptor_size                26
 #define simpleble_DisconnectCmd_size             4
 #define simpleble_DisconnectRsp_size             6
 #define simpleble_DisconnectionEvt_size          4
-#define simpleble_Event_size                     419
+#define simpleble_Event_size                     609
 #define simpleble_InitCmd_size                   0
 #define simpleble_InitRsp_size                   6
 #define simpleble_ManufacturerDataEntry_size     33
@@ -490,6 +653,7 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 #define simpleble_ScanStopCmd_size               0
 #define simpleble_ScanStopRsp_size               6
 #define simpleble_ServiceDataEntry_size          51
+#define simpleble_Service_size                   30
 #define simpleble_UUID128Bit_size                18
 #define simpleble_UUID16Bit_size                 4
 #define simpleble_UUID32Bit_size                 6

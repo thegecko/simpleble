@@ -24,6 +24,21 @@ PB_BIND(simpleble_ManufacturerDataEntry, simpleble_ManufacturerDataEntry, AUTO)
 PB_BIND(simpleble_ServiceDataEntry, simpleble_ServiceDataEntry, AUTO)
 
 
+PB_BIND(simpleble_CharacteristicProperties, simpleble_CharacteristicProperties, AUTO)
+
+
+PB_BIND(simpleble_Service, simpleble_Service, AUTO)
+
+
+PB_BIND(simpleble_Characteristic, simpleble_Characteristic, AUTO)
+
+
+PB_BIND(simpleble_Descriptor, simpleble_Descriptor, AUTO)
+
+
+PB_BIND(simpleble_Attribute, simpleble_Attribute, AUTO)
+
+
 PB_BIND(simpleble_InitCmd, simpleble_InitCmd, AUTO)
 
 
@@ -61,6 +76,9 @@ PB_BIND(simpleble_ConnectionEvt, simpleble_ConnectionEvt, AUTO)
 
 
 PB_BIND(simpleble_DisconnectionEvt, simpleble_DisconnectionEvt, AUTO)
+
+
+PB_BIND(simpleble_AttributeFoundEvt, simpleble_AttributeFoundEvt, 2)
 
 
 PB_BIND(simpleble_Command, simpleble_Command, AUTO)

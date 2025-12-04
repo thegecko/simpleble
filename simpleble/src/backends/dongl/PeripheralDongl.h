@@ -14,6 +14,7 @@
 #include <mutex>
 
 #include "AdapterBaseTypes.h"
+#include "protocol/d2h.pb.h"
 #include "serial/Protocol.h"
 
 namespace SimpleBLE {
@@ -64,13 +65,39 @@ class PeripheralDongl : public PeripheralBase {
     void update_advertising_data(advertising_data_t advertising_data);
     void notify_connected(uint16_t conn_handle);
     void notify_disconnected();
+    void notify_attribute_found(simpleble_AttributeFoundEvt const& attribute_found_evt);
 
     const uint16_t BLE_CONN_HANDLE_INVALID = 0xFFFF;
+    const uint16_t BLE_CONN_HANDLE_PENDING = 0xFFFE;
 
   private:
+    struct DescriptorDefinition {
+        BluetoothUUID uuid;
+        uint16_t handle;
+    };
+
+    struct CharacteristicDefinition {
+        BluetoothUUID uuid;
+        uint16_t handle_decl;
+        uint16_t handle_value;
+        bool can_read;
+        bool can_write_request;
+        bool can_write_command;
+        bool can_notify;
+        bool can_indicate;
+
+        std::map<uint16_t, DescriptorDefinition> descriptors;
+    };
+
+    struct ServiceDefinition {
+        BluetoothUUID uuid;
+        uint16_t start_handle;
+        uint16_t end_handle;
+        std::map<uint16_t, CharacteristicDefinition> characteristics;
+    };
 
     bool _attempt_connect();
-
+    BluetoothUUID _uuid_from_proto(simpleble_UUID const& uuid);
 
     uint16_t _conn_handle = BLE_CONN_HANDLE_INVALID;
     std::string _identifier;
@@ -82,15 +109,19 @@ class PeripheralDongl : public PeripheralBase {
     std::map<uint16_t, ByteArray> _manufacturer_data;
     std::map<BluetoothUUID, ByteArray> _service_data;
 
+    std::map<uint16_t, ServiceDefinition> _services;
+
     std::shared_ptr<Dongl::Serial::Protocol> _serial_protocol;
 
     std::condition_variable connection_cv_;
     std::mutex connection_mutex_;
     std::condition_variable disconnection_cv_;
     std::mutex disconnection_mutex_;
+    std::condition_variable attributes_discovered_cv_;
+    std::mutex attributes_discovered_mutex_;
 
     kvn::safe_callback<void()> _callback_on_connected;
     kvn::safe_callback<void()> _callback_on_disconnected;
-  };
+};
 
 }  // namespace SimpleBLE

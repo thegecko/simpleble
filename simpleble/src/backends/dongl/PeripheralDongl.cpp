@@ -11,11 +11,15 @@
 
 #include "CommonUtils.h"
 #include "LoggingInternal.h"
+#include "simpleble/Types.h"
+
+#include <fmt/core.h>
 
 using namespace SimpleBLE;
 using namespace std::chrono_literals;
 
-PeripheralDongl::PeripheralDongl(std::shared_ptr<Dongl::Serial::Protocol> serial_protocol, advertising_data_t advertising_data) {
+PeripheralDongl::PeripheralDongl(std::shared_ptr<Dongl::Serial::Protocol> serial_protocol,
+                                 advertising_data_t advertising_data) {
     _serial_protocol = serial_protocol;
     _address_type = advertising_data.address_type;
     _identifier = advertising_data.identifier;
@@ -47,12 +51,13 @@ void PeripheralDongl::connect() {
 
     bool connection_successful = false;
     for (int i = 0; i < 5; i++) {
+        fmt::print("PeripheralDongl::connect: attempt {}\n", i);
         connection_successful = _attempt_connect();
-
+        fmt::print("PeripheralDongl::connect: attempt {} - success: {}\n", i, connection_successful);
         if (connection_successful) {
             break;
         } else {
-            std::this_thread::sleep_for(250ms);
+            std::this_thread::sleep_for(500ms);
         }
     }
 
@@ -85,7 +90,9 @@ void PeripheralDongl::disconnect() {
     SAFE_CALLBACK_CALL(this->_callback_on_disconnected);
 }
 
-bool PeripheralDongl::is_connected() { return _conn_handle != BLE_CONN_HANDLE_INVALID; }
+bool PeripheralDongl::is_connected() {
+    return _conn_handle != BLE_CONN_HANDLE_INVALID && _conn_handle != BLE_CONN_HANDLE_PENDING;
+}
 
 bool PeripheralDongl::is_connectable() { return _connectable; }
 
@@ -93,7 +100,24 @@ bool PeripheralDongl::is_paired() { return false; }
 
 void PeripheralDongl::unpair() {}
 
-SharedPtrVector<ServiceBase> PeripheralDongl::available_services() { return {}; }
+SharedPtrVector<ServiceBase> PeripheralDongl::available_services() {
+    SharedPtrVector<ServiceBase> service_list;
+    for (auto& [service_handle, service] : _services) {
+        SharedPtrVector<CharacteristicBase> characteristic_list;
+        for (auto& [char_handle, characteristic] : service.characteristics) {
+            SharedPtrVector<DescriptorBase> descriptor_list;
+            for (auto& [desc_handle, descriptor] : characteristic.descriptors) {
+                descriptor_list.push_back(std::make_shared<DescriptorBase>(descriptor.uuid));
+            }
+            characteristic_list.push_back(std::make_shared<CharacteristicBase>(
+                characteristic.uuid, descriptor_list, characteristic.can_read, characteristic.can_write_request,
+                characteristic.can_write_command, characteristic.can_notify, characteristic.can_indicate));
+        }
+        service_list.push_back(std::make_shared<ServiceBase>(service.uuid, characteristic_list));
+    }
+
+    return service_list;
+}
 
 SharedPtrVector<ServiceBase> PeripheralDongl::advertised_services() {
     SharedPtrVector<ServiceBase> service_list;
@@ -161,7 +185,8 @@ void PeripheralDongl::update_advertising_data(advertising_data_t advertising_dat
 }
 
 bool PeripheralDongl::_attempt_connect() {
-    auto response = _serial_protocol->simpleble_connect(static_cast<simpleble_BluetoothAddressType>(_address_type), _address);
+    auto response = _serial_protocol->simpleble_connect(static_cast<simpleble_BluetoothAddressType>(_address_type),
+                                                        _address);
     if (response.ret_code != 0) {
         SIMPLEBLE_LOG_ERROR(fmt::format("Error when attempting to connect: {}", response.ret_code));
         return false;
@@ -175,19 +200,29 @@ bool PeripheralDongl::_attempt_connect() {
     // Wait for the connection to be confirmed.
     {
         std::unique_lock<std::mutex> lock(connection_mutex_);
-        connection_cv_.wait_for(lock, 1000ms, [this]() { return is_connected(); });
-        if (!is_connected()) {
+        connection_cv_.wait_for(lock, 5000ms, [this]() { return is_connected() && _conn_handle != BLE_CONN_HANDLE_INVALID; });
+        if (!is_connected() || _conn_handle == BLE_CONN_HANDLE_INVALID) {
             SIMPLEBLE_LOG_ERROR("Timeout while waiting for connection confirmation");
             return false;
         }
     }
 
-    // Wait a bit longer to confirm that no disconnection event arrives.
+    // // Wait a bit longer to confirm that no disconnection event arrives.
+    // {
+    //     std::unique_lock<std::mutex> lock(disconnection_mutex_);
+    //     disconnection_cv_.wait_for(lock, 500ms, [this]() { return !is_connected(); });
+    //     if (!is_connected()) {
+    //         SIMPLEBLE_LOG_ERROR("Connection failed to be established");
+    //         return false;
+    //     }
+    // }
+
+    // Wait for the attributes to be discovered.
     {
-        std::unique_lock<std::mutex> lock(disconnection_mutex_);
-        disconnection_cv_.wait_for(lock, 500ms, [this]() { return !is_connected(); });
-        if (!is_connected()) {
-            SIMPLEBLE_LOG_ERROR("Connection failed to be established");
+        std::unique_lock<std::mutex> lock(attributes_discovered_mutex_);
+        attributes_discovered_cv_.wait_for(lock, 5000ms, [this]() { return !_services.empty(); });
+        if (_services.empty()) {
+            SIMPLEBLE_LOG_ERROR("Timeout while waiting for attributes to be discovered");
             return false;
         }
     }
@@ -204,8 +239,126 @@ void PeripheralDongl::notify_connected(uint16_t conn_handle) {
 void PeripheralDongl::notify_disconnected() {
     fmt::print("PeripheralDongl::notify_disconnected: {}\n", _conn_handle);
     _conn_handle = BLE_CONN_HANDLE_INVALID;
+    connection_cv_.notify_all();
     disconnection_cv_.notify_all();
 
     // TODO: Only throw the callback if the disconection was unexpected.
-    //SAFE_CALLBACK_CALL(this->_callback_on_disconnected);
+    // SAFE_CALLBACK_CALL(this->_callback_on_disconnected);
+}
+
+void PeripheralDongl::notify_attribute_found(simpleble_AttributeFoundEvt const& attribute_found_evt) {
+    for (size_t i = 0; i < attribute_found_evt.attributes_count; i++) {
+        simpleble_Attribute const& attr = attribute_found_evt.attributes[i];
+        switch (attr.which_attribute) {
+            case simpleble_Attribute_service_tag: {
+                BluetoothUUID uuid = _uuid_from_proto(attr.attribute.service.uuid);
+                _services[attr.attribute.service.start_handle] = ServiceDefinition{
+                    .uuid = uuid,
+                    .start_handle = attr.attribute.service.start_handle,
+                    .end_handle = attr.attribute.service.end_handle,
+                };
+                break;
+            }
+            case simpleble_Attribute_characteristic_tag: {
+                uint16_t service_handle = 0;
+                for (auto& service : _services) {
+                    if (attr.attribute.characteristic.handle_decl >= service.second.start_handle &&
+                        attr.attribute.characteristic.handle_decl <= service.second.end_handle) {
+                        service_handle = service.first;
+                        break;
+                    }
+                }
+
+                if (service_handle == 0) {
+                    break;
+                }
+
+                BluetoothUUID uuid = _uuid_from_proto(attr.attribute.characteristic.uuid);
+                _services[service_handle].characteristics[attr.attribute.characteristic.handle_decl] =
+                    CharacteristicDefinition{
+                        .uuid = uuid,
+                        .handle_decl = attr.attribute.characteristic.handle_decl,
+                        .handle_value = attr.attribute.characteristic.handle_value,
+                        .can_read = attr.attribute.characteristic.props.read,
+                        .can_write_request = attr.attribute.characteristic.props.write,
+                        .can_write_command = attr.attribute.characteristic.props.write_wo_resp,
+                        .can_notify = attr.attribute.characteristic.props.notify,
+                        .can_indicate = attr.attribute.characteristic.props.indicate,
+                    };
+                break;
+            }
+            case simpleble_Attribute_descriptor_tag: {
+                // TODO: Identify the characteristic that this descriptor belongs to based on handle ranges.
+                uint16_t service_handle = 0;
+                for (auto& service : _services) {
+                    if (attr.attribute.descriptor.handle >= service.second.start_handle &&
+                        attr.attribute.descriptor.handle <= service.second.end_handle) {
+                        service_handle = service.first;
+                        break;
+                    }
+                }
+
+                if (service_handle == 0) {
+                    break;
+                }
+
+                uint16_t characteristic_handle = 0;
+                for (auto& characteristic : _services[service_handle].characteristics) {
+                    if (attr.attribute.descriptor.handle >= characteristic.second.handle_decl &&
+                        attr.attribute.descriptor.handle <= characteristic.second.handle_value) {
+                        characteristic_handle = characteristic.first;
+                        break;
+                    }
+                }
+
+                if (characteristic_handle == 0) {
+                    break;
+                }
+
+                BluetoothUUID uuid = _uuid_from_proto(attr.attribute.descriptor.uuid);
+                _services[service_handle]
+                    .characteristics[characteristic_handle]
+                    .descriptors[attr.attribute.descriptor.handle] = DescriptorDefinition{
+                    .uuid = uuid,
+                    .handle = attr.attribute.descriptor.handle,
+                };
+                break;
+            }
+        }
+    }
+
+    if (attribute_found_evt.is_last) {
+        attributes_discovered_cv_.notify_all();
+    }
+}
+
+BluetoothUUID PeripheralDongl::_uuid_from_proto(simpleble_UUID const& uuid) {
+    switch (uuid.which_uuid) {
+        case simpleble_UUID_uuid16_tag:
+            return BluetoothUUID(fmt::format("0000{:04X}-0000-1000-8000-00805F9B34FB", uuid.uuid.uuid16.uuid));
+        case simpleble_UUID_uuid32_tag:
+            return BluetoothUUID(fmt::format("{:08X}-0000-1000-8000-00805F9B34FB", uuid.uuid.uuid32.uuid));
+        case simpleble_UUID_uuid128_tag: {
+            const auto& bytes = uuid.uuid.uuid128.uuid;
+            std::string uuid_str;
+            uuid_str.reserve(36);  // Pre-allocate memory for the UUID string
+
+            uuid_str += fmt::format("{:02X}{:02X}{:02X}{:02X}", bytes[0], bytes[1], bytes[2], bytes[3]);
+            uuid_str += "-";
+            uuid_str += fmt::format("{:02X}{:02X}", bytes[4], bytes[5]);
+            uuid_str += "-";
+            uuid_str += fmt::format("{:02X}{:02X}", bytes[6], bytes[7]);
+            uuid_str += "-";
+            uuid_str += fmt::format("{:02X}{:02X}", bytes[8], bytes[9]);
+            uuid_str += "-";
+            uuid_str += fmt::format("{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}", bytes[10], bytes[11], bytes[12], bytes[13],
+                                    bytes[14], bytes[15]);
+
+            return BluetoothUUID(uuid_str);
+        }
+    }
+
+    fmt::print("Unknown UUID type: {}\n", uuid.which_uuid);
+    // Should not be reached
+    return BluetoothUUID();
 }
