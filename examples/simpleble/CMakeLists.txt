@@ -57,5 +57,8 @@ configure_simpleble_target(simpleble_write)
 add_executable(simpleble_notify src/notify.cpp src/utils.cpp)
 configure_simpleble_target(simpleble_notify)
 
+add_executable(simpleble_indicate src/indicate.cpp src/utils.cpp)
+configure_simpleble_target(simpleble_indicate)
+
 add_executable(simpleble_notify_multi src/notify_multi.cpp src/utils.cpp)
 configure_simpleble_target(simpleble_notify_multi)
