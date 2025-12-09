@@ -50,14 +50,14 @@ void PeripheralDongl::connect() {
     }
 
     bool connection_successful = false;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 10; i++) {
         fmt::print("PeripheralDongl::connect: attempt {}\n", i);
         connection_successful = _attempt_connect();
         fmt::print("PeripheralDongl::connect: attempt {} - success: {}\n", i, connection_successful);
         if (connection_successful) {
             break;
         } else {
-            std::this_thread::sleep_for(500ms);
+            std::this_thread::sleep_for(750ms);
         }
     }
 
@@ -81,7 +81,7 @@ void PeripheralDongl::disconnect() {
 
     // Wait for the disconnection to be confirmed.
     std::unique_lock<std::mutex> lock(disconnection_mutex_);
-    disconnection_cv_.wait_for(lock, 250ms, [this]() { return !is_connected(); });
+    disconnection_cv_.wait_for(lock, 500ms, [this]() { return !is_connected(); });
 
     if (is_connected()) {
         _conn_handle = BLE_CONN_HANDLE_INVALID;
@@ -91,7 +91,7 @@ void PeripheralDongl::disconnect() {
 }
 
 bool PeripheralDongl::is_connected() {
-    return _conn_handle != BLE_CONN_HANDLE_INVALID && _conn_handle != BLE_CONN_HANDLE_PENDING;
+    return _conn_handle != BLE_CONN_HANDLE_INVALID;
 }
 
 bool PeripheralDongl::is_connectable() { return _connectable; }
@@ -185,11 +185,25 @@ void PeripheralDongl::update_advertising_data(advertising_data_t advertising_dat
 }
 
 bool PeripheralDongl::_attempt_connect() {
+    if (_conn_handle != BLE_CONN_HANDLE_INVALID) {
+        auto response = _serial_protocol->simpleble_disconnect(_conn_handle);
+        if (response.ret_code != 0) {
+            fmt::println("Failed to disconnect during connect attempt: {}", response.ret_code);
+        }
+
+        // Wait for the disconnection to be confirmed.
+        std::unique_lock<std::mutex> lock(disconnection_mutex_);
+        disconnection_cv_.wait_for(lock, 500ms, [this]() { return !is_connected(); });
+    }
+
+    fmt::println("Disconnection confirmed");
+    _conn_handle = BLE_CONN_HANDLE_INVALID;
+
+
     auto response = _serial_protocol->simpleble_connect(static_cast<simpleble_BluetoothAddressType>(_address_type),
                                                         _address);
     if (response.ret_code != 0) {
-        SIMPLEBLE_LOG_ERROR(fmt::format("Error when attempting to connect: {}", response.ret_code));
-        return false;
+        throw Exception::OperationFailed(fmt::format("Error when attempting to connect: {}", response.ret_code));
     }
 
     // NOTE: Bluetooth connections are non-acknowledged by the peripheral. The connected event that we get
@@ -200,32 +214,32 @@ bool PeripheralDongl::_attempt_connect() {
     // Wait for the connection to be confirmed.
     {
         std::unique_lock<std::mutex> lock(connection_mutex_);
-        connection_cv_.wait_for(lock, 5000ms, [this]() { return is_connected() && _conn_handle != BLE_CONN_HANDLE_INVALID; });
-        if (!is_connected() || _conn_handle == BLE_CONN_HANDLE_INVALID) {
-            SIMPLEBLE_LOG_ERROR("Timeout while waiting for connection confirmation");
+        connection_cv_.wait_for(lock, 5000ms, [this]() { return _conn_handle != BLE_CONN_HANDLE_INVALID; });
+        if (_conn_handle == BLE_CONN_HANDLE_INVALID) {
+            //SIMPLEBLE_LOG_ERROR("Timeout while waiting for connection confirmation");
+            fmt::println("Timeout while waiting for connection confirmation");
             return false;
         }
     }
 
-    // // Wait a bit longer to confirm that no disconnection event arrives.
-    // {
-    //     std::unique_lock<std::mutex> lock(disconnection_mutex_);
-    //     disconnection_cv_.wait_for(lock, 500ms, [this]() { return !is_connected(); });
-    //     if (!is_connected()) {
-    //         SIMPLEBLE_LOG_ERROR("Connection failed to be established");
-    //         return false;
-    //     }
-    // }
+    fmt::println("Connection confirmed");
 
     // Wait for the attributes to be discovered.
     {
         std::unique_lock<std::mutex> lock(attributes_discovered_mutex_);
-        attributes_discovered_cv_.wait_for(lock, 5000ms, [this]() { return !_services.empty(); });
+        attributes_discovered_cv_.wait_for(lock, 15000ms, [this]() { return !_services.empty() || _conn_handle == BLE_CONN_HANDLE_INVALID; });
         if (_services.empty()) {
-            SIMPLEBLE_LOG_ERROR("Timeout while waiting for attributes to be discovered");
+            fmt::println("Timeout while waiting for attributes to be discovered");
+            return false;
+        }
+
+        if (_conn_handle == BLE_CONN_HANDLE_INVALID) {
+            fmt::println("Connection lost during attribute discovery");
             return false;
         }
     }
+
+    fmt::println("Attributes discovered. {} services found", _services.size());
 
     return true;
 }
@@ -239,8 +253,8 @@ void PeripheralDongl::notify_connected(uint16_t conn_handle) {
 void PeripheralDongl::notify_disconnected() {
     fmt::print("PeripheralDongl::notify_disconnected: {}\n", _conn_handle);
     _conn_handle = BLE_CONN_HANDLE_INVALID;
-    connection_cv_.notify_all();
     disconnection_cv_.notify_all();
+    attributes_discovered_cv_.notify_all();
 
     // TODO: Only throw the callback if the disconection was unexpected.
     // SAFE_CALLBACK_CALL(this->_callback_on_disconnected);

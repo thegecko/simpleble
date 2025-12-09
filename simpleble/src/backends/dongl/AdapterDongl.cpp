@@ -165,6 +165,7 @@ void AdapterDongl::_on_simpleble_event(const simpleble_Event& event) {
         }
 
         case simpleble_Event_connection_evt_tag: {
+            fmt::print("Received connection event: {}\n", event.evt.connection_evt.conn_handle);
             for (auto& [address, peripheral] : this->peripherals_) {
                 if (peripheral->address() == std::string(event.evt.connection_evt.address)) {
                     peripheral->notify_connected(event.evt.connection_evt.conn_handle);
