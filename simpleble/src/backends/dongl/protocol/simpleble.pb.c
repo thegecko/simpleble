@@ -78,7 +78,28 @@ PB_BIND(simpleble_ConnectionEvt, simpleble_ConnectionEvt, AUTO)
 PB_BIND(simpleble_DisconnectionEvt, simpleble_DisconnectionEvt, AUTO)
 
 
+PB_BIND(simpleble_ServiceDiscoveredEvt, simpleble_ServiceDiscoveredEvt, AUTO)
+
+
+PB_BIND(simpleble_CharacteristicDiscoveredEvt, simpleble_CharacteristicDiscoveredEvt, AUTO)
+
+
+PB_BIND(simpleble_DescriptorDiscoveredEvt, simpleble_DescriptorDiscoveredEvt, AUTO)
+
+
+PB_BIND(simpleble_AttributeDiscoveryCompleteEvt, simpleble_AttributeDiscoveryCompleteEvt, AUTO)
+
+
 PB_BIND(simpleble_AttributeFoundEvt, simpleble_AttributeFoundEvt, 2)
+
+
+PB_BIND(simpleble_ReadResponseEvt, simpleble_ReadResponseEvt, 2)
+
+
+PB_BIND(simpleble_WriteResponseEvt, simpleble_WriteResponseEvt, 2)
+
+
+PB_BIND(simpleble_ValueChangedEvt, simpleble_ValueChangedEvt, 2)
 
 
 PB_BIND(simpleble_Command, simpleble_Command, AUTO)
@@ -88,6 +109,10 @@ PB_BIND(simpleble_Response, simpleble_Response, AUTO)
 
 
 PB_BIND(simpleble_Event, simpleble_Event, 2)
+
+
+
+
 
 
 

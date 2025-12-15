@@ -4,6 +4,7 @@
 #include "BuilderBase.h"
 #include "CommonUtils.h"
 #include "PeripheralDongl.h"
+#include "protocol/simpleble.pb.h"
 #include "serial/Protocol.h"
 
 // #include "cmd/Commands.h"
@@ -165,7 +166,6 @@ void AdapterDongl::_on_simpleble_event(const simpleble_Event& event) {
         }
 
         case simpleble_Event_connection_evt_tag: {
-            fmt::print("Received connection event: {}\n", event.evt.connection_evt.conn_handle);
             for (auto& [address, peripheral] : this->peripherals_) {
                 if (peripheral->address() == std::string(event.evt.connection_evt.address)) {
                     peripheral->notify_connected(event.evt.connection_evt.conn_handle);
@@ -176,7 +176,6 @@ void AdapterDongl::_on_simpleble_event(const simpleble_Event& event) {
         }
 
         case simpleble_Event_disconnection_evt_tag: {
-            fmt::print("Received disconnection event: {}\n", event.evt.disconnection_evt.conn_handle);
             for (auto& [address, peripheral] : this->peripherals_) {
                 if (peripheral->conn_handle() == event.evt.disconnection_evt.conn_handle) {
                     peripheral->notify_disconnected();
@@ -186,11 +185,41 @@ void AdapterDongl::_on_simpleble_event(const simpleble_Event& event) {
             break;
         }
 
-        case simpleble_Event_attribute_found_evt_tag: {
-            fmt::print("Received attribute found event: {}\n", event.evt.attribute_found_evt.conn_handle);
+        case simpleble_Event_service_discovered_evt_tag: {
             for (auto& [address, peripheral] : this->peripherals_) {
-                if (peripheral->conn_handle() == event.evt.attribute_found_evt.conn_handle) {
-                    peripheral->notify_attribute_found(event.evt.attribute_found_evt);
+                if (peripheral->conn_handle() == event.evt.service_discovered_evt.conn_handle) {
+                    peripheral->notify_service_discovered(event.evt.service_discovered_evt);
+                    break;
+                }
+            }
+            break;
+        }
+
+
+        case simpleble_Event_characteristic_discovered_evt_tag: {
+            for (auto& [address, peripheral] : this->peripherals_) {
+                if (peripheral->conn_handle() == event.evt.characteristic_discovered_evt.conn_handle) {
+                    peripheral->notify_characteristic_discovered(event.evt.characteristic_discovered_evt);
+                    break;
+                }
+            }
+            break;
+        }
+
+        case simpleble_Event_descriptor_discovered_evt_tag: {
+            for (auto& [address, peripheral] : this->peripherals_) {
+                if (peripheral->conn_handle() == event.evt.descriptor_discovered_evt.conn_handle) {
+                    peripheral->notify_descriptor_discovered(event.evt.descriptor_discovered_evt);
+                    break;
+                }
+            }
+            break;
+        }
+
+        case simpleble_Event_attribute_discovery_complete_evt_tag: {
+            for (auto& [address, peripheral] : this->peripherals_) {
+                if (peripheral->conn_handle() == event.evt.attribute_discovery_complete_evt.conn_handle) {
+                    peripheral->notify_attribute_discovery_complete();
                     break;
                 }
             }

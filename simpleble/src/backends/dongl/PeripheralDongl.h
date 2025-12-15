@@ -65,7 +65,10 @@ class PeripheralDongl : public PeripheralBase {
     void update_advertising_data(advertising_data_t advertising_data);
     void notify_connected(uint16_t conn_handle);
     void notify_disconnected();
-    void notify_attribute_found(simpleble_AttributeFoundEvt const& attribute_found_evt);
+    void notify_service_discovered(simpleble_ServiceDiscoveredEvt const& service_discovered_evt);
+    void notify_characteristic_discovered(simpleble_CharacteristicDiscoveredEvt const& characteristic_discovered_evt);
+    void notify_descriptor_discovered(simpleble_DescriptorDiscoveredEvt const& descriptor_discovered_evt);
+    void notify_attribute_discovery_complete();
 
     const uint16_t BLE_CONN_HANDLE_INVALID = 0xFFFF;
     const uint16_t BLE_CONN_HANDLE_PENDING = 0xFFFE;
@@ -97,6 +100,9 @@ class PeripheralDongl : public PeripheralBase {
     };
 
     bool _attempt_connect();
+    BluetoothUUID _uuid_from_uuid16(uint16_t uuid16);
+    BluetoothUUID _uuid_from_uuid32(uint32_t uuid32);
+    BluetoothUUID _uuid_from_uuid128(simpleble_UUID const& uuid);
     BluetoothUUID _uuid_from_proto(simpleble_UUID const& uuid);
 
     uint16_t _conn_handle = BLE_CONN_HANDLE_INVALID;
