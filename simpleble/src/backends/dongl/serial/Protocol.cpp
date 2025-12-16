@@ -1,6 +1,8 @@
 #include "Protocol.h"
 
 #include <cstring>
+#include "fmt/base.h"
+#include "protocol/simpleble.pb.h"
 
 using namespace SimpleBLE::Dongl::Serial;
 
@@ -89,6 +91,20 @@ simpleble_DisconnectRsp Protocol::simpleble_disconnect(uint16_t conn_handle) {
 
     dongl_Response response = exchange(command);
     return response.rsp.simpleble.rsp.disconnect;
+}
+
+simpleble_ReadRsp Protocol::simpleble_read(uint16_t conn_handle, uint16_t handle) {
+    dongl_Command command = dongl_Command_init_zero;
+    command.which_cmd = dongl_Command_simpleble_tag;
+    command.cmd.simpleble.which_cmd = simpleble_Command_read_tag;
+    command.cmd.simpleble.cmd.read = simpleble_ReadCmd_init_default;
+    command.cmd.simpleble.cmd.read.conn_handle = conn_handle;
+    command.cmd.simpleble.cmd.read.handle = handle;
+
+    fmt::print("simpleble_read: conn_handle: {}, handle: {}\n", conn_handle, handle);
+    dongl_Response response = exchange(command);
+    fmt::print("simpleble_read: response: {}\n", response.rsp.simpleble.rsp.read.ret_code);
+    return response.rsp.simpleble.rsp.read;
 }
 
 // GAP commands

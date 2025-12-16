@@ -33,6 +33,7 @@ class Protocol : public ProtocolBase {
     simpleble_ScanStopRsp simpleble_scan_stop();
     simpleble_ConnectRsp simpleble_connect(simpleble_BluetoothAddressType address_type, const std::string& address);
     simpleble_DisconnectRsp simpleble_disconnect(uint16_t conn_handle);
+    simpleble_ReadRsp simpleble_read(uint16_t conn_handle, uint16_t handle);
 
     // GAP commands
     sd_GapAddrSetRsp sd_gap_addr_set(bool has_addr, sd_types_BleGapAddr addr);

@@ -129,6 +129,11 @@ typedef struct _simpleble_DisconnectCmd {
     uint16_t conn_handle;
 } simpleble_DisconnectCmd;
 
+typedef struct _simpleble_ReadCmd {
+    uint16_t conn_handle;
+    uint16_t handle;
+} simpleble_ReadCmd;
+
 typedef struct _simpleble_InitRsp {
     uint32_t ret_code;
 } simpleble_InitRsp;
@@ -148,6 +153,14 @@ typedef struct _simpleble_ConnectRsp {
 typedef struct _simpleble_DisconnectRsp {
     uint32_t ret_code;
 } simpleble_DisconnectRsp;
+
+typedef PB_BYTES_ARRAY_T(512) simpleble_ReadRsp_data_t;
+typedef struct _simpleble_ReadRsp {
+    uint32_t ret_code;
+    uint16_t conn_handle;
+    uint16_t handle;
+    simpleble_ReadRsp_data_t data; /* Variable length */
+} simpleble_ReadRsp;
 
 typedef struct _simpleble_AdvEvt {
     char identifier[32];
@@ -243,6 +256,7 @@ typedef struct _simpleble_Command {
         simpleble_ScanStopCmd scan_stop;
         simpleble_ConnectCmd connect;
         simpleble_DisconnectCmd disconnect;
+        simpleble_ReadCmd read;
     } cmd;
 } simpleble_Command;
 
@@ -254,6 +268,7 @@ typedef struct _simpleble_Response {
         simpleble_ScanStopRsp scan_stop;
         simpleble_ConnectRsp connect;
         simpleble_DisconnectRsp disconnect;
+        simpleble_ReadRsp read;
     } rsp;
 } simpleble_Response;
 
@@ -314,6 +329,8 @@ extern "C" {
 
 
 
+
+
 #define simpleble_AdvEvt_address_type_ENUMTYPE simpleble_BluetoothAddressType
 
 
@@ -349,11 +366,13 @@ extern "C" {
 #define simpleble_ScanStopCmd_init_default       {0}
 #define simpleble_ConnectCmd_init_default        {_simpleble_BluetoothAddressType_MIN, ""}
 #define simpleble_DisconnectCmd_init_default     {0}
+#define simpleble_ReadCmd_init_default           {0, 0}
 #define simpleble_InitRsp_init_default           {0}
 #define simpleble_ScanStartRsp_init_default      {0}
 #define simpleble_ScanStopRsp_init_default       {0}
 #define simpleble_ConnectRsp_init_default        {0}
 #define simpleble_DisconnectRsp_init_default     {0}
+#define simpleble_ReadRsp_init_default           {0, 0, 0, {0, {0}}}
 #define simpleble_AdvEvt_init_default            {"", _simpleble_BluetoothAddressType_MIN, "", 0, 0, 0, 0, {simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default, simpleble_ManufacturerDataEntry_init_default}, 0, {simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default, simpleble_ServiceDataEntry_init_default}}
 #define simpleble_ConnectionEvt_init_default     {"", 0}
 #define simpleble_DisconnectionEvt_init_default  {0}
@@ -384,11 +403,13 @@ extern "C" {
 #define simpleble_ScanStopCmd_init_zero          {0}
 #define simpleble_ConnectCmd_init_zero           {_simpleble_BluetoothAddressType_MIN, ""}
 #define simpleble_DisconnectCmd_init_zero        {0}
+#define simpleble_ReadCmd_init_zero              {0, 0}
 #define simpleble_InitRsp_init_zero              {0}
 #define simpleble_ScanStartRsp_init_zero         {0}
 #define simpleble_ScanStopRsp_init_zero          {0}
 #define simpleble_ConnectRsp_init_zero           {0}
 #define simpleble_DisconnectRsp_init_zero        {0}
+#define simpleble_ReadRsp_init_zero              {0, 0, 0, {0, {0}}}
 #define simpleble_AdvEvt_init_zero               {"", _simpleble_BluetoothAddressType_MIN, "", 0, 0, 0, 0, {simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero, simpleble_ManufacturerDataEntry_init_zero}, 0, {simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero, simpleble_ServiceDataEntry_init_zero}}
 #define simpleble_ConnectionEvt_init_zero        {"", 0}
 #define simpleble_DisconnectionEvt_init_zero     {0}
@@ -437,11 +458,17 @@ extern "C" {
 #define simpleble_ConnectCmd_address_type_tag    1
 #define simpleble_ConnectCmd_address_tag         2
 #define simpleble_DisconnectCmd_conn_handle_tag  1
+#define simpleble_ReadCmd_conn_handle_tag        1
+#define simpleble_ReadCmd_handle_tag             2
 #define simpleble_InitRsp_ret_code_tag           1
 #define simpleble_ScanStartRsp_ret_code_tag      1
 #define simpleble_ScanStopRsp_ret_code_tag       1
 #define simpleble_ConnectRsp_ret_code_tag        1
 #define simpleble_DisconnectRsp_ret_code_tag     1
+#define simpleble_ReadRsp_ret_code_tag           1
+#define simpleble_ReadRsp_conn_handle_tag        2
+#define simpleble_ReadRsp_handle_tag             3
+#define simpleble_ReadRsp_data_tag               4
 #define simpleble_AdvEvt_identifier_tag          1
 #define simpleble_AdvEvt_address_type_tag        2
 #define simpleble_AdvEvt_address_tag             3
@@ -490,11 +517,13 @@ extern "C" {
 #define simpleble_Command_scan_stop_tag          3
 #define simpleble_Command_connect_tag            4
 #define simpleble_Command_disconnect_tag         5
+#define simpleble_Command_read_tag               6
 #define simpleble_Response_init_tag              1
 #define simpleble_Response_scan_start_tag        2
 #define simpleble_Response_scan_stop_tag         3
 #define simpleble_Response_connect_tag           4
 #define simpleble_Response_disconnect_tag        5
+#define simpleble_Response_read_tag              6
 #define simpleble_Event_adv_evt_tag              1
 #define simpleble_Event_connection_evt_tag       2
 #define simpleble_Event_disconnection_evt_tag    3
@@ -618,6 +647,12 @@ X(a, STATIC,   SINGULAR, UINT32,   conn_handle,       1)
 #define simpleble_DisconnectCmd_CALLBACK NULL
 #define simpleble_DisconnectCmd_DEFAULT NULL
 
+#define simpleble_ReadCmd_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   conn_handle,       1) \
+X(a, STATIC,   SINGULAR, UINT32,   handle,            2)
+#define simpleble_ReadCmd_CALLBACK NULL
+#define simpleble_ReadCmd_DEFAULT NULL
+
 #define simpleble_InitRsp_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UINT32,   ret_code,          1)
 #define simpleble_InitRsp_CALLBACK NULL
@@ -642,6 +677,14 @@ X(a, STATIC,   SINGULAR, UINT32,   ret_code,          1)
 X(a, STATIC,   SINGULAR, UINT32,   ret_code,          1)
 #define simpleble_DisconnectRsp_CALLBACK NULL
 #define simpleble_DisconnectRsp_DEFAULT NULL
+
+#define simpleble_ReadRsp_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   ret_code,          1) \
+X(a, STATIC,   SINGULAR, UINT32,   conn_handle,       2) \
+X(a, STATIC,   SINGULAR, UINT32,   handle,            3) \
+X(a, STATIC,   SINGULAR, BYTES,    data,              4)
+#define simpleble_ReadRsp_CALLBACK NULL
+#define simpleble_ReadRsp_DEFAULT NULL
 
 #define simpleble_AdvEvt_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, STRING,   identifier,        1) \
@@ -742,7 +785,8 @@ X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,init,cmd.init),   1) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,scan_start,cmd.scan_start),   2) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,scan_stop,cmd.scan_stop),   3) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,connect,cmd.connect),   4) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,disconnect,cmd.disconnect),   5)
+X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,disconnect,cmd.disconnect),   5) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,read,cmd.read),   6)
 #define simpleble_Command_CALLBACK NULL
 #define simpleble_Command_DEFAULT NULL
 #define simpleble_Command_cmd_init_MSGTYPE simpleble_InitCmd
@@ -750,13 +794,15 @@ X(a, STATIC,   ONEOF,    MESSAGE,  (cmd,disconnect,cmd.disconnect),   5)
 #define simpleble_Command_cmd_scan_stop_MSGTYPE simpleble_ScanStopCmd
 #define simpleble_Command_cmd_connect_MSGTYPE simpleble_ConnectCmd
 #define simpleble_Command_cmd_disconnect_MSGTYPE simpleble_DisconnectCmd
+#define simpleble_Command_cmd_read_MSGTYPE simpleble_ReadCmd
 
 #define simpleble_Response_FIELDLIST(X, a) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,init,rsp.init),   1) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,scan_start,rsp.scan_start),   2) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,scan_stop,rsp.scan_stop),   3) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,connect,rsp.connect),   4) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,disconnect,rsp.disconnect),   5)
+X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,disconnect,rsp.disconnect),   5) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,read,rsp.read),   6)
 #define simpleble_Response_CALLBACK NULL
 #define simpleble_Response_DEFAULT NULL
 #define simpleble_Response_rsp_init_MSGTYPE simpleble_InitRsp
@@ -764,6 +810,7 @@ X(a, STATIC,   ONEOF,    MESSAGE,  (rsp,disconnect,rsp.disconnect),   5)
 #define simpleble_Response_rsp_scan_stop_MSGTYPE simpleble_ScanStopRsp
 #define simpleble_Response_rsp_connect_MSGTYPE simpleble_ConnectRsp
 #define simpleble_Response_rsp_disconnect_MSGTYPE simpleble_DisconnectRsp
+#define simpleble_Response_rsp_read_MSGTYPE simpleble_ReadRsp
 
 #define simpleble_Event_FIELDLIST(X, a) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (evt,adv_evt,evt.adv_evt),   1) \
@@ -807,11 +854,13 @@ extern const pb_msgdesc_t simpleble_ScanStartCmd_msg;
 extern const pb_msgdesc_t simpleble_ScanStopCmd_msg;
 extern const pb_msgdesc_t simpleble_ConnectCmd_msg;
 extern const pb_msgdesc_t simpleble_DisconnectCmd_msg;
+extern const pb_msgdesc_t simpleble_ReadCmd_msg;
 extern const pb_msgdesc_t simpleble_InitRsp_msg;
 extern const pb_msgdesc_t simpleble_ScanStartRsp_msg;
 extern const pb_msgdesc_t simpleble_ScanStopRsp_msg;
 extern const pb_msgdesc_t simpleble_ConnectRsp_msg;
 extern const pb_msgdesc_t simpleble_DisconnectRsp_msg;
+extern const pb_msgdesc_t simpleble_ReadRsp_msg;
 extern const pb_msgdesc_t simpleble_AdvEvt_msg;
 extern const pb_msgdesc_t simpleble_ConnectionEvt_msg;
 extern const pb_msgdesc_t simpleble_DisconnectionEvt_msg;
@@ -844,11 +893,13 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 #define simpleble_ScanStopCmd_fields &simpleble_ScanStopCmd_msg
 #define simpleble_ConnectCmd_fields &simpleble_ConnectCmd_msg
 #define simpleble_DisconnectCmd_fields &simpleble_DisconnectCmd_msg
+#define simpleble_ReadCmd_fields &simpleble_ReadCmd_msg
 #define simpleble_InitRsp_fields &simpleble_InitRsp_msg
 #define simpleble_ScanStartRsp_fields &simpleble_ScanStartRsp_msg
 #define simpleble_ScanStopRsp_fields &simpleble_ScanStopRsp_msg
 #define simpleble_ConnectRsp_fields &simpleble_ConnectRsp_msg
 #define simpleble_DisconnectRsp_fields &simpleble_DisconnectRsp_msg
+#define simpleble_ReadRsp_fields &simpleble_ReadRsp_msg
 #define simpleble_AdvEvt_fields &simpleble_AdvEvt_msg
 #define simpleble_ConnectionEvt_fields &simpleble_ConnectionEvt_msg
 #define simpleble_DisconnectionEvt_fields &simpleble_DisconnectionEvt_msg
@@ -886,8 +937,10 @@ extern const pb_msgdesc_t simpleble_Event_msg;
 #define simpleble_InitCmd_size                   0
 #define simpleble_InitRsp_size                   6
 #define simpleble_ManufacturerDataEntry_size     33
+#define simpleble_ReadCmd_size                   8
 #define simpleble_ReadResponseEvt_size           537
-#define simpleble_Response_size                  8
+#define simpleble_ReadRsp_size                   529
+#define simpleble_Response_size                  532
 #define simpleble_ScanStartCmd_size              0
 #define simpleble_ScanStartRsp_size              6
 #define simpleble_ScanStopCmd_size               0

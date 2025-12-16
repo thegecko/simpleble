@@ -54,6 +54,9 @@ PB_BIND(simpleble_ConnectCmd, simpleble_ConnectCmd, AUTO)
 PB_BIND(simpleble_DisconnectCmd, simpleble_DisconnectCmd, AUTO)
 
 
+PB_BIND(simpleble_ReadCmd, simpleble_ReadCmd, AUTO)
+
+
 PB_BIND(simpleble_InitRsp, simpleble_InitRsp, AUTO)
 
 
@@ -67,6 +70,9 @@ PB_BIND(simpleble_ConnectRsp, simpleble_ConnectRsp, AUTO)
 
 
 PB_BIND(simpleble_DisconnectRsp, simpleble_DisconnectRsp, AUTO)
+
+
+PB_BIND(simpleble_ReadRsp, simpleble_ReadRsp, 2)
 
 
 PB_BIND(simpleble_AdvEvt, simpleble_AdvEvt, 2)
@@ -105,7 +111,7 @@ PB_BIND(simpleble_ValueChangedEvt, simpleble_ValueChangedEvt, 2)
 PB_BIND(simpleble_Command, simpleble_Command, AUTO)
 
 
-PB_BIND(simpleble_Response, simpleble_Response, AUTO)
+PB_BIND(simpleble_Response, simpleble_Response, 2)
 
 
 PB_BIND(simpleble_Event, simpleble_Event, 2)

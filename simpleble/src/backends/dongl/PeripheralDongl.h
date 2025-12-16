@@ -102,7 +102,7 @@ class PeripheralDongl : public PeripheralBase {
     bool _attempt_connect();
     BluetoothUUID _uuid_from_uuid16(uint16_t uuid16);
     BluetoothUUID _uuid_from_uuid32(uint32_t uuid32);
-    BluetoothUUID _uuid_from_uuid128(simpleble_UUID const& uuid);
+    BluetoothUUID _uuid_from_uuid128(const uint8_t uuid[16]);
     BluetoothUUID _uuid_from_proto(simpleble_UUID const& uuid);
 
     uint16_t _conn_handle = BLE_CONN_HANDLE_INVALID;

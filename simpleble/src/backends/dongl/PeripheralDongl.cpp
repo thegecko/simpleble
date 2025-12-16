@@ -6,11 +6,13 @@
 
 #include <simpleble/Exceptions.h>
 
+#include <cstdint>
 #include <memory>
 #include <thread>
 
 #include "CommonUtils.h"
 #include "LoggingInternal.h"
+#include "protocol/simpleble.pb.h"
 #include "simpleble/Types.h"
 
 #include <fmt/core.h>
@@ -90,9 +92,7 @@ void PeripheralDongl::disconnect() {
     SAFE_CALLBACK_CALL(this->_callback_on_disconnected);
 }
 
-bool PeripheralDongl::is_connected() {
-    return _conn_handle != BLE_CONN_HANDLE_INVALID;
-}
+bool PeripheralDongl::is_connected() { return _conn_handle != BLE_CONN_HANDLE_INVALID; }
 
 bool PeripheralDongl::is_connectable() { return _connectable; }
 
@@ -199,7 +199,6 @@ bool PeripheralDongl::_attempt_connect() {
     fmt::println("Disconnection confirmed");
     _conn_handle = BLE_CONN_HANDLE_INVALID;
 
-
     auto response = _serial_protocol->simpleble_connect(static_cast<simpleble_BluetoothAddressType>(_address_type),
                                                         _address);
     if (response.ret_code != 0) {
@@ -216,7 +215,7 @@ bool PeripheralDongl::_attempt_connect() {
         std::unique_lock<std::mutex> lock(connection_mutex_);
         connection_cv_.wait_for(lock, 5000ms, [this]() { return _conn_handle != BLE_CONN_HANDLE_INVALID; });
         if (_conn_handle == BLE_CONN_HANDLE_INVALID) {
-            //SIMPLEBLE_LOG_ERROR("Timeout while waiting for connection confirmation");
+            // SIMPLEBLE_LOG_ERROR("Timeout while waiting for connection confirmation");
             fmt::println("Timeout while waiting for connection confirmation");
             return false;
         }
@@ -227,7 +226,8 @@ bool PeripheralDongl::_attempt_connect() {
     // Wait for the attributes to be discovered.
     {
         std::unique_lock<std::mutex> lock(attributes_discovered_mutex_);
-        attributes_discovered_cv_.wait_for(lock, 15000ms, [this]() { return !_services.empty() || _conn_handle == BLE_CONN_HANDLE_INVALID; });
+        attributes_discovered_cv_.wait_for(
+            lock, 15000ms, [this]() { return !_services.empty() || _conn_handle == BLE_CONN_HANDLE_INVALID; });
         if (_services.empty()) {
             fmt::println("Timeout while waiting for attributes to be discovered");
             return false;
@@ -240,6 +240,56 @@ bool PeripheralDongl::_attempt_connect() {
     }
 
     fmt::println("Attributes discovered. {} services found", _services.size());
+
+    // Retrieve any missing 128-bit UUIDs.
+    for (auto& [handle, service] : _services) {
+        // Fetch the service UUID if missing.
+        if (service.uuid.empty()) {
+            simpleble_ReadRsp rsp = _serial_protocol->simpleble_read(_conn_handle, service.start_handle);
+            if (rsp.ret_code != 0) {
+                fmt::println("Failed to read UUID for service {} - ret_code: {}", service.start_handle,
+                             rsp.ret_code);
+                continue;
+            }
+
+            if (rsp.data.size == 2) {
+                service.uuid = _uuid_from_uuid16(rsp.data.bytes[1] << 8 | rsp.data.bytes[0]);
+            } else if (rsp.data.size == 16) {
+                uint8_t uuid_128[16];
+                for (int i = 0; i < 16; i++) {
+                    uuid_128[i] = rsp.data.bytes[15 - i];
+                }
+                service.uuid = _uuid_from_uuid128(uuid_128);
+            } else {
+                fmt::println("Unexpected UUID size: {}", rsp.data.size);
+                continue;
+            }
+        }
+
+        for (auto& [handle, characteristic] : service.characteristics) {
+            // Fetch the characteristic UUID if missing.
+            if (characteristic.uuid.empty()) {
+                simpleble_ReadRsp rsp = _serial_protocol->simpleble_read(_conn_handle, characteristic.handle_decl);
+                if (rsp.ret_code != 0) {
+                    fmt::println("Failed to read UUID for characteristic {} - ret_code: {}", characteristic.handle_decl,
+                                 rsp.ret_code);
+                    continue;
+                }
+
+                if (rsp.data.size == 5) {
+                    characteristic.uuid = _uuid_from_uuid16(rsp.data.bytes[4] << 8 | rsp.data.bytes[3]);
+                } else if (rsp.data.size == 19) {
+                    uint8_t uuid_128[16];
+                    for (int i = 0; i < 16; i++) {
+                        uuid_128[i] = rsp.data.bytes[15 - i + 3];
+                    }
+                    characteristic.uuid = _uuid_from_uuid128(uuid_128);
+                }
+            }
+        }
+    }
+
+    fmt::println("Service discovery complete");
 
     return true;
 }
@@ -261,8 +311,9 @@ void PeripheralDongl::notify_disconnected() {
 }
 
 void PeripheralDongl::notify_service_discovered(simpleble_ServiceDiscoveredEvt const& evt) {
-    fmt::print("PeripheralDongl::notify_service_discovered: conn_handle={}, uuid16={:04x}, start_handle={}, end_handle={}\n",
-               evt.conn_handle, evt.uuid16.uuid, evt.start_handle, evt.end_handle);
+    fmt::print(
+        "PeripheralDongl::notify_service_discovered: conn_handle={}, uuid16={:04x}, start_handle={}, end_handle={}\n",
+        evt.conn_handle, evt.uuid16.uuid, evt.start_handle, evt.end_handle);
 
     BluetoothUUID uuid;
     if (evt.has_uuid16) {
@@ -277,20 +328,23 @@ void PeripheralDongl::notify_service_discovered(simpleble_ServiceDiscoveredEvt c
 }
 
 void PeripheralDongl::notify_characteristic_discovered(simpleble_CharacteristicDiscoveredEvt const& evt) {
-    fmt::print("PeripheralDongl::notify_characteristic_discovered: conn_handle={}, uuid16={:04x}, handle_decl={}, handle_value={}, can_read={}, can_write_wo_resp={}, can_write_cmd={}, can_notify={}, can_indicate={}\n",
-               evt.conn_handle, evt.uuid16.uuid, evt.handle_decl, evt.handle_value, evt.props.read, evt.props.write_wo_resp, evt.props.write, evt.props.notify, evt.props.indicate);
+    fmt::print(
+        "PeripheralDongl::notify_characteristic_discovered: conn_handle={}, uuid16={:04x}, handle_decl={}, "
+        "handle_value={}, can_read={}, can_write_wo_resp={}, can_write_cmd={}, can_notify={}, can_indicate={}\n",
+        evt.conn_handle, evt.uuid16.uuid, evt.handle_decl, evt.handle_value, evt.props.read, evt.props.write_wo_resp,
+        evt.props.write, evt.props.notify, evt.props.indicate);
 
     uint16_t service_start_handle = 0;
     for (auto& [handle, service] : _services) {
-        if (service.start_handle <= evt.handle_decl &&
-            service.end_handle >= evt.handle_decl) {
+        if (service.start_handle <= evt.handle_decl && service.end_handle >= evt.handle_decl) {
             service_start_handle = service.start_handle;
             break;
         }
     }
 
     if (service_start_handle == 0) {
-        fmt::print("PeripheralDongl::notify_characteristic_discovered: Characteristic {} is not part of any service\n", evt.handle_decl);
+        fmt::print("PeripheralDongl::notify_characteristic_discovered: Characteristic {} is not part of any service\n",
+                   evt.handle_decl);
         return;
     }
 
@@ -312,35 +366,35 @@ void PeripheralDongl::notify_characteristic_discovered(simpleble_CharacteristicD
 }
 
 void PeripheralDongl::notify_descriptor_discovered(simpleble_DescriptorDiscoveredEvt const& evt) {
-    
-
     uint16_t service_start_handle = 0;
     for (auto& [handle, service] : _services) {
-        if (service.start_handle <= evt.handle &&
-            service.end_handle >= evt.handle) {
+        if (service.start_handle <= evt.handle && service.end_handle >= evt.handle) {
             service_start_handle = service.start_handle;
             break;
         }
     }
 
     if (service_start_handle == 0) {
-        fmt::print("PeripheralDongl::notify_characteristic_discovered: Descriptor {} is not part of any service\n", evt.handle);
+        fmt::print("PeripheralDongl::notify_characteristic_discovered: Descriptor {} is not part of any service\n",
+                   evt.handle);
         return;
     }
 
     for (auto& [handle, characteristic] : _services[service_start_handle].characteristics) {
         // If the descriptor matches the characteristic declaration handle or value handle, we can ignore it.
-        if (characteristic.handle_decl == evt.handle ||
-            characteristic.handle_value == evt.handle) {
+        if (characteristic.handle_decl == evt.handle || characteristic.handle_value == evt.handle) {
             return;
-        }       
+        }
     }
 
     // At this point we know we have a real descriptor that we shouldn't ignore.
-    fmt::print("PeripheralDongl::notify_descriptor_discovered: conn_handle={}, uuid16={:04x}, handle={}\n", evt.conn_handle, evt.uuid16.uuid, evt.handle);
+    fmt::print("PeripheralDongl::notify_descriptor_discovered: conn_handle={}, uuid16={:04x}, handle={}\n",
+               evt.conn_handle, evt.uuid16.uuid, evt.handle);
 
-    // For the given service handle, loop the characteristics backwards and select the first characteristic where the handle_value is less than the descriptor handle.
-    for (auto it = _services[service_start_handle].characteristics.rbegin(); it != _services[service_start_handle].characteristics.rend(); ++it) {
+    // For the given service handle, loop the characteristics backwards and select the first characteristic where the
+    // handle_value is less than the descriptor handle.
+    for (auto it = _services[service_start_handle].characteristics.rbegin();
+         it != _services[service_start_handle].characteristics.rend(); ++it) {
         if (it->second.handle_value < evt.handle) {
             it->second.descriptors[evt.handle] = DescriptorDefinition{
                 .handle = evt.handle,
@@ -354,93 +408,7 @@ void PeripheralDongl::notify_descriptor_discovered(simpleble_DescriptorDiscovere
 void PeripheralDongl::notify_attribute_discovery_complete() {
     fmt::print("PeripheralDongl::notify_attribute_discovery_complete: {}\n", _conn_handle);
     attributes_discovered_cv_.notify_all();
-}   
-
-// void PeripheralDongl::notify_attribute_found(simpleble_AttributeFoundEvt const& attribute_found_evt) {
-//     for (size_t i = 0; i < attribute_found_evt.attributes_count; i++) {
-//         simpleble_Attribute const& attr = attribute_found_evt.attributes[i];
-//         switch (attr.which_attribute) {
-//             case simpleble_Attribute_service_tag: {
-//                 BluetoothUUID uuid = _uuid_from_proto(attr.attribute.service.uuid);
-//                 _services[attr.attribute.service.start_handle] = ServiceDefinition{
-//                     .uuid = uuid,
-//                     .start_handle = attr.attribute.service.start_handle,
-//                     .end_handle = attr.attribute.service.end_handle,
-//                 };
-//                 break;
-//             }
-//             case simpleble_Attribute_characteristic_tag: {
-//                 uint16_t service_handle = 0;
-//                 for (auto& service : _services) {
-//                     if (attr.attribute.characteristic.handle_decl >= service.second.start_handle &&
-//                         attr.attribute.characteristic.handle_decl <= service.second.end_handle) {
-//                         service_handle = service.first;
-//                         break;
-//                     }
-//                 }
-
-//                 if (service_handle == 0) {
-//                     break;
-//                 }
-
-//                 BluetoothUUID uuid = _uuid_from_proto(attr.attribute.characteristic.uuid);
-//                 _services[service_handle].characteristics[attr.attribute.characteristic.handle_decl] =
-//                     CharacteristicDefinition{
-//                         .uuid = uuid,
-//                         .handle_decl = attr.attribute.characteristic.handle_decl,
-//                         .handle_value = attr.attribute.characteristic.handle_value,
-//                         .can_read = attr.attribute.characteristic.props.read,
-//                         .can_write_request = attr.attribute.characteristic.props.write,
-//                         .can_write_command = attr.attribute.characteristic.props.write_wo_resp,
-//                         .can_notify = attr.attribute.characteristic.props.notify,
-//                         .can_indicate = attr.attribute.characteristic.props.indicate,
-//                     };
-//                 break;
-//             }
-//             case simpleble_Attribute_descriptor_tag: {
-//                 // TODO: Identify the characteristic that this descriptor belongs to based on handle ranges.
-//                 uint16_t service_handle = 0;
-//                 for (auto& service : _services) {
-//                     if (attr.attribute.descriptor.handle >= service.second.start_handle &&
-//                         attr.attribute.descriptor.handle <= service.second.end_handle) {
-//                         service_handle = service.first;
-//                         break;
-//                     }
-//                 }
-
-//                 if (service_handle == 0) {
-//                     break;
-//                 }
-
-//                 uint16_t characteristic_handle = 0;
-//                 for (auto& characteristic : _services[service_handle].characteristics) {
-//                     if (attr.attribute.descriptor.handle >= characteristic.second.handle_decl &&
-//                         attr.attribute.descriptor.handle <= characteristic.second.handle_value) {
-//                         characteristic_handle = characteristic.first;
-//                         break;
-//                     }
-//                 }
-
-//                 if (characteristic_handle == 0) {
-//                     break;
-//                 }
-
-//                 BluetoothUUID uuid = _uuid_from_proto(attr.attribute.descriptor.uuid);
-//                 _services[service_handle]
-//                     .characteristics[characteristic_handle]
-//                     .descriptors[attr.attribute.descriptor.handle] = DescriptorDefinition{
-//                     .uuid = uuid,
-//                     .handle = attr.attribute.descriptor.handle,
-//                 };
-//                 break;
-//             }
-//         }
-//     }
-
-//     if (attribute_found_evt.is_last) {
-//         attributes_discovered_cv_.notify_all();
-//     }
-// }
+}
 
 BluetoothUUID PeripheralDongl::_uuid_from_uuid16(uint16_t uuid16) {
     return BluetoothUUID(fmt::format("0000{:04X}-0000-1000-8000-00805F9B34FB", uuid16));
@@ -450,21 +418,19 @@ BluetoothUUID PeripheralDongl::_uuid_from_uuid32(uint32_t uuid32) {
     return BluetoothUUID(fmt::format("{:08X}-0000-1000-8000-00805F9B34FB", uuid32));
 }
 
-BluetoothUUID PeripheralDongl::_uuid_from_uuid128(simpleble_UUID const& uuid) {
-    const auto& bytes = uuid.uuid.uuid128.uuid;
+BluetoothUUID PeripheralDongl::_uuid_from_uuid128(const uint8_t id[16]) {
     std::string uuid_str;
     uuid_str.reserve(36);  // Pre-allocate memory for the UUID string
 
-    uuid_str += fmt::format("{:02X}{:02X}{:02X}{:02X}", bytes[0], bytes[1], bytes[2], bytes[3]);
+    uuid_str += fmt::format("{:02X}{:02X}{:02X}{:02X}", id[0], id[1], id[2], id[3]);
     uuid_str += "-";
-    uuid_str += fmt::format("{:02X}{:02X}", bytes[4], bytes[5]);
+    uuid_str += fmt::format("{:02X}{:02X}", id[4], id[5]);
     uuid_str += "-";
-    uuid_str += fmt::format("{:02X}{:02X}", bytes[6], bytes[7]);
+    uuid_str += fmt::format("{:02X}{:02X}", id[6], id[7]);
     uuid_str += "-";
-    uuid_str += fmt::format("{:02X}{:02X}", bytes[8], bytes[9]);
+    uuid_str += fmt::format("{:02X}{:02X}", id[8], id[9]);
     uuid_str += "-";
-    uuid_str += fmt::format("{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}", bytes[10], bytes[11], bytes[12], bytes[13],
-                            bytes[14], bytes[15]);
+    uuid_str += fmt::format("{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}", id[10], id[11], id[12], id[13], id[14], id[15]);
 
     return BluetoothUUID(uuid_str);
 }
