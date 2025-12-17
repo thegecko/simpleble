@@ -57,6 +57,9 @@ PB_BIND(simpleble_DisconnectCmd, simpleble_DisconnectCmd, AUTO)
 PB_BIND(simpleble_ReadCmd, simpleble_ReadCmd, AUTO)
 
 
+PB_BIND(simpleble_WriteCmd, simpleble_WriteCmd, 2)
+
+
 PB_BIND(simpleble_InitRsp, simpleble_InitRsp, AUTO)
 
 
@@ -73,6 +76,9 @@ PB_BIND(simpleble_DisconnectRsp, simpleble_DisconnectRsp, AUTO)
 
 
 PB_BIND(simpleble_ReadRsp, simpleble_ReadRsp, 2)
+
+
+PB_BIND(simpleble_WriteRsp, simpleble_WriteRsp, AUTO)
 
 
 PB_BIND(simpleble_AdvEvt, simpleble_AdvEvt, 2)
@@ -96,19 +102,10 @@ PB_BIND(simpleble_DescriptorDiscoveredEvt, simpleble_DescriptorDiscoveredEvt, AU
 PB_BIND(simpleble_AttributeDiscoveryCompleteEvt, simpleble_AttributeDiscoveryCompleteEvt, AUTO)
 
 
-PB_BIND(simpleble_AttributeFoundEvt, simpleble_AttributeFoundEvt, 2)
-
-
-PB_BIND(simpleble_ReadResponseEvt, simpleble_ReadResponseEvt, 2)
-
-
-PB_BIND(simpleble_WriteResponseEvt, simpleble_WriteResponseEvt, 2)
-
-
 PB_BIND(simpleble_ValueChangedEvt, simpleble_ValueChangedEvt, 2)
 
 
-PB_BIND(simpleble_Command, simpleble_Command, AUTO)
+PB_BIND(simpleble_Command, simpleble_Command, 2)
 
 
 PB_BIND(simpleble_Response, simpleble_Response, 2)

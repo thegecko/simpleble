@@ -99,7 +99,7 @@ extern const pb_msgdesc_t dongl_D2H_msg;
 
 /* Maximum encoded size of messages (where known) */
 #if defined(sd_Event_size)
-union dongl_Event_evt_size_union {char f2[(6 + sd_Event_size)]; char f0[612];};
+union dongl_Event_evt_size_union {char f2[(6 + sd_Event_size)]; char f0[531];};
 #endif
 #if defined(sd_Event_size)
 union dongl_D2H_type_size_union {char f2[(6 + sizeof(union dongl_Event_evt_size_union))]; char f0[549];};

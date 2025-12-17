@@ -89,14 +89,14 @@ class PeripheralDongl : public PeripheralBase {
         bool can_notify;
         bool can_indicate;
 
-        std::map<uint16_t, DescriptorDefinition> descriptors;
+        std::vector<DescriptorDefinition> descriptors;
     };
 
     struct ServiceDefinition {
         BluetoothUUID uuid;
         uint16_t start_handle;
         uint16_t end_handle;
-        std::map<uint16_t, CharacteristicDefinition> characteristics;
+        std::vector<CharacteristicDefinition> characteristics;
     };
 
     bool _attempt_connect();
@@ -104,6 +104,9 @@ class PeripheralDongl : public PeripheralBase {
     BluetoothUUID _uuid_from_uuid32(uint32_t uuid32);
     BluetoothUUID _uuid_from_uuid128(const uint8_t uuid[16]);
     BluetoothUUID _uuid_from_proto(simpleble_UUID const& uuid);
+
+    ServiceDefinition& _service_definition(uint16_t handle);
+    CharacteristicDefinition& _characteristic_definition(BluetoothUUID const& service, BluetoothUUID const& characteristic);
 
     uint16_t _conn_handle = BLE_CONN_HANDLE_INVALID;
     std::string _identifier;
@@ -115,7 +118,7 @@ class PeripheralDongl : public PeripheralBase {
     std::map<uint16_t, ByteArray> _manufacturer_data;
     std::map<BluetoothUUID, ByteArray> _service_data;
 
-    std::map<uint16_t, ServiceDefinition> _services;
+    std::vector<ServiceDefinition> _services;
 
     std::shared_ptr<Dongl::Serial::Protocol> _serial_protocol;
 

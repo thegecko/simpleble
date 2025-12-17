@@ -107,6 +107,21 @@ simpleble_ReadRsp Protocol::simpleble_read(uint16_t conn_handle, uint16_t handle
     return response.rsp.simpleble.rsp.read;
 }
 
+simpleble_WriteRsp Protocol::simpleble_write(uint16_t conn_handle, uint16_t handle, simpleble_WriteOperation operation, const std::vector<uint8_t>& data) {
+    dongl_Command command = dongl_Command_init_zero;
+    command.which_cmd = dongl_Command_simpleble_tag;
+    command.cmd.simpleble.which_cmd = simpleble_Command_write_tag;
+    command.cmd.simpleble.cmd.write = simpleble_WriteCmd_init_default;
+    command.cmd.simpleble.cmd.write.conn_handle = conn_handle;
+    command.cmd.simpleble.cmd.write.handle = handle;
+    command.cmd.simpleble.cmd.write.op = operation;
+    command.cmd.simpleble.cmd.write.data.size = data.size();
+    memcpy(command.cmd.simpleble.cmd.write.data.bytes, data.data(), data.size());
+
+    dongl_Response response = exchange(command);
+    return response.rsp.simpleble.rsp.write;
+}
+
 // GAP commands
 sd_GapAddrSetRsp Protocol::sd_gap_addr_set(bool has_addr, sd_types_BleGapAddr addr) {
     sd_GapAddrSetCmd cmd = {has_addr, addr};
