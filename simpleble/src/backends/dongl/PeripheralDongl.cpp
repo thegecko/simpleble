@@ -104,8 +104,10 @@ void PeripheralDongl::unpair() {}
 SharedPtrVector<ServiceBase> PeripheralDongl::available_services() {
     SharedPtrVector<ServiceBase> service_list;
     for (auto& service : _services) {
+        fmt::print("PeripheralDongl::available_services: Service UUID: {}\n", service.uuid);
         SharedPtrVector<CharacteristicBase> characteristic_list;
         for (auto& characteristic : service.characteristics) {
+            fmt::print("PeripheralDongl::available_services:   Characteristic UUID: {}\n", characteristic.uuid);
             SharedPtrVector<DescriptorBase> descriptor_list;
             for (auto& descriptor : characteristic.descriptors) {
                 descriptor_list.push_back(std::make_shared<DescriptorBase>(descriptor.uuid));
@@ -427,7 +429,7 @@ void PeripheralDongl::notify_characteristic_discovered(simpleble_CharacteristicD
         evt.conn_handle, evt.uuid16.uuid, evt.handle_decl, evt.handle_value, evt.props.read, evt.props.write_wo_resp,
         evt.props.write, evt.props.notify, evt.props.indicate);
 
-    auto service = _service_definition(evt.handle_decl);
+    auto& service = _service_definition(evt.handle_decl);
 
     BluetoothUUID uuid;
     if (evt.has_uuid16) {
@@ -447,7 +449,7 @@ void PeripheralDongl::notify_characteristic_discovered(simpleble_CharacteristicD
 }
 
 void PeripheralDongl::notify_descriptor_discovered(simpleble_DescriptorDiscoveredEvt const& evt) {
-    auto service = _service_definition(evt.handle);
+    auto& service = _service_definition(evt.handle);
 
     for (auto& characteristic : service.characteristics) {
         // If the descriptor matches the characteristic declaration handle or value handle, we can ignore it.
