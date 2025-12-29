@@ -6,12 +6,8 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog`_, and this project adheres to `Semantic Versioning`_.
 
 
-[0.10.4] - XXXX-XX-XX
+[0.10.4] - 2025-12-29
 ---------------------
-
-**Notes**
-
--
 
 **Added**
 
