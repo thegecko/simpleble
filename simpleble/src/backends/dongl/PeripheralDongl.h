@@ -83,6 +83,7 @@ class PeripheralDongl : public PeripheralBase {
         BluetoothUUID uuid;
         uint16_t handle_decl;
         uint16_t handle_value;
+        uint16_t handle_cccd = 0;
         bool can_read;
         bool can_write_request;
         bool can_write_command;
@@ -105,8 +106,10 @@ class PeripheralDongl : public PeripheralBase {
     BluetoothUUID _uuid_from_uuid128(const uint8_t uuid[16]);
     BluetoothUUID _uuid_from_proto(simpleble_UUID const& uuid);
 
-    ServiceDefinition& _service_definition(uint16_t handle);
-    CharacteristicDefinition& _characteristic_definition(BluetoothUUID const& service, BluetoothUUID const& characteristic);
+    ServiceDefinition& _find_service_from_handle(uint16_t handle);
+    CharacteristicDefinition& _find_characteristic_from_handle(uint16_t handle);
+    CharacteristicDefinition& _find_characteristic_from_uuid(BluetoothUUID const& service,
+                                                             BluetoothUUID const& characteristic);
 
     uint16_t _conn_handle = BLE_CONN_HANDLE_INVALID;
     std::string _identifier;
