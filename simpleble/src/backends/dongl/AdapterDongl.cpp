@@ -225,6 +225,16 @@ void AdapterDongl::_on_simpleble_event(const simpleble_Event& event) {
             }
             break;
         }
+
+        case simpleble_Event_value_changed_evt_tag: {
+            for (auto& [address, peripheral] : this->peripherals_) {
+                if (peripheral->conn_handle() == event.evt.value_changed_evt.conn_handle) {
+                    peripheral->notify_value_changed(event.evt.value_changed_evt);
+                    break;
+                }
+            }
+            break;
+        }
     }
 }
 
