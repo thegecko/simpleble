@@ -62,6 +62,7 @@ class PeripheralDongl : public PeripheralBase {
     virtual void set_callback_on_disconnected(std::function<void()> on_disconnected) override;
 
     // Internal methods not exposed to the user.
+    // TODO: Make these private and the adapter a friend.
     uint16_t conn_handle() const;
     void update_advertising_data(advertising_data_t advertising_data);
     void notify_connected(uint16_t conn_handle);
