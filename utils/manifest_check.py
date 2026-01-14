@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-import re
+import sys
 try:
     from pathspec import PathSpec
     from pathspec.patterns import GitWildMatchPattern
@@ -22,9 +22,20 @@ IGNORED_FOLDERS = {
     'node_modules',
     '.idea',
     '.vscode',
+    '.ruff_cache',
     "simpledroidble",
-    "simplersble"
+    "simplersble",
+    "simplecble",
+    "scripts"
+}
 
+IGNORED_FILES = {
+    ".clang-format",
+    ".gitignore",
+    ".readthedocs.yaml",
+    "Cargo.lock",
+    "Cargo.toml",
+    "MANIFEST.in",
 }
 
 def find_missing_manifest_entries():
@@ -65,6 +76,9 @@ def find_missing_manifest_entries():
             continue
 
         for file in files:
+            if any(ignored in file for ignored in IGNORED_FILES):
+                continue
+
             path = os.path.join(root, file)
             # Convert path to use forward slashes and remove leading ./
             path = path.replace('\\', '/').replace('./', '', 1)
@@ -122,3 +136,5 @@ def find_nonexistent_manifest_entries():
 if __name__ == "__main__":
     missing = find_missing_manifest_entries()
     nonexistent = find_nonexistent_manifest_entries()
+    if missing or nonexistent:
+        sys.exit(1)
