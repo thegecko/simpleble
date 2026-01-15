@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import sys
+import fnmatch
 try:
     from pathspec import PathSpec
     from pathspec.patterns import GitWildMatchPattern
@@ -67,8 +68,17 @@ def find_missing_manifest_entries():
     # Find all files in project
     all_files = set()
     for root, dirs, files in os.walk('.'):
-        # Skip ignored folders
-        if any(ignored in root for ignored in IGNORED_FOLDERS):
+        # Convert root to use forward slashes and remove leading ./
+        clean_root = root.replace('\\', '/').replace('./', '', 1)
+        
+        # Skip ignored folders by checking each component of the path
+        root_parts = Path(clean_root).parts
+        should_skip = False
+        for part in root_parts:
+            if any(fnmatch.fnmatch(part, ignored) for ignored in IGNORED_FOLDERS):
+                should_skip = True
+                break
+        if should_skip:
             continue
 
         # Skip explicitly pruned directories
