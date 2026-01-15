@@ -9,7 +9,7 @@ except ImportError:
     print("Please install pathspec: pip install pathspec")
     raise
 
-# Add folders to ignore here
+# Folders to completely ignore during search
 IGNORED_FOLDERS = {
     '.git',
     '__pycache__',
@@ -25,21 +25,43 @@ IGNORED_FOLDERS = {
     '.vscode',
     '.ruff_cache',
     "simpledroidble",
+    "simpledroidbridge",
+    "simplejavable",
     "simplersble",
     "simplecble",
-    "scripts"
+    "scripts",
+    ".github",
+    "docs",
+    "examples",
+    "hitl",
+    "utils",
 }
 
-IGNORED_FILES = {
+# Directories to explicitly prune in MANIFEST.in
+PRUNE_DIRS = {
+    ".github",
+    "docs",
+    "examples",
+    "hitl",
+    "simpleble/test",
+    "simplebluez/test",
+    "simpledbus/test",
+    "simplepyble/test",
+    "simpledroidbridge",
+    "simplejavable",
+    "simplersble",
+    "utils",
+}
+
+# Files to explicitly exclude in MANIFEST.in
+EXCLUDE_FILES = {
+    "MANIFEST.in",
     ".clang-format",
     ".gitignore",
     ".readthedocs.yaml",
-    "Cargo.lock",
-    "Cargo.toml",
-    "MANIFEST.in",
 }
 
-def find_missing_manifest_entries():
+def generate_manifest():
     # Read .gitignore patterns
     gitignore = Path('.gitignore')
     if gitignore.exists():
@@ -48,22 +70,6 @@ def find_missing_manifest_entries():
         spec = PathSpec.from_lines(GitWildMatchPattern, gitignore_content)
     else:
         spec = PathSpec([])
-
-    # Read current MANIFEST.in entries
-    with open('MANIFEST.in', 'r') as f:
-        manifest_content = f.read()
-
-    # Get all included files from manifest
-    included_files = set()
-    for line in manifest_content.splitlines():
-        if line.startswith('include '):
-            included_files.add(line.split('include ')[1].strip())
-
-    # Get all pruned/excluded paths
-    excluded_paths = set()
-    for line in manifest_content.splitlines():
-        if line.startswith(('prune ', 'exclude ')):
-            excluded_paths.add(line.split()[1].strip())
 
     # Find all files in project
     all_files = set()
@@ -81,14 +87,11 @@ def find_missing_manifest_entries():
         if should_skip:
             continue
 
-        # Skip explicitly pruned directories
-        if any(root.startswith(f'./{excluded}') for excluded in excluded_paths):
+        # Skip files in sub-test directories that are pruned
+        if any(clean_root.startswith(pdir) for pdir in PRUNE_DIRS):
             continue
 
         for file in files:
-            if any(ignored in file for ignored in IGNORED_FILES):
-                continue
-
             path = os.path.join(root, file)
             # Convert path to use forward slashes and remove leading ./
             path = path.replace('\\', '/').replace('./', '', 1)
@@ -100,51 +103,33 @@ def find_missing_manifest_entries():
             # Skip common file types that shouldn't be included
             if file.endswith(('.pyc', '.pyo', '.pyd')):
                 continue
+            
+            # Skip files in EXCLUDE_FILES (they will be added as exclude directives)
+            if path in EXCLUDE_FILES:
+                continue
 
             all_files.add(path)
 
-    # Find files that aren't in manifest
-    missing_files = all_files - included_files
+    # Prepare manifest content
+    lines = []
+    
+    # Sort included files alphabetically
+    for file in sorted(all_files):
+        lines.append(f"include {file}")
+    
+    # Add prune directives
+    for pdir in sorted(PRUNE_DIRS):
+        lines.append(f"prune {pdir}")
+        
+    # Add exclude directives
+    for efile in sorted(EXCLUDE_FILES):
+        lines.append(f"exclude {efile}")
 
-    # Print results
-    if missing_files:
-        print("Files found that aren't in MANIFEST.in:")
-        for file in sorted(missing_files):
-            print(f"include {file}")
-    else:
-        print("No missing files found!")
+    # Write to MANIFEST.in
+    with open('MANIFEST.in', 'w') as f:
+        f.write('\n'.join(lines) + '\n')
 
-    return missing_files
-
-def find_nonexistent_manifest_entries():
-    # Read current MANIFEST.in entries
-    with open('MANIFEST.in', 'r') as f:
-        manifest_content = f.read()
-
-    # Get all included files from manifest
-    manifest_files = []
-    for line in manifest_content.splitlines():
-        if line.startswith('include '):
-            manifest_files.append(line.split('include ')[1].strip())
-
-    # Check each manifest entry
-    nonexistent_files = []
-    for file in manifest_files:
-        if not os.path.exists(file):
-            nonexistent_files.append(file)
-
-    # Print results
-    if nonexistent_files:
-        print("\nFiles in MANIFEST.in that don't exist:")
-        for file in sorted(nonexistent_files):
-            print(f"Remove: include {file}")
-    else:
-        print("\nAll manifest entries exist!")
-
-    return nonexistent_files
+    print("MANIFEST.in has been recreated successfully.")
 
 if __name__ == "__main__":
-    missing = find_missing_manifest_entries()
-    nonexistent = find_nonexistent_manifest_entries()
-    if missing or nonexistent:
-        sys.exit(1)
+    generate_manifest()
