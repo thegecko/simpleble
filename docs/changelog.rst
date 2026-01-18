@@ -18,7 +18,8 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Changed**
 
-- 
+- (SimpleDBus) Interfaces now host their own property objects.
+- (SimpleDBus) Property change callbacks are now handled by the individual property objects.
 
 **Fixed**
 

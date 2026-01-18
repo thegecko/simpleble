@@ -21,9 +21,7 @@ class Properties : public Interface {
 
     void message_handle(Message& msg) override;
 
-    // NOTE: In this particular case, we had to make the registry public to make it
-    // visible to Proxy, so that we can make sure there's a live reference to it
-    // to prevent the linker from optimizing it away.
+  private:
     static const SimpleDBus::AutoRegisterInterface<Properties> registry;
 };
 

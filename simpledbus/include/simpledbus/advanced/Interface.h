@@ -84,9 +84,7 @@ class Interface {
       public:
         Property(Interface& interface, const std::string& name) : PropertyBase(interface, name) {}
 
-        virtual ~Property() {
-            on_changed.unload();
-        }
+        virtual ~Property() { on_changed.unload(); }
 
         T operator()() const { return get(); }
         operator T() const { return get(); }
@@ -106,27 +104,23 @@ class Interface {
 
         void set(T value) {
             std::scoped_lock lock(_mutex);
-            _value = SimpleDBus::Holder::create<T>(value);
+            _value = Holder::create<T>(value);
             _valid = true;
         }
 
         kvn::safe_callback<void(T)> on_changed;
 
-        void notify_changed() override {
-            on_changed(get());
-        }
+        void notify_changed() override { on_changed(get()); }
     };
 
     template <typename T>
     class CustomProperty : public PropertyBase {
       public:
-        CustomProperty(Interface& interface, const std::string& name, std::function<SimpleDBus::Holder(T)> to_holder,
-                       std::function<T(SimpleDBus::Holder)> from_holder)
+        CustomProperty(Interface& interface, const std::string& name, std::function<Holder(T)> to_holder,
+                       std::function<T(Holder)> from_holder)
             : PropertyBase(interface, name), _to_holder(to_holder), _from_holder(from_holder) {}
 
-        virtual ~CustomProperty() {
-            on_changed.unload();
-        }
+        virtual ~CustomProperty() { on_changed.unload(); }
 
         T operator()() const { return get(); }
         operator T() const { return get(); }
@@ -152,13 +146,11 @@ class Interface {
 
         kvn::safe_callback<void(T)> on_changed;
 
-        void notify_changed() override {
-            on_changed(get());
-        }
+        void notify_changed() override { on_changed(get()); }
 
       private:
-        std::function<SimpleDBus::Holder(T)> _to_holder;
-        std::function<T(SimpleDBus::Holder)> _from_holder;
+        std::function<Holder(T)> _to_holder;
+        std::function<T(Holder)> _from_holder;
     };
 
     Interface(std::shared_ptr<Connection> conn, std::shared_ptr<Proxy> proxy, const std::string& interface_name);
@@ -197,8 +189,8 @@ class Interface {
     }
 
     template <typename T>
-    CustomProperty<T>& create_custom_property(const std::string& name, std::function<SimpleDBus::Holder(T)> to_holder,
-                                              std::function<T(SimpleDBus::Holder)> from_holder) {
+    CustomProperty<T>& create_custom_property(const std::string& name, std::function<Holder(T)> to_holder,
+                                              std::function<T(Holder)> from_holder) {
         std::unique_ptr<PropertyBase> property_ptr = std::make_unique<CustomProperty<T>>(*this, name, to_holder, from_holder);
         CustomProperty<T>& property = dynamic_cast<CustomProperty<T>&>(*property_ptr);
         _property_bases.emplace(name, std::move(property_ptr));

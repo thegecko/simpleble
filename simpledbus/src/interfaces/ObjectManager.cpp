@@ -1,5 +1,5 @@
-#include <simpledbus/interfaces/ObjectManager.h>
 #include <simpledbus/advanced/Proxy.h>
+#include <simpledbus/interfaces/ObjectManager.h>
 
 using namespace SimpleDBus;
 using namespace SimpleDBus::Interfaces;
@@ -7,8 +7,8 @@ using namespace SimpleDBus::Interfaces;
 const AutoRegisterInterface<ObjectManager> ObjectManager::registry{
     "org.freedesktop.DBus.ObjectManager",
     // clang-format off
-    [](std::shared_ptr<Connection> conn, std::shared_ptr<Proxy> proxy) -> std::shared_ptr<SimpleDBus::Interface> {
-        return std::static_pointer_cast<SimpleDBus::Interface>(std::make_shared<ObjectManager>(conn, proxy));
+    [](std::shared_ptr<Connection> conn, std::shared_ptr<Proxy> proxy) -> std::shared_ptr<Interface> {
+        return std::static_pointer_cast<Interface>(std::make_shared<ObjectManager>(conn, proxy));
     }
     // clang-format on
 };
@@ -55,9 +55,9 @@ void ObjectManager::message_handle(Message& msg) {
         // TODO: Make a call directly to the proxy to do this?
 
     } else if (msg.is_method_call(_interface_name, "GetManagedObjects")) {
-        SimpleDBus::Holder result = proxy()->path_collect();
+        Holder result = proxy()->path_collect();
 
-        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        Message reply = Message::create_method_return(msg);
         reply.append_argument(result, "a{oa{sa{sv}}}");
         _conn->send(reply);
     }

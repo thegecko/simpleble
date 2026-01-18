@@ -4,10 +4,10 @@
 using namespace SimpleDBus;
 using namespace SimpleDBus::Interfaces;
 
-const AutoRegisterInterface<Properties> Properties::registry {
+const AutoRegisterInterface<Properties> Properties::registry{
     "org.freedesktop.DBus.Properties",
     // clang-format off
-    [](std::shared_ptr<Connection> conn, std::shared_ptr<Proxy> proxy) -> std::shared_ptr<SimpleDBus::Interface> {
+    [](std::shared_ptr<Connection> conn, std::shared_ptr<Proxy> proxy) -> std::shared_ptr<Interface> {
         return std::make_shared<Properties>(conn, proxy);
     }
     // clang-format on
@@ -100,9 +100,9 @@ void Properties::message_handle(Message& msg) {
         std::string iface_name = interface_h.get_string();
 
         std::shared_ptr<Interface> interface = proxy()->interface_get(iface_name);
-        SimpleDBus::Holder properties = interface->handle_property_get_all();
+        Holder properties = interface->handle_property_get_all();
 
-        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        Message reply = Message::create_method_return(msg);
         reply.append_argument(properties, "a{sv}");
         _conn->send(reply);
 
@@ -120,11 +120,12 @@ void Properties::message_handle(Message& msg) {
 
         if (property_exists) {
             Holder property_value = interface->handle_property_get(property_name);
-            SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+            Message reply = Message::create_method_return(msg);
             reply.append_argument(property_value, "v");
             _conn->send(reply);
         } else {
-            SimpleDBus::Message reply = SimpleDBus::Message::create_error(msg, "org.freedesktop.DBus.Error.InvalidArgs", "Property not found");
+            Message reply = Message::create_error(msg, "org.freedesktop.DBus.Error.InvalidArgs",
+                                                                          "Property not found");
             _conn->send(reply);
         }
 
@@ -142,7 +143,7 @@ void Properties::message_handle(Message& msg) {
         std::shared_ptr<Interface> interface = proxy()->interface_get(iface_name);
         interface->handle_property_set(property_name, value_h);
 
-        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        Message reply = Message::create_method_return(msg);
         _conn->send(reply);
 
     } else if (msg.is_signal(_interface_name, "PropertiesChanged")) {

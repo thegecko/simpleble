@@ -34,8 +34,8 @@ class InterfaceRegistry {
     bool isRegistered(const std::string& iface_name) const { return creators.find(iface_name) != creators.end(); }
 
     // NOTES; We need a method inside Interfaces that will automatically retrieve the Interface name for the class.
-    std::shared_ptr<Interface> create(const std::string& iface_name, std::shared_ptr<Connection> conn,
-                                      std::shared_ptr<Proxy> proxy, const Holder& options) const {
+    std::shared_ptr<Interface> create(const std::string& iface_name, std::shared_ptr<Connection> conn, std::shared_ptr<Proxy> proxy,
+                                      const Holder& options) const {
         auto it = creators.find(iface_name);
         if (it != creators.end()) {
             auto iface = it->second(conn, proxy);
