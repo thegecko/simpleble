@@ -23,9 +23,9 @@ void Interface::load(Holder options) {
     // NEW PROPERTY UPDATE
     // Note: Properties that have not been defined inside _property_bases will explicitly be ignored.
     for (auto& [name, value] : changed_options) {
-        if (_property_bases.find(name) == _property_bases.end()) continue;
+        if (_properties.find(name) == _properties.end()) continue;
 
-        _property_bases[name]->set(value);
+        _properties[name]->set(value);
     }
 
     _loaded = true;
@@ -44,7 +44,7 @@ Message Interface::create_method_call(const std::string& method_name) {
 // ----- PROPERTIES -----
 
 void Interface::property_refresh(const std::string& property_name) {
-    if (!_loaded || _property_bases.count(property_name) == 0) {
+    if (!_loaded || _properties.count(property_name) == 0) {
         return;
     }
 
@@ -57,49 +57,49 @@ void Interface::property_refresh(const std::string& property_name) {
             proxy()->interface_get("org.freedesktop.DBus.Properties"));
         Holder property_latest = properties_interface->Get(_interface_name, property_name);
 
-        if (*_property_bases[property_name] != property_latest) {
-            _property_bases[property_name]->set(property_latest);
+        if (*_properties[property_name] != property_latest) {
+            _properties[property_name]->set(property_latest);
         }
     } catch (const Exception::SendFailed& e) {
         // TODO: Log error
     }
 }
 
-bool Interface::property_exists(const std::string& property_name) { return _property_bases.count(property_name) > 0; }
+bool Interface::property_exists(const std::string& property_name) { return _properties.count(property_name) > 0; }
 
 // ----- HANDLES -----
 
 void Interface::handle_properties_changed(Holder changed_properties, Holder invalidated_properties) {
     auto changed_options = changed_properties.get_dict_string();
     for (auto& [name, value] : changed_options) {
-        if (_property_bases.find(name) == _property_bases.end()) continue;
+        if (_properties.find(name) == _properties.end()) continue;
 
-        _property_bases[name]->set(value);
+        _properties[name]->set(value);
     }
 
     auto removed_options = invalidated_properties.get_array();
     for (auto& removed_option : removed_options) {
-        if (_property_bases.find(removed_option.get_string()) == _property_bases.end()) continue;
+        if (_properties.find(removed_option.get_string()) == _properties.end()) continue;
 
-        _property_bases[removed_option.get_string()]->invalidate();
+        _properties[removed_option.get_string()]->invalidate();
     }
 }
 
 void Interface::handle_property_set(std::string property_name, Holder value) {
-    if (_property_bases.find(property_name) == _property_bases.end()) return;
+    if (_properties.find(property_name) == _properties.end()) return;
 
-    _property_bases[property_name]->set(value);
+    _properties[property_name]->set(value);
 }
 
 Holder Interface::handle_property_get(std::string property_name) {
-    if (_property_bases.find(property_name) == _property_bases.end()) return Holder();
+    if (_properties.find(property_name) == _properties.end()) return Holder();
 
-    return _property_bases[property_name]->get();
+    return _properties[property_name]->get();
 }
 
 Holder Interface::handle_property_get_all() {
     Holder properties = Holder::create_dict();
-    for (auto& [name, value] : _property_bases) {
+    for (auto& [name, value] : _properties) {
         properties.dict_append(Holder::STRING, name, value->get());
     }
     return properties;

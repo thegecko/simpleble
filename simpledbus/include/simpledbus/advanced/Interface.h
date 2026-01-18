@@ -184,7 +184,7 @@ class Interface {
     Property<T>& create_property(const std::string& name) {
         std::unique_ptr<PropertyBase> property_ptr = std::make_unique<Property<T>>(*this, name);
         Property<T>& property = dynamic_cast<Property<T>&>(*property_ptr);
-        _property_bases.emplace(name, std::move(property_ptr));
+        _properties.emplace(name, std::move(property_ptr));
         return property;
     }
 
@@ -193,7 +193,7 @@ class Interface {
                                               std::function<T(Holder)> from_holder) {
         std::unique_ptr<PropertyBase> property_ptr = std::make_unique<CustomProperty<T>>(*this, name, to_holder, from_holder);
         CustomProperty<T>& property = dynamic_cast<CustomProperty<T>&>(*property_ptr);
-        _property_bases.emplace(name, std::move(property_ptr));
+        _properties.emplace(name, std::move(property_ptr));
         return property;
     }
 
@@ -211,7 +211,7 @@ class Interface {
     // IMPORTANT: Never erase from _property_bases during lifetime of Interface.
     // "Removal" of a property means: invalidate it via invalidate() or set _valid = false.
     // The entry must remain so that permanent references in derived classes stay valid.
-    std::map<std::string, std::unique_ptr<PropertyBase>> _property_bases;
+    std::map<std::string, std::unique_ptr<PropertyBase>> _properties;
 };
 
 }  // namespace SimpleDBus
