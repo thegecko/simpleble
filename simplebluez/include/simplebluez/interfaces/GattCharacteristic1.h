@@ -28,13 +28,11 @@ class GattCharacteristic1 : public SimpleDBus::Interface {
 
     // ----- PROPERTIES -----
     Property<std::string>& UUID = create_property<std::string>("UUID");
-    CustomProperty<ByteArray>& Value = create_custom_property<ByteArray>(
-        "Value", [](ByteArray value) { return SimpleDBus::HolderUtils::from_byte_array(value); },
-        [](SimpleDBus::Holder new_value) { return SimpleDBus::HolderUtils::to_byte_array(new_value); });
+    CustomProperty<ByteArray>& Value = create_custom_property<ByteArray>("Value", SimpleDBus::HolderUtils::from_byte_array,
+                                                                         SimpleDBus::HolderUtils::to_byte_array);
     Property<bool>& Notifying = create_property<bool>("Notifying");
     CustomProperty<std::vector<std::string>>& Flags = create_custom_property<std::vector<std::string>>(
-        "Flags", [](std::vector<std::string> value) { return SimpleDBus::HolderUtils::from_string_array(value); },
-        [](SimpleDBus::Holder value) { return SimpleDBus::HolderUtils::to_string_array(value); });
+        "Flags", SimpleDBus::HolderUtils::from_string_array, SimpleDBus::HolderUtils::to_string_array);
     Property<uint16_t>& MTU = create_property<uint16_t>("MTU");
 
   private:

@@ -4,7 +4,7 @@ namespace SimpleDBus {
 
 namespace HolderUtils {
 
-Holder from_byte_array(const std::vector<uint8_t>& value) {
+Holder from_byte_array(const kvn::bytearray& value) {
     Holder value_array = Holder::create_array();
     for (size_t i = 0; i < value.size(); i++) {
         value_array.array_append(Holder::create_byte(value[i]));
@@ -12,9 +12,9 @@ Holder from_byte_array(const std::vector<uint8_t>& value) {
     return value_array;
 }
 
-std::vector<uint8_t> to_byte_array(const Holder& holder) {
+kvn::bytearray to_byte_array(const Holder& holder) {
     auto value_array = holder.get_array();
-    std::vector<uint8_t> _value;
+    kvn::bytearray _value;
     for (std::size_t i = 0; i < value_array.size(); i++) {
         _value.push_back(value_array[i].get_byte());
     }
@@ -38,7 +38,7 @@ std::vector<std::string> to_string_array(const Holder& holder) {
     return result;
 }
 
-Holder from_dict_uint16_byte_array(const std::map<uint16_t, std::vector<uint8_t>>& value) {
+Holder from_dict_uint16_byte_array(const std::map<uint16_t, kvn::bytearray>& value) {
     Holder dict = Holder::create_dict();
     for (auto const& [key, val] : value) {
         dict.dict_append(Holder::UINT16, key, from_byte_array(val));
@@ -46,8 +46,8 @@ Holder from_dict_uint16_byte_array(const std::map<uint16_t, std::vector<uint8_t>
     return dict;
 }
 
-std::map<uint16_t, std::vector<uint8_t>> to_dict_uint16_byte_array(const Holder& holder) {
-    std::map<uint16_t, std::vector<uint8_t>> result;
+std::map<uint16_t, kvn::bytearray> to_dict_uint16_byte_array(const Holder& holder) {
+    std::map<uint16_t, kvn::bytearray> result;
     auto dict = holder.get_dict_uint16();
     for (auto& [key, val_holder] : dict) {
         result[key] = to_byte_array(val_holder);
@@ -55,7 +55,7 @@ std::map<uint16_t, std::vector<uint8_t>> to_dict_uint16_byte_array(const Holder&
     return result;
 }
 
-Holder from_dict_string_byte_array(const std::map<std::string, std::vector<uint8_t>>& value) {
+Holder from_dict_string_byte_array(const std::map<std::string, kvn::bytearray>& value) {
     Holder dict = Holder::create_dict();
     for (auto const& [key, val] : value) {
         dict.dict_append(Holder::STRING, key, from_byte_array(val));
@@ -63,8 +63,8 @@ Holder from_dict_string_byte_array(const std::map<std::string, std::vector<uint8
     return dict;
 }
 
-std::map<std::string, std::vector<uint8_t>> to_dict_string_byte_array(const Holder& holder) {
-    std::map<std::string, std::vector<uint8_t>> result;
+std::map<std::string, kvn::bytearray> to_dict_string_byte_array(const Holder& holder) {
+    std::map<std::string, kvn::bytearray> result;
     auto dict = holder.get_dict_string();
     for (auto& [key, val_holder] : dict) {
         result[key] = to_byte_array(val_holder);

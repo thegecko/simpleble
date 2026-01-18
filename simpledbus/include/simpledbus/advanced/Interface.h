@@ -167,8 +167,6 @@ class Interface {
 
     // ----- PROPERTIES -----
     bool property_exists(const std::string& property_name);
-
-    // ! TODO: We need to figure out a good architecture to let any generic interface access the Properties object of its Proxy.
     void property_refresh(const std::string& property_name);
 
     // ----- MESSAGES -----

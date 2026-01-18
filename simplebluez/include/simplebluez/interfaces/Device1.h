@@ -32,26 +32,11 @@ class Device1 : public SimpleDBus::Interface {
     Property<std::string>& Alias = create_property<std::string>("Alias");
     Property<std::string>& Name = create_property<std::string>("Name");
     CustomProperty<std::vector<std::string>>& UUIDs = create_custom_property<std::vector<std::string>>(
-        "UUIDs", [](std::vector<std::string> value) { return SimpleDBus::HolderUtils::from_string_array(value); },
-        [](SimpleDBus::Holder value) { return SimpleDBus::HolderUtils::to_string_array(value); });
+        "UUIDs", SimpleDBus::HolderUtils::from_string_array, SimpleDBus::HolderUtils::to_string_array);
     CustomProperty<std::map<uint16_t, ByteArray>>& ManufacturerData = create_custom_property<std::map<uint16_t, ByteArray>>(
-        "ManufacturerData",
-        [](std::map<uint16_t, ByteArray> value) {
-            return SimpleDBus::HolderUtils::from_dict_uint16_byte_array({value.begin(), value.end()});
-        },
-        [](SimpleDBus::Holder value) {
-            auto result = SimpleDBus::HolderUtils::to_dict_uint16_byte_array(value);
-            return std::map<uint16_t, ByteArray>{result.begin(), result.end()};
-        });
+        "ManufacturerData", SimpleDBus::HolderUtils::from_dict_uint16_byte_array, SimpleDBus::HolderUtils::to_dict_uint16_byte_array);
     CustomProperty<std::map<std::string, ByteArray>>& ServiceData = create_custom_property<std::map<std::string, ByteArray>>(
-        "ServiceData",
-        [](std::map<std::string, ByteArray> value) {
-            return SimpleDBus::HolderUtils::from_dict_string_byte_array({value.begin(), value.end()});
-        },
-        [](SimpleDBus::Holder value) {
-            auto result = SimpleDBus::HolderUtils::to_dict_string_byte_array(value);
-            return std::map<std::string, ByteArray>{result.begin(), result.end()};
-        });
+        "ServiceData", SimpleDBus::HolderUtils::from_dict_string_byte_array, SimpleDBus::HolderUtils::to_dict_string_byte_array);
     Property<bool>& Paired = create_property<bool>("Paired");
     Property<bool>& Connected = create_property<bool>("Connected");
     Property<bool>& ServicesResolved = create_property<bool>("ServicesResolved");
