@@ -14,6 +14,11 @@ const SimpleDBus::AutoRegisterInterface<Adapter1> Adapter1::registry{
 Adapter1::Adapter1(std::shared_ptr<SimpleDBus::Connection> conn, std::shared_ptr<SimpleDBus::Proxy> proxy)
     : SimpleDBus::Interface(conn, proxy, "org.bluez.Adapter1") {}
 
+// IMPORTANT: The destructor is defined here (instead of inline) to anchor the vtable to this object file.
+// This prevents the linker from stripping this translation unit and ensures the static 'registry' variable is
+// initialized at startup.
+Adapter1::~Adapter1() = default;
+
 void Adapter1::StartDiscovery() {
     auto msg = create_method_call("StartDiscovery");
     _conn->send_with_reply_and_block(msg);
@@ -96,5 +101,3 @@ void Adapter1::RemoveDevice(std::string device_path) {
     msg.append_argument(SimpleDBus::Holder::create_object_path(device_path), "o");
     _conn->send_with_reply_and_block(msg);
 }
-
-void Adapter1::property_changed(std::string option_name) {}

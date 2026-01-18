@@ -25,7 +25,7 @@ class Adapter1 : public SimpleDBus::Interface {
 
     // ----- CONSTRUCTORS -----
     Adapter1(std::shared_ptr<SimpleDBus::Connection> conn, std::shared_ptr<SimpleDBus::Proxy> proxy);
-    virtual ~Adapter1() = default;
+    virtual ~Adapter1();
 
     // ----- METHODS -----
     void RemoveDevice(std::string device_path);
@@ -38,9 +38,6 @@ class Adapter1 : public SimpleDBus::Interface {
     Property<bool>& Discovering = create_property<bool>("Discovering");
     Property<bool>& Powered = create_property<bool>("Powered");
     Property<std::string>& Address = create_property<std::string>("Address");
-
-  protected:
-    void property_changed(std::string option_name) override;
 
   private:
     static const SimpleDBus::AutoRegisterInterface<Adapter1> registry;
