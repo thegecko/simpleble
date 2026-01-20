@@ -17,7 +17,7 @@ class Battery1 : public SimpleDBus::Interface {
     // ----- METHODS -----
 
     // ----- PROPERTIES -----
-    Property<uint8_t>& Percentage = create_property<uint8_t>("Percentage");
+    Property<uint8_t>& Percentage = property<uint8_t>("Percentage");
 
   private:
     static const SimpleDBus::AutoRegisterInterface<Battery1> registry;

@@ -23,9 +23,9 @@ class GattDescriptor1 : public SimpleDBus::Interface {
     ByteArray ReadValue();
 
     // ----- PROPERTIES -----
-    Property<std::string>& UUID = create_property<std::string>("UUID");
-    CustomProperty<ByteArray>& Value = create_custom_property<ByteArray>("Value", SimpleDBus::HolderUtils::from_byte_array,
-                                                                         SimpleDBus::HolderUtils::to_byte_array);
+    Property<std::string>& UUID = property<std::string>("UUID");
+    CustomProperty<ByteArray>& Value = property<ByteArray>("Value", SimpleDBus::HolderUtils::from_byte_array,
+                                                           SimpleDBus::HolderUtils::to_byte_array);
 
   private:
     static const SimpleDBus::AutoRegisterInterface<GattDescriptor1> registry;

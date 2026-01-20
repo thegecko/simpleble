@@ -24,14 +24,14 @@ class GattCharacteristic1 : public SimpleDBus::Interface {
     ByteArray ReadValue();
 
     // ----- PROPERTIES -----
-    Property<std::string>& UUID = create_property<std::string>("UUID");
-    Property<std::string>& Service = create_property<std::string>("Service");
-    CustomProperty<ByteArray>& Value = create_custom_property<ByteArray>("Value", SimpleDBus::HolderUtils::from_byte_array,
-                                                                         SimpleDBus::HolderUtils::to_byte_array);
-    Property<bool>& Notifying = create_property<bool>("Notifying");
-    CustomProperty<std::vector<std::string>>& Flags = create_custom_property<std::vector<std::string>>(
+    Property<std::string>& UUID = property<std::string>("UUID");
+    Property<std::string>& Service = property<std::string>("Service");
+    CustomProperty<ByteArray>& Value = property<ByteArray>("Value", SimpleDBus::HolderUtils::from_byte_array,
+                                                           SimpleDBus::HolderUtils::to_byte_array);
+    Property<bool>& Notifying = property<bool>("Notifying");
+    CustomProperty<std::vector<std::string>>& Flags = property<std::vector<std::string>>(
         "Flags", SimpleDBus::HolderUtils::from_string_array, SimpleDBus::HolderUtils::to_string_array);
-    Property<uint16_t>& MTU = create_property<uint16_t>("MTU");
+    Property<uint16_t>& MTU = property<uint16_t>("MTU");
 
   private:
     static const SimpleDBus::AutoRegisterInterface<GattCharacteristic1> registry;

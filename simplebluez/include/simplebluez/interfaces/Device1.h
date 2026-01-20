@@ -24,24 +24,24 @@ class Device1 : public SimpleDBus::Interface {
     void CancelPairing();
 
     // ----- PROPERTIES -----
-    Property<int16_t>& RSSI = create_property<int16_t>("RSSI");
-    Property<int16_t>& TxPower = create_property<int16_t>("TxPower");
-    Property<uint16_t>& Appearance = create_property<uint16_t>("Appearance");
-    Property<std::string>& Address = create_property<std::string>("Address");
-    Property<std::string>& AddressType = create_property<std::string>("AddressType");
-    Property<std::string>& Alias = create_property<std::string>("Alias");
-    Property<std::string>& Name = create_property<std::string>("Name");
-    CustomProperty<std::vector<std::string>>& UUIDs = create_custom_property<std::vector<std::string>>(
+    Property<int16_t>& RSSI = property<int16_t>("RSSI");
+    Property<int16_t>& TxPower = property<int16_t>("TxPower");
+    Property<uint16_t>& Appearance = property<uint16_t>("Appearance");
+    Property<std::string>& Address = property<std::string>("Address");
+    Property<std::string>& AddressType = property<std::string>("AddressType");
+    Property<std::string>& Alias = property<std::string>("Alias");
+    Property<std::string>& Name = property<std::string>("Name");
+    CustomProperty<std::vector<std::string>>& UUIDs = property<std::vector<std::string>>(
         "UUIDs", SimpleDBus::HolderUtils::from_string_array, SimpleDBus::HolderUtils::to_string_array);
-    CustomProperty<std::map<uint16_t, ByteArray>>& ManufacturerData = create_custom_property<std::map<uint16_t, ByteArray>>(
+    CustomProperty<std::map<uint16_t, ByteArray>>& ManufacturerData = property<std::map<uint16_t, ByteArray>>(
         "ManufacturerData", SimpleDBus::HolderUtils::from_dict_uint16_byte_array, SimpleDBus::HolderUtils::to_dict_uint16_byte_array);
-    CustomProperty<std::map<std::string, ByteArray>>& ServiceData = create_custom_property<std::map<std::string, ByteArray>>(
+    CustomProperty<std::map<std::string, ByteArray>>& ServiceData = property<std::map<std::string, ByteArray>>(
         "ServiceData", SimpleDBus::HolderUtils::from_dict_string_byte_array, SimpleDBus::HolderUtils::to_dict_string_byte_array);
-    Property<bool>& Paired = create_property<bool>("Paired");
-    Property<bool>& Bonded = create_property<bool>("Bonded");
-    Property<bool>& Trusted = create_property<bool>("Trusted");
-    Property<bool>& Connected = create_property<bool>("Connected");
-    Property<bool>& ServicesResolved = create_property<bool>("ServicesResolved");
+    Property<bool>& Paired = property<bool>("Paired");
+    Property<bool>& Bonded = property<bool>("Bonded");
+    Property<bool>& Trusted = property<bool>("Trusted");
+    Property<bool>& Connected = property<bool>("Connected");
+    Property<bool>& ServicesResolved = property<bool>("ServicesResolved");
 
   private:
     static const SimpleDBus::AutoRegisterInterface<Device1> registry;

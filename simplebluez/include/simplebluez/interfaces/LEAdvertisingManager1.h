@@ -23,9 +23,9 @@ class LEAdvertisingManager1 : public SimpleDBus::Interface {
 
     // ----- PROPERTIES -----
 
-    Property<uint8_t>& ActiveInstances = create_property<uint8_t>("ActiveInstances");
-    Property<uint8_t>& SupportedInstances = create_property<uint8_t>("SupportedInstances");
-    CustomProperty<std::vector<std::string>>& SupportedIncludes = create_custom_property<std::vector<std::string>>(
+    Property<uint8_t>& ActiveInstances = property<uint8_t>("ActiveInstances");
+    Property<uint8_t>& SupportedInstances = property<uint8_t>("SupportedInstances");
+    CustomProperty<std::vector<std::string>>& SupportedIncludes = property<std::vector<std::string>>(
         "SupportedIncludes", SimpleDBus::HolderUtils::from_string_array, SimpleDBus::HolderUtils::to_string_array);
 
   private:

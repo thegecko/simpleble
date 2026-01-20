@@ -25,26 +25,26 @@ class LEAdvertisement1 : public SimpleDBus::Interface {
 
     // ----- PROPERTIES -----
 
-    Property<std::string>& Type = create_property<std::string>("Type");
-    CustomProperty<std::vector<std::string>>& ServiceUUIDs = create_custom_property<std::vector<std::string>>(
+    Property<std::string>& Type = property<std::string>("Type");
+    CustomProperty<std::vector<std::string>>& ServiceUUIDs = property<std::vector<std::string>>(
         "ServiceUUIDs", SimpleDBus::HolderUtils::from_string_array, SimpleDBus::HolderUtils::to_string_array);
-    CustomProperty<std::map<uint16_t, ByteArray>>& ManufacturerData = create_custom_property<std::map<uint16_t, ByteArray>>(
+    CustomProperty<std::map<uint16_t, ByteArray>>& ManufacturerData = property<std::map<uint16_t, ByteArray>>(
         "ManufacturerData", SimpleDBus::HolderUtils::from_dict_uint16_byte_array, SimpleDBus::HolderUtils::to_dict_uint16_byte_array);
-    CustomProperty<std::map<std::string, ByteArray>>& ServiceData = create_custom_property<std::map<std::string, ByteArray>>(
+    CustomProperty<std::map<std::string, ByteArray>>& ServiceData = property<std::map<std::string, ByteArray>>(
         "ServiceData", SimpleDBus::HolderUtils::from_dict_string_byte_array, SimpleDBus::HolderUtils::to_dict_string_byte_array);
-    Property<bool>& Discoverable = create_property<bool>("Discoverable");
-    Property<uint16_t>& DiscoverableTimeout = create_property<uint16_t>("DiscoverableTimeout");
-    CustomProperty<std::vector<std::string>>& Includes = create_custom_property<std::vector<std::string>>(
+    Property<bool>& Discoverable = property<bool>("Discoverable");
+    Property<uint16_t>& DiscoverableTimeout = property<uint16_t>("DiscoverableTimeout");
+    CustomProperty<std::vector<std::string>>& Includes = property<std::vector<std::string>>(
         "Includes", SimpleDBus::HolderUtils::from_string_array, SimpleDBus::HolderUtils::to_string_array);
-    Property<std::string>& LocalName = create_property<std::string>("LocalName");
-    Property<uint16_t>& Appearance = create_property<uint16_t>("Appearance");
-    Property<uint16_t>& Duration = create_property<uint16_t>("Duration");
-    Property<uint16_t>& Timeout = create_property<uint16_t>("Timeout");
-    Property<std::string>& SecondaryChannel = create_property<std::string>("SecondaryChannel");
-    Property<uint32_t>& MinInterval = create_property<uint32_t>("MinInterval");
-    Property<uint32_t>& MaxInterval = create_property<uint32_t>("MaxInterval");
-    Property<int16_t>& TxPower = create_property<int16_t>("TxPower");
-    Property<bool>& IncludeTxPower = create_property<bool>("IncludeTxPower");
+    Property<std::string>& LocalName = property<std::string>("LocalName");
+    Property<uint16_t>& Appearance = property<uint16_t>("Appearance");
+    Property<uint16_t>& Duration = property<uint16_t>("Duration");
+    Property<uint16_t>& Timeout = property<uint16_t>("Timeout");
+    Property<std::string>& SecondaryChannel = property<std::string>("SecondaryChannel");
+    Property<uint32_t>& MinInterval = property<uint32_t>("MinInterval");
+    Property<uint32_t>& MaxInterval = property<uint32_t>("MaxInterval");
+    Property<int16_t>& TxPower = property<int16_t>("TxPower");
+    Property<bool>& IncludeTxPower = property<bool>("IncludeTxPower");
 
     void message_handle(SimpleDBus::Message& msg) override;
 

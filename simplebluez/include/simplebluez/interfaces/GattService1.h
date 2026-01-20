@@ -15,9 +15,9 @@ class GattService1 : public SimpleDBus::Interface {
     // ----- METHODS -----
 
     // ----- PROPERTIES -----
-    Property<std::string>& UUID = create_property<std::string>("UUID");
-    Property<bool>& Primary = create_property<bool>("Primary");
-    CustomProperty<std::vector<std::string>>& Characteristics = create_custom_property<std::vector<std::string>>(
+    Property<std::string>& UUID = property<std::string>("UUID");
+    Property<bool>& Primary = property<bool>("Primary");
+    CustomProperty<std::vector<std::string>>& Characteristics = property<std::vector<std::string>>(
         "Characteristics", SimpleDBus::HolderUtils::from_string_array, SimpleDBus::HolderUtils::to_string_array);
 
   private:
