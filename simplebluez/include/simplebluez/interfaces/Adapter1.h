@@ -35,6 +35,7 @@ class Adapter1 : public SimpleDBus::Interface {
     SimpleDBus::Holder GetDiscoveryFilters();
 
     // ----- PROPERTIES -----
+    Property<std::string>& Alias = create_property<std::string>("Alias");
     Property<bool>& Discovering = create_property<bool>("Discovering");
     Property<bool>& Powered = create_property<bool>("Powered");
     Property<std::string>& Address = create_property<std::string>("Address");

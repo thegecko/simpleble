@@ -241,6 +241,9 @@ elseif(SIMPLEBLE_BACKEND_LINUX)
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/interfaces/Device1.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/interfaces/Battery1.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/interfaces/AgentManager1.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/interfaces/GattManager1.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/interfaces/LEAdvertisement1.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/interfaces/LEAdvertisingManager1.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/advanced/Interface.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/advanced/Proxy.cpp

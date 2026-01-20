@@ -2,14 +2,11 @@
 
 #include <simpledbus/advanced/Interface.h>
 #include <simpledbus/advanced/InterfaceRegistry.h>
-
-#include "kvn/kvn_safe_callback.hpp"
+#include <simpledbus/base/HolderUtils.h>
 
 #include <simplebluez/Types.h>
 
 #include <string>
-
-#include <simpledbus/base/HolderUtils.h>
 
 namespace SimpleBluez {
 
@@ -28,6 +25,7 @@ class GattCharacteristic1 : public SimpleDBus::Interface {
 
     // ----- PROPERTIES -----
     Property<std::string>& UUID = create_property<std::string>("UUID");
+    Property<std::string>& Service = create_property<std::string>("Service");
     CustomProperty<ByteArray>& Value = create_custom_property<ByteArray>("Value", SimpleDBus::HolderUtils::from_byte_array,
                                                                          SimpleDBus::HolderUtils::to_byte_array);
     Property<bool>& Notifying = create_property<bool>("Notifying");
