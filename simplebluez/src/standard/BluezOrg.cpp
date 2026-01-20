@@ -1,5 +1,5 @@
-#include <simplebluez/BluezOrg.h>
-#include <simplebluez/BluezOrgBluez.h>
+#include <simplebluez/standard/BluezOrg.h>
+#include <simplebluez/standard/BluezOrgBluez.h>
 
 using namespace SimpleBluez;
 

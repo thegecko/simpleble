@@ -1,5 +1,5 @@
-#include <simplebluez/Adapter.h>
-#include <simplebluez/BluezOrgBluez.h>
+#include <simplebluez/standard/Adapter.h>
+#include <simplebluez/standard/BluezOrgBluez.h>
 
 using namespace SimpleBluez;
 

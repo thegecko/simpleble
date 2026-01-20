@@ -1,12 +1,9 @@
 #pragma once
 
 #include <simpledbus/advanced/Proxy.h>
-
-#include <simplebluez/Device.h>
+#include <simplebluez/standard/Device.h>
 #include <simplebluez/interfaces/Adapter1.h>
-
 #include <kvn/kvn_safe_callback.hpp>
-
 #include <functional>
 
 namespace SimpleBluez {

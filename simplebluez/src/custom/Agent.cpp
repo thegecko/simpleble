@@ -1,6 +1,4 @@
-#include <simplebluez/Agent.h>
-
-#include <iostream>
+#include <simplebluez/custom/Agent.h>
 
 using namespace SimpleBluez;
 

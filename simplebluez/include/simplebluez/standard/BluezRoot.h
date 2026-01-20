@@ -2,10 +2,8 @@
 
 #include <simpledbus/advanced/Proxy.h>
 #include <simpledbus/interfaces/ObjectManager.h>
-
-#include <simplebluez/Adapter.h>
-#include <simplebluez/Agent.h>
-
+#include <simplebluez/standard/Adapter.h>
+#include <simplebluez/custom/Agent.h>
 #include <vector>
 
 namespace SimpleBluez {

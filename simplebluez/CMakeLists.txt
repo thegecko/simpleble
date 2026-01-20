@@ -41,18 +41,18 @@ set(SIMPLEBLUEZ_INCLUDE
     ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/external)
 
 set(SIMPLEBLUEZ_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Agent.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Device.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Characteristic.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Bluez.cpp    
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Exceptions.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Service.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Adapter.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Bluez.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/BluezRoot.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/BluezOrg.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/BluezOrgBluez.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Descriptor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/custom/Agent.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/Device.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/Characteristic.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/Service.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/Adapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/BluezRoot.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/BluezOrg.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/BluezOrgBluez.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/Descriptor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/Adapter1.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/Agent1.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/GattDescriptor1.cpp

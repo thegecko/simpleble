@@ -1,9 +1,8 @@
 #pragma once
 
 #include <simpledbus/advanced/Proxy.h>
-
-#include <simplebluez/Characteristic.h>
-#include <simplebluez/Service.h>
+#include <simplebluez/standard/Characteristic.h>
+#include <simplebluez/standard/Service.h>
 #include <simplebluez/interfaces/Battery1.h>
 #include <simplebluez/interfaces/Device1.h>
 

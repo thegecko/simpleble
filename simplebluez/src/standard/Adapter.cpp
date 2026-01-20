@@ -1,6 +1,5 @@
-#include <simplebluez/Adapter.h>
-#include <simplebluez/Device.h>
-
+#include <simplebluez/standard/Adapter.h>
+#include <simplebluez/standard/Device.h>
 #include <simplebluez/interfaces/Adapter1.h>
 
 using namespace SimpleBluez;

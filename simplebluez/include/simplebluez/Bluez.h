@@ -2,9 +2,9 @@
 
 #include <simpledbus/advanced/Proxy.h>
 
-#include <simplebluez/BluezRoot.h>
-#include <simplebluez/Adapter.h>
-#include <simplebluez/Agent.h>
+#include <simplebluez/standard/BluezRoot.h>
+#include <simplebluez/standard/Adapter.h>
+#include <simplebluez/custom/Agent.h>
 
 #include <vector>
 

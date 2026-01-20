@@ -1,5 +1,5 @@
-#include <simplebluez/Characteristic.h>
-#include <simplebluez/Descriptor.h>
+#include <simplebluez/standard/Characteristic.h>
+#include <simplebluez/standard/Descriptor.h>
 #include <simplebluez/Exceptions.h>
 
 using namespace SimpleBluez;

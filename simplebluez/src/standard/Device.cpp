@@ -1,8 +1,6 @@
-#include <simplebluez/Device.h>
+#include <simplebluez/standard/Device.h>
+#include <simplebluez/standard/Service.h>
 #include <simplebluez/Exceptions.h>
-#include <simplebluez/Service.h>
-
-#include <simpledbus/base/Path.h>
 #include "simplebluez/interfaces/Battery1.h"
 
 using namespace SimpleBluez;

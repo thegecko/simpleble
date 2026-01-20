@@ -1,5 +1,5 @@
-#include <simplebluez/BluezRoot.h>
-#include <simplebluez/BluezOrg.h>
+#include <simplebluez/standard/BluezRoot.h>
+#include <simplebluez/standard/BluezOrg.h>
 #include <simpledbus/interfaces/ObjectManager.h>
 
 using namespace SimpleBluez;

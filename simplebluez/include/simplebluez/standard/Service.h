@@ -1,8 +1,7 @@
 #pragma once
 
 #include <simpledbus/advanced/Proxy.h>
-
-#include <simplebluez/Characteristic.h>
+#include <simplebluez/standard/Characteristic.h>
 #include <simplebluez/interfaces/GattService1.h>
 
 namespace SimpleBluez {

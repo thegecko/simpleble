@@ -1,10 +1,8 @@
 #pragma once
 
 #include <simpledbus/advanced/Proxy.h>
-
-#include <simplebluez/Adapter.h>
-#include <simplebluez/Agent.h>
-
+#include <simplebluez/standard/Adapter.h>
+#include <simplebluez/custom/Agent.h>
 #include <simplebluez/interfaces/AgentManager1.h>
 
 namespace SimpleBluez {

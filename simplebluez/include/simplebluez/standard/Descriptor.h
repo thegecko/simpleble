@@ -1,11 +1,8 @@
 #pragma once
 
 #include <simpledbus/advanced/Proxy.h>
-
-#include <simplebluez/Types.h>
 #include <simplebluez/interfaces/GattDescriptor1.h>
-
-#include <cstdlib>
+#include <simplebluez/Types.h>
 
 namespace SimpleBluez {
 

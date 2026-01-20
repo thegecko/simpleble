@@ -221,18 +221,18 @@ elseif(SIMPLEBLE_BACKEND_LINUX)
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/linux/PeripheralLinux.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/backends/linux/BackendBluez.cpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Logging.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Agent.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Device.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Characteristic.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Exceptions.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Service.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Adapter.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Bluez.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/BluezRoot.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/BluezOrg.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/BluezOrgBluez.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Descriptor.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Exceptions.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Logging.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/custom/Agent.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Device.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Characteristic.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Service.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Adapter.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/BluezRoot.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/BluezOrg.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/BluezOrgBluez.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Descriptor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/interfaces/Adapter1.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/interfaces/Agent1.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/interfaces/GattDescriptor1.cpp

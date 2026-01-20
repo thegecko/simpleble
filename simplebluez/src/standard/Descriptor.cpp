@@ -1,4 +1,4 @@
-#include <simplebluez/Descriptor.h>
+#include <simplebluez/standard/Descriptor.h>
 
 using namespace SimpleBluez;
 

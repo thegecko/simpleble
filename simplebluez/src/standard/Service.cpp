@@ -1,6 +1,6 @@
-#include <simplebluez/Characteristic.h>
+#include <simplebluez/standard/Characteristic.h>
+#include <simplebluez/standard/Service.h>
 #include <simplebluez/Exceptions.h>
-#include <simplebluez/Service.h>
 
 using namespace SimpleBluez;
 
