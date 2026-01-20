@@ -21,39 +21,31 @@ ObjectManager::ObjectManager(std::shared_ptr<Connection> conn, std::shared_ptr<P
 // initialized at startup.
 ObjectManager::~ObjectManager() = default;
 
-Holder ObjectManager::GetManagedObjects(bool use_callbacks) {
+Holder ObjectManager::GetManagedObjects() {
     Message query_msg = Message::create_method_call(_bus_name, _path, _interface_name, "GetManagedObjects");
     Message reply_msg = _conn->send_with_reply_and_block(query_msg);
-    Holder managed_objects = reply_msg.extract();
-    // TODO: Remove immediate callback support.
-    if (use_callbacks) {
-        auto managed_object = managed_objects.get_dict_object_path();
-        for (auto& [path, options] : managed_object) {
-            if (InterfacesAdded) {
-                InterfacesAdded(path, options);
-            }
-        }
-    }
-    return managed_objects;
+    return reply_msg.extract();
 }
+
+// NOTE to future Kevin:
+// There is a chance to further simplify the logic handed over to Proxy by moving the ownership of
+// interfaces into this class and have it also manage all the routing of signals and method calls.
 
 void ObjectManager::message_handle(Message& msg) {
     if (msg.is_signal(_interface_name, "InterfacesAdded")) {
         std::string path = msg.extract().get_string();
         msg.extract_next();
         Holder options = msg.extract();
-        if (InterfacesAdded) {
-            InterfacesAdded(path, options);
-        }
+
+        proxy()->path_add(path, options);
+        InterfacesAdded(path, options);
     } else if (msg.is_signal(_interface_name, "InterfacesRemoved")) {
         std::string path = msg.extract().get_string();
         msg.extract_next();
         Holder options = msg.extract();
-        if (InterfacesRemoved) {
-            InterfacesRemoved(path, options);
-        }
-        // TODO: Make a call directly to the proxy to do this?
 
+        proxy()->path_remove(path, options);
+        InterfacesRemoved(path, options);
     } else if (msg.is_method_call(_interface_name, "GetManagedObjects")) {
         Holder result = proxy()->path_collect();
 

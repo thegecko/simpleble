@@ -10,11 +10,6 @@ BluezRoot::BluezRoot(std::shared_ptr<SimpleDBus::Connection> conn, const std::st
 void BluezRoot::on_registration() {
     _interfaces.emplace(std::make_pair("org.freedesktop.DBus.ObjectManager", std::make_shared<SimpleDBus::Interfaces::ObjectManager>(_conn, shared_from_this())));
 
-    object_manager()->InterfacesAdded = [&](std::string path, SimpleDBus::Holder options) { path_add(path, options); };
-    object_manager()->InterfacesRemoved = [&](std::string path, SimpleDBus::Holder options) {
-        path_remove(path, options);
-    };
-
     // Create the agent that will handle pairing.
     _agent = Proxy::create<Agent>(_conn, "org.bluez", "/agent");
     path_append_child("/agent", std::static_pointer_cast<SimpleDBus::Proxy>(_agent));
