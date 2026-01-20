@@ -278,6 +278,7 @@ include simplebluez/include/simplebluez/Bluez.h
 include simplebluez/include/simplebluez/Exceptions.h
 include simplebluez/include/simplebluez/Types.h
 include simplebluez/include/simplebluez/custom/Agent.h
+include simplebluez/include/simplebluez/custom/CustomRoot.h
 include simplebluez/include/simplebluez/interfaces/Adapter1.h
 include simplebluez/include/simplebluez/interfaces/Agent1.h
 include simplebluez/include/simplebluez/interfaces/AgentManager1.h
@@ -302,6 +303,7 @@ include simplebluez/src/Exceptions.cpp
 include simplebluez/src/Logging.cpp
 include simplebluez/src/Logging.h
 include simplebluez/src/custom/Agent.cpp
+include simplebluez/src/custom/CustomRoot.cpp
 include simplebluez/src/interfaces/Adapter1.cpp
 include simplebluez/src/interfaces/Agent1.cpp
 include simplebluez/src/interfaces/AgentManager1.cpp

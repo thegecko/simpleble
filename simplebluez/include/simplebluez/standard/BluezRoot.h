@@ -16,15 +16,12 @@ class BluezRoot : public SimpleDBus::Proxy {
     void load_managed_objects();
 
     std::vector<std::shared_ptr<Adapter>> get_adapters();
-    std::shared_ptr<Agent> get_agent();
-    void register_agent();
+    void register_agent(std::shared_ptr<Agent> agent);
 
     // ----- INTERNAL CALLBACKS -----
     void on_registration() override;
 
   private:
-    std::shared_ptr<Agent> _agent;
-
     std::shared_ptr<SimpleDBus::Proxy> path_create(const std::string& path) override;
     std::shared_ptr<SimpleDBus::Interfaces::ObjectManager> object_manager();
 };

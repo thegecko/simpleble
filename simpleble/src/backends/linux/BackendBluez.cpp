@@ -79,7 +79,7 @@ bool BackendBluez::bluetooth_enabled() {
 std::string BackendBluez::name() const noexcept { return "SimpleBluez"; }
 
 void BackendBluez::async_thread_function() {
-    SAFE_RUN({ bluez.register_agent(); });
+    SAFE_RUN({ bluez.register_agent(bluez.get_agent()); });
 
     while (async_thread_active) {
         SAFE_RUN({ bluez.run_async(); });

@@ -4,8 +4,8 @@
 
 #include <simplebluez/standard/BluezRoot.h>
 #include <simplebluez/standard/Adapter.h>
+#include <simplebluez/custom/CustomRoot.h>
 #include <simplebluez/custom/Agent.h>
-
 #include <vector>
 
 namespace SimpleBluez {
@@ -26,11 +26,12 @@ class Bluez {
 
     std::vector<std::shared_ptr<Adapter>> get_adapters();
     std::shared_ptr<Agent> get_agent();
-    void register_agent();
+    void register_agent(std::shared_ptr<Agent> agent);
 
   private:
     std::shared_ptr<SimpleDBus::Connection> _conn;
     std::shared_ptr<SimpleBluez::BluezRoot> _bluez_root;
+    std::shared_ptr<SimpleBluez::CustomRoot> _custom_root;
 };
 
 }  // namespace SimpleBluez

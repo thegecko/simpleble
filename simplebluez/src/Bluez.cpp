@@ -31,6 +31,6 @@ void Bluez::run_async() {
 
 std::vector<std::shared_ptr<Adapter>> Bluez::get_adapters() { return _bluez_root->get_adapters(); }
 
-std::shared_ptr<Agent> Bluez::get_agent() { return _bluez_root->get_agent(); }
+std::shared_ptr<Agent> Bluez::get_agent() { return _custom_root->get_agent(); }
 
-void Bluez::register_agent() { _bluez_root->register_agent(); }
+void Bluez::register_agent(std::shared_ptr<Agent> agent) { _bluez_root->register_agent(agent); }

@@ -45,6 +45,7 @@ set(SIMPLEBLUEZ_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Exceptions.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/custom/Agent.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/custom/CustomRoot.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/Device.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/Characteristic.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/Service.cpp

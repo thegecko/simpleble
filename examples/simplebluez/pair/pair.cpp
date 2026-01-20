@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
         return true;
     });
 
-    bluez.register_agent();
+    bluez.register_agent(agent);
 
     auto adapters = bluez.get_adapters();
     std::cout << "Available adapters:" << std::endl;
