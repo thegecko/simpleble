@@ -11,7 +11,9 @@ class CustomRoot : public SimpleDBus::Proxy {
     CustomRoot(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path);
     virtual ~CustomRoot() = default;
 
-    std::shared_ptr<Agent> get_agent();
+    std::shared_ptr<Agent> agent_add(const std::string& name);
+    std::shared_ptr<Agent> agent_get(const std::string& name);
+    void agent_remove(const std::string& name);
 
     // ----- INTERNAL CALLBACKS -----
     void on_registration() override;

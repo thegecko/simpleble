@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     bluez.init();
     std::thread* async_thread = new std::thread(async_thread_function);
 
-    auto agent = bluez.get_agent();
+    auto agent = bluez.root_custom()->agent_add("default");
     agent->set_capabilities(SimpleBluez::Agent::Capabilities::KeyboardDisplay);
 
     // Configure all callback handlers for the agent, as part of this example.

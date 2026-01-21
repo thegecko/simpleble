@@ -21,6 +21,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (SimpleDBus) Interfaces now host their own property objects.
 - (SimpleDBus) Property change callbacks are now handled by the individual property objects.
 - (SimpleBluez) Moved some files around, which might change the include paths for some users.
+- **API CHANGE**: (SimpleBluez) API for accessing internal BlueZ objects has been made more flexible.
 
 **Fixed**
 

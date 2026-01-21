@@ -24,8 +24,10 @@ class Bluez {
     void init();
     void run_async();
 
+    std::shared_ptr<CustomRoot> root_custom();
+    std::shared_ptr<BluezRoot> root_bluez();
+
     std::vector<std::shared_ptr<Adapter>> get_adapters();
-    std::shared_ptr<Agent> get_agent();
     void register_agent(std::shared_ptr<Agent> agent);
 
   private:
