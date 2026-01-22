@@ -21,6 +21,10 @@ class Service : public SimpleDBus::Proxy {
     std::vector<std::shared_ptr<Characteristic>> characteristics();
 
     std::string uuid();
+    void uuid(const std::string& uuid);
+
+    bool primary();
+    void primary(bool primary);
 
   private:
     std::shared_ptr<SimpleDBus::Proxy> path_create(const std::string& path) override;

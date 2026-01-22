@@ -65,6 +65,19 @@ void Interface::property_refresh(const std::string& property_name) {
     }
 }
 
+void Interface::property_emit(const std::string& property_name, Holder value) {
+    if (!_loaded || _properties.count(property_name) == 0) {
+        return;
+    }
+
+    auto properties = std::dynamic_pointer_cast<SimpleDBus::Interfaces::Properties>(
+    proxy()->interface_get("org.freedesktop.DBus.Properties"));
+
+    std::map<std::string, SimpleDBus::Holder> changed_properties;
+    changed_properties[property_name] = value;
+    properties->PropertiesChanged(_interface_name, changed_properties, {});
+}
+
 bool Interface::property_exists(const std::string& property_name) { return _properties.count(property_name) > 0; }
 
 // ----- HANDLES -----

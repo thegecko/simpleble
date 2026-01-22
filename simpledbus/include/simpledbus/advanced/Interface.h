@@ -40,16 +40,21 @@ class Interface {
             return *this;
         }
 
+        void emit() {
+            _interface.property_emit(_name, get());
+        }
+
         Holder get() const {
             std::scoped_lock lock(_mutex);
             return _value;
         }
 
-        void set(Holder value) {
+        PropertyBase& set(Holder value) {
             std::scoped_lock lock(_mutex);
             _value = value;
             _valid = true;
             notify_changed();
+            return *this;
         }
 
         bool valid() {
@@ -102,10 +107,11 @@ class Interface {
             return _value.get<T>();
         }
 
-        void set(T value) {
+        Property& set(T value) {
             std::scoped_lock lock(_mutex);
             _value = Holder::create<T>(value);
             _valid = true;
+            return *this;
         }
 
         kvn::safe_callback<void(T)> on_changed;
@@ -138,10 +144,11 @@ class Interface {
             return _from_holder(_value);
         }
 
-        void set(T value) {
+        CustomProperty& set(T value) {
             std::scoped_lock lock(_mutex);
             _value = _to_holder(value);
             _valid = true;
+            return *this;
         }
 
         kvn::safe_callback<void(T)> on_changed;
@@ -168,6 +175,7 @@ class Interface {
     // ----- PROPERTIES -----
     bool property_exists(const std::string& property_name);
     void property_refresh(const std::string& property_name);
+    void property_emit(const std::string& property_name, Holder value);
 
     // ----- MESSAGES -----
     virtual void message_handle(Message& msg) {}

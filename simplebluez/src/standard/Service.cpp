@@ -35,6 +35,9 @@ std::shared_ptr<Characteristic> Service::characteristic_add(const std::string& n
     const std::string characteristic_path = _path + "/characteristic_" + name;
     auto characteristic = std::make_shared<Characteristic>(_conn, _bus_name, characteristic_path);
     path_append_child(characteristic_path, std::static_pointer_cast<SimpleDBus::Proxy>(characteristic));
+
+    characteristic->service(_path);
+
     return characteristic;
 }
 
@@ -56,3 +59,9 @@ std::shared_ptr<Characteristic> Service::get_characteristic(const std::string& u
 }
 
 std::string Service::uuid() { return gattservice1()->UUID; }
+
+void Service::uuid(const std::string& uuid) { gattservice1()->UUID.set(uuid); }
+
+bool Service::primary() { return gattservice1()->Primary; }
+
+void Service::primary(bool primary) { gattservice1()->Primary.set(primary); }

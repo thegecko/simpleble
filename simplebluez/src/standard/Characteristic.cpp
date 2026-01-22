@@ -1,6 +1,7 @@
 #include <simplebluez/Exceptions.h>
 #include <simplebluez/standard/Characteristic.h>
 #include <simplebluez/standard/Descriptor.h>
+#include "simplebluez/Types.h"
 
 using namespace SimpleBluez;
 
@@ -37,10 +38,16 @@ std::shared_ptr<GattCharacteristic1> Characteristic::gattcharacteristic1() {
 bool Characteristic::notifying() { return gattcharacteristic1()->Notifying.refresh(); }
 
 std::string Characteristic::uuid() { return gattcharacteristic1()->UUID; }
+void Characteristic::uuid(std::string uuid) { gattcharacteristic1()->UUID.set(uuid); }
+
+std::string Characteristic::service() { return gattcharacteristic1()->Service; }
+void Characteristic::service(const std::string& service) { gattcharacteristic1()->Service.set(service); }
 
 ByteArray Characteristic::value() { return gattcharacteristic1()->Value; }
+void Characteristic::value(ByteArray value) {gattcharacteristic1()->Value.set(value).emit(); }
 
 std::vector<std::string> Characteristic::flags() { return gattcharacteristic1()->Flags; }
+void Characteristic::flags(std::vector<std::string> flags) {gattcharacteristic1()->Flags(flags); }
 
 uint16_t Characteristic::mtu() { return gattcharacteristic1()->MTU; }
 
@@ -87,3 +94,25 @@ void Characteristic::set_on_value_changed(std::function<void(ByteArray new_value
 }
 
 void Characteristic::clear_on_value_changed() { gattcharacteristic1()->Value.on_changed.unload(); }
+
+void Characteristic::set_on_read_value(std::function<void()> callback) {
+    gattcharacteristic1()->OnReadValue.load([this, callback]() { callback(); });
+}
+
+void Characteristic::clear_on_read_value() { gattcharacteristic1()->OnReadValue.unload(); }
+
+void Characteristic::set_on_write_value(std::function<void(ByteArray value)> callback) {
+    gattcharacteristic1()->OnWriteValue.load([this, callback](const ByteArray& value) { callback(value); });
+}
+
+void Characteristic::clear_on_write_value() { gattcharacteristic1()->OnWriteValue.unload(); }
+
+void Characteristic::set_on_notify(std::function<void(bool)> callback) {
+    gattcharacteristic1()->OnStartNotify.load([this, callback]() { callback(true); });
+    gattcharacteristic1()->OnStopNotify.load([this, callback]() { callback(false); });
+}
+
+void Characteristic::clear_on_notify() {
+    gattcharacteristic1()->OnStartNotify.unload();
+    gattcharacteristic1()->OnStopNotify.unload();
+}

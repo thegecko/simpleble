@@ -28,14 +28,33 @@ class Characteristic : public SimpleDBus::Proxy {
     std::vector<std::shared_ptr<Descriptor>> descriptors();
 
     std::string uuid();
+    void uuid(std::string uuid);
+
+    std::string service();
+    void service(const std::string& service);
+    
     ByteArray value();
+    void value(ByteArray value);
+    
     bool notifying();
+
     std::vector<std::string> flags();
+    void flags(std::vector<std::string> flags);
+
     uint16_t mtu();
 
     // ----- CALLBACKS -----
     void set_on_value_changed(std::function<void(ByteArray new_value)> callback);
     void clear_on_value_changed();
+
+    void set_on_read_value(std::function<void()> callback);
+    void clear_on_read_value();
+
+    void set_on_write_value(std::function<void(ByteArray value)> callback);
+    void clear_on_write_value();
+
+    void set_on_notify(std::function<void(bool)> callback);
+    void clear_on_notify();
 
   private:
     std::shared_ptr<SimpleDBus::Proxy> path_create(const std::string& path) override;

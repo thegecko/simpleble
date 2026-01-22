@@ -62,3 +62,39 @@ ByteArray GattCharacteristic1::ReadValue() {
     Value.set(value);
     return Value();
 }
+
+void GattCharacteristic1::message_handle(SimpleDBus::Message& msg) {
+    if (msg.is_method_call(_interface_name, "ReadValue")) {
+        SimpleDBus::Holder options = msg.extract();
+
+        OnReadValue();
+
+        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        reply.append_argument(_properties["Value"]->get(), "ay");
+        _conn->send(reply);
+    } else if (msg.is_method_call(_interface_name, "WriteValue")) {
+        SimpleDBus::Holder value = msg.extract();
+        msg.extract_next();
+        SimpleDBus::Holder options = msg.extract();
+
+        Value.set(value);
+        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        _conn->send(reply);
+
+        OnWriteValue(Value.get());
+    } else if (msg.is_method_call(_interface_name, "StartNotify")) {
+        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        _conn->send(reply);
+
+        Notifying.set(true).emit();
+
+        OnStartNotify();
+    } else if (msg.is_method_call(_interface_name, "StopNotify")) {
+        SimpleDBus::Message reply = SimpleDBus::Message::create_method_return(msg);
+        _conn->send(reply);
+
+        Notifying.set(false).emit();
+
+        OnStopNotify();
+    }
+}
