@@ -10,16 +10,12 @@ void CustomRoot::on_registration() {
     _interfaces.emplace(
         std::make_pair("org.freedesktop.DBus.ObjectManager",
                        std::make_shared<SimpleDBus::Interfaces::ObjectManager>(_conn, shared_from_this())));
-
-    // Create the agent that will handle pairing.
-    _agent = Proxy::create<Agent>(_conn, "org.bluez", "/agent");
-    path_append_child("/agent", std::static_pointer_cast<SimpleDBus::Proxy>(_agent));
 }
 
 std::shared_ptr<Agent> CustomRoot::agent_add(const std::string& name) {
     const std::string agent_path = "/agent_" + name;
-    auto agent = Proxy::create<Agent>(_conn, "org.bluez", agent_path);
-    path_append_child(agent_path, std::static_pointer_cast<SimpleDBus::Proxy>(_agent));
+    auto agent = Proxy::create<Agent>(_conn, _bus_name, agent_path);
+    path_append_child(agent_path, std::static_pointer_cast<SimpleDBus::Proxy>(agent));
     // TODO: Have the object manager send the InterfacesAdded signal.
     return agent;
 }
@@ -37,7 +33,7 @@ void CustomRoot::agent_remove(const std::string& name) {
 
 std::shared_ptr<Advertisement> CustomRoot::advertisement_add(const std::string& name) {
     const std::string advertisement_path = "/advertisement_" + name;
-    auto advertisement = Proxy::create<Advertisement>(_conn, "org.bluez", advertisement_path);
+    auto advertisement = Proxy::create<Advertisement>(_conn, _bus_name, advertisement_path);
     path_append_child(advertisement_path, std::static_pointer_cast<SimpleDBus::Proxy>(advertisement));
     // TODO: Have the object manager send the InterfacesAdded signal.
     return advertisement;
@@ -52,6 +48,25 @@ void CustomRoot::advertisement_remove(const std::string& name) {
     const std::string advertisement_path = "/advertisement_" + name;
     // TODO: Have the object manager send the InterfacesRemoved signal.
     path_remove_child(advertisement_path);
+}
+
+std::shared_ptr<ServiceManager> CustomRoot::service_mgr_add(const std::string& name) {
+    const std::string service_mgr_path = "/application_" + name;
+    auto service_mgr = Proxy::create<ServiceManager>(_conn, _bus_name, service_mgr_path);
+    path_append_child(service_mgr_path, std::static_pointer_cast<SimpleDBus::Proxy>(service_mgr));
+    // TODO: Have the object manager send the InterfacesAdded signal.
+    return service_mgr;
+}
+
+std::shared_ptr<ServiceManager> CustomRoot::service_mgr_get(const std::string& name) {
+    const std::string service_mgr_path = "/application_" + name;
+    return std::dynamic_pointer_cast<ServiceManager>(path_get(service_mgr_path));
+}
+
+void CustomRoot::service_mgr_remove(const std::string& name) {
+    const std::string service_mgr_path = "/application_" + name;
+    // TODO: Have the object manager send the InterfacesRemoved signal.
+    path_remove_child(service_mgr_path);
 }
 
 std::shared_ptr<SimpleDBus::Interfaces::ObjectManager> CustomRoot::object_manager() {

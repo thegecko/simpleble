@@ -7,7 +7,9 @@ using namespace SimpleBluez;
 
 Characteristic::Characteristic(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name,
                                const std::string& path)
-    : Proxy(conn, bus_name, path) {
+    : Proxy(conn, bus_name, path) {}
+
+void Characteristic::on_registration() {
     // NOTE: We are following the approach of predeclaring all interfaces that might exist here,
     //       so that this same class can fullfill all the necessary functionality for central
     //       and peripheral roles.
@@ -44,10 +46,10 @@ std::string Characteristic::service() { return gattcharacteristic1()->Service; }
 void Characteristic::service(const std::string& service) { gattcharacteristic1()->Service.set(service); }
 
 ByteArray Characteristic::value() { return gattcharacteristic1()->Value; }
-void Characteristic::value(ByteArray value) {gattcharacteristic1()->Value.set(value).emit(); }
+void Characteristic::value(ByteArray value) { gattcharacteristic1()->Value.set(value).emit(); }
 
 std::vector<std::string> Characteristic::flags() { return gattcharacteristic1()->Flags; }
-void Characteristic::flags(std::vector<std::string> flags) {gattcharacteristic1()->Flags(flags); }
+void Characteristic::flags(std::vector<std::string> flags) { gattcharacteristic1()->Flags(flags); }
 
 uint16_t Characteristic::mtu() { return gattcharacteristic1()->MTU; }
 

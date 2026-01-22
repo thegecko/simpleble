@@ -56,6 +56,9 @@ class Characteristic : public SimpleDBus::Proxy {
     void set_on_notify(std::function<void(bool)> callback);
     void clear_on_notify();
 
+    // ----- INTERNAL CALLBACKS -----
+    void on_registration() override;
+
   private:
     std::shared_ptr<SimpleDBus::Proxy> path_create(const std::string& path) override;
 

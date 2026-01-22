@@ -5,7 +5,11 @@ using namespace SimpleBluez;
 Descriptor::Descriptor(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name,
                        const std::string& path)
     : Proxy(conn, bus_name, path) {
+}
 
+Descriptor::~Descriptor() {}
+
+void Descriptor::on_registration() {
     // NOTE: We are following the approach of predeclaring all interfaces that might exist here,
     //       so that this same class can fullfill all the necessary functionality for central
     //       and peripheral roles.
@@ -15,8 +19,6 @@ Descriptor::Descriptor(std::shared_ptr<SimpleDBus::Connection> conn, const std::
     auto properties = std::make_shared<SimpleDBus::Interfaces::Properties>(_conn, shared_from_this());
     _interfaces.emplace(std::make_pair("org.freedesktop.DBus.Properties", properties));
 }
-
-Descriptor::~Descriptor() {}
 
 std::shared_ptr<GattDescriptor1> Descriptor::gattdescriptor1() {
     return std::dynamic_pointer_cast<GattDescriptor1>(interface_get("org.bluez.GattDescriptor1"));

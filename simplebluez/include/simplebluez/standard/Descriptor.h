@@ -24,6 +24,9 @@ class Descriptor : public SimpleDBus::Proxy {
     void set_on_value_changed(std::function<void(ByteArray new_value)> callback);
     void clear_on_value_changed();
 
+    // ----- INTERNAL CALLBACKS -----
+    void on_registration() override;
+
   private:
     std::shared_ptr<SimpleDBus::Interfaces::Properties> properties();
     std::shared_ptr<GattDescriptor1> gattdescriptor1();

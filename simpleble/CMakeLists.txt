@@ -226,6 +226,7 @@ elseif(SIMPLEBLE_BACKEND_LINUX)
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Logging.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Agent.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Advertisement.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/ServiceManager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/CustomRoot.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Device.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Characteristic.cpp

@@ -26,6 +26,9 @@ class Service : public SimpleDBus::Proxy {
     bool primary();
     void primary(bool primary);
 
+    // ----- INTERNAL CALLBACKS -----
+    void on_registration() override;
+
   private:
     std::shared_ptr<SimpleDBus::Proxy> path_create(const std::string& path) override;
     std::shared_ptr<SimpleDBus::Interfaces::Properties> properties();
