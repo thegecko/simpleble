@@ -1,9 +1,9 @@
 #pragma once
 
+#include <simplebluez/standard/Adapter.h>
+#include <simplebluez/standard/Agent.h>
 #include <simpledbus/advanced/Proxy.h>
 #include <simpledbus/interfaces/ObjectManager.h>
-#include <simplebluez/standard/Adapter.h>
-#include <simplebluez/custom/Agent.h>
 #include <vector>
 
 namespace SimpleBluez {

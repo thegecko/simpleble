@@ -224,9 +224,9 @@ elseif(SIMPLEBLE_BACKEND_LINUX)
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Bluez.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Exceptions.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/Logging.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/custom/Agent.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/custom/Advertisement.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/custom/CustomRoot.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Agent.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Advertisement.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/CustomRoot.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Device.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Characteristic.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../simplebluez/src/standard/Service.cpp

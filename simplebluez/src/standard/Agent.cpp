@@ -1,4 +1,4 @@
-#include <simplebluez/custom/Agent.h>
+#include <simplebluez/standard/Agent.h>
 
 using namespace SimpleBluez;
 
@@ -6,8 +6,8 @@ Agent::Agent(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bu
     : Proxy(conn, bus_name, path) {}
 
 void Agent::on_registration() {
-    _interfaces.emplace(std::make_pair(
-        "org.bluez.Agent1", std::static_pointer_cast<SimpleDBus::Interface>(std::make_shared<Agent1>(_conn, shared_from_this()))));
+    _interfaces.emplace(std::make_pair("org.bluez.Agent1", std::static_pointer_cast<SimpleDBus::Interface>(
+                                                               std::make_shared<Agent1>(_conn, shared_from_this()))));
 }
 
 std::string Agent::capabilities() const {
