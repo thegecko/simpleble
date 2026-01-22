@@ -36,36 +36,36 @@ int main(int argc, char* argv[]) {
     agent->set_capabilities(SimpleBluez::Agent::Capabilities::KeyboardDisplay);
 
     // Configure all callback handlers for the agent, as part of this example.
-    agent->set_on_request_pin_code([&]() {
+    agent->set_on_request_pin_code([&](const std::string& device_path) {
         std::cout << "Agent::RequestPinCode" << std::endl;
         return "123456";
     });
 
-    agent->set_on_display_pin_code([&](const std::string& pin_code) {
+    agent->set_on_display_pin_code([&](const std::string& device_path, const std::string& pin_code) {
         std::cout << "Agent::DisplayPinCode: " << pin_code << std::endl;
         return true;
     });
 
-    agent->set_on_request_passkey([&]() {
+    agent->set_on_request_passkey([&](const std::string& device_path) {
         std::cout << "Agent::RequestPasskey" << std::endl;
         return 123456;
     });
 
-    agent->set_on_display_passkey([&](uint32_t passkey, uint16_t entered) {
+    agent->set_on_display_passkey([&](const std::string& device_path, uint32_t passkey, uint16_t entered) {
         std::cout << "Agent::DisplayPasskey: " << passkey << " (" << entered << " entered)" << std::endl;
     });
 
-    agent->set_on_request_confirmation([&](uint32_t passkey) {
+    agent->set_on_request_confirmation([&](const std::string& device_path, uint32_t passkey) {
         std::cout << "Agent::RequestConfirmation: " << passkey << std::endl;
         return true;
     });
 
-    agent->set_on_request_authorization([&]() {
+    agent->set_on_request_authorization([&](const std::string& device_path) {
         std::cout << "Agent::RequestAuthorization" << std::endl;
         return true;
     });
 
-    agent->set_on_authorize_service([&](const std::string& uuid) {
+    agent->set_on_authorize_service([&](const std::string& device_path, const std::string& uuid) {
         std::cout << "Agent::AuthorizeService: " << uuid << std::endl;
         return true;
     });
