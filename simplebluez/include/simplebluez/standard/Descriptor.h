@@ -1,8 +1,9 @@
 #pragma once
 
-#include <simpledbus/advanced/Proxy.h>
-#include <simplebluez/interfaces/GattDescriptor1.h>
 #include <simplebluez/Types.h>
+#include <simplebluez/interfaces/GattDescriptor1.h>
+#include <simpledbus/advanced/Proxy.h>
+#include <simpledbus/interfaces/Properties.h>
 
 namespace SimpleBluez {
 
@@ -24,6 +25,7 @@ class Descriptor : public SimpleDBus::Proxy {
     void clear_on_value_changed();
 
   private:
+    std::shared_ptr<SimpleDBus::Interfaces::Properties> properties();
     std::shared_ptr<GattDescriptor1> gattdescriptor1();
 };
 

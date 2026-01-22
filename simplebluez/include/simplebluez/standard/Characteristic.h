@@ -12,6 +12,9 @@ class Characteristic : public SimpleDBus::Proxy {
     Characteristic(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path);
     virtual ~Characteristic();
 
+    std::shared_ptr<Descriptor> descriptor_add(const std::string& name);
+    void descriptor_remove(const std::string& name);
+
     std::shared_ptr<Descriptor> get_descriptor(const std::string& uuid);
 
     // ----- METHODS -----
@@ -37,6 +40,7 @@ class Characteristic : public SimpleDBus::Proxy {
   private:
     std::shared_ptr<SimpleDBus::Proxy> path_create(const std::string& path) override;
 
+    std::shared_ptr<SimpleDBus::Interfaces::Properties> properties();
     std::shared_ptr<GattCharacteristic1> gattcharacteristic1();
 };
 
