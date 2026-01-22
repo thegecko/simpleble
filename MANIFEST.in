@@ -277,6 +277,7 @@ include simplebluez/cmake/simplebluez.pc.in
 include simplebluez/include/simplebluez/Bluez.h
 include simplebluez/include/simplebluez/Exceptions.h
 include simplebluez/include/simplebluez/Types.h
+include simplebluez/include/simplebluez/custom/Advertisement.h
 include simplebluez/include/simplebluez/custom/Agent.h
 include simplebluez/include/simplebluez/custom/CustomRoot.h
 include simplebluez/include/simplebluez/interfaces/Adapter1.h
@@ -302,6 +303,7 @@ include simplebluez/src/Bluez.cpp
 include simplebluez/src/Exceptions.cpp
 include simplebluez/src/Logging.cpp
 include simplebluez/src/Logging.h
+include simplebluez/src/custom/Advertisement.cpp
 include simplebluez/src/custom/Agent.cpp
 include simplebluez/src/custom/CustomRoot.cpp
 include simplebluez/src/interfaces/Adapter1.cpp

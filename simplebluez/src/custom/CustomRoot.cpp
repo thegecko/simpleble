@@ -32,6 +32,25 @@ void CustomRoot::agent_remove(const std::string& name) {
     path_remove_child(agent_path);
 }
 
+std::shared_ptr<Advertisement> CustomRoot::advertisement_add(const std::string& name) {
+    const std::string advertisement_path = "/advertisement_" + name;
+    auto advertisement = Proxy::create<Advertisement>(_conn, "org.bluez", advertisement_path);
+    path_append_child(advertisement_path, std::static_pointer_cast<SimpleDBus::Proxy>(advertisement));
+    // TODO: Have the object manager send the InterfacesAdded signal.
+    return advertisement;
+}
+
+std::shared_ptr<Advertisement> CustomRoot::advertisement_get(const std::string& name) {
+    const std::string advertisement_path = "/advertisement_" + name;
+    return std::dynamic_pointer_cast<Advertisement>(path_get(advertisement_path));
+}
+
+void CustomRoot::advertisement_remove(const std::string& name) {
+    const std::string advertisement_path = "/advertisement_" + name;
+    // TODO: Have the object manager send the InterfacesRemoved signal.
+    path_remove_child(advertisement_path);
+}
+
 std::shared_ptr<SimpleDBus::Interfaces::ObjectManager> CustomRoot::object_manager() {
     return std::dynamic_pointer_cast<SimpleDBus::Interfaces::ObjectManager>(interface_get("org.freedesktop.DBus.ObjectManager"));
 }

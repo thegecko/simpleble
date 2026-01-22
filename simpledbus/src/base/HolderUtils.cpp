@@ -38,6 +38,23 @@ std::vector<std::string> to_string_array(const Holder& holder) {
     return result;
 }
 
+Holder from_dict_uint8_byte_array(const std::map<uint8_t, kvn::bytearray>& value) {
+    Holder dict = Holder::create_dict();
+    for (auto const& [key, val] : value) {
+        dict.dict_append(Holder::BYTE, key, from_byte_array(val));
+    }
+    return dict;
+}
+
+std::map<uint8_t, kvn::bytearray> to_dict_uint8_byte_array(const Holder& holder) {
+    std::map<uint8_t, kvn::bytearray> result;
+    auto dict = holder.get_dict_uint8();
+    for (auto& [key, val_holder] : dict) {
+        result[key] = to_byte_array(val_holder);
+    }
+    return result;
+}
+
 Holder from_dict_uint16_byte_array(const std::map<uint16_t, kvn::bytearray>& value) {
     Holder dict = Holder::create_dict();
     for (auto const& [key, val] : value) {

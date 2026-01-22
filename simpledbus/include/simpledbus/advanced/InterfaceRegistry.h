@@ -1,20 +1,15 @@
 #pragma once
 
-#include <functional>
-#include <iostream>
 #include <memory>
-#include <stdexcept>
 #include <string>
-#include <typeindex>
 
 #include <simpledbus/base/Connection.h>
 #include <simpledbus/base/Holder.h>
 #include <simpledbus/base/Logging.h>
+#include <simpledbus/advanced/Interface.h>
+#include <simpledbus/advanced/Proxy.h>
 
 namespace SimpleDBus {
-
-class Interface;
-class Proxy;
 
 using CreatorFunction = std::shared_ptr<Interface> (*)(std::shared_ptr<Connection>, std::shared_ptr<Proxy>);
 

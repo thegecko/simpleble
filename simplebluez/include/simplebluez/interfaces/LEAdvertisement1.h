@@ -32,6 +32,10 @@ class LEAdvertisement1 : public SimpleDBus::Interface {
         "ManufacturerData", SimpleDBus::HolderUtils::from_dict_uint16_byte_array, SimpleDBus::HolderUtils::to_dict_uint16_byte_array);
     CustomProperty<std::map<std::string, ByteArray>>& ServiceData = property<std::map<std::string, ByteArray>>(
         "ServiceData", SimpleDBus::HolderUtils::from_dict_string_byte_array, SimpleDBus::HolderUtils::to_dict_string_byte_array);
+    CustomProperty<std::vector<std::string>>& SolicitUUIDs = property<std::vector<std::string>>(
+        "SolicitUUIDs", SimpleDBus::HolderUtils::from_string_array, SimpleDBus::HolderUtils::to_string_array);
+    CustomProperty<std::map<uint8_t, ByteArray>>& Data = property<std::map<uint8_t, ByteArray>>(
+        "Data", SimpleDBus::HolderUtils::from_dict_uint8_byte_array, SimpleDBus::HolderUtils::to_dict_uint8_byte_array);
     Property<bool>& Discoverable = property<bool>("Discoverable");
     Property<uint16_t>& DiscoverableTimeout = property<uint16_t>("DiscoverableTimeout");
     CustomProperty<std::vector<std::string>>& Includes = property<std::vector<std::string>>(

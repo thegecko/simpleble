@@ -3,6 +3,7 @@
 #include <simpledbus/advanced/Proxy.h>
 #include <simpledbus/interfaces/ObjectManager.h>
 #include <simplebluez/custom/Agent.h>
+#include "simplebluez/custom/Advertisement.h"
 
 namespace SimpleBluez {
 
@@ -14,6 +15,10 @@ class CustomRoot : public SimpleDBus::Proxy {
     std::shared_ptr<Agent> agent_add(const std::string& name);
     std::shared_ptr<Agent> agent_get(const std::string& name);
     void agent_remove(const std::string& name);
+
+    std::shared_ptr<Advertisement> advertisement_add(const std::string& name);
+    std::shared_ptr<Advertisement> advertisement_get(const std::string& name);
+    void advertisement_remove(const std::string& name);
 
     // ----- INTERNAL CALLBACKS -----
     void on_registration() override;
