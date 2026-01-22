@@ -32,6 +32,7 @@ class Device : public SimpleDBus::Proxy {
     std::map<std::string, ByteArray> service_data();
 
     bool paired();
+    bool bonded();
     bool connected();
     bool services_resolved();
 

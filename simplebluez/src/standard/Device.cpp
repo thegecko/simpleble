@@ -76,6 +76,8 @@ std::map<std::string, ByteArray> Device::service_data() { return device1()->Serv
 
 bool Device::paired() { return device1()->Paired.refresh(); }
 
+bool Device::bonded() { return device1()->Bonded.refresh(); }
+
 bool Device::connected() { return device1()->Connected.refresh(); }
 
 bool Device::services_resolved() { return device1()->ServicesResolved.refresh(); }
