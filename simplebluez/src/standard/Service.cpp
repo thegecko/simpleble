@@ -38,6 +38,10 @@ std::shared_ptr<Characteristic> Service::characteristic_add(const std::string& n
     auto characteristic = Proxy::create<Characteristic>(_conn, _bus_name, characteristic_path);
     path_append_child(characteristic_path, std::static_pointer_cast<SimpleDBus::Proxy>(characteristic));
 
+    auto service_characteristic_list = gattservice1()->Characteristics.get();
+    service_characteristic_list.push_back(characteristic_path);
+    gattservice1()->Characteristics.set(service_characteristic_list);
+
     characteristic->service(_path);
 
     return characteristic;
@@ -45,6 +49,14 @@ std::shared_ptr<Characteristic> Service::characteristic_add(const std::string& n
 
 void Service::characteristic_remove(const std::string& name) {
     const std::string characteristic_path = _path + "/characteristic_" + name;
+
+    auto service_characteristic_list = std::vector<std::string>();
+    for (auto& characteristic : gattservice1()->Characteristics.get()) {
+        if (characteristic != characteristic_path) {
+            service_characteristic_list.push_back(characteristic);
+        }
+    }
+    gattservice1()->Characteristics.set(service_characteristic_list);
     path_remove_child(characteristic_path);
 }
 

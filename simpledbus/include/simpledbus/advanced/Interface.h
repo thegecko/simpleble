@@ -40,9 +40,7 @@ class Interface {
             return *this;
         }
 
-        void emit() {
-            _interface.property_emit(_name, get());
-        }
+        void emit() { _interface.property_emit(_name, get()); }
 
         Holder get() const {
             std::scoped_lock lock(_mutex);
@@ -190,6 +188,7 @@ class Interface {
     Property<T>& property(const std::string& name) {
         std::unique_ptr<PropertyBase> property_ptr = std::make_unique<Property<T>>(*this, name);
         Property<T>& property = dynamic_cast<Property<T>&>(*property_ptr);
+        property.set(T());
         _properties.emplace(name, std::move(property_ptr));
         return property;
     }
@@ -198,6 +197,7 @@ class Interface {
     CustomProperty<T>& property(const std::string& name, std::function<Holder(T)> to_holder, std::function<T(Holder)> from_holder) {
         std::unique_ptr<PropertyBase> property_ptr = std::make_unique<CustomProperty<T>>(*this, name, to_holder, from_holder);
         CustomProperty<T>& property = dynamic_cast<CustomProperty<T>&>(*property_ptr);
+        property.set(T());
         _properties.emplace(name, std::move(property_ptr));
         return property;
     }
