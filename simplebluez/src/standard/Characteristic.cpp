@@ -69,7 +69,7 @@ void Characteristic::stop_notify() { gattcharacteristic1()->StopNotify(); }
 
 std::shared_ptr<Descriptor> Characteristic::descriptor_add(const std::string& name) {
     const std::string descriptor_path = _path + "/descriptor_" + name;
-    auto descriptor = std::make_shared<Descriptor>(_conn, _bus_name, descriptor_path);
+    auto descriptor = Proxy::create<Descriptor>(_conn, _bus_name, descriptor_path);
     path_append_child(descriptor_path, std::static_pointer_cast<SimpleDBus::Proxy>(descriptor));
     return descriptor;
 }

@@ -35,7 +35,7 @@ std::vector<std::shared_ptr<Characteristic>> Service::characteristics() { return
 
 std::shared_ptr<Characteristic> Service::characteristic_add(const std::string& name) {
     const std::string characteristic_path = _path + "/characteristic_" + name;
-    auto characteristic = std::make_shared<Characteristic>(_conn, _bus_name, characteristic_path);
+    auto characteristic = Proxy::create<Characteristic>(_conn, _bus_name, characteristic_path);
     path_append_child(characteristic_path, std::static_pointer_cast<SimpleDBus::Proxy>(characteristic));
 
     characteristic->service(_path);

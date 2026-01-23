@@ -14,7 +14,7 @@ void ServiceManager::on_registration() {
 
 std::shared_ptr<SimpleBluez::Service> ServiceManager::service_add(const std::string& name) {
     const std::string service_path = _path + "/service_" + name;
-    auto service = std::make_shared<Service>(_conn, _bus_name, service_path);
+    auto service = Proxy::create<Service>(_conn, _bus_name, service_path);
     path_append_child(service_path, std::static_pointer_cast<SimpleDBus::Proxy>(service));
     return service;
 }

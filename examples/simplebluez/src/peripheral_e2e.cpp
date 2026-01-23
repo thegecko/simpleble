@@ -12,7 +12,6 @@ SimpleBluez::Bluez bluez;
 
 std::atomic_bool async_thread_active = true;
 void async_thread_function() {
-    bluez.init();
     while (async_thread_active) {
         bluez.run_async();
         std::this_thread::sleep_for(std::chrono::microseconds(100));
@@ -30,6 +29,7 @@ void millisecond_delay(int ms) {
 
 int main(int argc, char* argv[]) {
     std::signal(SIGINT, signal_handler);
+    bluez.init();
     std::thread* async_thread = new std::thread(async_thread_function);
     auto adapter = bluez.get_adapters()[0];
 
