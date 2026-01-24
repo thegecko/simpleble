@@ -184,6 +184,7 @@ class Interface {
     Holder handle_property_get(std::string property_name);
     Holder handle_property_get_all();
 
+    // TODO: Add a version of these functions with a default value.
     template <typename T>
     Property<T>& property(const std::string& name) {
         std::unique_ptr<PropertyBase> property_ptr = std::make_unique<Property<T>>(*this, name);

@@ -14,7 +14,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 **Added**
 
-- 
+- (SimpleDBus) Connection has a new `send_with_reply` method that doesn't block the underlying DBus event loop.
 
 **Changed**
 
