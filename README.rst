@@ -1,6 +1,8 @@
 SimpleBLE
 ==========
 
+Branched from https://github.com/simpleble/simpleble just before the license changed away from GPLv3
+
 The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE).
 
 |Latest Documentation Status|
