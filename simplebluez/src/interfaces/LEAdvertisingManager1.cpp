@@ -11,7 +11,8 @@ const SimpleDBus::AutoRegisterInterface<LEAdvertisingManager1> LEAdvertisingMana
     // clang-format on
 };
 
-LEAdvertisingManager1::LEAdvertisingManager1(std::shared_ptr<SimpleDBus::Connection> conn, std::shared_ptr<SimpleDBus::Proxy> proxy)
+LEAdvertisingManager1::LEAdvertisingManager1(std::shared_ptr<SimpleDBus::Connection> conn,
+                                             std::shared_ptr<SimpleDBus::Proxy> proxy)
     : SimpleDBus::Interface(conn, proxy, "org.bluez.LEAdvertisingManager1") {}
 
 // IMPORTANT: The destructor is defined here (instead of inline) to anchor the vtable to this object file.
@@ -28,13 +29,11 @@ void LEAdvertisingManager1::RegisterAdvertisement(std::string advertisement_path
     msg.append_argument(SimpleDBus::Holder::create_object_path(advertisement_path), "o");
     msg.append_argument(properties, "a{sv}");
 
-    // TODO: We need a way to get an async reply for this.
-    // TODO: Can this work with the new routing system?
-    _conn->send(msg);
+    _conn->send_with_reply(msg);
 }
 
 void LEAdvertisingManager1::UnregisterAdvertisement(std::string advertisement_path) {
     auto msg = create_method_call("UnregisterAdvertisement");
     msg.append_argument(SimpleDBus::Holder::create_object_path(advertisement_path), "o");
-    _conn->send_with_reply_and_block(msg);
+    _conn->send_with_reply(msg);
 }

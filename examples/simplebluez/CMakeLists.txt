@@ -51,5 +51,8 @@ configure_simplebluez_target(simplebluez_notify)
 add_executable(simplebluez_ble_nus src/ble_nus.cpp)
 configure_simplebluez_target(simplebluez_ble_nus)
 
+add_executable(simplebluez_peripheral_advertise src/peripheral_advertise.cpp)
+configure_simplebluez_target(simplebluez_peripheral_advertise)
+
 add_executable(simplebluez_peripheral_e2e src/peripheral_e2e.cpp)
 configure_simplebluez_target(simplebluez_peripheral_e2e)

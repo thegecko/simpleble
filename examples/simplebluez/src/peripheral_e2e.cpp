@@ -129,7 +129,6 @@ int main(int argc, char* argv[]) {
     data[0x1024] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05};
     advertisement->manufacturer_data(data);
     advertisement->timeout(10);
-    advertisement->discoverable(true);
     advertisement->local_name("SimpleBluez");
 
     // --- MAIN EVENT LOOP ---
