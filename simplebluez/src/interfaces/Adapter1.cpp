@@ -21,18 +21,18 @@ Adapter1::~Adapter1() = default;
 
 void Adapter1::StartDiscovery() {
     auto msg = create_method_call("StartDiscovery");
-    _conn->send_with_reply_and_block(msg);
+    _conn->send_with_reply(msg);
 }
 
 void Adapter1::StopDiscovery() {
     auto msg = create_method_call("StopDiscovery");
-    _conn->send_with_reply_and_block(msg);
+    _conn->send_with_reply(msg);
     // NOTE: It might take a few seconds until the peripheral reports that is has actually stopped discovering.
 }
 
 SimpleDBus::Holder Adapter1::GetDiscoveryFilters() {
     auto msg = create_method_call("GetDiscoveryFilters");
-    SimpleDBus::Message reply_msg = _conn->send_with_reply_and_block(msg);
+    SimpleDBus::Message reply_msg = _conn->send_with_reply(msg);
     SimpleDBus::Holder discovery_filters = reply_msg.extract();
     return discovery_filters;
 }
@@ -93,11 +93,11 @@ void Adapter1::SetDiscoveryFilter(DiscoveryFilter filter) {
 
     auto msg = create_method_call("SetDiscoveryFilter");
     msg.append_argument(properties, "a{sv}");
-    _conn->send_with_reply_and_block(msg);
+    _conn->send_with_reply(msg);
 }
 
 void Adapter1::RemoveDevice(std::string device_path) {
     auto msg = create_method_call("RemoveDevice");
     msg.append_argument(SimpleDBus::Holder::create_object_path(device_path), "o");
-    _conn->send_with_reply_and_block(msg);
+    _conn->send_with_reply(msg);
 }

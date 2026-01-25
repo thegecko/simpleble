@@ -1,9 +1,9 @@
 #pragma once
 
 #include <any>
-#include <optional>
 #include <cstdint>
 #include <map>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -11,6 +11,7 @@ namespace SimpleDBus {
 
 class ObjectPath {
   public:
+    ObjectPath() = default;
     ObjectPath(const std::string& path) : path(path) {}
     ObjectPath(const char* path) : path(path) {}
     operator std::string() const { return path; }
@@ -22,6 +23,7 @@ class ObjectPath {
 
 class Signature {
   public:
+    Signature() = default;
     Signature(const std::string& signature) : signature(signature) {}
     Signature(const char* signature) : signature(signature) {}
     operator std::string() const { return signature; }

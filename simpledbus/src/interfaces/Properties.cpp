@@ -124,8 +124,7 @@ void Properties::message_handle(Message& msg) {
             reply.append_argument(property_value, "v");
             _conn->send(reply);
         } else {
-            Message reply = Message::create_error(msg, "org.freedesktop.DBus.Error.InvalidArgs",
-                                                                          "Property not found");
+            Message reply = Message::create_error(msg, "org.freedesktop.DBus.Error.InvalidArgs", "Property not found");
             _conn->send(reply);
         }
 

@@ -13,7 +13,9 @@ const SimpleDBus::AutoRegisterInterface<GattCharacteristic1> GattCharacteristic1
 
 GattCharacteristic1::GattCharacteristic1(std::shared_ptr<SimpleDBus::Connection> conn,
                                          std::shared_ptr<SimpleDBus::Proxy> proxy)
-    : SimpleDBus::Interface(conn, proxy, "org.bluez.GattCharacteristic1") {}
+    : SimpleDBus::Interface(conn, proxy, "org.bluez.GattCharacteristic1") {
+        Flags.set({"read", "write", "notify"});
+    }
 
 // IMPORTANT: The destructor is defined here (instead of inline) to anchor the vtable to this object file.
 // This prevents the linker from stripping this translation unit and ensures the static 'registry' variable is
@@ -22,12 +24,12 @@ GattCharacteristic1::~GattCharacteristic1() = default;
 
 void GattCharacteristic1::StartNotify() {
     auto msg = create_method_call("StartNotify");
-    _conn->send_with_reply_and_block(msg);
+    _conn->send_with_reply(msg);
 }
 
 void GattCharacteristic1::StopNotify() {
     auto msg = create_method_call("StopNotify");
-    _conn->send_with_reply_and_block(msg);
+    _conn->send_with_reply(msg);
 }
 
 void GattCharacteristic1::WriteValue(const ByteArray& value, WriteType type) {
@@ -46,7 +48,7 @@ void GattCharacteristic1::WriteValue(const ByteArray& value, WriteType type) {
     auto msg = create_method_call("WriteValue");
     msg.append_argument(value_data, "ay");
     msg.append_argument(options, "a{sv}");
-    _conn->send_with_reply_and_block(msg);
+    _conn->send_with_reply(msg);
 }
 
 ByteArray GattCharacteristic1::ReadValue() {
@@ -56,7 +58,7 @@ ByteArray GattCharacteristic1::ReadValue() {
     SimpleDBus::Holder options = SimpleDBus::Holder::create_dict();
     msg.append_argument(options, "a{sv}");
 
-    SimpleDBus::Message reply_msg = _conn->send_with_reply_and_block(msg);
+    SimpleDBus::Message reply_msg = _conn->send_with_reply(msg);
     SimpleDBus::Holder value = reply_msg.extract();
 
     Value.set(value);

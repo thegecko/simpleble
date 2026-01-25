@@ -25,7 +25,7 @@ class GattCharacteristic1 : public SimpleDBus::Interface {
 
     // ----- PROPERTIES -----
     Property<std::string>& UUID = property<std::string>("UUID");
-    Property<std::string>& Service = property<std::string>("Service");
+    Property<SimpleDBus::ObjectPath>& Service = property<SimpleDBus::ObjectPath>("Service");
     CustomProperty<ByteArray>& Value = property<ByteArray>("Value", SimpleDBus::HolderUtils::from_byte_array,
                                                            SimpleDBus::HolderUtils::to_byte_array);
     Property<bool>& Notifying = property<bool>("Notifying");

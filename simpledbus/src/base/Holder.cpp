@@ -649,6 +649,16 @@ std::string Holder::get() const {
 }
 
 template <>
+ObjectPath Holder::get() const {
+    return ObjectPath(get_object_path());
+}
+
+template <>
+Signature Holder::get() const {
+    return Signature(get_signature());
+}
+
+template <>
 std::vector<Holder> Holder::get() const {
     return get_array();
 }

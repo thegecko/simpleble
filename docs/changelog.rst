@@ -16,6 +16,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 
 - (SimpleDBus) Connection has a new `send_with_reply` method that doesn't block the underlying DBus event loop.
 - (SimpleBluez) Added support for advertising as a peripheral.
+- (SimpleBluez) Added support for exposing services and characteristics as a peripheral.
 
 **Changed**
 
@@ -23,10 +24,11 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (SimpleDBus) Property change callbacks are now handled by the individual property objects.
 - (SimpleBluez) Moved some files around, which might change the include paths for some users.
 - **API CHANGE**: (SimpleBluez) API for accessing internal BlueZ objects has been made more flexible.
+- (SimpleBluez) Migrated all internal classes to use `send_with_reply`.
 
 **Fixed**
 
-- 
+- (SimpleDBus) The Holder class now has appropriate getters, setters and defaults for object paths and signatures.
 
 **Removed**
 

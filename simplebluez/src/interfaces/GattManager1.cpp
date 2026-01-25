@@ -28,13 +28,11 @@ void GattManager1::RegisterApplication(std::string application_path) {
     msg.append_argument(SimpleDBus::Holder::create_object_path(application_path), "o");
     msg.append_argument(properties, "a{sv}");
 
-    // TODO: We need a way to get an async reply for this.
-    // TODO: Can this work with the new routing system?
-    _conn->send(msg);
+    _conn->send_with_reply(msg);
 }
 
 void GattManager1::UnregisterApplication(std::string application_path) {
     auto msg = create_method_call("UnregisterApplication");
     msg.append_argument(SimpleDBus::Holder::create_object_path(application_path), "o");
-    _conn->send_with_reply_and_block(msg);
+    _conn->send_with_reply(msg);
 }

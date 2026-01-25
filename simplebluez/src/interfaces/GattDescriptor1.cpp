@@ -30,7 +30,7 @@ void GattDescriptor1::WriteValue(const ByteArray& value) {
     auto msg = create_method_call("WriteValue");
     msg.append_argument(value_data, "ay");
     msg.append_argument(options, "a{sv}");
-    _conn->send_with_reply_and_block(msg);
+    _conn->send_with_reply(msg);
 }
 
 ByteArray GattDescriptor1::ReadValue() {
@@ -40,7 +40,7 @@ ByteArray GattDescriptor1::ReadValue() {
     SimpleDBus::Holder options = SimpleDBus::Holder::create_dict();
     msg.append_argument(options, "a{sv}");
 
-    SimpleDBus::Message reply_msg = _conn->send_with_reply_and_block(msg);
+    SimpleDBus::Message reply_msg = _conn->send_with_reply(msg);
     SimpleDBus::Holder value = reply_msg.extract();
     Value.set(value);
 

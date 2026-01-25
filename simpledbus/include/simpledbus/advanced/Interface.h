@@ -8,6 +8,7 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <type_traits>
 #include "kvn/kvn_safe_callback.hpp"
 
 namespace SimpleDBus {
@@ -91,6 +92,13 @@ class Interface {
 
         T operator()() const { return get(); }
         operator T() const { return get(); }
+
+        // NOTE: This is a workaround to allow implicit conversion to std::string for ObjectPath and Signature types.
+        template <typename U = T, typename = std::enable_if_t<!std::is_same_v<U, std::string> && std::is_convertible_v<U, std::string>>>
+        operator std::string() const {
+            return (std::string)get();
+        }
+
         void operator()(const T& value) { set(value); }
 
         using PropertyBase::set;
@@ -128,6 +136,13 @@ class Interface {
 
         T operator()() const { return get(); }
         operator T() const { return get(); }
+
+        // NOTE: This is a workaround to allow implicit conversion to std::string for ObjectPath and Signature types.
+        template <typename U = T, typename = std::enable_if_t<!std::is_same_v<U, std::string> && std::is_convertible_v<U, std::string>>>
+        operator std::string() const {
+            return (std::string)get();
+        }
+
         void operator()(const T& value) { set(value); }
 
         using PropertyBase::set;
@@ -185,6 +200,7 @@ class Interface {
     Holder handle_property_get_all();
 
     // TODO: Add a version of these functions with a default value.
+    // TODO: Extend holder with the capabilities inside holderutils so that we don't need the CustomProperty class.
     template <typename T>
     Property<T>& property(const std::string& name) {
         std::unique_ptr<PropertyBase> property_ptr = std::make_unique<Property<T>>(*this, name);
