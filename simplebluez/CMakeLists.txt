@@ -43,6 +43,7 @@ set(SIMPLEBLUEZ_INCLUDE
 set(SIMPLEBLUEZ_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Bluez.cpp    
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Exceptions.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Config.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/Agent.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/standard/Advertisement.cpp
@@ -72,12 +73,12 @@ set(SIMPLEBLUEZ_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/base/Connection.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/base/Exceptions.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/base/Holder.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/base/HolderUtils.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/base/Logging.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/base/Message.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/base/Path.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/interfaces/ObjectManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/interfaces/Properties.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../simpledbus/src/Config.cpp
 )
 
 # Configure the build targets
@@ -99,10 +100,6 @@ set_target_properties(
 
 list(APPEND PRIVATE_COMPILE_DEFINITIONS SIMPLEDBUS_LOG_LEVEL=${SIMPLEDBUS_LOG_LEVEL})
 list(APPEND PRIVATE_COMPILE_DEFINITIONS SIMPLEBLUEZ_LOG_LEVEL=${SIMPLEBLUEZ_LOG_LEVEL})
-
-if(SIMPLEBLUEZ_USE_SESSION_DBUS)
-    list(APPEND PRIVATE_COMPILE_DEFINITIONS SIMPLEBLUEZ_USE_SESSION_DBUS)
-endif()
 
 list(APPEND PRIVATE_COMPILE_DEFINITIONS FMT_HEADER_ONLY)
 

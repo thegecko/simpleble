@@ -33,12 +33,12 @@ set(SIMPLEDBUS_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/base/Connection.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/base/Exceptions.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/base/Holder.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/base/HolderUtils.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/base/Logging.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/base/Message.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/base/Path.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/ObjectManager.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/Properties.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/interfaces/Properties.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Config.cpp)
 
 # Configure the build targets
 
@@ -120,7 +120,6 @@ if(SIMPLEDBUS_TEST)
     add_executable(simpledbus_test
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/test_holder.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/test/src/test_holder_utils.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/test_message.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/test_proxy_interfaces.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/test_proxy_children.cpp

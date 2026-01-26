@@ -17,6 +17,8 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (SimpleDBus) Connection has a new `send_with_reply` method that doesn't block the underlying DBus event loop.
 - (SimpleBluez) Added support for advertising as a peripheral.
 - (SimpleBluez) Added support for exposing services and characteristics as a peripheral.
+- (Linux) Added support for powering on and off the adapter.
+- (Linux) Added configuration option to select between the system and the user DBus bus.
 
 **Changed**
 
@@ -25,14 +27,17 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (SimpleBluez) Moved some files around, which might change the include paths for some users.
 - **API CHANGE**: (SimpleBluez) API for accessing internal BlueZ objects has been made more flexible.
 - (SimpleBluez) Migrated all internal classes to use `send_with_reply`.
+- (SimpleDBus) `Holder` class now has templated methods for creating and getting values.
 
 **Fixed**
 
 - (SimpleDBus) The Holder class now has appropriate getters, setters and defaults for object paths and signatures.
+- (SimpleDBus) Fixed several issues around handling of Signature and ObjectPath data types.
 
 **Removed**
 
-- 
+- (SimpleDBus) Removed individual create/get functions in favor of templated versions.
+- **API CHANGE**: (SimpleBluez) Deprecated the use of the `SIMPLEBLUEZ_USE_SESSION_DBUS` environment variable in favor of a configuration option.
 
 
 [0.10.4] - 2025-12-29
