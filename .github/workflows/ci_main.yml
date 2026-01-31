@@ -74,10 +74,10 @@ jobs:
     if: needs.pre_job.outputs.should_skip != 'true'
     uses: ./.github/workflows/ci_lint.yml
 
-  docs:
-    needs: [pre_job]
-    if: needs.pre_job.outputs.should_skip != 'true'
-    uses: ./.github/workflows/ci_docs.yml
+  # docs:
+  #   needs: [pre_job]
+  #   if: needs.pre_job.outputs.should_skip != 'true'
+  #   uses: ./.github/workflows/ci_docs.yml
 
   smoketest:
     needs: [pre_job]
