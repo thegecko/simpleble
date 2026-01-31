@@ -27,3 +27,43 @@ If you wish to install SimplePyBLE locally, either for development purposes or t
 cd <path-to-simpleble>/simplepyble
 pip install .
 ```
+
+## Built-in REST Server
+
+SimplePyBLE includes a built-in REST server that allows you to control BLE devices using a REST API. To use the server, you need to install the optional dependencies:
+
+```bash
+pip install simplepyble[server]
+```
+
+Once the dependencies are installed, you can run the server using the following command:
+
+```bash
+python3 -m simplepyble.server --host 127.0.0.1 --port 8000
+```
+
+## API Endpoints
+
+The server provides the following endpoints:
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/` | Returns a status message. |
+| `GET` | `/adapters` | Returns a list of available Bluetooth adapters. |
+| `POST` | `/scan` | Scans for nearby BLE devices (optional `timeout_ms` query param). |
+| `POST` | `/connect/{address}` | Connects to a device by its address. |
+| `POST` | `/disconnect/{address}` | Disconnects from a device. |
+| `GET` | `/device/{address}` | Returns information about a connected device. |
+| `POST` | `/device/{address}/read/{service}/{char}` | Reads the value of a characteristic. |
+| `POST` | `/device/{address}/write/{service}/{char}` | Writes a value (Request). Body: `{"data": "hex"}`. |
+| `POST` | `/device/{address}/write_command/{service}/{char}` | Writes a value (Command). Body: `{"data": "hex"}`. |
+| `POST` | `/device/{address}/notify/{service}/{char}` | Subscribes to notifications. |
+| `POST` | `/device/{address}/indicate/{service}/{char}` | Subscribes to indications. |
+| `POST` | `/device/{address}/unsubscribe/{service}/{char}` | Unsubscribes from notifications/indications. |
+| `GET` | `/device/{address}/notifications` | Retrieves and clears received notifications. |
+
+## Interactive Documentation
+
+When the server is running, you can access the interactive Swagger UI at `http://127.0.0.1:8000/docs` and the ReDoc documentation at `http://127.0.0.1:8000/redoc`.
+
+

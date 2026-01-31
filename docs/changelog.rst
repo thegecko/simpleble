@@ -20,6 +20,7 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 - (Linux) Added support for powering on and off the adapter.
 - (Linux) Added configuration option to select between the system and the user DBus bus.
 - (Python) Added type annotations.
+- (SimplePyBLE) Added a REST API server.
 
 **Changed**
 

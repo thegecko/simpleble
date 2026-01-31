@@ -1,6 +1,9 @@
+include .dockerignore
+include .minion
 include CONTRIBUTING.md
 include Cargo.lock
 include Cargo.toml
+include Dockerfile
 include LICENSE.md
 include README.rst
 include VERSION
@@ -359,6 +362,9 @@ include simplepyble/README.rst
 include simplepyble/requirements.txt
 include simplepyble/src/main.cpp
 include simplepyble/src/simplepyble/__init__.py
+include simplepyble/src/simplepyble/__init__.pyi
+include simplepyble/src/simplepyble/py.typed
+include simplepyble/src/simplepyble/server.py
 include simplepyble/src/wrap_adapter.cpp
 include simplepyble/src/wrap_characteristic.cpp
 include simplepyble/src/wrap_config.cpp

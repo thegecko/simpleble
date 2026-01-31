@@ -74,7 +74,9 @@ skbuild.setup(
         "pybind11",
     ],
     install_requires=[],
-    extras_require={},
+    extras_require={
+        "server": ["fastapi", "uvicorn", "pydantic"],
+    },
     platforms="Windows, macOS, Linux",
     python_requires=">=3.8",
     classifiers=[
