@@ -2,6 +2,7 @@
   "title": "SimplePyBLE",
   "pages": [
     "usage",
+    "server",
     "examples"
   ]
 }
