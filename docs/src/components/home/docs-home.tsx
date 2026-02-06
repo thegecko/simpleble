@@ -14,10 +14,10 @@ type CardLink = Readonly<{
 
 const RESOURCES: ReadonlyArray<CardLink> = [
   {
-    title: "What's SimpleBLE?",
+    title: "Fundamentals",
     description:
-      "A cross-platform BLE library (and bindings) designed for shipping embedded products without Bluetooth headaches.",
-    href: "/docs/",
+      "Understand the core concepts of BLE and how SimpleBLE implements them.",
+    href: "/docs/simpleble/fundamentals",
   },
   {
     title: "Licensing & Support",
@@ -35,11 +35,17 @@ const RESOURCES: ReadonlyArray<CardLink> = [
 
 const PRODUCTS: ReadonlyArray<CardLink> = [
   {
-    eyebrow: "C/C++",
+    eyebrow: "C++",
     title: "SimpleBLE",
     description:
-      "C/C++ core library with a consistent BLE API across platforms.",
+      "The core C++ library providing a consistent BLE API across platforms.",
     href: "/docs/simpleble/usage",
+  },
+  {
+    eyebrow: "C",
+    title: "SimpleCBLE",
+    description: "A C-compatible wrapper around the core SimpleBLE library.",
+    href: "/docs/simplecble/usage",
   },
   {
     eyebrow: "Python",
