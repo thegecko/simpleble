@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import type { ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 
 import { DocsHomeHero } from "@/components/home/docs-home-hero";
 import { DocsHomeSearch } from "@/components/home/docs-home-search";
@@ -14,12 +16,6 @@ type CardLink = Readonly<{
 
 const RESOURCES: ReadonlyArray<CardLink> = [
   {
-    title: "Fundamentals",
-    description:
-      "Understand the core concepts of BLE and how SimpleBLE implements them.",
-    href: "/docs/simpleble/fundamentals",
-  },
-  {
     title: "Licensing & Support",
     description:
       "Understand the licensing options, commercial readiness, and where to get help when you need it.",
@@ -30,6 +26,27 @@ const RESOURCES: ReadonlyArray<CardLink> = [
     description:
       "Track releases, fixes, and improvements across the core library and language bindings.",
     href: "/docs/changelog",
+  },
+  {
+    title: "Bluetooth LE Basics",
+    description: "A brief introduction to Bluetooth Low Energy concepts.",
+    href: "/docs/fundamentals/ble_basics",
+  },
+  {
+    title: "BluetoothPermissions",
+    description: "Understanding platform-specific permissions for Bluetooth.",
+    href: "/docs/fundamentals/permissions",
+  },
+  {
+    title: "Concurrency within SimpleBLE",
+    description:
+      "Understanding how SimpleBLE handles threading and concurrency.",
+    href: "/docs/fundamentals/concurrency",
+  },
+  {
+    title: "CMake Primer",
+    description: "A quick primer on CMake for SimpleBLE.",
+    href: "/docs/fundamentals/cmake_primer",
   },
 ];
 
@@ -95,6 +112,9 @@ type DocsHomeProps = Readonly<{
 }>;
 
 export const DocsHome = ({ className }: DocsHomeProps): ReactElement => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const displayedResources = isExpanded ? RESOURCES : RESOURCES.slice(0, 3);
+
   return (
     <main className={className}>
       <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16 sm:pb-20">
@@ -108,16 +128,18 @@ export const DocsHome = ({ className }: DocsHomeProps): ReactElement => {
             <h2 className="font-sora text-xl sm:text-2xl tracking-[-0.02em] text-fd-foreground">
               Resources
             </h2>
-            <Link
-              href="/docs"
-              className="text-sm font-sora font-semibold text-primary hover:underline decoration-primary underline-offset-4"
-            >
-              View all →
-            </Link>
+            {!isExpanded && RESOURCES.length > 3 && (
+              <button
+                onClick={() => setIsExpanded(true)}
+                className="text-sm font-sora font-semibold text-primary hover:underline decoration-primary underline-offset-4"
+              >
+                View all →
+              </button>
+            )}
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {RESOURCES.map((item) => (
+            {displayedResources.map((item) => (
               <HoverIlluminationLink
                 key={item.href}
                 href={item.href}
