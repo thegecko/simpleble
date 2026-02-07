@@ -35,12 +35,18 @@ class Descriptor:
     def __init__(self, internal_descriptor: simplepyble.Descriptor):
         self._internal = internal_descriptor
 
+    def initialized(self) -> bool:
+        return self._internal.initialized()
+
     def uuid(self) -> str:
         return self._internal.uuid()
 
 class Characteristic:
     def __init__(self, internal_characteristic: simplepyble.Characteristic):
         self._internal = internal_characteristic
+
+    def initialized(self) -> bool:
+        return self._internal.initialized()
 
     def uuid(self) -> str:
         return self._internal.uuid()
@@ -69,6 +75,9 @@ class Characteristic:
 class Service:
     def __init__(self, internal_service: simplepyble.Service):
         self._internal = internal_service
+
+    def initialized(self) -> bool:
+        return self._internal.initialized()
 
     def uuid(self) -> str:
         return self._internal.uuid()
@@ -274,6 +283,9 @@ class Adapter:
     def get_paired_peripherals(self) -> List[Peripheral]:
         return [Peripheral(p) for p in self._internal.get_paired_peripherals()]
 
+    def get_connected_peripherals(self) -> List[Peripheral]:
+        return [Peripheral(p) for p in self._internal.get_connected_peripherals()]
+
     def set_callback_on_scan_start(self, callback: Optional[Callable[[], None]]):
         if callback is None:
              self._internal.set_callback_on_scan_start(None)
@@ -325,6 +337,30 @@ class Adapter:
             else:
                 loop.call_soon_threadsafe(callback, wrapped_peripheral)
         self._internal.set_callback_on_scan_updated(wrapper)
+
+    def set_callback_on_power_on(self, callback: Optional[Callable[[], None]]):
+        if callback is None:
+             self._internal.set_callback_on_power_on(None)
+             return
+        loop = asyncio.get_running_loop()
+        def wrapper():
+            if asyncio.iscoroutinefunction(callback):
+                asyncio.run_coroutine_threadsafe(callback(), loop)
+            else:
+                loop.call_soon_threadsafe(callback)
+        self._internal.set_callback_on_power_on(wrapper)
+
+    def set_callback_on_power_off(self, callback: Optional[Callable[[], None]]):
+        if callback is None:
+             self._internal.set_callback_on_power_off(None)
+             return
+        loop = asyncio.get_running_loop()
+        def wrapper():
+            if asyncio.iscoroutinefunction(callback):
+                asyncio.run_coroutine_threadsafe(callback(), loop)
+            else:
+                loop.call_soon_threadsafe(callback)
+        self._internal.set_callback_on_power_off(wrapper)
 
     def _clear_all_callbacks_sync(self):
         """Internal sync cleanup for atexit or __aexit__"""
