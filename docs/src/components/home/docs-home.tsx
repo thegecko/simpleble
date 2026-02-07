@@ -59,17 +59,24 @@ const PRODUCTS: ReadonlyArray<CardLink> = [
     href: "/docs/simpleble/usage",
   },
   {
-    eyebrow: "C",
-    title: "SimpleCBLE",
-    description: "A C-compatible wrapper around the core SimpleBLE library.",
-    href: "/docs/simplecble/usage",
-  },
-  {
     eyebrow: "Python",
     title: "SimplePyBLE",
     description:
       "Python bindings for fast prototyping and automation workflows.",
     href: "/docs/simplepyble/usage",
+  },
+  {
+    eyebrow: "AI / MCP",
+    title: "SimpleAIBLE",
+    description:
+      "AI-friendly BLE toolkit with MCP server, REST API, and agent skills.",
+    href: "/docs/simpleaible/mcp",
+  },
+  {
+    eyebrow: "C",
+    title: "SimpleCBLE",
+    description: "A C-compatible wrapper around the core SimpleBLE library.",
+    href: "/docs/simplecble/usage",
   },
   {
     eyebrow: "Java",

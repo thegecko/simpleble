@@ -3,8 +3,8 @@ try:
     from pydantic import BaseModel
     import uvicorn
 except ImportError:
-    print("Dependencies for SimplePyBLE server are not installed.")
-    print("Please install them using: pip install simplepyble[server]")
+    print("Dependencies for SimpleAIBLE HTTP server are not installed.")
+    print("Please install them using: pip install simpleaible")
     exit(1)
 
 from contextlib import asynccontextmanager
@@ -22,14 +22,14 @@ async def lifespan(app: FastAPI):
     # Shutdown logic (none needed for now)
 
 app = FastAPI(
-    title="SimplePyBLE API", 
-    description="API to control BLE devices using SimplePyBLE", 
+    title="SimpleAIBLE API", 
+    description="REST API to control BLE devices using SimplePyBLE", 
     version=simplepyble.get_simpleble_version(),
     lifespan=lifespan
 )
 
 # Global state to hold adapters and peripherals
-# In a real production scenario, this might need more robust state management
+# This might need more robust state management
 class BleState:
     def __init__(self):
         self.adapters = simplepyble.Adapter.get_adapters()
@@ -60,7 +60,7 @@ class ServiceInfo(BaseModel):
 
 @app.get("/")
 def root():
-    return {"message": "SimplePyBLE API is running"}
+    return {"message": "SimpleAIBLE API is running"}
 
 @app.get("/adapters")
 def get_adapters():
@@ -297,7 +297,7 @@ def get_notifications(address: str):
     return notifs
 
 def main():
-    parser = argparse.ArgumentParser(description="SimplePyBLE REST Server")
+    parser = argparse.ArgumentParser(description="SimpleAIBLE REST Server")
     parser.add_argument("--host", default="127.0.0.1", help="Host to bind to")
     parser.add_argument("--port", type=int, default=8000, help="Port to bind to")
     args = parser.parse_known_args()[0]

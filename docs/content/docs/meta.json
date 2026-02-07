@@ -42,6 +42,10 @@
     "---SimpleDBus---",
     "simpledbus/usage",
     "simpledbus/examples",
-    "simpledbus/architecture"
+    "simpledbus/architecture",
+    "---SimpleAIBLE---",
+    "simpleaible/mcp",
+    "simpleaible/http",
+    "simpleaible/skills",
   ]
 }
