@@ -24,7 +24,7 @@ set(SIMPLEBLE_EXCLUDE_C ON)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../simpleble ${CMAKE_BINARY_DIR}/simpleble)
 
 set(SIMPLEBLE_C_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/simpleble.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/simplecble.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/adapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/peripheral.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/logging.cpp
@@ -62,7 +62,7 @@ generate_export_header(
 )
 
 # Configure include directories for simplecble
-target_include_directories(simplecble PRIVATE ${SIMPLEBLE_PRIVATE_INCLUDES})
+target_include_directories(simplecble PRIVATE ${SIMPLEBLE_PRIVATE_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(simplecble INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)

@@ -20,6 +20,8 @@ const PeripheralBase* Peripheral::operator->() const {
     return internal_.get();
 }
 
+void* Peripheral::underlying() const { return (*this)->underlying(); }
+
 std::string Peripheral::identifier() { return (*this)->identifier(); }
 
 SimpleBLE::BluetoothAddress Peripheral::address() { return (*this)->address(); }

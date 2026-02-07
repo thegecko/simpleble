@@ -1,5 +1,5 @@
 #include <simpleble/Logging.h>
-#include <simpleble_c/logging.h>
+#include <simplecble/logging.h>
 
 void simpleble_logging_set_level(simpleble_log_level_t level) {
     SimpleBLE::Logging::Logger::get()->set_level(static_cast<SimpleBLE::Logging::Level>(level));

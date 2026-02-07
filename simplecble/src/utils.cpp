@@ -1,6 +1,6 @@
-#include <simpleble_c/utils.h>
+#include <simplecble/utils.h>
 
-#include <simpleble_c/types.h>
+#include <simplecble/types.h>
 
 simpleble_os_t simpleble_get_operating_system() {
 #ifdef _WIN32

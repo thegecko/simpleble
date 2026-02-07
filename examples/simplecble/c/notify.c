@@ -15,7 +15,7 @@ void msleep(int ms) {
 #endif
 }
 
-#include "simpleble_c/simpleble.h"
+#include <simplecble/simplecble.h>
 
 #define PERIPHERAL_LIST_SIZE (size_t)10
 #define SERVICES_LIST_SIZE (size_t)32

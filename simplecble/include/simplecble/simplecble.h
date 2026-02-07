@@ -1,8 +1,8 @@
 #pragma once
 
-#include <simpleble/export.h>
-#include <simpleble_c/adapter.h>
-#include <simpleble_c/peripheral.h>
+#include <simplecble/export.h>
+#include <simplecble/adapter.h>
+#include <simplecble/peripheral.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,7 +14,7 @@ extern "C" {
  *
  * @param handle
  */
-SIMPLEBLE_EXPORT void simpleble_free(void* handle);
+SIMPLECBLE_EXPORT void simpleble_free(void* handle);
 
 #ifdef __cplusplus
 }

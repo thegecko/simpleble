@@ -8,7 +8,7 @@
 #define SLEEP_SEC(x) sleep(x)
 #endif
 
-#include "simpleble_c/simpleble.h"
+#include <simplecble/simplecble.h>
 
 static void print_buffer_hex(uint8_t* buf, size_t len, bool newline) {
     for (size_t i = 0; i < len; i++) {

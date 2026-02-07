@@ -1,4 +1,4 @@
-#include <simpleble_c/simpleble.h>
+#include <simplecble/simplecble.h>
 
 #include <cstdlib>
 

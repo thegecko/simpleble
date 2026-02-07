@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "simpleble_c/simpleble.h"
+#include <simplecble/simplecble.h>
 
 #define PERIPHERAL_LIST_SIZE (size_t)10
 
