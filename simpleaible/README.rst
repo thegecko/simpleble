@@ -24,10 +24,10 @@ We're here to help you succeed with SimpleAIBLE:
 
 **Don't hesitate to reach out if you need assistance - we're happy to help!**
 
-MCP Server
-----------
+Installation
+------------
 
-Install and configure the MCP server for AI agents (Cursor, Claude Code, etc.):
+Install SimpleAIBLE using your preferred package manager:
 
 Using uv (recommended): ::
 
@@ -37,23 +37,18 @@ Or using pip: ::
 
    pip install simpleaible
 
-Then configure it in your MCP client with ``"command": "simpleaible"``.
+MCP Server
+----------
+
+Expose BLE operations as tools for MCP-capable clients (Cursor, Claude Code, etc.).
+Configure it in your MCP client with the following command: ``"command": "simpleaible"``.
+
 See the `MCP Server docs`_ for full tool documentation and client-specific setup.
 
 HTTP Server
 -----------
 
-Install and run the REST API for controlling BLE devices remotely:
-
-Using uv (recommended): ::
-
-   uv tool install simpleaible
-
-Or using pip: ::
-
-   pip install simpleaible
-
-Then start the server: ::
+Run the REST API for controlling BLE devices remotely: ::
 
    simpleaible-http --host 127.0.0.1 --port 8000
 
