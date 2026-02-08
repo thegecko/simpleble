@@ -129,10 +129,6 @@ if [[ ! -z "$FLAG_PLAIN" ]]; then
     BUILD_PLAIN="-DSIMPLEBLE_PLAIN=ON"
 fi
 
-if [[ ! -z "$FLAG_EXCLUDE_C" ]]; then
-    BUILD_EXCLUDE_C="-DSIMPLEBLE_EXCLUDE_C=ON"
-fi
-
 # If FLAG_CLEAN is set, clean the build directory
 if [[ ! -z "$FLAG_CLEAN" ]]; then
     rm -rf $BUILD_PATH

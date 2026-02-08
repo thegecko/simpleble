@@ -62,13 +62,6 @@ include simpleble/include/simpleble/Service.h
 include simpleble/include/simpleble/SimpleBLE.h
 include simpleble/include/simpleble/Types.h
 include simpleble/include/simpleble/Utils.h
-include simpleble/include/simpleble_c/DEPRECATED
-include simpleble/include/simpleble_c/adapter.h
-include simpleble/include/simpleble_c/logging.h
-include simpleble/include/simpleble_c/peripheral.h
-include simpleble/include/simpleble_c/simpleble.h
-include simpleble/include/simpleble_c/types.h
-include simpleble/include/simpleble_c/utils.h
 include simpleble/src/CommonUtils.h
 include simpleble/src/Config.cpp
 include simpleble/src/Exceptions.cpp
@@ -269,12 +262,6 @@ include simpleble/src/frontends/base/Peripheral.cpp
 include simpleble/src/frontends/base/Service.cpp
 include simpleble/src/frontends/safe/AdapterSafe.cpp
 include simpleble/src/frontends/safe/PeripheralSafe.cpp
-include simpleble/src_c/DEPRECATED
-include simpleble/src_c/adapter.cpp
-include simpleble/src_c/logging.cpp
-include simpleble/src_c/peripheral.cpp
-include simpleble/src_c/simpleble.cpp
-include simpleble/src_c/utils.cpp
 include simplebluez/CMakeLists.txt
 include simplebluez/cmake/simplebluez.pc.in
 include simplebluez/include/simplebluez/Bluez.h

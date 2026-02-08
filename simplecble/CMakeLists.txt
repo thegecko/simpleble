@@ -20,7 +20,6 @@ if(SIMPLECBLE_TEST)
     set(SIMPLEBLE_PLAIN ON)
 endif()
 
-set(SIMPLEBLE_EXCLUDE_C ON)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../simpleble ${CMAKE_BINARY_DIR}/simpleble)
 
 set(SIMPLEBLE_C_SRC

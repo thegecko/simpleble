@@ -10,52 +10,8 @@ This tutorial will guide you through the basics of using SimpleCBLE to scan for 
 To use SimpleCBLE, you need to include the main header file:
 
 ```c
-#include <simpleble/simpleble.h>
+#include <simplecble/simpleble.h>
 ```
-
-(Note: Depending on your installation, it might be `<simpleble_c/simpleble.h>`. The `simpleble/include/simpleble/simpleble.h` file includes `simpleble_c/adapter.h`, etc. Wait, looking at the code I read:
-
-```c
-// simpleble/include/simpleble/simpleble.h
-#include <simpleble/export.h>
-#include <simpleble_c/adapter.h>
-#include <simpleble_c/peripheral.h>
-```
-
-It seems the include path might be slightly different depending on how it's installed. In the example `scan.c`:
-
-```c
-#include "simpleble_c/simpleble.h"
-```
-
-I will stick to generic `#include <simpleble_c/simpleble.h>` or `#include <simpleble/simpleble.h>` depending on how headers are exposed. Based on `simplecble/CMakeLists.txt`:
-
-```cmake
-install(
-    DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/simplecble/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/simplecble)
-```
-
-It installs to `include/simplecble/simpleble/simpleble.h`? That looks weird.
-
-The `target_include_directories` says:
-`$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>`
-
-In the repo: `simplecble/include/simplecble/simpleble.h`.
-
-So `#include <simplecble/simpleble.h>` seems likely if installed correctly, or `#include <simpleble/simpleble.h>` if the include path is set to `simplecble/include/simplecble`.
-
-Wait, the example uses `#include "simpleble_c/simpleble.h"`. This suggests the old binding name `simpleble_c` might still be used or the example is referencing a specific path.
-
-Actually, the `simplecble/CMakeLists.txt` creates an alias:
-
-```cmake
-add_library(simpleble-c ALIAS simplecble)
-```
-
-And the headers in `simplecble/include/simplecble` seem to define the C API.
-
-Let's assume standard installation puts headers in `include/simplecble`. So `#include <simplecble/simpleble.h>`.
 
 ## Initialization
 
