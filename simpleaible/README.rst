@@ -41,7 +41,7 @@ MCP Server
 ----------
 
 Expose BLE operations as tools for MCP-capable clients (Cursor, Claude Code, etc.).
-Configure it in your MCP client with the following command: ``"command": "simpleaible"``.
+Configure it in your MCP client with the following command: ``"command": "simpleaible-mcp"``.
 
 See the `MCP Server docs`_ for full tool documentation and client-specific setup.
 
@@ -66,8 +66,8 @@ See the `Agent Skills docs`_ for more details.
 License
 =======
 
-Since January 20th 2025, SimpleBLE is now available under the Business Source License 1.1 (BUSL-1.1). Each
-version of SimpleBLE will convert to the GNU General Public License version 3 after four years of its initial release.
+SimpleAIBLE is available under the Business Source License 1.1 (BUSL-1.1). Each
+version of SimpleAIBLE will convert to the GNU General Public License version 3 after four years of its initial release.
 
 The project is free to use for non-commercial purposes, but requires a commercial license for commercial use. We
 also offer FREE commercial licenses for small projects and early-stage companies - reach out to discuss your use case!
@@ -95,27 +95,23 @@ For further enquiries, please |email|_ or |leavemessage|_ and we can discuss the
 .. _email: mailto:contact@simpleble.org
 
 .. |leavemessage| replace:: leave us a message on our website
-.. _leavemessage: https://www.simpleble.org/contact?utm_source=pypi&utm_medium=referral&utm_campaign=simpleaible_readme
+.. _leavemessage: https://www.simpleble.org/contact?utm_source=pypi_simpleaible&utm_medium=referral&utm_campaign=simpleaible_readme
 
 .. |website| replace:: our website
-.. _website: https://simpleble.org?utm_source=pypi&utm_medium=referral&utm_campaign=simpleaible_readme
+.. _website: https://simpleble.org?utm_source=pypi_simpleaible&utm_medium=referral&utm_campaign=simpleaible_readme
 
 .. |website-url| replace:: www.simpleble.org
-.. _website-url: https://simpleble.org?utm_source=pypi&utm_medium=referral&utm_campaign=simpleaible_readme
+.. _website-url: https://simpleble.org?utm_source=pypi_simpleaible&utm_medium=referral&utm_campaign=simpleaible_readme
 
 .. |caos| replace:: **The California Open Source Company**
-.. _caos: https://californiaopensource.com?utm_source=pypi&utm_medium=referral&utm_campaign=simpleaible_readme
+.. _caos: https://californiaopensource.com?utm_source=pypi_simpleaible&utm_medium=referral&utm_campaign=simpleaible_readme
 
 .. _SimpleBLE: https://github.com/simpleble/simpleble/
 
-.. _docs: https://simpleble.org/docs/simpleaible/mcp
+.. _MCP Server docs: https://docs.simpleble.org/simpleaible/mcp
 
-.. _MCP Server docs: https://simpleble.org/docs/simpleaible/mcp
+.. _HTTP Server docs: https://docs.simpleble.org/simpleaible/http
 
-.. _HTTP Server docs: https://simpleble.org/docs/simpleaible/http
-
-.. _Agent Skills docs: https://simpleble.org/docs/simpleaible/skills
-
-.. _Discord: https://discord.gg/N9HqNEcvP3
+.. _Agent Skills docs: https://docs.simpleble.org/simpleaible/skills
 
 .. |PyPI Licence| image:: https://img.shields.io/pypi/l/simpleaible

@@ -101,16 +101,16 @@ For further enquiries, please |email|_ or |leavemessage|_ and we can discuss the
 .. _email: mailto:contact@simpleble.org
 
 .. |leavemessage| replace:: leave us a message on our website
-.. _leavemessage: https://www.simpleble.org/contact?utm_source=pypi&utm_medium=referral&utm_campaign=simplepyble_readme
+.. _leavemessage: https://www.simpleble.org/contact?utm_source=pypi_simplepyble&utm_medium=referral&utm_campaign=simplepyble_readme
 
 .. |website| replace:: our website
-.. _website: https://simpleble.org?utm_source=pypi&utm_medium=referral&utm_campaign=simplepyble_readme
+.. _website: https://simpleble.org?utm_source=pypi_simplepyble&utm_medium=referral&utm_campaign=simplepyble_readme
 
 .. |website-url| replace:: www.simpleble.org
-.. _website-url: https://simpleble.org?utm_source=pypi&utm_medium=referral&utm_campaign=simplepyble_readme
+.. _website-url: https://simpleble.org?utm_source=pypi_simplepyble&utm_medium=referral&utm_campaign=simplepyble_readme
 
 .. |caos| replace:: **The California Open Source Company**
-.. _caos: https://californiaopensource.com?utm_source=pypi&utm_medium=referral&utm_campaign=simplepyble_readme
+.. _caos: https://californiaopensource.com?utm_source=pypi_simplepyble&utm_medium=referral&utm_campaign=simplepyble_readme
 
 .. _SimplePyBLE: https://pypi.org/project/simplepyble/
 

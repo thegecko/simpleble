@@ -35,7 +35,7 @@ dependencies = [
 ]
 
 [project.scripts]
-simpleaible = "simpleaible.mcp:main"
+simpleaible-mcp = "simpleaible.mcp:main"
 simpleaible-http = "simpleaible.http:main"
 
 [tool.setuptools.packages.find]
