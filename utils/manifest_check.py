@@ -58,7 +58,6 @@ EXCLUDE_FILES = {
     "MANIFEST.in",
     ".clang-format",
     ".gitignore",
-    ".readthedocs.yaml",
 }
 
 def generate_manifest():

@@ -1,4 +1,4 @@
-|Latest Documentation Status| |PyPI Licence|
+|PyPI Licence|
 
 SimplePyBLE
 ===========
@@ -18,7 +18,7 @@ Support & Resources
 
 We're here to help you succeed with SimpleBLE:
 
-* **Documentation**: Visit our `ReadTheDocs`_ page for comprehensive guides
+* **Documentation**: Visit our `Documentation`_ page for comprehensive guides
 * **Commercial Support**: Check out |website|_ or |email|_ about licensing and professional services.
 * **Community**: Join our `Discord`_ server for discussions and help
 
@@ -122,9 +122,6 @@ For further enquiries, please |email|_ or |leavemessage|_ and we can discuss the
 
 .. _Discord: https://discord.gg/N9HqNEcvP3
 
-.. _ReadTheDocs: https://simpleble.readthedocs.io/en/latest/
-
-.. |Latest Documentation Status| image:: https://readthedocs.org/projects/simpleble/badge?version=latest
-   :target: http://simpleble.readthedocs.org/en/latest
+.. _Documentation: https://docs.simpleble.org
 
 .. |PyPI Licence| image:: https://img.shields.io/pypi/l/simplepyble

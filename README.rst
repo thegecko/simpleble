@@ -1,5 +1,3 @@
-|Latest Documentation Status|
-
 SimpleBLE
 ==========
 
@@ -31,7 +29,7 @@ Support & Resources
 We're here to help you succeed with SimpleBLE:
 
 * **News and Announcements**: Follow our `Announcements`_ section for announcements and updates.
-* **Documentation**: Visit our `ReadTheDocs`_ page for comprehensive guides.
+* **Documentation**: Visit our `Documentation`_ page for comprehensive guides.
 * **Community**: Join our `Discord`_ server for discussions and help.
 * **Commercial Support**: Check out |website|_ or |email|_ about licensing and professional services.
 * **Extension Libraries**: Learn about `SimpleBluez`_, our BlueZ abstraction layer, and `SimpleDBus`_, our DBus object hierarchy handler.
@@ -111,10 +109,7 @@ Join us to expand SimpleBLE's reach!
 
 .. _Discord: https://discord.gg/N9HqNEcvP3
 
-.. _ReadTheDocs: https://simpleble.readthedocs.io/en/latest/
-
-.. |Latest Documentation Status| image:: https://readthedocs.org/projects/simpleble/badge?version=latest
-   :target: http://simpleble.readthedocs.io/en/latest
+.. _Documentation: https://simpleble.org/docs
 
 .. _Software.com.br: https://software.com.br/
 

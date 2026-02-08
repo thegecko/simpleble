@@ -374,5 +374,4 @@ prune simplersble
 prune utils
 exclude .clang-format
 exclude .gitignore
-exclude .readthedocs.yaml
 exclude MANIFEST.in

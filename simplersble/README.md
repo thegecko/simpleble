@@ -15,7 +15,7 @@ The ultimate cross-platform library and bindings for Bluetooth Low Energy (BLE),
 
 We're here to help you succeed with SimpleBLE:
 
-* **Documentation**: Visit our [ReadTheDocs](https://simpleble.readthedocs.io/en/latest/) page for comprehensive guides
+* **Documentation**: Visit our [Documentation](https://docs.simpleble.org) page for comprehensive guides
 * **Commercial Support**: Check our [our website](https://simpleble.org?utm_source=crates_io&utm_medium=referral&utm_campaign=simplersble_readme) or [email us](mailto:contact@simpleble.org) about licensing and professional services
 * **Community**: Join our [Discord](https://discord.gg/N9HqNEcvP3) server for discussions and help
 
