@@ -53,6 +53,10 @@ impl InnerPeripheral {
             .map_err(Error::from_cxx_exception)
     }
 
+    pub fn initialized(&self) -> Result<bool, Error> {
+        self.internal.initialized().map_err(Error::from_cxx_exception)
+    }
+
     pub fn address(&self) -> Result<String, Error> {
         self.internal.address().map_err(Error::from_cxx_exception)
     }
@@ -287,6 +291,10 @@ pub struct Peripheral {
 impl Peripheral {
     pub fn identifier(&self) -> Result<String, Error> {
         self.inner.lock().unwrap().identifier()
+    }
+
+    pub fn initialized(&self) -> Result<bool, Error> {
+        self.inner.lock().unwrap().initialized()
     }
 
     pub fn address(&self) -> Result<String, Error> {

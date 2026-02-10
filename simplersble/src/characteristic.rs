@@ -27,6 +27,10 @@ impl InnerCharacteristic {
         return self.internal.uuid();
     }
 
+    pub fn initialized(&self) -> bool {
+        return self.internal.initialized();
+    }
+
     pub fn descriptors(&self) -> Vec<Descriptor> {
         let mut descriptors = Vec::<Descriptor>::new();
 
@@ -95,6 +99,10 @@ pub struct Characteristic {
 impl Characteristic {
     pub fn uuid(&self) -> String {
         return self.inner.uuid();
+    }
+
+    pub fn initialized(&self) -> bool {
+        return self.inner.initialized();
     }
 
     pub fn descriptors(&self) -> Vec<Descriptor> {

@@ -62,6 +62,18 @@ void Bindings::RustyAdapter::link(SimpleRsBLE::InnerAdapter& target) const {
         wrapper.internal = std::make_unique<Bindings::RustyPeripheral>(peripheral);
         this->_adapter->on_callback_scan_updated(wrapper);
     });
+
+    _internal->set_callback_on_power_on([this]() {
+        if (this->_adapter == nullptr) return;
+
+        this->_adapter->on_callback_power_on();
+    });
+
+    _internal->set_callback_on_power_off([this]() {
+        if (this->_adapter == nullptr) return;
+
+        this->_adapter->on_callback_power_off();
+    });
 }
 
 void Bindings::RustyAdapter::unlink() const {
@@ -70,15 +82,25 @@ void Bindings::RustyAdapter::unlink() const {
     _internal->set_callback_on_scan_stop(nullptr);
     _internal->set_callback_on_scan_found(nullptr);
     _internal->set_callback_on_scan_updated(nullptr);
+    _internal->set_callback_on_power_on(nullptr);
+    _internal->set_callback_on_power_off(nullptr);
 
     // `_adapter` is a pointer to a pointer.
     std::lock_guard<std::mutex> lock(_adapter_mutex);
     _adapter = nullptr;
 }
 
+bool Bindings::RustyAdapter::initialized() const { return _internal->initialized(); }
+
 rust::String Bindings::RustyAdapter::identifier() const { return rust::String(_internal->identifier()); }
 
 rust::String Bindings::RustyAdapter::address() const { return rust::String(_internal->address()); }
+
+void Bindings::RustyAdapter::power_on() const { _internal->power_on(); }
+
+void Bindings::RustyAdapter::power_off() const { _internal->power_off(); }
+
+bool Bindings::RustyAdapter::is_powered() const { return _internal->is_powered(); }
 
 void Bindings::RustyAdapter::scan_start() const { _internal->scan_start(); }
 
@@ -104,6 +126,18 @@ rust::Vec<Bindings::RustyPeripheralWrapper> Bindings::RustyAdapter::get_paired_p
     rust::Vec<Bindings::RustyPeripheralWrapper> result;
 
     for (auto& peripheral : _internal->get_paired_peripherals()) {
+        Bindings::RustyPeripheralWrapper wrapper;
+        wrapper.internal = std::make_unique<Bindings::RustyPeripheral>(peripheral);
+        result.push_back(std::move(wrapper));
+    }
+
+    return result;
+}
+
+rust::Vec<Bindings::RustyPeripheralWrapper> Bindings::RustyAdapter::get_connected_peripherals() const {
+    rust::Vec<Bindings::RustyPeripheralWrapper> result;
+
+    for (auto& peripheral : _internal->get_connected_peripherals()) {
         Bindings::RustyPeripheralWrapper wrapper;
         wrapper.internal = std::make_unique<Bindings::RustyPeripheral>(peripheral);
         result.push_back(std::move(wrapper));
@@ -151,9 +185,12 @@ void Bindings::RustyPeripheral::unlink() const {
     _peripheral = nullptr;
 }
 
+bool Bindings::RustyPeripheral::initialized() const { return _internal->initialized(); }
+
 rust::String Bindings::RustyPeripheral::identifier() const { return rust::String(_internal->identifier()); }
 
 rust::String Bindings::RustyPeripheral::address() const { return rust::String(_internal->address()); }
+
 
 SimpleBLE::BluetoothAddressType Bindings::RustyPeripheral::address_type() const { return _internal->address_type(); }
 
@@ -332,6 +369,16 @@ rust::Vec<Bindings::RustyDescriptorWrapper> Bindings::RustyCharacteristic::descr
         Bindings::RustyDescriptorWrapper wrapper;
         wrapper.internal = std::make_unique<Bindings::RustyDescriptor>(descriptor);
         result.push_back(std::move(wrapper));
+    }
+
+    return result;
+}
+
+rust::Vec<rust::String> Bindings::RustyCharacteristic::capabilities() const {
+    rust::Vec<rust::String> result;
+
+    for (auto& capability : _internal->capabilities()) {
+        result.push_back(rust::String(capability));
     }
 
     return result;

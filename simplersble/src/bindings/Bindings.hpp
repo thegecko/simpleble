@@ -38,8 +38,13 @@ class RustyAdapter {
     void link(SimpleRsBLE::InnerAdapter& target) const;
     void unlink() const;
 
+    bool initialized() const;
     rust::String identifier() const;
     rust::String address() const;
+
+    void power_on() const;
+    void power_off() const;
+    bool is_powered() const;
 
     void scan_start() const;
     void scan_stop() const;
@@ -48,6 +53,7 @@ class RustyAdapter {
     rust::Vec<Bindings::RustyPeripheralWrapper> scan_get_results() const;
 
     rust::Vec<Bindings::RustyPeripheralWrapper> get_paired_peripherals() const;
+    rust::Vec<Bindings::RustyPeripheralWrapper> get_connected_peripherals() const;
 
   private:
     // NOTE: All internal properties need to be handled as pointers,
@@ -69,6 +75,7 @@ class RustyPeripheral {
     void link(SimpleRsBLE::InnerPeripheral& target) const;
     void unlink() const;
 
+    bool initialized() const;
     rust::String identifier() const;
     rust::String address() const;
     SimpleBLE::BluetoothAddressType address_type() const;
@@ -118,6 +125,7 @@ class RustyService {
 
     RustyService(SimpleBLE::Service service) : _internal(new SimpleBLE::Service(std::move(service))) {}
 
+    bool initialized() const { return _internal->initialized(); }
     rust::String uuid() const { return rust::String(_internal->uuid()); }
 
     rust::Vec<uint8_t> data() const;
@@ -140,9 +148,11 @@ class RustyCharacteristic {
     RustyCharacteristic(SimpleBLE::Characteristic characteristic)
         : _internal(new SimpleBLE::Characteristic(std::move(characteristic))) {}
 
+    bool initialized() const { return _internal->initialized(); }
     rust::String uuid() const { return rust::String(_internal->uuid()); }
 
     rust::Vec<Bindings::RustyDescriptorWrapper> descriptors() const;
+    rust::Vec<rust::String> capabilities() const;
 
     bool can_read() const { return _internal->can_read(); }
     bool can_write_request() const { return _internal->can_write_request(); }
@@ -165,6 +175,7 @@ class RustyDescriptor {
 
     RustyDescriptor(SimpleBLE::Descriptor descriptor) : _internal(new SimpleBLE::Descriptor(std::move(descriptor))) {}
 
+    bool initialized() const { return _internal->initialized(); }
     rust::String uuid() const { return rust::String(_internal->uuid()); }
 
   private:

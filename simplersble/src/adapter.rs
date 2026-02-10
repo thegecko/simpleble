@@ -19,9 +19,16 @@ pub enum ScanEvent {
     Updated(Peripheral),
 }
 
+#[derive(Clone)]
+pub enum PowerEvent {
+    On,
+    Off,
+}
+
 pub struct InnerAdapter {
     internal: cxx::UniquePtr<ffi::RustyAdapter>,
     on_scan_event: broadcast::Sender<ScanEvent>,
+    on_power_event: broadcast::Sender<PowerEvent>,
 }
 
 impl InnerAdapter {
@@ -40,11 +47,13 @@ impl InnerAdapter {
     }
 
     fn new(wrapper: &mut ffi::RustyAdapterWrapper) -> Pin<Box<Self>> {
-        let (event_sender, _) = broadcast::channel(128);
+        let (scan_event_sender, _) = broadcast::channel(128);
+        let (power_event_sender, _) = broadcast::channel(128);
 
         let this = Self {
             internal: cxx::UniquePtr::<ffi::RustyAdapter>::null(),
-            on_scan_event: event_sender
+            on_scan_event: scan_event_sender,
+            on_power_event: power_event_sender,
         };
 
         let mut this_boxed = Box::pin(this);
@@ -54,12 +63,28 @@ impl InnerAdapter {
         return this_boxed;
     }
 
+    pub fn initialized(&self) -> Result<bool, Error> {
+        self.internal.initialized().map_err(Error::from_cxx_exception)
+    }
+
     pub fn identifier(&self) -> Result<String, Error> {
         self.internal.identifier().map_err(Error::from_cxx_exception)
     }
 
     pub fn address(&self) -> Result<String, Error> {
         self.internal.address().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn power_on(&self) -> Result<(), Error> {
+        self.internal.power_on().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn power_off(&self) -> Result<(), Error> {
+        self.internal.power_off().map_err(Error::from_cxx_exception)
+    }
+
+    pub fn is_powered(&self) -> Result<bool, Error> {
+        self.internal.is_powered().map_err(Error::from_cxx_exception)
     }
 
     pub fn scan_start(&self) -> Result<(), Error> {
@@ -101,6 +126,18 @@ impl InnerAdapter {
         return Ok(peripherals);
     }
 
+    pub fn get_connected_peripherals(&self) -> Result<Vec<Peripheral>, Error> {
+        let mut raw_peripheral_list =
+            self.internal.get_connected_peripherals().map_err(Error::from_cxx_exception)?;
+
+        let mut peripherals = Vec::<Peripheral>::new();
+        for peripheral_wrapper in raw_peripheral_list.iter_mut() {
+            peripherals.push(InnerPeripheral::new(peripheral_wrapper).into());
+        }
+
+        return Ok(peripherals);
+    }
+
     pub fn on_callback_scan_start(&self) {
         // TODO: Review how to handle errors here.
         let _ = self.on_scan_event.send(ScanEvent::Start);
@@ -121,6 +158,16 @@ impl InnerAdapter {
         // TODO: Review how to handle errors here.
         let peripheral: Peripheral = InnerPeripheral::new(peripheral).into();
         let _ = self.on_scan_event.send(ScanEvent::Found(peripheral));
+    }
+
+    pub fn on_callback_power_on(&self) {
+        // TODO: Review how to handle errors here.
+        let _ = self.on_power_event.send(PowerEvent::On);
+    }
+
+    pub fn on_callback_power_off(&self) {
+        // TODO: Review how to handle errors here.
+        let _ = self.on_power_event.send(PowerEvent::Off);
     }
 }
 
@@ -155,12 +202,28 @@ impl Adapter {
         return Ok(adapters);
     }
 
+    pub fn initialized(&self) -> Result<bool, Error> {
+        self.inner.lock().unwrap().initialized()
+    }
+
     pub fn identifier(&self) -> Result<String, Error> {
         self.inner.lock().unwrap().identifier()
     }
 
     pub fn address(&self) -> Result<String, Error> {
         self.inner.lock().unwrap().address()
+    }
+
+    pub fn power_on(&self) -> Result<(), Error> {
+        self.inner.lock().unwrap().power_on()
+    }
+
+    pub fn power_off(&self) -> Result<(), Error> {
+        self.inner.lock().unwrap().power_off()
+    }
+
+    pub fn is_powered(&self) -> Result<bool, Error> {
+        self.inner.lock().unwrap().is_powered()
     }
 
     pub fn scan_start(&self) -> Result<(), Error> {
@@ -187,11 +250,19 @@ impl Adapter {
         self.inner.lock().unwrap().get_paired_peripherals()
     }
 
+    pub fn get_connected_peripherals(&self) -> Result<Vec<Peripheral>, Error> {
+        self.inner.lock().unwrap().get_connected_peripherals()
+    }
+
     pub fn on_scan_event(&self) -> impl Stream<Item = Result<ScanEvent, Error>> {
         BroadcastStream::new(self.inner.lock().unwrap().on_scan_event.subscribe())
             .map_err(|e| Error::from_string(e.to_string()))
     }
 
+    pub fn on_power_event(&self) -> impl Stream<Item = Result<PowerEvent, Error>> {
+        BroadcastStream::new(self.inner.lock().unwrap().on_power_event.subscribe())
+            .map_err(|e| Error::from_string(e.to_string()))
+    }
 }
 
 

@@ -11,6 +11,7 @@ use peripheral::InnerPeripheral;
 pub use types::{Error, BluetoothAddressType, CharacteristicCapability};
 pub use adapter::Adapter;
 pub use adapter::ScanEvent;
+pub use adapter::PowerEvent;
 pub use peripheral::Peripheral;
 pub use peripheral::ConnectionEvent;
 pub use peripheral::ValueChangedEvent;
@@ -77,6 +78,8 @@ mod ffi {
         pub fn on_callback_scan_stop(self: &mut InnerAdapter);
         pub fn on_callback_scan_updated(self: &mut InnerAdapter, peripheral: &mut RustyPeripheralWrapper);
         pub fn on_callback_scan_found(self: &mut InnerAdapter, peripheral: &mut RustyPeripheralWrapper);
+        pub fn on_callback_power_on(self: &mut InnerAdapter);
+        pub fn on_callback_power_off(self: &mut InnerAdapter);
 
         type InnerPeripheral;
 
@@ -124,8 +127,13 @@ mod ffi {
         fn link(self: &RustyAdapter, target: Pin<&mut InnerAdapter>) -> Result<()>;
         fn unlink(self: &RustyAdapter) -> Result<()>;
 
+        fn initialized(self: &RustyAdapter) -> Result<bool>;
         fn identifier(self: &RustyAdapter) -> Result<String>;
         fn address(self: &RustyAdapter) -> Result<String>;
+
+        fn power_on(self: &RustyAdapter) -> Result<()>;
+        fn power_off(self: &RustyAdapter) -> Result<()>;
+        fn is_powered(self: &RustyAdapter) -> Result<bool>;
 
         fn scan_start(self: &RustyAdapter) -> Result<()>;
         fn scan_stop(self: &RustyAdapter) -> Result<()>;
@@ -134,12 +142,14 @@ mod ffi {
         fn scan_get_results(self: &RustyAdapter) -> Result<Vec<RustyPeripheralWrapper>>;
 
         fn get_paired_peripherals(self: &RustyAdapter) -> Result<Vec<RustyPeripheralWrapper>>;
+        fn get_connected_peripherals(self: &RustyAdapter) -> Result<Vec<RustyPeripheralWrapper>>;
 
         // RustyPeripheral functions
 
         fn link(self: &RustyPeripheral, target: Pin<&mut InnerPeripheral>) -> Result<()>;
         fn unlink(self: &RustyPeripheral) -> Result<()>;
 
+        fn initialized(self: &RustyPeripheral) -> Result<bool>;
         fn identifier(self: &RustyPeripheral) -> Result<String>;
         fn address(self: &RustyPeripheral) -> Result<String>;
         fn address_type(self: &RustyPeripheral) -> Result<BluetoothAddressType>;
@@ -203,14 +213,17 @@ mod ffi {
 
         // RustyService functions
 
+        fn initialized(self: &RustyService) -> bool;
         fn uuid(self: &RustyService) -> String;
         fn data(self: &RustyService) -> Vec<u8>;
         fn characteristics(self: &RustyService) -> Vec<RustyCharacteristicWrapper>;
 
         // RustyCharacteristic functions
 
+        fn initialized(self: &RustyCharacteristic) -> bool;
         fn uuid(self: &RustyCharacteristic) -> String;
         fn descriptors(self: &RustyCharacteristic) -> Vec<RustyDescriptorWrapper>;
+        fn capabilities(self: &RustyCharacteristic) -> Vec<String>;
 
         fn can_read(self: &RustyCharacteristic) -> bool;
         fn can_write_request(self: &RustyCharacteristic) -> bool;
@@ -220,6 +233,7 @@ mod ffi {
 
         // RustyDescriptor functions
 
+        fn initialized(self: &RustyDescriptor) -> bool;
         fn uuid(self: &RustyDescriptor) -> String;
     }
 }

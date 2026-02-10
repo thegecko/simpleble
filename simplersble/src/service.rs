@@ -25,6 +25,10 @@ impl InnerService {
         return self.internal.uuid();
     }
 
+    pub fn initialized(&self) -> bool {
+        return self.internal.initialized();
+    }
+
     pub fn data(&self) -> Vec<u8> {
         return self.internal.data();
     }
@@ -51,6 +55,10 @@ pub struct Service {
 impl Service {
     pub fn uuid(&self) -> String {
         return self.inner.uuid();
+    }
+
+    pub fn initialized(&self) -> bool {
+        return self.inner.initialized();
     }
 
     pub fn data(&self) -> Vec<u8> {
