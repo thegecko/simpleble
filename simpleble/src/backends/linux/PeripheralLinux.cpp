@@ -217,23 +217,36 @@ ByteArray PeripheralLinux::read(BluetoothUUID const& service, BluetoothUUID cons
     }
 
     // Otherwise, attempt to read the characteristic using default mechanisms
-    return _get_characteristic(service, characteristic)->read();
+    auto char_obj = _get_characteristic(service, characteristic);
+    std::vector<std::string> flags = char_obj->flags();
+    if (std::find(flags.begin(), flags.end(), "read") == flags.end()) {
+        throw Exception::OperationNotSupported("read", characteristic);
+    }
+    return char_obj->read();
 }
 
 void PeripheralLinux::write_request(BluetoothUUID const& service, BluetoothUUID const& characteristic,
                                     ByteArray const& data) {
-    // TODO: Check if the characteristic is writable.
     // TODO: SimpleBluez::Characteristic::write_request() should also take ByteArray by const reference (but that's
     // another library)
-    _get_characteristic(service, characteristic)->write_request(data);
+    auto char_obj = _get_characteristic(service, characteristic);
+    std::vector<std::string> flags = char_obj->flags();
+    if (std::find(flags.begin(), flags.end(), "write") == flags.end()) {
+        throw Exception::OperationNotSupported("write_request", characteristic);
+    }
+    char_obj->write_request(data);
 }
 
 void PeripheralLinux::write_command(BluetoothUUID const& service, BluetoothUUID const& characteristic,
                                     ByteArray const& data) {
-    // TODO: Check if the characteristic is writable.
     // TODO: SimpleBluez::Characteristic::write_command() should also take ByteArray by const reference (but that's
     // another library)
-    _get_characteristic(service, characteristic)->write_command(data);
+    auto char_obj = _get_characteristic(service, characteristic);
+    std::vector<std::string> flags = char_obj->flags();
+    if (std::find(flags.begin(), flags.end(), "write-without-response") == flags.end()) {
+        throw Exception::OperationNotSupported("write_command", characteristic);
+    }
+    char_obj->write_command(data);
 }
 
 void PeripheralLinux::notify(BluetoothUUID const& service, BluetoothUUID const& characteristic,
@@ -250,8 +263,12 @@ void PeripheralLinux::notify(BluetoothUUID const& service, BluetoothUUID const& 
 
     // Otherwise, attempt to read the characteristic using default mechanisms
     // TODO: What to do if the characteristic is already being notified?
-    // TODO: Check if the property can be notified.
     auto characteristic_object = _get_characteristic(service, characteristic);
+    std::vector<std::string> flags = characteristic_object->flags();
+    if (std::find(flags.begin(), flags.end(), "notify") == flags.end() &&
+        std::find(flags.begin(), flags.end(), "indicate") == flags.end()) {
+        throw Exception::OperationNotSupported("notify", characteristic);
+    }
     characteristic_object->set_on_value_changed([callback](SimpleBluez::ByteArray new_value) { callback(new_value); });
     characteristic_object->start_notify();
 }
