@@ -72,8 +72,8 @@ int main() {
     SimpleBLE::ByteArray bytes = SimpleBLE::ByteArray::fromHex(contents);
 
     // NOTE: Alternatively, `write_command` can be used to write to a characteristic too.
-    // `write_request` is for unacknowledged writes.
-    // `write_command` is for acknowledged writes.
+    // `write_request` is for acknowledged writes.
+    // `write_command` is for unacknowledged writes.
     peripheral.write_request(uuids[selection.value()].first, uuids[selection.value()].second, bytes);
 
     peripheral.disconnect();
