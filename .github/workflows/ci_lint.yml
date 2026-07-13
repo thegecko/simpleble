@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Run clang-format
-        uses: DoozyX/clang-format-lint-action@v0.14
+        uses: DoozyX/clang-format-lint-action@v0.20
         with:
           source: '.'
           exclude: './simplepyble'
