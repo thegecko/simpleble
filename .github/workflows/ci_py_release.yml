@@ -15,14 +15,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         env:
           TAG: ${{ inputs.tag || github.ref }}
         with:
           ref: ${{ env.TAG }}
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
           cache: "pip"
@@ -33,7 +33,7 @@ jobs:
             python3 -m build --sdist
 
       - name: Upload files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: simplepyble
           path: dist/*.tar.gz
@@ -76,7 +76,7 @@ jobs:
 
     steps:
       - name: Clone repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         env:
           TAG: ${{ inputs.tag || github.ref }}
         with:
@@ -84,12 +84,12 @@ jobs:
 
       - name: Set up QEMU
         if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v4
         with:
           platforms: arm64
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
           cache: "pip"
@@ -98,7 +98,7 @@ jobs:
         run: pip install -r simplepyble/requirements.txt
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@v2.11.3
+        uses: pypa/cibuildwheel@v4.1.0
         env:
           CIBW_BEFORE_ALL_LINUX: "yum update -y && yum group install -y \"Development Tools\" && yum install -y dbus-devel"
           CIBW_ARCHS_LINUX: ${{ matrix.options.arch }}
@@ -107,7 +107,7 @@ jobs:
           CIBW_SKIP: "*musllinux_* pp*"
 
       - name: Upload wheels to job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: simpleble-wheels
           path: wheelhouse/*.whl
