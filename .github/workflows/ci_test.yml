@@ -12,7 +12,7 @@ jobs:
     - name: Clone Repository
       uses: actions/checkout@v7
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
+      uses: microsoft/setup-msbuild@v1.3
     - name: Clone and build GTest
       run: |
         git clone https://github.com/google/googletest

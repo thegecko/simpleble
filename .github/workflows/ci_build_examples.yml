@@ -12,7 +12,7 @@ jobs:
     - name: Clone Repository
       uses: actions/checkout@v7
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
+      uses: microsoft/setup-msbuild@v1.3
     - name: Compile Examples
       run: |
         cmake -B %GITHUB_WORKSPACE%\build -G "Visual Studio 17 2022" -DCMAKE_SYSTEM_VERSION=10.0.22000.0 -S %GITHUB_WORKSPACE%/examples/simpleble
