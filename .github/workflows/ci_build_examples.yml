@@ -28,7 +28,7 @@ jobs:
     - name: Clone Repository
       uses: actions/checkout@v7
     - name: Setup Cmake
-      uses: jwlawson/actions-setup-cmake@v1.13
+      uses: jwlawson/actions-setup-cmake@v2.2
       with:
         cmake-version: '3.21'
     - name: Compile Examples
@@ -51,7 +51,7 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
     - name: Setup Cmake
-      uses: jwlawson/actions-setup-cmake@v1.13
+      uses: jwlawson/actions-setup-cmake@v2.2
       with:
         cmake-version: '3.21'
     - name:  Compile SimpleBLE Examples for Ubuntu

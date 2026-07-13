@@ -154,7 +154,7 @@ jobs:
           ref: ${{ env.TAG }}
 
       - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v1.13
+        uses: jwlawson/actions-setup-cmake@v2.2
         with:
           cmake-version: '3.21'
 
