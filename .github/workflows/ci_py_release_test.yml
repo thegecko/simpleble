@@ -8,10 +8,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
           cache: "pip"
@@ -22,7 +22,7 @@ jobs:
             python3 -m build --sdist
 
       - name: Upload files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: simplepyble
           path: dist/*.tar.gz
@@ -44,11 +44,11 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-22.04 , windows-2022, macos-12]
+        os: [ubuntu-22.04 , windows-2022, macos-14]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Set up QEMU
         if: runner.os == 'Linux'
@@ -57,7 +57,7 @@ jobs:
           platforms: arm64
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
           cache: "pip"
@@ -66,7 +66,7 @@ jobs:
         run: pip install -r simplepyble/requirements.txt
 
       - name: Build wheel
-        uses: pypa/cibuildwheel@v2.11.3
+        uses: pypa/cibuildwheel@v2.23.3
         env:
           CIBW_BUILD: cp39-* # Only build for Python 3.9
           CIBW_BUILD_VERBOSITY: 3
@@ -75,9 +75,10 @@ jobs:
           CIBW_ARCHS_MACOS: x86_64 universal2 arm64
           CIBW_ARCHS_WINDOWS: AMD64 x86
           CIBW_SKIP: "*musllinux_* pp*"
+          MACOSX_DEPLOYMENT_TARGET: 10.15
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: simpleble-wheels
           path: wheelhouse/*.whl

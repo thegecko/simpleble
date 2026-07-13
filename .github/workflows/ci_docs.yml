@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Install OS Dependencies
         run: |
@@ -16,7 +16,7 @@ jobs:
           sudo -H apt-get install -y doxygen libdbus-1-dev
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
           cache: "pip"
@@ -29,7 +29,7 @@ jobs:
         run: make html
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           path: docs/_build/*
           name: docs

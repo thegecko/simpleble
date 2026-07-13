@@ -6,6 +6,7 @@
 
 #include <simpleble/Exceptions.h>
 #include <algorithm>
+#include <chrono>
 #include "CommonUtils.h"
 #include "LoggingInternal.h"
 

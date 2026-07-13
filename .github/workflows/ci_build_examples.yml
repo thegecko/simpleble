@@ -10,7 +10,7 @@ jobs:
 
     steps:
     - name: Clone Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.1
     - name: Compile Examples
@@ -22,11 +22,11 @@ jobs:
   # ------------------------------------------------------------
 
   build-macos:
-    runs-on: macos-12
+    runs-on: macos-14
 
     steps:
     - name: Clone Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
     - name: Setup Cmake
       uses: jwlawson/actions-setup-cmake@v1.13
       with:
@@ -43,7 +43,7 @@ jobs:
 
     steps:
     - name: Clone Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
     - name: Install Dependencies
       run: |
         sudo -H apt-get update -y

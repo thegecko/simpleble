@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: Run clang-format
         uses: DoozyX/clang-format-lint-action@v0.14
         with:
@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Install CppCheck
         run: |
@@ -39,7 +39,7 @@ jobs:
         run: cppcheck-htmlreport --title=SimpleBLE --file=cppcheck_res.xml --report-dir=report
       - name: Upload Report
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: report
           path: report
