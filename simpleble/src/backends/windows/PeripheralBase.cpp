@@ -74,6 +74,10 @@ void PeripheralBase::update_advertising_data(advertising_data_t advertising_data
 void PeripheralBase::connect() {
     device_ = async_get(BluetoothLEDevice::FromBluetoothAddressAsync(_str_to_mac_address(address_)));
 
+    if (device_ == nullptr) {
+        throw SimpleBLE::Exception::OperationFailed("Failed to retrieve Bluetooth device.");
+    }    
+
     // Attempt to connect to the device.
     for (size_t i = 0; i < 3; i++) {
         if (_attempt_connect()) {
